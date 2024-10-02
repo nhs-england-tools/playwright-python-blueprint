@@ -9,7 +9,7 @@ class NHSNumberTools:
 
         Args:
             nhs_number (int | str): The NHS number to space out.
-        
+
         Returns:
             str: The NHS number in "nnn nnn nnnn" format.
         """
