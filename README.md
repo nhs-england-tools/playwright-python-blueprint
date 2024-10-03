@@ -9,7 +9,7 @@ NOTE: This project is currently under initial development.
 
 ## Table of Contents
 
-- [Repository Template](#repository-template)
+- [Playwright Python Blueprint](#playwright-python-blueprint)
   - [Table of Contents](#table-of-contents)
   - [Setup](#setup)
     - [Prerequisites](#prerequisites)
