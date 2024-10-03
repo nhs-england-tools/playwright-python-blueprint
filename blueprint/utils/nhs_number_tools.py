@@ -14,7 +14,7 @@ class NHSNumberTools:
         """
         if not nhs_number.isnumeric():
             raise Exception("The NHS number provided ({}) is not numeric.".format(nhs_number))
-        
+
 
     def spaced_nhs_number(self, nhs_number: int | str) -> str:
         """
