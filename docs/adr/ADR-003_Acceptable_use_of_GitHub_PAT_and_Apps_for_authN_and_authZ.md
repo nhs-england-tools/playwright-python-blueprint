@@ -225,7 +225,6 @@ graph LR
 ### Examples of acquiring access token
 
 - [Bash](./assets/ADR-003/examples/bash/README.md)
-- [Golang](./assets/ADR-003/examples/golang/README.md)
 - [Node.js TypeScript (Octokit)](./assets/ADR-003/examples/nodejs/README.md) - This is our preferred method for implementing GitHub Apps. It is supported by the Octokit library, which is an official client for the GitHub API.
 - [Python](./assets/ADR-003/examples/python/README.md)
 
