@@ -16,11 +16,11 @@ def test_basic_example(page: Page) -> None:
     '''
     This test demonstrates how to quickly get started using Playwright Python.
 
-    This example starts with @pytest.mark.example, which indicates this test has been tagged 
+    This example starts with @pytest.mark.example, which indicates this test has been tagged
     with the term "example", to demonstrate how tests can be independently tagged.
 
-    When running via the command line, Playwright automatically instantiates certain objects 
-    available for use, including the Page object (which is how Playwright interacts with the 
+    When running via the command line, Playwright automatically instantiates certain objects
+    available for use, including the Page object (which is how Playwright interacts with the
     system under test).
 
     This test does the following:
@@ -48,7 +48,7 @@ def test_textbox_example(page: Page) -> None:
     """
     This test demonstrates another example of quickly getting started using Playwright Python.
 
-    This is specifically designed to outline some of the principals that Playwright uses, for 
+    This is specifically designed to outline some of the principals that Playwright uses, for
     example when looking for a specific textbox to enter information into, rather than using a
     direct HTML or CSS reference, you can use attributes of the field (in this case the placeholder
     text) to find the element as a user would navigating your application. You can also use
