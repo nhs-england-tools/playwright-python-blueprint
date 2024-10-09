@@ -26,8 +26,8 @@ def test_basic_example(page: Page) -> None:
     This test does the following:
     1) Navigates to this repository
     2) Asserts that the README contents rendered by GitHub includes the text "Playwright Python Blueprint"
-    3) Clicks the MIT license link
-    4) Asserts that the LICENCE contents rendered by GitHub includes the text "MIT Licence"
+    3) Clicks the playwright-python tag on the repo
+    4) Asserts that the header on the subsequent page contains the text "playwright-python"
     '''
 
     # Navigate to page
@@ -36,11 +36,11 @@ def test_basic_example(page: Page) -> None:
     # Assert repo text is present
     expect(page.get_by_role("article")).to_contain_text("Playwright Python Blueprint")
 
-    # Click license link
-    page.get_by_role("link", name="MIT license", exact=True).click()
+    # Click playwright-python topic link
+    page.get_by_role("link", name="playwright-python", exact=True).click()
 
-    # Assert license text
-    expect(page.get_by_role("article")).to_contain_text("MIT Licence")
+    # Assert the page loaded is the playwright-python topic page
+    expect(page.get_by_role("main")).to_contain_text("playwright-python")
 
 
 @pytest.mark.example
