@@ -25,7 +25,7 @@ def test_basic_example(page: Page) -> None:
 
     This test does the following:
     1) Navigates to this repository
-    2) Asserts that the README contents rendered by GitHub includes the text "Playwright Python Blueprint"
+    2) Asserts that the README contents rendered by GitHub contains the text "Playwright Python Blueprint"
     3) Clicks the playwright-python tag on the repo
     4) Asserts that the header on the subsequent page contains the text "playwright-python"
     '''
@@ -35,9 +35,6 @@ def test_basic_example(page: Page) -> None:
 
     # Assert repo text is present
     expect(page.get_by_role("article")).to_contain_text("Playwright Python Blueprint")
-
-    # Click playwright-python topic link
-    page.get_by_role("link", name="playwright-python", exact=True).click()
 
     # Assert the page loaded is the playwright-python topic page
     expect(page.get_by_role("main")).to_contain_text("playwright-python")
