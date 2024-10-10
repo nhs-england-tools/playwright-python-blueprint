@@ -36,10 +36,11 @@ cd nhs-england-tools/playwright-python-blueprint/blueprint
 ### Prerequisites
 
 To utilise the blueprint code, you will need to have the following installed:
-* [Python](https://www.python.org/downloads/) 3.12 or greater
+
+- [Python](https://www.python.org/downloads/) 3.12 or greater
 
 Whilst not required to get started, you may also want to [configure a Python virtual environment for your project](https://docs.python.org/3/library/venv.html) before proceeding with
-the configuration.  If you are using an IDE such as Visual Studio Code or Pycharm, you will normally be prompted to do this automatically.
+the configuration.  If you are using an IDE such as Visual Studio Code or PyCharm, you will normally be prompted to do this automatically.
 
 ### Configuration
 
@@ -60,7 +61,7 @@ pytest --tracing on --headed
 
 ## Getting Started
 
-> NOTE: This section is currently under development and requires futher work, so links to pages within this repository may not be very useful at this stage.
+> NOTE: This section is currently under development and requires further work, so links to pages within this repository may not be very useful at this stage.
 
 Once you've confirmed your installation is working, please take a look at the following guides on getting started with Playwright Python.
 
@@ -71,7 +72,7 @@ For additional reading and guidance on writing tests, we also recommend reviewin
 
 ## Contacts
 
-If you have any queries regarding this blueprint, please contact dave.harding1@nhs.net.
+If you have any queries regarding this blueprint, please contact [dave.harding1@nhs.net](mailto:dave.harding1@nhs.net).
 
 ## Licence
 
