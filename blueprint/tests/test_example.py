@@ -26,8 +26,7 @@ def test_basic_example(page: Page) -> None:
     This test does the following:
     1) Navigates to this repository
     2) Asserts that the README contents rendered by GitHub contains the text "Playwright Python Blueprint"
-    3) Clicks the playwright-python tag on the repo
-    4) Asserts that the header on the subsequent page contains the text "playwright-python"
+    3) Asserts that the main section of the page contains the topic label "playwright-python"
     '''
 
     # Navigate to page
