@@ -27,12 +27,6 @@ You can clone this whole repository using the code below:
 git clone https://github.com/nhs-england-tools/playwright-python-blueprint.git
 ```
 
-The code for actually working in Playwright is contained in the blueprint directory, so it's best to do the following to move straight into that working directory:
-
-```shell
-cd nhs-england-tools/playwright-python-blueprint/blueprint
-```
-
 ### Prerequisites
 
 To utilise the blueprint code, you will need to have the following installed:
@@ -58,6 +52,8 @@ so you can see the browser execution):
 ```shell
 pytest --tracing on --headed
 ```
+
+Once the tests have executed, a new directory (test-results) will be created with the tracing reports, HTML report and JSON data relating to the test run.
 
 ## Getting Started
 

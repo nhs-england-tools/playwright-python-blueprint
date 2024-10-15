@@ -26,7 +26,7 @@ runs:
       shell: bash
       run: |
         export BUILD_DATETIME=${{ inputs.build_datetime }}
-        ./scripts/reports/create-lines-of-code-report.sh
+        ./blueprint_specific/scripts/reports/create-lines-of-code-report.sh
     - name: "Compress CLOC report"
       shell: bash
       run: zip lines-of-code-report.json.zip lines-of-code-report.json

@@ -26,7 +26,7 @@ runs:
       shell: bash
       run: |
         export BUILD_DATETIME=${{ inputs.build_datetime }}
-        ./scripts/reports/create-sbom-report.sh
+        ./blueprint_specific/scripts/reports/create-sbom-report.sh
     - name: "Compress SBOM report"
       shell: bash
       run: zip sbom-repository-report.json.zip sbom-repository-report.json
@@ -41,7 +41,7 @@ runs:
       shell: bash
       run: |
         export BUILD_DATETIME=${{ inputs.build_datetime }}
-        ./scripts/reports/scan-vulnerabilities.sh
+        ./blueprint_specific/scripts/reports/scan-vulnerabilities.sh
     - name: "Compress vulnerabilities report"
       shell: bash
       run: zip vulnerabilities-repository-report.json.zip vulnerabilities-repository-report.json

@@ -1,0 +1,33 @@
+repos:
+- repo: local
+  hooks:
+  - id: scan-secrets
+    name: Scan secrets
+    entry: ./blueprint_specific/scripts/githooks/scan-secrets.sh
+    args: ["check=staged-changes"]
+    language: script
+    pass_filenames: false
+- repo: local
+  hooks:
+  - id: check-file-format
+    name: Check file format
+    entry: ./blueprint_specific/scripts/githooks/check-file-format.sh
+    args: ["check=staged-changes"]
+    language: script
+    pass_filenames: false
+- repo: local
+  hooks:
+  - id: check-markdown-format
+    name: Check Markdown format
+    entry: ./blueprint_specific/scripts/githooks/check-markdown-format.sh
+    args: ["check=staged-changes"]
+    language: script
+    pass_filenames: false
+- repo: local
+  hooks:
+  - id: check-english-usage
+    name: Check English usage
+    entry: ./blueprint_specific/scripts/githooks/check-english-usage.sh
+    args: ["check=staged-changes"]
+    language: script
+    pass_filenames: false
