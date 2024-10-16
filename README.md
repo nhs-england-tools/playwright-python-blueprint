@@ -62,6 +62,8 @@ Once you've confirmed your installation is working, please take a look at the fo
 1. [Understanding Playwright Python](./docs/getting-started/1_Understanding_Playwright_Python.md)
 2. [Blueprint File Breakdown](./docs/getting-started/2_Blueprint_File_Breakdown.md)
 
+We've also created a [Quick Reference Guide](./docs/getting-started/Quick_Reference_Guide.md) for common commands and actions you may regularly perform using this blueprint.
+
 For additional reading and guidance on writing tests, we also recommend reviewing the [Playwright Python documentation](https://playwright.dev/python/docs/writing-tests).
 
 ## Contacts
