@@ -65,7 +65,7 @@ def test_textbox_example(page: Page) -> None:
     page.get_by_placeholder("Go to file").fill("test_example.py")
 
     # Click the file name presented in the dropdown
-    page.get_by_label("tests/test_example.").click()
+    page.get_by_label("xtests/test_example.").click(timeout=5000)
 
     # Confirm we are viewing the correct file
     expect(page.locator("#file-name-id-wide")).to_contain_text("test_example.py")
