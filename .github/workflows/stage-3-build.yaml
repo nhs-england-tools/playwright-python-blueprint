@@ -45,6 +45,7 @@ jobs:
         run: |
           docker run -d --name playwright-python-blueprint \
             -e TZ=Europe/London \
+            --entrypoint "/test/run_tests.sh" \
             playwright-python-blueprint
   # artefact-2:
   #   name: "Artefact 2"
