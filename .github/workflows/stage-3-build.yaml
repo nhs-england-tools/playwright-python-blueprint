@@ -45,12 +45,12 @@ jobs:
           pip install -r requirements.txt
       - name: Ensure browsers are installed
         run: python -m playwright install --with-deps
-      - name: Run your tests
+      - name: Run example tests
         run: pytest
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-traces
+          name: result-output
           path: test-results/
           retention-days: 5
   # build-docker-image:
