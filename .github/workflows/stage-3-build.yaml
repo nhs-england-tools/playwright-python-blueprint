@@ -32,7 +32,7 @@ jobs:
   run-tests:
     name: "Run Example Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
