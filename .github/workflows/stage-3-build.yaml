@@ -1,4 +1,4 @@
-name: "Build stage"
+name: "Build & Assurance stage"
 
 on:
   workflow_call:
@@ -53,26 +53,3 @@ jobs:
           name: result-output
           path: test-results/
           retention-days: 5
-  # build-docker-image:
-  #   name: "Build Docker Image"
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   steps:
-  #     - name: "Checkout code"
-  #       uses: actions/checkout@v4
-  #     - name: Stop / remove containers
-  #       run: |
-  #         docker stop $(docker ps -q) || true
-  #         docker rm $(docker ps -aq) || true
-  #     - name: Set up docker build
-  #       uses: docker/setup-buildx-action@v3
-  #     - name: Build image
-  #       run: docker build -t playwright-python-blueprint -f buildBase.dockerfile .
-  #     # - name: Run docker container
-      #   id: run-container
-      #   run: |
-      #     docker container run -d --name playwright-python-blueprint-test \
-      #       -e TZ=Europe/London \
-      #       playwright-python-blueprint pytest
-      #     docker wait playwright-python-blueprint-test
-      #     docker logs --since=1h playwright-python-blueprint-test
