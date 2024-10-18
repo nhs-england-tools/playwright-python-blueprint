@@ -29,43 +29,50 @@ on:
         type: string
 
 jobs:
-  build-docker-image:
-    name: "Build Docker Image & Run Example Tests"
+  run-tests:
+    name: "Run Example Tests"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v4
-      - name: Stop / remove containers
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
         run: |
-          docker stop $(docker ps -q) || true
-          docker rm $(docker ps -aq) || true
-      - name: Set up docker build
-        uses: docker/setup-buildx-action@v3
-      - name: Build image
-        run: docker build -t playwright-python-blueprint -f buildBase.dockerfile .
-      - name: Run docker container
-        id: run-container
-        run: |
-          docker container run -d --name playwright-python-blueprint \
-            -e TZ=Europe/London \
-            --entrypoint "/test/run_tests.sh" \
-            playwright-python-blueprint
-          docker logs --since=1h playwright-python-blueprint
-  # artefact-2:
-  #   name: "Artefact 2"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Ensure browsers are installed
+        run: python -m playwright install --with-deps
+      - name: Run your tests
+        run: pytest
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 5
+  # build-docker-image:
+  #   name: "Build Docker Image"
   #   runs-on: ubuntu-latest
-  #   timeout-minutes: 3
+  #   timeout-minutes: 10
   #   steps:
   #     - name: "Checkout code"
   #       uses: actions/checkout@v4
-  #     - name: "Build artefact 2"
+  #     - name: Stop / remove containers
   #       run: |
-  #         echo "Building artefact 2 ..."
-  #     - name: "Check artefact 2"
-  #       run: |
-  #         echo "Checking artefact 2 ..."
-  #     - name: "Upload artefact 2"
-  #       run: |
-  #         echo "Uploading artefact 2 ..."
-  #         # TODO: Use either action/cache or action/upload-artifact
+  #         docker stop $(docker ps -q) || true
+  #         docker rm $(docker ps -aq) || true
+  #     - name: Set up docker build
+  #       uses: docker/setup-buildx-action@v3
+  #     - name: Build image
+  #       run: docker build -t playwright-python-blueprint -f buildBase.dockerfile .
+  #     # - name: Run docker container
+      #   id: run-container
+      #   run: |
+      #     docker container run -d --name playwright-python-blueprint-test \
+      #       -e TZ=Europe/London \
+      #       playwright-python-blueprint pytest
+      #     docker wait playwright-python-blueprint-test
+      #     docker logs --since=1h playwright-python-blueprint-test
