@@ -39,8 +39,8 @@ class Axe:
         response = page.evaluate("axe." + Axe._build_run_command(ruleset) + ".then(results => {return results;})")
 
         logging.info(f"Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
-                     Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])},
-                     Incomplete = {len(response["incomplete"])}")
+                    Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])},
+                    Incomplete = {len(response["incomplete"])}")
 
         violations_detected = len(response["violations"]) > 0
         if not report_on_violation_only or (report_on_violation_only and violations_detected):
