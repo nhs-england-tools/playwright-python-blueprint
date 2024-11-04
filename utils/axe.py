@@ -16,9 +16,9 @@ class Axe:
     """
 
     @staticmethod
-    def run(page: Page, 
+    def run(page: Page,
             ruleset: list = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice'],
-            report_on_violation_only: bool = False, 
+            report_on_violation_only: bool = False,
             strict_mode: bool = False,
             html_report_generated: bool = True,
             json_report_generated: bool = True) -> dict:
@@ -33,13 +33,13 @@ class Axe:
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
             json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
         """
-        
+
         page.evaluate(AXE_PATH.read_text(encoding="UTF-8"))
-        
+
         response = page.evaluate("axe." + Axe._build_run_command(ruleset) + ".then(results => {return results;})")
-        
-        logging.info(f"Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])}, 
-                     Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])}, 
+
+        logging.info(f"Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
+                     Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])},
                      Incomplete = {len(response["incomplete"])}")
 
         violations_detected = len(response["violations"]) > 0
@@ -48,7 +48,7 @@ class Axe:
                 Axe._create_html_report(response)
             if json_report_generated:
                 Axe._create_json_report(response)
-        
+
         if violations_detected and strict_mode:
             raise AxeAccessibilityException(f"Axe Accessibility Violation detected on page: {response["url"]}")
 
@@ -65,7 +65,7 @@ class Axe:
         for item_to_remove in ["http://", "https://"]:
             filename_to_modify = filename_to_modify.replace(item_to_remove, "")
         filename_to_modify = filename_to_modify.replace("/", "__").replace('\\', "__").replace(".", "_")
-        
+
         return filename_to_modify
 
     @staticmethod
@@ -82,7 +82,7 @@ class Axe:
 
         with open(full_path, 'w') as file:
             file.writelines(json.dumps(data))
-        
+
         logging.info(f"JSON report generated: {full_path}")
 
     @staticmethod
@@ -105,7 +105,7 @@ class Axe:
                     .details-section { width: 100% }
                     .details-header { column-width: 10% }'''
             return style
-        
+
         def details_section(header: str) -> str:
             section = f'<h2 name="{header}">{header.title()}</h2>'
 
@@ -120,7 +120,7 @@ class Axe:
                                 </table><br />'''
             else:
                 section += f'<p>No {header} results returned.</p>'
-            
+
             return section
 
 
