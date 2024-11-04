@@ -1,0 +1,9 @@
+# This allows for the ignoring of secret scanning against axe-core, as whilst it is in our code base we don't control it
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''(^|/)utils/resources''',
+]
