@@ -20,5 +20,5 @@ indent_size = 4
 [{Makefile,*.mk,go.mod,go.sum,*.go,.gitmodules}]
 indent_style = tab
 
-[/utils/resources/**]
+[{axe.js,axe.min.js}]
 generated_code = true
