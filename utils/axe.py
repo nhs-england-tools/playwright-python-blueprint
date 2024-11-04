@@ -1,7 +1,8 @@
 import logging
 import os
 import json
-from playwright.sync_api import Page
+from datetime import datetime
+from playwright.sync_api import Page, sync_playwright
 from pathlib import Path
 
 
@@ -38,9 +39,9 @@ class Axe:
 
         response = page.evaluate("axe." + Axe._build_run_command(ruleset) + ".then(results => {return results;})")
 
-        logging.info(f"Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
+        logging.info(f"""Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
                     Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])},
-                    Incomplete = {len(response["incomplete"])}")
+                    Incomplete = {len(response["incomplete"])}""")
 
         violations_detected = len(response["violations"]) > 0
         if not report_on_violation_only or (report_on_violation_only and violations_detected):
@@ -133,7 +134,7 @@ class Axe:
         # Metadata
         html += f'''<h2>Metadata</h2>
                 <table><tr><th>Key</th><th>Description</th></tr>
-                <tr><td>Date/Time Executed</td><td>{data["timestamp"]}</td></tr>
+                <tr><td>Date/Time Executed</td><td>{datetime.strptime(data["timestamp"], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%d/%m/%Y %H:%M")}</td></tr>
                 <tr><td>Engine Version</td><td>{data["testEngine"]["name"]} {data["testEngine"]["version"]}</td></tr>
                 <tr><td>User Agent</td><td>{data["testEnvironment"]["userAgent"]}</td></tr>
                 <tr><td>Tags Used</td><td>{data["toolOptions"]["runOnly"]["values"]}</td></tr>
@@ -157,3 +158,18 @@ class Axe:
 
 class AxeAccessibilityException(Exception):
     pass
+
+
+if __name__ == "__main__":
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        
+        page.goto("https://www.nhs.uk")
+        #page.goto("https://www.gov.uk/government/publications/doing-a-basic-accessibility-check-if-you-cant-do-a-detailed-one/doing-a-basic-accessibility-check-if-you-cant-do-a-detailed-one")
+        results = Axe.run(page, report_on_violation_only=True)
+
+        # ---------------------
+        context.close()
+        browser.close()
