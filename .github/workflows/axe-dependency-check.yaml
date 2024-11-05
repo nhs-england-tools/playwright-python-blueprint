@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - run: |
+          git checkout -b axe-dependency-check
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,8 +31,12 @@ jobs:
         run: |
           cd utils/resources
           rm -rf temp
+          echo which branch are we on
+          git branch --show-current
       - uses: actions/checkout@v4
       - run: |
+          echo which branch are we on
+          git branch --show-current
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add utils/resources/axe.js
