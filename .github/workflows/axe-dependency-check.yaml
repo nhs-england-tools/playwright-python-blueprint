@@ -13,8 +13,6 @@ jobs:
       - name: Create dependency update branch
         run: |
           git checkout -b axe-dependency-check
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -33,10 +31,10 @@ jobs:
         run: |
           cd utils/resources
           rm -rf temp
-      - name: Stage & commit file
-        run: |
-          git stage utils/resources/axe.js
-          git diff-index --quiet HEAD || (git commit -a -m "axe.js scheduled update" --allow-empty)
       - uses: actions/checkout@v4
       - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add utils/resources/axe.js
+          git commit -m "axe-core automated update"
           git push
