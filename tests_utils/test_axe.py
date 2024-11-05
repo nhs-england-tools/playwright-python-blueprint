@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from utils import Axe
+from utils.axe import Axe
 
 pytestmark = [pytest.mark.utils]
 

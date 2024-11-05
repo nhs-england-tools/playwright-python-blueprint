@@ -7,7 +7,7 @@ library used for scanning for accessibility issues and providing guidance on how
 
 You can initialise the Axe class by using the following code in your test file:
 
-    from utils import Axe
+    from utils.axe import Axe
 
 This Axe module has been designed as a static class, so you do not need to instantiate it when you want to run a scan on a page you have navigated to
 using Playwright.
@@ -46,6 +46,9 @@ The `Axe.run(page)` has the following optional arguments that can be passed in:
 |`json_report_generated`|`bool`|True, False|True|If True, a JSON report will be generated with the full axe-core findings.|
 
 ## Example usage
+
+    from utils.axe import Axe
+    from playwright.sync_api import Page
 
     def test_axe_example(page: Page) -> None:
         page.goto("https://github.com/nhs-england-tools/playwright-python-blueprint")
