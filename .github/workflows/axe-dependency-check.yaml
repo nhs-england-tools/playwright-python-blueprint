@@ -27,7 +27,7 @@ jobs:
           npm install axe-core
       - name: Retrieve axe.js file
         run: |
-          cd utils/resources/node_modules/axe-core
+          cd utils/resources/temp/node_modules/axe-core
           mv axe.js ../../../
       - name: Remove temp directory
         run: |
