@@ -27,15 +27,17 @@ jobs:
       - name: Retrieve axe.js file
         run: |
           cd utils/resources/temp/node_modules/axe-core
+          ls
           mv axe.js ../../../
       - name: Remove temp directory
         run: |
           cd utils/resources
+          ls
           rm -rf temp
           echo which branch are we on
           git branch --show-current
-      - uses: actions/checkout@v4
-      - run: |
+      - name: Commit to branch
+        run: |
           echo which branch are we on
           git branch --show-current
           git config user.name "github-actions[bot]"
