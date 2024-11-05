@@ -1,0 +1,11 @@
+name: Run Axe Dependency Check
+
+on: [workflow_dispatch]
+
+jobs:
+  axe-dependency-check:
+    name: "Axe Version Check"
+    timeout-minutes: 10
+    steps:
+      - name: "Axe Version Check"
+        uses: ./.github/actions/check-axe-version
