@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - run: |
-          git checkout ${{ github.head_ref || github.ref_name }} 
+          git checkout ${{ github.head_ref || github.ref_name }}
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
