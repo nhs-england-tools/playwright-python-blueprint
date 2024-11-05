@@ -30,7 +30,7 @@ on:
 
 jobs:
   run-tests:
-    name: "Run Example Tests"
+    name: "Run Util & Example Tests"
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
