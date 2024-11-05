@@ -19,6 +19,7 @@ jobs:
           node-version: 'latest'
       - name: Install axe-core in temp dir
         run: |
+          ls
           cd utils/resources
           mkdir temp
           cd temp
