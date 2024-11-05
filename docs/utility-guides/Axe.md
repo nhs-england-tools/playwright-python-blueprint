@@ -16,7 +16,7 @@ To conduct a scan, you can just use the following once the page you want to chec
 
     Axe.run(page)
 
-This will inject the axe-core code into the page and then execute the axe.run() comand, generating an accessibility report for the page being tested.
+This will inject the axe-core code into the page and then execute the axe.run() command, generating an accessibility report for the page being tested.
 
 By default, the `Axe.run(page)` command will do the following:
 
@@ -39,11 +39,11 @@ The `Axe.run(page)` has the following optional arguments that can be passed in:
 
 |Argument|Format|Supported Values|Default Value|Description|
 |--------|------|----------------|-------------|-----------|
-|ruleset |list (strings)|Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/)|['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice']|The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.|
-|report_on_violation_only|boolean|True, False|False|If True, HTML and JSON reports will only be generated if at least one violation is found.|
-|strict_mode|boolean|True, False|False|If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.|
-|html_report_generated|boolean|True, False|True|If True, a HTML report will be generated summarising the axe-core findings.|
-|json_report_generated|boolean|True, False|True|If True, a JSON report will be generated with the full axe-core findings.|
+|`ruleset` |list (strings)|Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/)|['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice']|The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.|
+|`report_on_violation_only`|`bool`|True, False|False|If True, HTML and JSON reports will only be generated if at least one violation is found.|
+|`strict_mode`|`bool`|True, False|False|If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.|
+|`html_report_generated`|`bool`|True, False|True|If True, a HTML report will be generated summarising the axe-core findings.|
+|`json_report_generated`|`bool`|True, False|True|If True, a JSON report will be generated with the full axe-core findings.|
 
 ## Example usage
 
