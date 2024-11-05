@@ -5,6 +5,7 @@ on: [workflow_dispatch]
 jobs:
   axe-dependency-check:
     name: "Axe Version Check"
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: "Axe Version Check"
