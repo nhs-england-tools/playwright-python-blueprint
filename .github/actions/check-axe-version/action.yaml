@@ -1,2 +1,33 @@
 name: "Check axe-core version"
 description: "Checks if our copy of axe-core is up to date"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create dependency update branch
+        run: |
+          git checkout -b axe-dependency-check
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+      - name: Install axe-core in temp dir
+        run: |
+          cd utils/resouces
+          mkdir temp
+          cd temp
+          npm install axe-core
+      - name: Retrieve axe.js file
+        run: |
+          cd node_modules/axe-core
+          mv axe.js ../../../
+      - name: Remove temp directory
+        run: |
+          cd ../../../
+          rm -rf temp
+          
+  
