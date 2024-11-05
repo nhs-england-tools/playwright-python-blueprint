@@ -27,16 +27,15 @@ jobs:
           npm install axe-core
       - name: Retrieve axe.js file
         run: |
-          ls
-          cd node_modules/axe-core
+          cd utils/resources/node_modules/axe-core
           mv axe.js ../../../
       - name: Remove temp directory
         run: |
-          cd ../../../
+          cd utils/resources
           rm -rf temp
       - name: Stage & commit file
         run: |
-          git stage axe.js
+          git stage utils/resources/axe.js
           git diff-index --quiet HEAD || (git commit -a -m "axe.js scheduled update" --allow-empty)
       - name: Push changes to branch
         uses: ad-m/github-push-action@v0.6.0
