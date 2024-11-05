@@ -12,14 +12,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - run: |
-          git checkout -b axe-dependency-check
+          git checkout ${{ github.head_ref || github.ref_name }} 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'latest'
       - name: Install axe-core in temp dir
         run: |
-          ls
           cd utils/resources
           mkdir temp
           cd temp
@@ -27,19 +26,13 @@ jobs:
       - name: Retrieve axe.js file
         run: |
           cd utils/resources/temp/node_modules/axe-core
-          ls
           mv axe.js ../../../
       - name: Remove temp directory
         run: |
           cd utils/resources
-          ls
           rm -rf temp
-          echo which branch are we on
-          git branch --show-current
-      - name: Commit to branch
+      - name: Commit to axe-dependency-check branch
         run: |
-          echo which branch are we on
-          git branch --show-current
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add utils/resources/axe.js
