@@ -2,7 +2,7 @@ import logging
 import os
 import json
 from datetime import datetime
-from playwright.sync_api import Page, sync_playwright
+from playwright.sync_api import Page
 from pathlib import Path
 
 
@@ -158,18 +158,3 @@ class Axe:
 
 class AxeAccessibilityException(Exception):
     pass
-
-
-if __name__ == "__main__":
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
-        
-        page.goto("https://www.nhs.uk")
-        #page.goto("https://www.gov.uk/government/publications/doing-a-basic-accessibility-check-if-you-cant-do-a-detailed-one/doing-a-basic-accessibility-check-if-you-cant-do-a-detailed-one")
-        results = Axe.run(page, report_on_violation_only=True)
-
-        # ---------------------
-        context.close()
-        browser.close()
