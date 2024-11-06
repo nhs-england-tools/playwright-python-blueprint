@@ -39,11 +39,12 @@ The `Axe.run(page)` has the following optional arguments that can be passed in:
 
 |Argument|Format|Supported Values|Default Value|Description|
 |--------|------|----------------|-------------|-----------|
-|`ruleset` |list (strings)|Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/)|['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice']|The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.|
-|`report_on_violation_only`|`bool`|True, False|False|If True, HTML and JSON reports will only be generated if at least one violation is found.|
-|`strict_mode`|`bool`|True, False|False|If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.|
-|`html_report_generated`|`bool`|True, False|True|If True, a HTML report will be generated summarising the axe-core findings.|
-|`json_report_generated`|`bool`|True, False|True|If True, a JSON report will be generated with the full axe-core findings.|
+|`ruleset` |`list[str]`|Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/)|`['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice']`|The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.|
+|`filename`|`str`|A string valid for a filename (e.g. `test_report`)||If provided, HTML and JSON reports will save with the filename provided. If not provided (default), the URL of the page under test will be used as the filename.|
+|`report_on_violation_only`|`bool`|`True`, `False`|`False`|If True, HTML and JSON reports will only be generated if at least one violation is found.|
+|`strict_mode`|`bool`|`True`, `False`|`False`|If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.|
+|`html_report_generated`|`bool`|`True`, `False`|`True`|If True, a HTML report will be generated summarising the axe-core findings.|
+|`json_report_generated`|`bool`|`True`, `False`|`True`|If True, a JSON report will be generated with the full axe-core findings.|
 
 ## Example usage
 
