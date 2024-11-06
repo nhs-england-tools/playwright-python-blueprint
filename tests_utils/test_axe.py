@@ -1,8 +1,21 @@
 import pytest
+import os
 from pathlib import Path
 from utils.axe import Axe
 
 pytestmark = [pytest.mark.utils]
+
+AXE_REPORTS_DIR = Path(__file__).parent.parent / "axe-reports"
+TEST_JSON_DEFAULT_FILENAME = "www_test_com__1.json"
+TEST_JSON_CUSTOM_FILENAME = "test_json_file.json"
+TEST_HTML_DEFAULT_FILENAME = "www_test_com__1.html"
+TEST_HTML_CUSTOM_FILENAME = "test_html_file.html"
+
+@pytest.fixture(scope="session", autouse=True)
+def remove_files_before_test() -> None:
+    for file in [TEST_JSON_DEFAULT_FILENAME, TEST_JSON_CUSTOM_FILENAME, TEST_HTML_DEFAULT_FILENAME, TEST_HTML_CUSTOM_FILENAME]:
+        if os.path.isfile(AXE_REPORTS_DIR / file):
+            os.remove(AXE_REPORTS_DIR / file)
 
 def test_build_run_command() -> None:
     assert Axe._build_run_command(['test']) == "run({runOnly: { type: 'tag', values: ['test'] }})"
@@ -15,9 +28,15 @@ def test_create_path_for_report() -> None:
 
 def test_create_json_report() -> None:
     test_data = {"url": "https://www.test.com/1"}
-    Axe._create_json_report(test_data)
 
-    with open(Path(__file__).parent.parent / "axe-reports" / "www_test_com__1.json", 'r') as file:
+    # Default generation
+    Axe._create_json_report(test_data)
+    with open(AXE_REPORTS_DIR / TEST_JSON_DEFAULT_FILENAME, 'r') as file:
+        assert file.read() == '{"url": "https://www.test.com/1"}'
+
+    # With custom filename
+    Axe._create_json_report(test_data, TEST_JSON_CUSTOM_FILENAME.replace(".json", ""))
+    with open(AXE_REPORTS_DIR / TEST_JSON_CUSTOM_FILENAME, 'r') as file:
         assert file.read() == '{"url": "https://www.test.com/1"}'
 
 def test_create_html_report() -> None:
@@ -34,9 +53,15 @@ def test_create_html_report() -> None:
                 "violations": [{"id": "test", "impact": None, "tags": ["cat.keyboard", "best-practice"], "description": "test", "help": "test", "helpUrl": "test", "nodes": []}]
     }
     expected_file_data = Axe._generate_html(test_data)
-    Axe._create_html_report(test_data)
 
-    with open(Path(__file__).parent.parent / "axe-reports" / "www_test_com__1.html", 'r') as file:
+    # Default generation
+    Axe._create_html_report(test_data)
+    with open(AXE_REPORTS_DIR / TEST_HTML_DEFAULT_FILENAME, 'r') as file:
+        assert file.read() == expected_file_data
+
+    # With custom filename
+    Axe._create_html_report(test_data, TEST_HTML_CUSTOM_FILENAME.replace(".html", ""))
+    with open(AXE_REPORTS_DIR / TEST_HTML_CUSTOM_FILENAME, 'r') as file:
         assert file.read() == expected_file_data
 
 def test_generate_html() -> None:

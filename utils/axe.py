@@ -18,6 +18,7 @@ class Axe:
 
     @staticmethod
     def run(page: Page,
+            filename: str = "",
             ruleset: list = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice'],
             report_on_violation_only: bool = False,
             strict_mode: bool = False,
@@ -28,6 +29,7 @@ class Axe:
 
         Args:
             page (playwright.sync_api.Page): The page object to execute axe-core against.
+            filename (str): The filename to use for the outputted reports. If not provided, defaults to the URL under test.
             ruleset (list[str]): [Optional] If provided, a list of strings to denote the ruleset tags axe-core should use. If not provided, defaults to the WCAG 2.2 AA standard (uses tags: 'wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice').
             report_on_violation_only (bool): [Optional] If true, only generates an Axe report if a violation is detected. If false (default), always generate a report.
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
@@ -46,9 +48,9 @@ class Axe:
         violations_detected = len(response["violations"]) > 0
         if not report_on_violation_only or (report_on_violation_only and violations_detected):
             if html_report_generated:
-                Axe._create_html_report(response)
+                Axe._create_html_report(response, filename)
             if json_report_generated:
-                Axe._create_json_report(response)
+                Axe._create_json_report(response, filename)
 
         if violations_detected and strict_mode:
             raise AxeAccessibilityException(f"Axe Accessibility Violation detected on page: {response["url"]}")
@@ -77,8 +79,8 @@ class Axe:
         return PATH_FOR_REPORT / filename
 
     @staticmethod
-    def _create_json_report(data: dict) -> Path:
-        filename = f"{Axe._modify_filename_for_report(data["url"])}.json"
+    def _create_json_report(data: dict, filename_overide: str = "") -> None:
+        filename = f"{Axe._modify_filename_for_report(data["url"])}.json" if filename_overide == "" else f"{filename_overide}.json"
         full_path = Axe._create_path_for_report(filename)
 
         with open(full_path, 'w') as file:
@@ -87,8 +89,8 @@ class Axe:
         logging.info(f"JSON report generated: {full_path}")
 
     @staticmethod
-    def _create_html_report(data: dict) -> None:
-        filename = f"{Axe._modify_filename_for_report(data["url"])}.html"
+    def _create_html_report(data: dict, filename_overide: str = "") -> None:
+        filename = f"{Axe._modify_filename_for_report(data["url"])}.html" if filename_overide == "" else f"{filename_overide}.html"
         full_path = Axe._create_path_for_report(filename)
 
         with open(full_path, 'w') as file:
