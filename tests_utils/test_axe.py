@@ -53,7 +53,7 @@ def test_create_html_report() -> None:
                 "violations": [{"id": "test", "impact": None, "tags": ["cat.keyboard", "best-practice"], "description": "test", "help": "test", "helpUrl": "test", "nodes": []}]
     }
     expected_file_data = Axe._generate_html(test_data)
-    
+
     # Default generation
     Axe._create_html_report(test_data)
     with open(AXE_REPORTS_DIR / TEST_HTML_DEFAULT_FILENAME, 'r') as file:
