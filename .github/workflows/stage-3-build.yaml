@@ -30,13 +30,13 @@ on:
 
 jobs:
   run-tests:
-    name: "Run Example Tests"
+    name: "Run Util & Example Tests"
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
@@ -45,6 +45,8 @@ jobs:
           pip install -r requirements.txt
       - name: Ensure browsers are installed
         run: python -m playwright install --with-deps
+      - name: Run util tests
+        run: pytest -m "utils" --ignore=tests/
       - name: Run example tests
         run: pytest
       - uses: actions/upload-artifact@v4

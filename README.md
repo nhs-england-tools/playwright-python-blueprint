@@ -16,6 +16,7 @@ NOTE: This project is currently under initial development so isn't finalised, bu
     - [Prerequisites](#prerequisites)
     - [Configuration](#configuration)
   - [Getting Started](#getting-started)
+  - [Utilities](#utilities)
   - [Contacts](#contacts)
   - [Licence](#licence)
 
@@ -65,6 +66,15 @@ Once you've confirmed your installation is working, please take a look at the fo
 We've also created a [Quick Reference Guide](./docs/getting-started/Quick_Reference_Guide.md) for common commands and actions you may regularly perform using this blueprint.
 
 For additional reading and guidance on writing tests, we also recommend reviewing the [Playwright Python documentation](https://playwright.dev/python/docs/writing-tests).
+
+## Utilities
+
+This blueprint also provides the following utility classes, that can be used to aid in testing:
+
+|Utility|Description|
+|-------|-----------|
+|[Axe](./docs/utility-guides/Axe.md)|Accessibility scanning using axe-core.|
+|NHSNumberTools|Basic tools for working with NHS numbers.|
 
 ## Contacts
 
