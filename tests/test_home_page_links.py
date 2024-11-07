@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page, expect
-
 from pages.login import BcssLoginPage
 from pages.bcss_home_page import BcssHomePage
+from tests_utils.date_time_utils import DateTimeUtils
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -46,15 +46,21 @@ def test_home_page_links_navigation(page: Page) -> None:
     homepage.click_back_button()
 
     # Click the refresh alerts link
-    homepage.click_refresh_alerts_link()  # TODO - verify last updated date/time is correct
-    # expect(page.locator("form[name=\"refreshCockpit\"]")).to_have_text("Refresh alerts (last updated :25/10/2024 15:06)")
+    homepage.click_refresh_alerts_link()
+    # Verify that the 'last updated' timestamp matches the current date and time
+    (expect(page.locator("form[name=\"refreshCockpit\"]")).to_contain_text
+     ("Refresh alerts (last updated :" + DateTimeUtils.current_datetime()))
 
     # Click the user guide link
     with page.expect_popup() as page1_info:
+    # Check the user guide link works
         page.get_by_role("link", name="User guide").click()
+    # Check that the user guide page can be accessed
     page1 = page1_info.value
 
     # Click 'help' link
     with page.expect_popup() as page2_info:
+    # Check the help link works
         page.get_by_role("link", name="Help").click()
+    # Check that the help page can be accessed
     page2 = page2_info.value
