@@ -1,7 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
 
-import pages.bcss_home_page
 from pages.login import BcssLoginPage
 from pages.bcss_home_page import BcssHomePage
 
@@ -51,7 +50,11 @@ def test_home_page_links_navigation(page: Page) -> None:
     # expect(page.locator("form[name=\"refreshCockpit\"]")).to_have_text("Refresh alerts (last updated :25/10/2024 15:06)")
 
     # Click the user guide link
-    homepage.click_user_guide_link()  # TODO - verify correct new tab has opened
+    with page.expect_popup() as page1_info:
+        page.get_by_role("link", name="User guide").click()
+    page1 = page1_info.value
 
     # Click 'help' link
-    homepage.click_help_link()  # TODO - verify correct new tab has opened
+    with page.expect_popup() as page2_info:
+        page.get_by_role("link", name="Help").click()
+    page2 = page2_info.value
