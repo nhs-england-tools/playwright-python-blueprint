@@ -10,6 +10,17 @@ class BcssLoginPage:
 
 
     def login(self, username, password):
+        """Log in with specified user credentials
+        Args:
+            username (str) enter a username
+            password (str) enter a password
+        """
         self.username.fill(username)
         self.password.fill(password)
+        self.submit_button.click()
+
+    def login_as_user_bcss401(self):
+        """Logs in to bcss as the test user 'BCSS401'"""
+        self.username.fill("BCSS401")
+        self.password.fill("changeme")
         self.submit_button.click()

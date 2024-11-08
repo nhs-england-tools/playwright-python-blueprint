@@ -16,3 +16,6 @@ __pycache__/
 .pytest_cache/
 test-results/
 /tests/examples/
+.idea
+.DS_Store
+

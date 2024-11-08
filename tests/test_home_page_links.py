@@ -8,10 +8,8 @@ from tests_utils.date_time_utils import DateTimeUtils
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     # Log in to BCSS
-    username = "BCSS401"
-    password = "changeme"
     login_page = BcssLoginPage(page)
-    login_page.login(username, password)
+    login_page.login_as_user_bcss401()
 
 
 @pytest.mark.smoke

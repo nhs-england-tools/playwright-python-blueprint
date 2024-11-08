@@ -3,10 +3,8 @@ from pages.login import BcssLoginPage
 
 
 def test_successful_login_to_bcss(page: Page) -> None:
-    username = "BCSS401"
-    password = "changeme"
     login_page = BcssLoginPage(page)
-    login_page.login(username, password)
+    login_page.login_as_user_bcss401()
     expect(page.locator("#ntshAppTitle")).to_contain_text("Bowel Cancer Screening System")
 
 
