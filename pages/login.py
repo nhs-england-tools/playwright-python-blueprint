@@ -10,7 +10,7 @@ class BcssLoginPage:
 
 
     def login(self, username, password):
-        """Log in with specified user credentials
+        """Logs in to bcss with specified user credentials
         Args:
             username (str) enter a username
             password (str) enter a password
