@@ -19,7 +19,7 @@ class Axe:
     @staticmethod
     def run(page: Page,
             filename: str = "",
-            ruleset: list = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice'],
+            ruleset: list = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice'],
             report_on_violation_only: bool = False,
             strict_mode: bool = False,
             html_report_generated: bool = True,
@@ -30,7 +30,7 @@ class Axe:
         Args:
             page (playwright.sync_api.Page): The page object to execute axe-core against.
             filename (str): The filename to use for the outputted reports. If not provided, defaults to the URL under test.
-            ruleset (list[str]): [Optional] If provided, a list of strings to denote the ruleset tags axe-core should use. If not provided, defaults to the WCAG 2.2 AA standard (uses tags: 'wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'best-practice').
+            ruleset (list[str]): [Optional] If provided, a list of strings to denote the ruleset tags axe-core should use. If not provided, defaults to the WCAG 2.2 AA standard (uses tags: 'wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice').
             report_on_violation_only (bool): [Optional] If true, only generates an Axe report if a violation is detected. If false (default), always generate a report.
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
