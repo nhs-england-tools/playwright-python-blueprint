@@ -8,6 +8,7 @@ from pathlib import Path
 
 AXE_PATH = Path(__file__).parent / "resources" / "axe.js"
 PATH_FOR_REPORT = Path(__file__).parent.parent / "axe-reports"
+DEFAULT_WCAG_RULESET = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice']
 
 
 class Axe:
@@ -19,7 +20,7 @@ class Axe:
     @staticmethod
     def run(page: Page,
             filename: str = "",
-            ruleset: list = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice'],
+            ruleset: list[str] = DEFAULT_WCAG_RULESET,
             report_on_violation_only: bool = False,
             strict_mode: bool = False,
             html_report_generated: bool = True,
@@ -58,7 +59,45 @@ class Axe:
         return response
 
     @staticmethod
-    def _build_run_command(ruleset: list) -> str:
+    def run_list(page: Page,
+            page_list: list[str],
+            use_list_for_filename: bool = True,
+            ruleset: list = DEFAULT_WCAG_RULESET,
+            report_on_violation_only: bool = False,
+            strict_mode: bool = False,
+            html_report_generated: bool = True,
+            json_report_generated: bool = True) -> dict:
+        """
+        This runs axe-core against a list of pages provided.
+
+        NOTE: It is recommended to set a --base-url value when running Playwright using this functionality, so you only need to pass in a partial URL within the page_list.
+
+        Args:
+            page (playwright.sync_api.Page): The page object to execute axe-core against.
+            page_list (list[playwright.sync_api.Page): A list of URLs to execute against.
+            use_list_for_filename (bool): If true, based filenames off the list provided. If false, use the full URL under test for the filename.
+            ruleset (list[str]): [Optional] If provided, a list of strings to denote the ruleset tags axe-core should use. If not provided, defaults to the WCAG 2.2 AA standard (uses tags: 'wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice').
+            report_on_violation_only (bool): [Optional] If true, only generates an Axe report if a violation is detected. If false (default), always generate a report.
+            strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
+            html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
+            json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
+        """
+        results = {}
+        for selected_page in page_list:
+            page.goto(selected_page)
+            filename = Axe._modify_filename_for_report(selected_page) if use_list_for_filename else ""
+            results[selected_page] = Axe.run(page,
+                                             filename=filename,
+                                             ruleset=ruleset,
+                                             report_on_violation_only=report_on_violation_only,
+                                             strict_mode=strict_mode,
+                                             html_report_generated=html_report_generated,
+                                             json_report_generated=json_report_generated)
+        return results
+
+
+    @staticmethod
+    def _build_run_command(ruleset: list[str]) -> str:
         return "run({runOnly: { type: 'tag', values: " + str(ruleset) + " }})"
 
     @staticmethod
