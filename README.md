@@ -34,6 +34,8 @@ To utilise the blueprint code, you will need to have the following installed:
 
 - [Python](https://www.python.org/downloads/) 3.12 or greater
 
+> NOTE: There are currently known issues with Python 3.13 and Playwright, so if you encounter issues running this project whilst using Python 3.13 it is recommended to downgrade to Python 3.12 in the interim.
+
 Whilst not required to get started, you may also want to [configure a Python virtual environment for your project](https://docs.python.org/3/library/venv.html) before proceeding with
 the configuration.  If you are using an IDE such as Visual Studio Code or PyCharm, you will normally be prompted to do this automatically.
 
