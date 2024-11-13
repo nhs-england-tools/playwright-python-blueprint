@@ -6,7 +6,7 @@ class DateTimeUtils:
         pass
 
     @staticmethod
-    def current_datetime(format_date: str = "%d/%m/%Y %H:%M"):
+    def current_datetime(format_date: str = "%d/%m/%Y %H:%M") -> str:
         """Gets the current datetime in the specified format.
 
         Args:
@@ -19,7 +19,7 @@ class DateTimeUtils:
         return datetime.now().strftime(format_date)
 
     @staticmethod
-    def format_date(date, format_date: str = "%d/%m/%Y"):
+    def format_date(date: datetime, format_date: str = "%d/%m/%Y") -> str:
         """Formats a specified datetime object.
 
         Args:
@@ -33,7 +33,7 @@ class DateTimeUtils:
         return date.strftime(format_date)
 
     @staticmethod
-    def add_days(date: datetime, days: float):
+    def add_days(date: datetime, days: float) -> datetime:
         """Adds a specified number of days to a specified date.
 
         Args:
@@ -41,13 +41,13 @@ class DateTimeUtils:
             days (float): The number of days to add to the specified date.
 
         Returns:
-            new_date (str): The specified date plus the number of specified days (year, month, day, hour, minute, second, microsecond).
+            new_date (datetime): The specified date plus the number of specified days (year, month, day, hour, minute, second, microsecond).
 
             """
         return date + timedelta(days=days)
 
     @staticmethod
-    def get_day_of_week_for_today(date: datetime):
+    def get_day_of_week_for_today(date: datetime) -> str:
         """Gets the day of the week (e.g., Monday, Tuesday) from the specified date.
 
         Args:
@@ -60,7 +60,7 @@ class DateTimeUtils:
         return date.strftime("%A")
 
     @staticmethod
-    def get_a_day_of_week(date: datetime):
+    def get_a_day_of_week(date: datetime) -> str:
         """Gets the day of the week (e.g., Monday, Tuesday) from the specified date.
 
         Args:
