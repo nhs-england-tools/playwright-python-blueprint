@@ -110,5 +110,5 @@ When using the following command: `pytest --base-url https://www.github.com`:
             "nhs-england-tools/playwright-python-blueprint",
             "nhs-england-tools/playwright-python-blueprint/wiki"
             ]
-        
+
         Axe.run_list(page, urls_to_check)

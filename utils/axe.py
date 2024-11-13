@@ -86,13 +86,15 @@ class Axe:
         for selected_page in page_list:
             page.goto(selected_page)
             filename = Axe._modify_filename_for_report(selected_page) if use_list_for_filename else ""
-            results[selected_page] = Axe.run(page,
-                                             filename=filename,
-                                             ruleset=ruleset,
-                                             report_on_violation_only=report_on_violation_only,
-                                             strict_mode=strict_mode,
-                                             html_report_generated=html_report_generated,
-                                             json_report_generated=json_report_generated)
+            results[selected_page] = Axe.run(
+                page,
+                filename=filename,
+                ruleset=ruleset,
+                report_on_violation_only=report_on_violation_only,
+                strict_mode=strict_mode,
+                html_report_generated=html_report_generated,
+                json_report_generated=json_report_generated
+                )
         return results
 
 
