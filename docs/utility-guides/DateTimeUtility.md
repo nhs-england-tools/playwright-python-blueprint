@@ -5,11 +5,12 @@ such as asserting timestamp values, changing the format of a date, or returning 
 
 ## Using the Date Time Utility
 
-To use the Date Time Utility, import the 'DateTimeUtils' class into your test file and then call the DateTimeUtils functions from within your tests, as required.
+To use the Date Time Utility, import the 'DateTimeUtils' class into your test file and then call the DateTimeUtils
+functions from within your tests, as required.
 
 ## Required arguments
 
-The functions in this class require different arguments, including datetime, str, and float.
+The functions in this class require different arguments, including 'datetime', str, and float.
 Have a look at the docstrings for each function to see what arguments are required.
 The docstrings also specify when arguments are optional, and what the default values are when no argument is provided.
 
@@ -23,4 +24,3 @@ The docstrings also specify when arguments are optional, and what the default va
     # Verify that the 'last updated' timestamp matches the current date and time
         (expect(page.locator("form[name=\"refreshCockpit\"]")).to_contain_text
         ("Refresh alerts (last updated :" + DateTimeUtils.current_datetime()))
-
