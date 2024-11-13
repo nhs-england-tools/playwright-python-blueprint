@@ -10,7 +10,7 @@ functions from within your tests, as required.
 
 ## Required arguments
 
-The functions in this class require different arguments, including `datetime`, str, and float.
+The functions in this class require different arguments, including `datetime`, `str`, and `float`.
 Have a look at the docstrings for each function to see what arguments are required.
 The docstrings also specify when arguments are optional, and what the default values are when no argument is provided.
 
@@ -18,9 +18,5 @@ The docstrings also specify when arguments are optional, and what the default va
 
     from tests_utils.date_time_utils import DateTimeUtils
 
-    # Click on a 'refresh alerts' link
-        homepage.click_refresh_alerts_link()
-
-    # Verify that the 'last updated' timestamp matches the current date and time
-        (expect(page.locator("form[name=\"refreshCockpit\"]")).to_contain_text
-        ("Refresh alerts (last updated :" + DateTimeUtils.current_datetime()))
+        def test_date_format(page: Page) -> None:
+        expect(page.locator("#date")).to_contain_text(DateTimeUtils.current_datetime()))
