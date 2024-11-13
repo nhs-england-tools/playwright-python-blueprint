@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
 from pages.login import BcssLoginPage
+from pages.screening_subject_search_page import ScreeningSubjectPage
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -87,9 +88,10 @@ def test_search_screening_subject_by_postcode(page: Page) -> None:
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status(page: Page) -> None:
+def test_search_screening_subject_by_status(page: Page, self=None) -> None:
+
     # Select "Call" status from dropdown
-    page.locator("#A_C_ScreeningStatus").select_option("4001")
+    ScreeningSubjectPage.select_status_call(self)
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
