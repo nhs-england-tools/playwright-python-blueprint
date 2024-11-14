@@ -11,7 +11,7 @@ functions from within your tests, as required.
 ## Required arguments
 
 The functions in this class require different arguments, including `datetime`, `str`, and `float`.
-Have a look at the docstrings for each function to see what arguments are required.
+Look at the docstrings for each function to see what arguments are required.
 The docstrings also specify when arguments are optional, and what the default values are when no argument is provided.
 
 ## Example usage
