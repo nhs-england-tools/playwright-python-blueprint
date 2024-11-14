@@ -4,7 +4,8 @@ This guide outlines how Playwright works in Python, and how to start writing tes
 
 ## Contents
 
-Come back to this
+- [Getting Started #1: Understanding Playwright Python](getting-started-1-understanding-playwright-python)
+  - [The Basics](the-basics)
 
 ## The Basics
 
@@ -31,7 +32,7 @@ For further reading on pytest, it's recommended to read the [full documentation]
 
 ## Executing Tests
 
-Because pytest is the engine in this blueprint, we use the pytest command to initiate any test exectuion. This can be done as simply by using
+Because pytest is the engine in this blueprint, we use the pytest command to initiate any test executsion. This can be done as simply by using
 the following command in the command line against this blueprint (once the initial setup has been completed):
 
     pytest
@@ -46,7 +47,7 @@ For further reading on the kinds of settings you can apply with pytest, take a l
 
 ## Using pytest Logic
 
-When we use Playwright with pytest, a number of objects that we may want to interact with are automatically generated, but the most pertinant
+When we use Playwright with pytest, a number of objects that we may want to interact with are automatically generated, but the most pertinent
 of these is the `page` object, which represents the browser page object we want to interact with. Because it's provided automatically when we
 start a test run, we do not need to do any specific configuration with the test other than add a reference to this page object in the function
 arguments for the test like so:
@@ -60,7 +61,7 @@ arguments for the test like so:
 
 As you can see from the example, the only setup for the `page` object here is in the function arguments, and we can use it as needed in the test.
 
-## Utilising Playwright codegen
+## Utilising Playwright `codegen`
 
 If you're new to Playwright, Python or automating tests generally, then Playwright provides a code generation tool that allows you to manually navigate
 through a browser to generate the code for a test. You can access the `codegen` tool by using the following command:
@@ -68,15 +69,28 @@ through a browser to generate the code for a test. You can access the `codegen` 
     # Load a empty browser window
     playwright codegen
 
-This will bring up a browser window, with the Playwright code generator running in the background, like so:
+This will bring up a browser window, with the Playwright code generator running alongside, like so:
 
-# TODO - Image for codegen
+![An image of the Playwright codegen tool](./img/1-codegen.png "Playwright codegen")
+
+When using the `codegen` tool, it is recommended to do the following:
+
+- Pass in a starting URL where possible to set the window at your starting location (e.g. `playwright codegen https://github.com/nhs-england-tools/playwright-python-blueprint`)
+- When using the Playwright Inspector window, set the target value to Pytest as it'll automatically format any generated tests into the pytest format we recommend using in this blueprint
+
+The `codegen` tool is particularly powerful, as it also allows you to consider assertions on the page you are hoping to test.
+
+*** TODO - Talk about assertion management
+
+Whilst the `codegen` tool will provide you with the basic code to get started, it's recommended that once you've got a working test, you consider refactoring any
+code that has been provided and refine as needed. Having the ability to generate the code in this fashion allows you to create tests quickly and build up
+understanding of how to construct tests using Playwright Python, but you will soon discover that they may not be the most efficient in their raw state!
 
 ## Appendix
 
 ### Info: What is Chromium
 
 [Chromium](https://www.chromium.org/Home/) is one of the open source browser that comes bundled with Playwright on install (if using the instructions
-within the readme of this blueprint) but also more importantly, serves as the base code for both Google Chrome and Microsoft Edge. Whilst this doesn't
-replace the need to test in independent browsers as required, Chromium provides the opportunity to do some initial broad testing which should largely be
-representative of the user experience with Chrome and Edge respectively.
+within the [README](../../README.md) of this blueprint) but also more importantly, serves as the base code for both Google Chrome and Microsoft Edge.
+Whilst this doesn't replace the need to test in independent browsers as required, Chromium provides the opportunity to do some initial broad testing 
+which should largely be representative of the user experience with Chrome and Edge respectively.
