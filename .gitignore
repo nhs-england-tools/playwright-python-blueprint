@@ -16,3 +16,5 @@ __pycache__/
 .pytest_cache/
 test-results/
 axe-reports/
+.idea/
+.DS_Store
