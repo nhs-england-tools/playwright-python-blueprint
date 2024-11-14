@@ -1,2 +1,1 @@
-from nhs_number_tools import NHSNumberTools
-__all__ = [NHSNumberTools]
+import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))

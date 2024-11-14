@@ -17,3 +17,4 @@ __pycache__/
 test-results/
 /tests/examples/
 /.idea/
+axe-reports/

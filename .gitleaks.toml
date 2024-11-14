@@ -1,0 +1,7 @@
+# This allows for the ignoring of secret scanning against axe-core, as whilst it is in our code base we don't control it
+
+[allowlist]
+description = "global allow list"
+paths = [
+  '''(.*?)(axe.js|axe.min.js)'''
+]

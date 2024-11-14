@@ -16,6 +16,7 @@ NOTE: This project is currently under initial development so isn't finalised, bu
     - [Prerequisites](#prerequisites)
     - [Configuration](#configuration)
   - [Getting Started](#getting-started)
+  - [Utilities](#utilities)
   - [Contacts](#contacts)
   - [Licence](#licence)
 
@@ -32,6 +33,8 @@ git clone https://github.com/nhs-england-tools/playwright-python-blueprint.git
 To utilise the blueprint code, you will need to have the following installed:
 
 - [Python](https://www.python.org/downloads/) 3.12 or greater
+
+> NOTE: There are currently known issues with Python 3.13 and Playwright, so if you encounter issues running this project whilst using Python 3.13 it is recommended to downgrade to Python 3.12 in the interim.
 
 Whilst not required to get started, you may also want to [configure a Python virtual environment for your project](https://docs.python.org/3/library/venv.html) before proceeding with
 the configuration.  If you are using an IDE such as Visual Studio Code or PyCharm, you will normally be prompted to do this automatically.
@@ -62,7 +65,18 @@ Once you've confirmed your installation is working, please take a look at the fo
 1. [Understanding Playwright Python](./docs/getting-started/1_Understanding_Playwright_Python.md)
 2. [Blueprint File Breakdown](./docs/getting-started/2_Blueprint_File_Breakdown.md)
 
+We've also created a [Quick Reference Guide](./docs/getting-started/Quick_Reference_Guide.md) for common commands and actions you may regularly perform using this blueprint.
+
 For additional reading and guidance on writing tests, we also recommend reviewing the [Playwright Python documentation](https://playwright.dev/python/docs/writing-tests).
+
+## Utilities
+
+This blueprint also provides the following utility classes, that can be used to aid in testing:
+
+|Utility|Description|
+|-------|-----------|
+|[Axe](./docs/utility-guides/Axe.md)|Accessibility scanning using axe-core.|
+|NHSNumberTools|Basic tools for working with NHS numbers.|
 
 ## Contacts
 

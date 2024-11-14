@@ -14,3 +14,5 @@ RUN mkdir -p /utils/
 COPY ./utils/ ./utils/
 COPY ./pytest.ini ./pytest.ini
 COPY ./run_tests.sh ./run_tests.sh
+
+RUN chmod +x ./run_tests.sh
