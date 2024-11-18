@@ -32,7 +32,7 @@ For further reading on pytest, it's recommended to read the [full documentation]
 
 ## Executing Tests
 
-Because pytest is the engine in this blueprint, we use the pytest command to initiate any test executsion. This can be done as simply by using
+Because pytest is the engine in this blueprint, we use the pytest command to initiate any test execution. This can be done as simply by using
 the following command in the command line against this blueprint (once the initial setup has been completed):
 
     pytest
