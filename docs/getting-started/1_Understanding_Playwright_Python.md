@@ -4,8 +4,15 @@ This guide outlines how Playwright works in Python, and how to start writing tes
 
 ## Contents
 
-- [Getting Started #1: Understanding Playwright Python](getting-started-1-understanding-playwright-python)
-  - [The Basics](the-basics)
+- [Getting Started #1: Understanding Playwright Python](#getting-started-1-understanding-playwright-python)
+  - [Contents](#contents)
+  - [The Basics](#the-basics)
+  - [How Does pytest Work](#how-does-pytest-work)
+  - [Executing Tests](#executing-tests)
+  - [Using pytest Logic](#using-pytest-logic)
+  - [Utilising Playwright `codegen`](#utilising-playwright-codegen)
+  - [Appendix](#appendix)
+    - [Info: What Is Chromium](#info-what-is-chromium)
 
 ## The Basics
 
@@ -80,9 +87,18 @@ When using the `codegen` tool, it is recommended to do the following:
 - Pass in a starting URL where possible to set the window at your starting location (e.g. `playwright codegen https://github.com/nhs-england-tools/playwright-python-blueprint`)
 - When using the Playwright Inspector window, set the target value to Pytest as it'll automatically format any generated tests into the pytest format we recommend using in this blueprint
 
-The `codegen` tool is particularly powerful, as it also allows you to consider assertions on the page you are hoping to test.
+The `codegen` tool is particularly powerful, as it also allows you to consider assertions on the page you are hoping to test. Currently, you can do the following
+basic assertions using the `codegen` tool:
 
-*** TODO - Talk about assertion management
+- Assert visibility of an element on the page
+- Assert specific text is present within an element on the page
+- Assert an element on the page has a specific value
+
+These are accessible via the floating menu when using the `codegen` tool, as highlighted in green here:
+
+<!-- vale off -->
+![An image of the Playwright codegen options](./img/2-codegen_tools.png "Playwright codegen tools")
+<!-- vale on -->
 
 Whilst the `codegen` tool will provide you with the basic code to get started, it's recommended that once you've got a working test, you consider refactoring any
 code that has been provided and refine as needed. Having the ability to generate the code in this fashion allows you to create tests quickly and build up
@@ -90,7 +106,7 @@ understanding of how to construct tests using Playwright Python, but you will so
 
 ## Appendix
 
-### Info: What is Chromium
+### Info: What Is Chromium
 
 [Chromium](https://www.chromium.org/Home/) is one of the open source browser that comes bundled with Playwright on install (if using the instructions
 within the [README](../../README.md) of this blueprint) but also more importantly, serves as the base code for both Google Chrome and Microsoft Edge.
