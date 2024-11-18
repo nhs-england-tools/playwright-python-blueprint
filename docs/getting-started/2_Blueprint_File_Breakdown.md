@@ -12,7 +12,7 @@ This guide outlines the breakdown of this blueprint, and specifically the files 
     - [`tests/`](#tests)
     - [`pages/`](#pages)
     - [`utils/`](#utils)
-  - [Directories \& Files Specific For This Repo](#directories--files-specific-for-this-repo)
+  - [Directories \& Files Specific For This Repository](#directories--files-specific-for-this-repository)
 
 ## Directories & Files Directly Impacting Tests
 
@@ -52,14 +52,13 @@ We want this directory to be treated as a [Python package](https://docs.python.o
 
 > NOTE: If you write a utility class for your own project that you think other projects may benefit from and can be applied in a generic way, please raise a [Feature Request](https://github.com/nhs-england-tools/playwright-python-blueprint/issues/new/choose) as we welcome any contributions of this fashion.
 
-## Directories & Files Specific For This Repo
+## Directories & Files Specific For This Repository
 
-The following directories and files are specific for this repository (playwright-python-blueprint), and may require modification or removal
-if transferring this code into a new repository.
+The following directories and files are specific for this repository, and may require modification or removal if transferring this code into a new repository.
 
-- `.github/`: This directory has the code used to manage our repo and pipelines including CI/CD checks. You may find some useful for your own repo, especially if you are using GitHub to manage your code.
+- `.github/`: This directory has the code used to manage our repository and pipelines including CI/CD checks. You may find some useful for your own repository, especially if you are using GitHub to manage your code.
 - `.vscode/`: This directory houses the default recommended configuration and settings for VSCode, if you use it as an IDE.
 - `docs/`: This directory houses the documentation for this repo (including documents like this one).
 - `scripts/`: This directory houses the scripts used by this repo, primarily as part of the CI/CD checks.
-- `tests_utils/`: This directory houses the unit tests for the utilities provided by this repo. You may want to copy these over if you want to ensure utilities are behaving as expected.
+- `tests_utils/`: This directory houses the unit tests for the utilities provided by this repository. You may want to copy these over if you want to ensure utilities are behaving as expected.
 - `.editorconfig`, `.gitattributes`, `.gitignore`, `.gitleaks.toml`, `.gitleaksignore`: These files are configuration for git, and quality and security checks provided via the CI/CD checks.

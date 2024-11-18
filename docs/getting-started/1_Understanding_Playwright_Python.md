@@ -71,7 +71,9 @@ through a browser to generate the code for a test. You can access the `codegen` 
 
 This will bring up a browser window, with the Playwright code generator running alongside, like so:
 
+<!-- vale off -->
 ![An image of the Playwright codegen tool](./img/1-codegen.png "Playwright codegen")
+<!-- vale on -->
 
 When using the `codegen` tool, it is recommended to do the following:
 
@@ -92,5 +94,5 @@ understanding of how to construct tests using Playwright Python, but you will so
 
 [Chromium](https://www.chromium.org/Home/) is one of the open source browser that comes bundled with Playwright on install (if using the instructions
 within the [README](../../README.md) of this blueprint) but also more importantly, serves as the base code for both Google Chrome and Microsoft Edge.
-Whilst this doesn't replace the need to test in independent browsers as required, Chromium provides the opportunity to do some initial broad testing 
+Whilst this doesn't replace the need to test in independent browsers as required, Chromium provides the opportunity to do some initial broad testing
 which should largely be representative of the user experience with Chrome and Edge respectively.
