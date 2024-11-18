@@ -58,7 +58,7 @@ The following directories and files are specific for this repository, and may re
 
 - `.github/`: This directory has the code used to manage our repository and pipelines including CI/CD checks. You may find some useful for your own repository, especially if you are using GitHub to manage your code.
 - `.vscode/`: This directory houses the default recommended configuration and settings for VSCode, if you use it as an IDE.
-- `docs/`: This directory houses the documentation for this repo (including documents like this one).
-- `scripts/`: This directory houses the scripts used by this repo, primarily as part of the CI/CD checks.
+- `docs/`: This directory houses the documentation for this repository (including documents like this one).
+- `scripts/`: This directory houses the scripts used by this repository, primarily as part of the CI/CD checks.
 - `tests_utils/`: This directory houses the unit tests for the utilities provided by this repository. You may want to copy these over if you want to ensure utilities are behaving as expected.
 - `.editorconfig`, `.gitattributes`, `.gitignore`, `.gitleaks.toml`, `.gitleaksignore`: These files are configuration for git, and quality and security checks provided via the CI/CD checks.
