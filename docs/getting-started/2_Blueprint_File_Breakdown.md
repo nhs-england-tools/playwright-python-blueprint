@@ -27,7 +27,11 @@ This file outlines the packages required from the Python Package Index (PyPI) to
 This file outlines the configuration of pytest, and ultimately how Playwright also executes. A couple of things to note:
 
 - The `log_cli` section covers default logging provided by pytest - we have defaulted this to on at INFO level, but this can be amended as needed.
-- The `addopts` section will run any commands you want to run by default for each execution and can be overwritten using the appropriate options via the command line. For example, you can override the `--tracing` level to on by executing pytest using: `pytest --tracing=on`.
+- The `addopts` section will run any commands you want to run by default for each execution and can be overwritten using the appropriate options via the command line. For example, you can override the `--tracing` level to on by executing pytest using: `pytest --tracing=on`. The options we have turned on by default are:
+  - Do not run the tests marked utils by default (these are the unit tests for this project and do not use Playwright)
+  - Generate a HTML report in a single file, and output it in the `test-results` directory with the name `report.html`
+  - Generate a JSON report, omitting some collection data and then output it in the `test-results` directory with the name `results.json`
+  - Only generate Playwright stack-trace files when a test fails
 - The `markers` section is for organizing any marks (or tags) you want to apply to your tests, for example by a business area or a testing type. If you don't include your marks in this list, pytest will give you a warning until they have either been added here or programmatically within the code.
 
 Any configuration you want to apply to all of your test executions should be placed in this file where possible, to ensure easy maintenance.

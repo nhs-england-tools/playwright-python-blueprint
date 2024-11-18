@@ -11,6 +11,8 @@ This guide outlines how Playwright works in Python, and how to start writing tes
   - [Executing Tests](#executing-tests)
   - [Using pytest Logic](#using-pytest-logic)
   - [Utilising Playwright `codegen`](#utilising-playwright-codegen)
+  - [Utilising Playwright `show-trace`](#utilising-playwright-show-trace)
+  - [Further Reading](#further-reading)
   - [Appendix](#appendix)
     - [Info: What Is Chromium](#info-what-is-chromium)
 
@@ -29,7 +31,7 @@ where by default it looks for any files in the format of `test_*.py` or `*_test.
 functions in the file starting with `test_` and if found, will execute that function as a test and collect the result.
 
 pytest will spin up any utilities it needs to execute tests (including any we choose to define), which for this framework includes a number of
-Playwright-based objects we would likely want to utilise, including:
+Playwright-specific objects we would likely want to utilise, including:
 
 - `page`: The Playwright page object, which we use to interact with a browser page during tests. You'll likely use this object for every test.
 - `browser`: The Playwright browser object, which we use to create and manage the browser directly and create new pages if required. It's unlikely you'll need to include this unless you have a very specific browser test.
@@ -67,10 +69,35 @@ arguments for the test like so:
         page.goto("https://github.com/nhs-england-tools/playwright-python-blueprint")
 
 As you can see from the example, the only setup for the `page` object here is in the function arguments, and we can use it as needed in the test.
+We can also use this logic to create utilities and resources that can be utilised by our tests, and easily pass them in to be used as needed.
+
+The `page` object is an example of a fixture, which are actions that can be run before or after any tests we want to execute (these are known as
+hooks in other test automation frameworks). A fixture is normally defined at the start of a set of tests, in a format like so:
+
+    # Doing an import like this for the page object isn't required, but is considered good practice
+    from playwright.sync_api import Page
+
+    # An example fixture, which runs before the start of every test in this module
+    @pytest.fixture(autouse=True)
+    def go_to_page(page: Page) -> None:
+        page.goto("https://github.com/nhs-england-tools/playwright-python-blueprint")
+
+    # An example test which continues on from the fixture above
+    def test_example(page: Page) -> None:
+        page.get_by_placeholder("Go to file").fill("test_example.py")
+        page.get_by_label("tests/test_example.").click()
+        expect(page.locator("#file-name-id-wide")).to_contain_text("test_example.py")
+
+This allows for easy reuse of steps and reducing overall test maintenance going forward. Fixtures can play a powerful part in how you design
+your tests, including creating utilities available for global use, or just adding repeatable actions in a way that can overall reduce the
+maintenance effort of your tests going forward.
+
+Further reading on fixtures can be found in the [Playwright documentation](https://playwright.dev/python/docs/test-runners#fixtures).
 
 ## Utilising Playwright `codegen`
 
-If you're new to Playwright, Python or automating tests generally, then Playwright provides a code generation tool that allows you to manually navigate
+If you're new to Playwright, Python or automating tests generally, then
+[Playwright provides a code generation tool](https://playwright.dev/python/docs/codegen#recording-a-test) that allows you to manually navigate
 through a browser to generate the code for a test. You can access the `codegen` tool by using the following command:
 
     # Load a empty browser window
@@ -103,6 +130,44 @@ These are accessible via the floating menu when using the `codegen` tool, as hig
 Whilst the `codegen` tool will provide you with the basic code to get started, it's recommended that once you've got a working test, you consider refactoring any
 code that has been provided and refine as needed. Having the ability to generate the code in this fashion allows you to create tests quickly and build up
 understanding of how to construct tests using Playwright Python, but you will soon discover that they may not be the most efficient in their raw state!
+
+## Utilising Playwright `show-trace`
+
+If you encounter issues when trying to execute your newly created tests,
+[Playwright also provides a trace functionality](https://playwright.dev/python/docs/trace-viewer-intro) that records each action a test
+undertakes and outlines where any issues or errors have occurred. This can be useful for a number of reasons, including:
+
+- Easily pinpointing problems within a test, including functional and performance concerns
+- Generating evidence to show stakeholders what a test actually does during execution
+- The ZIP file generated can be opened on any machine, or via a [browser utility provided by Playwright](https://trace.playwright.dev/)
+
+To open a trace file, use the following command (replacing `<path-to-file>` with the actual path to the trace.zip file generated):
+
+    # Opens a trace file
+    playwright show-trace <path-to-file>
+
+A trace file when opened looks like this:
+
+<!-- vale off -->
+![An image of the Playwright trace file](./img/3-show_trace.png "Playwright trace file view")
+<!-- vale on -->
+
+The primary information provided within the trace is:
+
+- A timeline of events with screenshots (at the top of the report)
+- A summary of each action undertaken (on the left side of the report)
+- A screenshot of the selected action (on the right side of the report)
+- The network and test activity (at the bottom of the report)
+
+As you can see, it provides a lot of information to work with to help demonstrate what a test is doing, and diagnosing
+any issues when something goes wrong.
+
+## Further Reading
+
+Here are some useful links for further reading beyond these guides:
+
+- [Playwright Python documentation](https://playwright.dev/python/docs/intro)
+- [pytest documentation](https://docs.pytest.org/en/stable/index.html)
 
 ## Appendix
 
