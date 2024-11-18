@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+import pytest
 import utils.date_time_utils
+from datetime import datetime, timedelta
 
 
 pytestmark = [pytest.mark.utils]
