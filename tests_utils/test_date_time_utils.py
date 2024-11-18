@@ -1,13 +1,13 @@
-from datetime import datetime, timedelta
+import pytest
 import utils.date_time_utils
+from datetime import datetime, timedelta
 
+
+pytestmark = [pytest.mark.utils]
 
 def test_current_datetime():
     dtu = utils.date_time_utils.DateTimeUtils()
     current_date = datetime.now()
-    current_date1 = current_date.strftime("%d/%m/%Y %H:%M")
-    current_date2 = current_date.strftime("%Y-%m-%d %H:%M")
-    current_date3 = current_date.strftime("%d %B %Y %H:%M")
     assert dtu.current_datetime() == current_date.strftime("%d/%m/%Y %H:%M")
     assert dtu.current_datetime("%Y-%m-%d %H:%M") == current_date.strftime("%Y-%m-%d %H:%M")
     assert dtu.current_datetime("%d %B %Y %H:%M") == current_date.strftime("%d %B %Y %H:%M")
@@ -16,9 +16,6 @@ def test_current_datetime():
 def test_format_date():
     dtu = utils.date_time_utils.DateTimeUtils()
     date = datetime(2022, 12, 31)
-    formatted_date1 = dtu.format_date(date, "%d/%m/%Y")
-    formatted_date2 = dtu.format_date(date, "%Y/%m/%d")
-    formatted_date3 = dtu.format_date(date, "%d %B %Y")
     assert dtu.format_date(date, "%d/%m/%Y") == "31/12/2022"
     assert dtu.format_date(date, "%Y/%m/%d") == "2022/12/31"
     assert dtu.format_date(date, "%d %B %Y") == "31 December 2022"
