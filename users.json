@@ -1,0 +1,10 @@
+{
+    "Example User": {
+        "username": "EXAMPLE_USER1",
+        "roles": "Example Role A"
+    },
+    "Example User 2": {
+        "username": "EXAMPLE_USER2",
+        "roles": "Example Role B"
+    }
+}
