@@ -17,6 +17,7 @@ NOTE: This project is currently under initial development so isn't finalised, bu
     - [Configuration](#configuration)
   - [Getting Started](#getting-started)
   - [Utilities](#utilities)
+  - [Contributing](#contributing)
   - [Contacts](#contacts)
   - [Licence](#licence)
 
@@ -76,16 +77,21 @@ This blueprint also provides the following utility classes, that can be used to 
 |Utility|Description|
 |-------|-----------|
 |[Axe](./docs/utility-guides/Axe.md)|Accessibility scanning using axe-core.|
+|[Date Time Utility](./docs/utility-guides/DateTimeUtility.md)|Basic functionality for managing date/times.|
 |NHSNumberTools|Basic tools for working with NHS numbers.|
+
+## Contributing
+
+Further guidance on contributing to this project can be found in our [contribution](./CONTRIBUTING.md) page.
 
 ## Contacts
 
-If you have any queries regarding this blueprint, please contact [dave.harding1@nhs.net](mailto:dave.harding1@nhs.net).
+If you have any ideas or require support for this project, please [raise an issue via this repository](https://github.com/nhs-england-tools/playwright-python-blueprint/issues/new/choose) using the appropriate template.
+
+If you have any general queries regarding this blueprint, please contact [dave.harding1@nhs.net](mailto:dave.harding1@nhs.net).
 
 ## Licence
 
-> The [LICENCE.md](./LICENCE.md) file will need to be updated with the correct year and owner
-
-Unless stated otherwise, the codebase is released under the MIT License. This covers both the codebase and any sample code in the documentation.
+Unless stated otherwise, the codebase is released under the [MIT License](LICENCE.md). This covers both the codebase and any sample code in the documentation.
 
 Any HTML or Markdown documentation is [© Crown Copyright](https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/) and available under the terms of the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
