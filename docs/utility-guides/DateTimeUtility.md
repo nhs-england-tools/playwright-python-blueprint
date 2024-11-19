@@ -19,4 +19,4 @@ The docstrings also specify when arguments are optional, and what the default va
     from tests_utils.date_time_utils import DateTimeUtils
 
         def test_date_format(page: Page) -> None:
-        expect(page.locator("#date")).to_contain_text(DateTimeUtils.current_datetime()))
+        expect(page.locator("#date")).to_contain_text(DateTimeUtils.current_datetime())
