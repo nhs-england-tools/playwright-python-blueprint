@@ -1,7 +1,8 @@
 import pytest
 from playwright.sync_api import Page, expect
 from pages.login import BcssLoginPage
-from pages.screening_subject_search_page import ScreeningSubjectPage
+from pages.screening_subject_search_page import ScreeningStatusSearchOptions, LatestEpisodeStatusSearchOptions, \
+    SearchAreaSearchOptions
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -88,6 +89,23 @@ def test_search_screening_subject_by_postcode(page: Page) -> None:
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
+def test_search_screening_subject_by_episode_closed_date(page: Page) -> None:
+    # Enter an "episode closed date"
+    page.get_by_label("Episode Closed Date").fill("22/09/2020")
+
+    # Press Tab (required after text input, to make the search button become active).
+    page.keyboard.press("Tab")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify the subject search results page is displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+    # Verify the results contain the date that was searched for
+    expect(page.locator("#displayRS")).to_contain_text("22/09/2020")
+
+
 def test_search_criteria_clear_filters_button(page: Page) -> None:
     # Enter number in NHS field and verify value
     page.get_by_label("NHS Number").fill("34344554353")
@@ -98,10 +116,10 @@ def test_search_criteria_clear_filters_button(page: Page) -> None:
     expect(page.get_by_label("NHS Number")).to_be_empty()
 
 
-# Tests for searching via the status drop down list
-def test_search_screening_subject_by_status_call(page: Page, self=None) -> None:
+# Tests searching via the "Screening Status" drop down list
+def test_search_screening_subject_by_status_call(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_call()
+    ScreeningStatusSearchOptions(page).select_status_call()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -113,9 +131,9 @@ def test_search_screening_subject_by_status_call(page: Page, self=None) -> None:
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_inactive(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_inactive(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_inactive()
+    ScreeningStatusSearchOptions(page).select_status_inactive()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -127,9 +145,9 @@ def test_search_screening_subject_by_status_inactive(page: Page, self=None) -> N
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_opt_in(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_opt_in(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_opt_in()
+    ScreeningStatusSearchOptions(page).select_status_opt_in()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -141,9 +159,9 @@ def test_search_screening_subject_by_status_opt_in(page: Page, self=None) -> Non
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_recall(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_recall(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_recall()
+    ScreeningStatusSearchOptions(page).select_status_recall()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -155,9 +173,9 @@ def test_search_screening_subject_by_status_recall(page: Page, self=None) -> Non
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_self_referral(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_self_referral(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_self_referral()
+    ScreeningStatusSearchOptions(page).select_status_self_referral()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -169,9 +187,9 @@ def test_search_screening_subject_by_status_self_referral(page: Page, self=None)
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_surveillance(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_surveillance(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_surveillance()
+    ScreeningStatusSearchOptions(page).select_status_surveillance()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -183,9 +201,9 @@ def test_search_screening_subject_by_status_surveillance(page: Page, self=None) 
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_seeking_further_data(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_seeking_further_data(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_seeking_further_data()
+    ScreeningStatusSearchOptions(page).select_status_seeking_further_data()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -197,9 +215,9 @@ def test_search_screening_subject_by_status_seeking_further_data(page: Page, sel
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_ceased(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_ceased(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_ceased()
+    ScreeningStatusSearchOptions(page).select_status_ceased()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -211,9 +229,9 @@ def test_search_screening_subject_by_status_ceased(page: Page, self=None) -> Non
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_bowel_scope(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_bowel_scope()
+    ScreeningStatusSearchOptions(page).select_status_bowel_scope()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -225,9 +243,9 @@ def test_search_screening_subject_by_status_bowel_scope(page: Page, self=None) -
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_lynch_surveillance(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_lynch_surveillance()
+    ScreeningStatusSearchOptions(page).select_status_lynch_surveillance()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -239,9 +257,9 @@ def test_search_screening_subject_by_status_lynch_surveillance(page: Page, self=
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
 
 
-def test_search_screening_subject_by_status_lynch_self_referral(page: Page, self=None) -> None:
+def test_search_screening_subject_by_status_lynch_self_referral(page: Page) -> None:
     # Select status from dropdown
-    ScreeningSubjectPage(page).select_status_lynch_self_referral()
+    ScreeningStatusSearchOptions(page).select_status_lynch_self_referral()
 
     # Pressing Tab is required after text input, to make the search button become active.
     page.keyboard.press("Tab")
@@ -251,3 +269,132 @@ def test_search_screening_subject_by_status_lynch_self_referral(page: Page, self
 
     # Verify the subject search results page is displayed
     expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Screening Summary")
+
+
+# Tests searching via the "Latest Episode Status" drop down list
+def test_search_screening_subject_by_latest_episode_status_open_paused(page: Page) -> None:
+    # Select status from dropdown
+    LatestEpisodeStatusSearchOptions(page).select_status_open_paused()
+
+    # Pressing Tab is required after text input, to make the search button become active.
+    page.keyboard.press("Tab")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify the subject search results page is displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+def test_search_screening_subject_by_latest_episode_status_closed(page: Page) -> None:
+    # Select status from dropdown
+    LatestEpisodeStatusSearchOptions(page).select_status_closed()
+
+    # Pressing Tab is required after text input, to make the search button become active.
+    page.keyboard.press("Tab")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify the subject search results page is displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+def test_search_screening_subject_by_latest_episode_status_no_episode(page: Page) -> None:
+    # Select status from dropdown
+    LatestEpisodeStatusSearchOptions(page).select_status_no_episode()
+
+    # Pressing Tab is required after text input, to make the search button become active.
+    page.keyboard.press("Tab")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify the subject search results page is displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+# Tests searching via the "Search Area" drop down list
+def test_search_screening_subject_by_home_hub(page: Page) -> None:
+    # Select screening status "recall" (searching by search area requires another search option to be selected)
+    ScreeningStatusSearchOptions(page).select_status_recall()
+
+    # Select "whole database" option from dropdown
+    SearchAreaSearchOptions(page).select_search_area_home_hub()
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify search results are displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+def test_search_screening_subject_by_gp_practice(page: Page) -> None:
+    # Select screening status "call" (searching by search area requires another search option to be selected)
+    ScreeningStatusSearchOptions(page).select_status_call()
+
+    # Select search area from dropdown
+    SearchAreaSearchOptions(page).select_search_area_gp_practice()
+
+    # Enter GP practice code
+    page.get_by_label("Appropriate Code").fill("C81001")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify the subject search results page is displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+    # Verify springs health centre is visible in search results
+    expect(page.locator("#displayRS")).to_contain_text("SPRINGS HEALTH CENTRE")
+
+
+def test_search_screening_subject_by_ccg(page: Page) -> None:
+    # Select screening status "call" (searching by search area requires another search option to be selected)
+    ScreeningStatusSearchOptions(page).select_status_call()
+
+    # Select ccg option from dropdown
+    SearchAreaSearchOptions(page).select_search_area_ccg()
+
+    # Enter CCG code
+    page.get_by_label("Appropriate Code").fill("Z1Z1Z")
+
+    # Enter GP practice code
+    page.get_by_label("GP Practice in CCG").fill("C81001")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify search results are displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+def test_search_screening_subject_by_screening_centre(page: Page) -> None:
+    # Select screening status "call" (searching by search area requires another search option to be selected)
+    ScreeningStatusSearchOptions(page).select_status_call()
+
+    # Select "screening centre" option from dropdown
+    SearchAreaSearchOptions(page).select_search_area_screening_centre()
+
+    # Enter a screening centre code
+    page.get_by_label("Appropriate Code").fill("BCS001")
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify search results are displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
+
+
+def test_search_screening_subject_by_whole_database(page: Page) -> None:
+    # Select screening status "recall" (searching by search area requires another search option to be selected)
+    ScreeningStatusSearchOptions(page).select_status_recall()
+
+    # Select "whole database" option from dropdown
+    SearchAreaSearchOptions(page).select_search_area_whole_database()
+
+    # Click search button
+    page.get_by_role("button", name="Search").click()
+
+    # Verify search results are displayed
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Subject Search Results")
