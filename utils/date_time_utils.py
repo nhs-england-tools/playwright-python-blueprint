@@ -2,6 +2,10 @@ from datetime import datetime, timedelta
 
 
 class DateTimeUtils:
+    """
+    A utility class for doing common actions with datetimes.
+    """
+
     def __init__(self):
         pass
 
@@ -13,8 +17,7 @@ class DateTimeUtils:
             format_date (str): [Optional] The format to return the current datetime in. Defaults to dd/mm/yyyy hh:mm if not provided.
 
         Returns:
-            current_date (str): The current datetime in the specified format.
-
+            str: The current datetime in the specified format.
         """
         return datetime.now().strftime(format_date)
 
@@ -27,9 +30,8 @@ class DateTimeUtils:
             format_date (str): [Optional] The format to return the datetime in. Defaults to dd/mm/yyyy if not provided.
 
         Returns:
-            format_date (str): The formatted date in the specified format.
-
-            """
+            str: The formatted date in the specified format.
+        """
         return date.strftime(format_date)
 
     @staticmethod
@@ -41,9 +43,8 @@ class DateTimeUtils:
             days (float): The number of days to add to the specified date.
 
         Returns:
-            new_date (datetime): The specified date plus the number of specified days (year, month, day, hour, minute, second, microsecond).
-
-            """
+            datetime: The specified date plus the number of specified days (year, month, day, hour, minute, second, microsecond).
+        """
         return date + timedelta(days=days)
 
     @staticmethod
@@ -54,9 +55,8 @@ class DateTimeUtils:
             date (datetime): The current date using the now function
 
         Returns:
-            day_of_week (str): The day of the week relating to the specified date.
-
-            """
+            str: The day of the week relating to the specified date.
+        """
         return date.strftime("%A")
 
     @staticmethod
@@ -67,7 +67,6 @@ class DateTimeUtils:
             date (datetime): The date for which the day of the week will be returned.
 
         Returns:
-            day_of_week (str): The day of the week relating to the specified date.
-
-            """
+            str: The day of the week relating to the specified date.
+        """
         return date.strftime("%A")
