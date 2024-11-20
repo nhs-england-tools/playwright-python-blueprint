@@ -16,6 +16,3 @@ def test_nhs_number_checks() -> None:
 def test_spaced_nhs_number() -> None:
     assert NHSNumberTools.spaced_nhs_number("1234567890") == "123 456 7890"
     assert NHSNumberTools.spaced_nhs_number(3216549870) == "321 654 9870"
-
-if __name__ == "__main__":
-    retcode = pytest.main(["-m", "utils"])
