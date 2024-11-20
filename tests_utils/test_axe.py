@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from utils.axe import Axe
 
+
 pytestmark = [pytest.mark.utils]
 
 AXE_REPORTS_DIR = Path(__file__).parent.parent / "axe-reports"

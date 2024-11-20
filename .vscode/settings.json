@@ -4,7 +4,15 @@
     "MD024": { "siblings_only": true },
     "MD033": false
   },
-  "cSpell.ignoreWords": [
-    "bcss"
+  "cSpell.words": [
+    "addopts",
+    "bcss",
+    "codegen",
+    "Licence",
+    "organisation",
+    "pytest",
+    "utilise",
+    "utilised",
+    "Utilising"
   ]
 }
