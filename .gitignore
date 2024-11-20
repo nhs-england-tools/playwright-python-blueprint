@@ -16,6 +16,6 @@ __pycache__/
 .pytest_cache/
 test-results/
 /tests/examples/
-/.idea/*
+.idea/*
 axe-reports/
 
