@@ -1,7 +1,9 @@
 import pytest
 from playwright.sync_api import Page, expect
 from pages.login import BcssLoginPage
+from utils import date_time_utils
 
+current_date = date_time_utils.DateTimeUtils.current_datetime()
 
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
@@ -49,3 +51,10 @@ def test_reports_page_navigation(page: Page) -> None:
     # Return to main menu
     page.get_by_role("link", name="Main Menu").click()
     expect(page.locator("#ntshPageTitle")).to_contain_text("Main Menu")
+
+def test_failsafe_reports(page: Page) -> None:
+    page.get_by_role("link", name="Failsafe Reports").click()
+    page.get_by_role("link", name="Date Report Last Requested").click()
+    expect(page.locator("b")).to_contain_text(current_date)
+    expect(page.locator("#ntshPageTitle")).to_contain_text("Date Report Last Requested")
+
