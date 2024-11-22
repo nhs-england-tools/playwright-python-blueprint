@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from pages.login import BcssLoginPage
+from pages.login_page import BcssLoginPage
 from pages.bcss_home_page import BcssHomePage
 from utils.date_time_utils import DateTimeUtils
 
@@ -8,8 +8,7 @@ from utils.date_time_utils import DateTimeUtils
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     # Log in to BCSS
-    login_page = BcssLoginPage(page)
-    login_page.login_as_user_bcss401()
+    BcssLoginPage(page).login_as_user_bcss401()
 
 
 @pytest.mark.smoke
@@ -51,14 +50,14 @@ def test_home_page_links_navigation(page: Page) -> None:
 
     # Click the user guide link
     with page.expect_popup() as page1_info:
-    # Check the user guide link works
+        # Check the user guide link works
         page.get_by_role("link", name="User guide").click()
     # Check that the user guide page can be accessed
     page1 = page1_info.value
 
     # Click 'help' link
     with page.expect_popup() as page2_info:
-    # Check the help link works
+        # Check the help link works
         page.get_by_role("link", name="Help").click()
     # Check that the help page can be accessed
     page2 = page2_info.value

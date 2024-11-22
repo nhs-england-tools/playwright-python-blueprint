@@ -1,17 +1,17 @@
 import pytest
 from playwright.sync_api import Page, expect
-from pages.login import BcssLoginPage
+
+from pages.bcss_home_page import MainMenu
+from pages.login_page import BcssLoginPage
 
 
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     # Log in to BCSS
-    login_page = BcssLoginPage(page)
-    login_page.login_as_user_bcss401()
+    BcssLoginPage(page).login_as_user_bcss401()
 
     # Go to organisations page
-    page.get_by_role("link", name="Organisations").click()
-    expect(page.locator("#ntshPageTitle")).to_contain_text("Organisations")
+    MainMenu(page).go_to_organisations_page()
 
 
 @pytest.mark.smoke

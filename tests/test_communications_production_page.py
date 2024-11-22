@@ -1,17 +1,16 @@
 import pytest
 from playwright.sync_api import Page, expect
-from pages.login import BcssLoginPage
+from pages.login_page import BcssLoginPage
+from pages.bcss_home_page import MainMenu
 
 
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     # Log in to BCSS
-    login_page = BcssLoginPage(page)
-    login_page.login_as_user_bcss401()
+    BcssLoginPage(page).login_as_user_bcss401()
 
     # Go to communications production page
-    page.get_by_role("link", name="Communications Production").click()
-
+    MainMenu(page).go_to_communications_production_page()
 
 @pytest.mark.smoke
 def test_communications_production_page_navigation(page: Page) -> None:

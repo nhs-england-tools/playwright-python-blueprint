@@ -1,4 +1,6 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
+
+
 class BcssLoginPage:
 
     def __init__(self, page: Page):
