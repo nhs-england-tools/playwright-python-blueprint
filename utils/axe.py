@@ -37,7 +37,7 @@ class Axe:
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
             json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
-        
+
         Returns:
             dict: A Python dictionary with the axe-core output of the page scanned.
         """
@@ -85,7 +85,7 @@ class Axe:
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
             json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
-        
+
         Returns:
             dict: A Python dictionary with the axe-core output of all the pages scanned, with the page list used as the key for each report.
         """

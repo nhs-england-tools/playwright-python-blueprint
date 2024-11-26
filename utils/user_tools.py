@@ -19,16 +19,16 @@ class UserTools:
 
         Args:
             user (str): The user details required, using the record key from users.json.
-        
+
         Returns:
             dict: A Python dictionary with the details of the user requested, if present.
         """
         with open(USERS_FILE, 'r') as file:
             user_data = json.loads(file.read())
-        
+
         if not user in user_data:
             raise UserToolsException(f"User [{user}] is not present in users.json")
-        
+
         logger.debug(f"Returning user: {user_data[user]}")
         return user_data[user]
 

@@ -9,7 +9,7 @@ def test_nhs_number_checks() -> None:
 
     with pytest.raises(Exception, match=r'The NHS number provided \(A234567890\) is not numeric.'):
         NHSNumberTools._nhs_number_checks("A234567890")
-    
+
     with pytest.raises(NHSNumberToolsException, match=r'The NHS number provided \(123\) is not 10 digits'):
         NHSNumberTools._nhs_number_checks("123")
 
