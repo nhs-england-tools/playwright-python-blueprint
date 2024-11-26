@@ -9,6 +9,7 @@ This guide outlines the breakdown of this blueprint, and specifically the files 
   - [Directories \& Files Directly Impacting Tests](#directories--files-directly-impacting-tests)
     - [`requirements.txt`](#requirementstxt)
     - [`pytest.ini`](#pytestini)
+    - [`users.json`](#usersjson)
     - [`tests/`](#tests)
     - [`pages/`](#pages)
     - [`utils/`](#utils)
@@ -35,6 +36,11 @@ This file outlines the configuration of pytest, and ultimately how Playwright al
 - The `markers` section is for organizing any marks (or tags) you want to apply to your tests, for example by a business area or a testing type. If you don't include your marks in this list, pytest will give you a warning until they have either been added here or programmatically within the code.
 
 Any configuration you want to apply to all of your test executions should be placed in this file where possible, to ensure easy maintenance.
+
+### `users.json`
+
+This file outlines the users you may want to use as part of your testing, and is utilised by the User Tools utility. Further information on how this file is used
+can be found in the [User Tools Utility Guide](../utility-guides/UserTools.md).
 
 ### `tests/`
 
@@ -66,3 +72,4 @@ The following directories and files are specific for this repository, and may re
 - `scripts/`: This directory houses the scripts used by this repository, primarily as part of the CI/CD checks.
 - `tests_utils/`: This directory houses the unit tests for the utilities provided by this repository. You may want to copy these over if you want to ensure utilities are behaving as expected.
 - `.editorconfig`, `.gitattributes`, `.gitignore`, `.gitleaks.toml`, `.gitleaksignore`: These files are configuration for git, and quality and security checks provided via the CI/CD checks.
+- `Makefile`: This file is used to import some of the scripts for CI/CD checks, but can be customised per project if needed. The template this project is based from provides a more comprehensive example [here](https://github.com/nhs-england-tools/repository-template/blob/main/Makefile).

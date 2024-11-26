@@ -1,0 +1,11 @@
+{
+    "_comment": "This file can be used to store data on users for your application, and then pulled through using the utils.user_tools UserTools utility. The documentation for this utility explains how this file is read.",
+    "Example User 1": {
+        "username": "EXAMPLE_USER1",
+        "roles": ["Example Role A"]
+    },
+    "Example User 2": {
+        "username": "EXAMPLE_USER2",
+        "roles": ["Example Role B", "Example Role C"]
+    }
+}

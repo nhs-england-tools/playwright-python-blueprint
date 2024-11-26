@@ -6,6 +6,7 @@ from playwright.sync_api import Page
 from pathlib import Path
 
 
+logger = logging.getLogger(__name__)
 AXE_PATH = Path(__file__).parent / "resources" / "axe.js"
 PATH_FOR_REPORT = Path(__file__).parent.parent / "axe-reports"
 DEFAULT_WCAG_RULESET = ['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice']
@@ -36,13 +37,16 @@ class Axe:
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
             json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
+
+        Returns:
+            dict: A Python dictionary with the axe-core output of the page scanned.
         """
 
         page.evaluate(AXE_PATH.read_text(encoding="UTF-8"))
 
         response = page.evaluate("axe." + Axe._build_run_command(ruleset) + ".then(results => {return results;})")
 
-        logging.info(f"""Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
+        logger.info(f"""Axe scan summary of [{response["url"]}]: Passes = {len(response["passes"])},
                     Violations = {len(response["violations"])}, Inapplicable = {len(response["inapplicable"])},
                     Incomplete = {len(response["incomplete"])}""")
 
@@ -81,6 +85,9 @@ class Axe:
             strict_mode (bool): [Optional] If true, raise an exception if a violation is detected. If false (default), proceed with test execution.
             html_report_generated (bool): [Optional] If true (default), generates a html report for the page scanned. If false, no html report is generated.
             json_report_generated (bool): [Optional] If true (default), generates a json report for the page scanned. If false, no json report is generated.
+
+        Returns:
+            dict: A Python dictionary with the axe-core output of all the pages scanned, with the page list used as the key for each report.
         """
         results = {}
         for selected_page in page_list:
@@ -120,24 +127,24 @@ class Axe:
         return PATH_FOR_REPORT / filename
 
     @staticmethod
-    def _create_json_report(data: dict, filename_overide: str = "") -> None:
-        filename = f"{Axe._modify_filename_for_report(data["url"])}.json" if filename_overide == "" else f"{filename_overide}.json"
+    def _create_json_report(data: dict, filename_override: str = "") -> None:
+        filename = f"{Axe._modify_filename_for_report(data["url"])}.json" if filename_override == "" else f"{filename_override}.json"
         full_path = Axe._create_path_for_report(filename)
 
         with open(full_path, 'w') as file:
             file.writelines(json.dumps(data))
 
-        logging.info(f"JSON report generated: {full_path}")
+        logger.info(f"JSON report generated: {full_path}")
 
     @staticmethod
-    def _create_html_report(data: dict, filename_overide: str = "") -> None:
-        filename = f"{Axe._modify_filename_for_report(data["url"])}.html" if filename_overide == "" else f"{filename_overide}.html"
+    def _create_html_report(data: dict, filename_override: str = "") -> None:
+        filename = f"{Axe._modify_filename_for_report(data["url"])}.html" if filename_override == "" else f"{filename_override}.html"
         full_path = Axe._create_path_for_report(filename)
 
         with open(full_path, 'w') as file:
             file.writelines(Axe._generate_html(data))
 
-        logging.info(f"HTML report generated: {full_path}")
+        logger.info(f"HTML report generated: {full_path}")
 
     @staticmethod
     def _generate_html(data: dict) -> str:

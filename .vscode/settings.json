@@ -7,9 +7,15 @@
   "cSpell.words": [
     "addopts",
     "codegen",
+    "customisable",
+    "customised",
+    "initialise",
     "Licence",
     "organisation",
     "pytest",
+    "pytestmark",
+    "retcode",
+    "ruleset",
     "utilise",
     "utilised",
     "Utilising"
