@@ -33,6 +33,7 @@ This file outlines the configuration of pytest, and ultimately how Playwright al
   - Generate a HTML report in a single file, and output it in the `test-results` directory with the name `report.html`
   - Generate a JSON report, omitting some collection data and then output it in the `test-results` directory with the name `results.json`
   - Only generate Playwright stack-trace files when a test fails
+- The `pythonpath` section just sets the base of this project for the pythonpath system variable utilised by pytest. This is designed to mitigate local configuration issues, see the [pytest documentation for more information](https://docs.pytest.org/en/stable/explanation/pythonpath.html).
 - The `markers` section is for organizing any marks (or tags) you want to apply to your tests, for example by a business area or a testing type. If you don't include your marks in this list, pytest will give you a warning until they have either been added here or programmatically within the code.
 
 Any configuration you want to apply to all of your test executions should be placed in this file where possible, to ensure easy maintenance.
