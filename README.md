@@ -78,7 +78,8 @@ This blueprint also provides the following utility classes, that can be used to 
 |-------|-----------|
 |[Axe](./docs/utility-guides/Axe.md)|Accessibility scanning using axe-core.|
 |[Date Time Utility](./docs/utility-guides/DateTimeUtility.md)|Basic functionality for managing date/times.|
-|NHSNumberTools|Basic tools for working with NHS numbers.|
+|[NHSNumberTools](./docs/utility-guides/NHSNumberTools.md)|Basic tools for working with NHS numbers.|
+|[User Tools](./docs/utility-guides/UserTools.md)|Basic user management tool.|
 
 ## Contributing
 
