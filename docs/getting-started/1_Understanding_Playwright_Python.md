@@ -106,7 +106,7 @@ through a browser to generate the code for a test. You can access the `codegen` 
 This will bring up a browser window, with the Playwright code generator running alongside, like so:
 
 <!-- vale off -->
-![An image of the Playwright codegen tool](./img/1-codegen.png "Playwright codegen")
+![An image of the Playwright codegen tool](./img/1-1_codegen.png "Playwright codegen")
 <!-- vale on -->
 
 When using the `codegen` tool, it is recommended to do the following:
@@ -124,7 +124,7 @@ basic assertions using the `codegen` tool:
 These are accessible via the floating menu when using the `codegen` tool, as highlighted in green here:
 
 <!-- vale off -->
-![An image of the Playwright codegen options](./img/2-codegen_tools.png "Playwright codegen tools")
+![An image of the Playwright codegen options](./img/1-2_codegen_tools.png "Playwright codegen tools")
 <!-- vale on -->
 
 Whilst the `codegen` tool will provide you with the basic code to get started, it's recommended that once you've got a working test, you consider refactoring any
@@ -149,7 +149,7 @@ To open a trace file, use the following command (replacing `<path-to-file>` with
 A trace file when opened looks like this:
 
 <!-- vale off -->
-![An image of the Playwright trace file](./img/3-show_trace.png "Playwright trace file view")
+![An image of the Playwright trace file](./img/1-3_show_trace.png "Playwright trace file view")
 <!-- vale on -->
 
 The primary information provided within the trace is:
