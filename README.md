@@ -57,6 +57,9 @@ so you can see the browser execution):
 pytest --tracing on --headed
 ```
 
+Alternatively if you are using Visual Studio Code as your IDE, we have pre-configured this project to work with the
+[Testing functionality](https://code.visualstudio.com/docs/editor/testing) so the example tests should be discovered automatically.
+
 ## Getting Started
 
 > NOTE: This section is currently under development and requires further work, so links to pages within this repository may not be very useful at this stage.
