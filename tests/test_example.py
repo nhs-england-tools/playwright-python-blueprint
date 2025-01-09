@@ -35,7 +35,7 @@ def test_basic_example(page: Page) -> None:
     # Assert repo text is present
     expect(page.get_by_role("article")).to_contain_text("Playwright Python Blueprint")
 
-    # Assert the page loaded is the playwright-python topic page
+    # Assert the page loaded contains a reference to the playwright-python topic page
     expect(page.get_by_role("main")).to_contain_text("playwright-python")
 
 

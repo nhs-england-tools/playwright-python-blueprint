@@ -17,6 +17,7 @@ NOTE: This project is currently under initial development so isn't finalised, bu
     - [Configuration](#configuration)
   - [Getting Started](#getting-started)
   - [Utilities](#utilities)
+  - [Contributing](#contributing)
   - [Contacts](#contacts)
   - [Licence](#licence)
 
@@ -33,6 +34,8 @@ git clone https://github.com/nhs-england-tools/playwright-python-blueprint.git
 To utilise the blueprint code, you will need to have the following installed:
 
 - [Python](https://www.python.org/downloads/) 3.12 or greater
+
+> NOTE: There are currently known issues with Python 3.13 and Playwright, so if you encounter issues running this project whilst using Python 3.13 it is recommended to downgrade to Python 3.12 in the interim.
 
 Whilst not required to get started, you may also want to [configure a Python virtual environment for your project](https://docs.python.org/3/library/venv.html) before proceeding with
 the configuration.  If you are using an IDE such as Visual Studio Code or PyCharm, you will normally be prompted to do this automatically.
@@ -54,6 +57,9 @@ so you can see the browser execution):
 pytest --tracing on --headed
 ```
 
+Alternatively if you are using Visual Studio Code as your IDE, we have pre-configured this project to work with the
+[Testing functionality](https://code.visualstudio.com/docs/editor/testing) so the example tests should be discovered automatically.
+
 ## Getting Started
 
 > NOTE: This section is currently under development and requires further work, so links to pages within this repository may not be very useful at this stage.
@@ -74,16 +80,22 @@ This blueprint also provides the following utility classes, that can be used to 
 |Utility|Description|
 |-------|-----------|
 |[Axe](./docs/utility-guides/Axe.md)|Accessibility scanning using axe-core.|
-|NHSNumberTools|Basic tools for working with NHS numbers.|
+|[Date Time Utility](./docs/utility-guides/DateTimeUtility.md)|Basic functionality for managing date/times.|
+|[NHSNumberTools](./docs/utility-guides/NHSNumberTools.md)|Basic tools for working with NHS numbers.|
+|[User Tools](./docs/utility-guides/UserTools.md)|Basic user management tool.|
+
+## Contributing
+
+Further guidance on contributing to this project can be found in our [contribution](./CONTRIBUTING.md) page.
 
 ## Contacts
 
-If you have any queries regarding this blueprint, please contact [dave.harding1@nhs.net](mailto:dave.harding1@nhs.net).
+If you have any ideas or require support for this project, please [raise an issue via this repository](https://github.com/nhs-england-tools/playwright-python-blueprint/issues/new/choose) using the appropriate template.
+
+If you have any general queries regarding this blueprint, please contact [dave.harding1@nhs.net](mailto:dave.harding1@nhs.net).
 
 ## Licence
 
-> The [LICENCE.md](./LICENCE.md) file will need to be updated with the correct year and owner
-
-Unless stated otherwise, the codebase is released under the MIT License. This covers both the codebase and any sample code in the documentation.
+Unless stated otherwise, the codebase is released under the [MIT License](LICENCE.md). This covers both the codebase and any sample code in the documentation.
 
 Any HTML or Markdown documentation is [© Crown Copyright](https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/) and available under the terms of the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).

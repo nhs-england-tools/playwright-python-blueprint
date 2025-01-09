@@ -3,5 +3,28 @@
     "MD013": false,
     "MD024": { "siblings_only": true },
     "MD033": false
-  }
+  },
+  "cSpell.words": [
+    "addopts",
+    "codegen",
+    "customisable",
+    "customised",
+    "initialise",
+    "Licence",
+    "organisation",
+    "pytest",
+    "pytestmark",
+    "pythonpath",
+    "recognise",
+    "retcode",
+    "ruleset",
+    "utilise",
+    "utilised",
+    "Utilising"
+  ],
+  "python.testing.pytestArgs": [
+    "."
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
