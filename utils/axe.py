@@ -171,7 +171,7 @@ class Axe:
 
                     if 'nodes' in check:
                         for node in check['nodes']:
-                            section += f'''<tr><th class "details-header">Affected Node</th><td>{str(node).replace("<", "&lt;").replace(">", "&rt;")}</td></tr>'''
+                            section += f'''<tr><th class "details-header">Affected Node</th><td><code>{str(node).replace("<", "&lt;").replace(">", "&rt;")}</code></td></tr>'''
 
                     section += '</table><br />'
             else:
