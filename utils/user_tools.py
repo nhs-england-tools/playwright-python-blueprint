@@ -1,7 +1,11 @@
 import json
 import logging
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+from playwright.sync_api import Page
 
+from pages.cognito_login_page import CognitoLoginPage
 
 logger = logging.getLogger(__name__)
 USERS_FILE = Path(__file__).parent.parent / "users.json"
@@ -11,6 +15,24 @@ class UserTools:
     """
     A utility class for retrieving and doing common actions with users.
     """
+
+    @staticmethod
+    def user_login(page: Page, username: str) -> None:
+        """
+        Logs into the BCSS application as a specified user.
+
+        Args:
+            page (playwright.sync_api.Page): The Playwright page object to interact with.
+            username (str): Enter a username that exists in the users.json file.
+        """
+        # Load dotenv to enable retrieval of a password from .env file
+        load_dotenv()
+        # Go to base url
+        page.goto("/")
+        # Retrieve username from users.json
+        user_details = UserTools.retrieve_user(username)
+        # Login to bcss using retrieved username and a password stored in the .env file
+        CognitoLoginPage(page).login_as_user(user_details["username"], os.getenv("BCSS_PASS"))
 
     @staticmethod
     def retrieve_user(user: str) -> dict:
