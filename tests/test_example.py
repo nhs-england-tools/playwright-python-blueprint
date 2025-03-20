@@ -11,26 +11,36 @@ import pytest
 from playwright.sync_api import Page, expect
 
 
-@pytest.mark.example
-def test_basic_example(page: Page) -> None:
+@pytest.fixture(autouse=True)
+def initial_navigation(page: Page) -> None:
     '''
-    This test demonstrates how to quickly get started using Playwright Python.
+    This fixture (or hook) is used for each test in this file to navigate to this repository before
+    each test, to reduce the need for repeated code within the tests directly.
 
-    This example starts with @pytest.mark.example, which indicates this test has been tagged
-    with the term "example", to demonstrate how tests can be independently tagged.
-
-    When running via the command line, Playwright automatically instantiates certain objects
-    available for use, including the Page object (which is how Playwright interacts with the
-    system under test).
-
-    This test does the following:
-    1) Navigates to this repository
-    2) Asserts that the README contents rendered by GitHub contains the text "Playwright Python Blueprint"
-    3) Asserts that the main section of the page contains the topic label "playwright-python"
+    This specific fixture has been designated to run for every test by setting autouse=True.
     '''
 
     # Navigate to page
     page.goto("https://github.com/nhs-england-tools/playwright-python-blueprint")
+
+
+@pytest.mark.example
+def test_basic_example(page: Page) -> None:
+    '''
+    This test demonstrates how to quickly get started using Playwright Python, which runs using pytest.
+
+    This example starts with @pytest.mark.example, which indicates this test has been tagged
+    with the term "example", to demonstrate how tests can be independently tagged.
+
+    When running using the pytest command, Playwright automatically instantiates certain objects
+    available for use, including the Page object (which is how Playwright interacts with the
+    system under test).
+
+    This test does the following:
+    1) Navigates to this repository (via the initial_navigation fixture above)
+    2) Asserts that the README contents rendered by GitHub contains the text "Playwright Python Blueprint"
+    3) Asserts that the main section of the page contains the topic label "playwright-python"
+    '''
 
     # Assert repo text is present
     expect(page.get_by_role("article")).to_contain_text("Playwright Python Blueprint")
@@ -52,14 +62,11 @@ def test_textbox_example(page: Page) -> None:
     assertion).
 
     This test does the following:
-    1) Navigates to this repository
+    1) Navigates to this repository (via the initial_navigation fixture above)
     2) Uses the "Go to file" textbox and searches for this file, "text_example.py"
     3) Selects the label for the dropdown element presented for the search results and clicks
     4) Asserts that the filename for the now selected file is "test_example.py"
     """
-
-    # Navigate to page
-    page.goto("https://github.com/nhs-england-tools/playwright-python-blueprint")
 
     # Select the "Go to file" textbox and search for this file
     page.get_by_placeholder("Go to file").fill("test_example.py")
