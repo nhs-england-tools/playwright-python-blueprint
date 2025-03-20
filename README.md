@@ -2,11 +2,9 @@
 
 [![CI/CD Pull Request](https://github.com/nhs-england-tools/repository-template/actions/workflows/cicd-1-pull-request.yaml/badge.svg)](https://github.com/nhs-england-tools/playwright-python-blueprint/actions/workflows/cicd-1-pull-request.yaml)
 
-This project is designed to provide a blueprint to allow for development teams to start quickly developing UI tests using [Playwright Python](https://playwright.dev/python/), providing the base framework and utilities to allow for initial focus on writing tests, rather than configuration of the framework itself.
+This project is designed to provide a blueprint to allow for development teams to start quickly developing UI tests using [Playwright Python](https://playwright.dev/python/), providing the base framework and utilities to allow for initial focus on writing tests, rather than configuration of the framework itself. Playwright is the current mainstream UI testing tool for NHS England, as outlined on the [NHS England Tech Radar](https://radar.engineering.england.nhs.uk/).
 
-NOTE: This project is currently under initial development so isn't finalised, but should work if you want to experiment with Playwright Python.
-
-> **NOTE: When considering this project, please be advised that currently Playwright is a "proposed" tool within the [NHS England Tech Radar](https://radar.engineering.england.nhs.uk/).  Whilst we are taking steps to get Playwright moved to the "mainstream" section of the radar, as it has not yet been formally adopted it is possible that Playwright may not be fully endorsed by NHS England as a standard tool going forward, and using this framework for an NHS England project is currently at your own risk.**
+> NOTE: This project is currently under initial development so isn't finalised, but should work if you want to experiment with Playwright Python.
 
 ## Table of Contents
 
