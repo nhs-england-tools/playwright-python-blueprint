@@ -165,10 +165,15 @@ class Axe:
                     section += f'''<table class="details-section"><tr><th>ID</th><td>{check["id"]}</td></tr>
                                 <tr><th class "details-header">Impact</th><td>{check["impact"]}</td></tr>
                                 <tr><th class "details-header">Tags</th><td>{check["tags"]}</td></tr>
-                                <tr><th class "details-header">Description</th><td>{str(check["description"]).replace("<", "").replace(">", "")}</td></tr>
-                                <tr><th class "details-header">Help</th><td>{str(check["help"]).replace("<", "").replace(">", "")}</td></tr>
-                                <tr><th class "details-header">Help URL</th><td><a href="{check["helpUrl"]}" target="_blank">{check["helpUrl"]}</a></td></tr>
-                                </table><br />'''
+                                <tr><th class "details-header">Description</th><td>{str(check["description"]).replace("<", "&lt;").replace(">", "&rt;")}</td></tr>
+                                <tr><th class "details-header">Help</th><td>{str(check["help"]).replace("<", "&lt;").replace(">", "&rt;")}</td></tr>
+                                <tr><th class "details-header">Help URL</th><td><a href="{check["helpUrl"]}" target="_blank">{check["helpUrl"]}</a></td></tr>'''
+
+                    if 'nodes' in check:
+                        for node in check['nodes']:
+                            section += f'''<tr><th class "details-header">Affected Node</th><td><code>{str(node).replace("<", "&lt;").replace(">", "&rt;")}</code></td></tr>'''
+
+                    section += '</table><br />'
             else:
                 section += f'<p>No {header} results returned.</p>'
 
