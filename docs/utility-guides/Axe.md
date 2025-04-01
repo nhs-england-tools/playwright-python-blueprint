@@ -3,20 +3,18 @@
 The Axe utility provided by this blueprint allows for the scanning of pages by using [axe-core](https://github.com/dequelabs/axe-core), a JavaScript
 library used for scanning for accessibility issues and providing guidance on how to resolve these issues.
 
+> NOTE: This is now a direct extension of the [pytest-playwright-axe](https://github.com/davethepunkyone/pytest-playwright-axe) plugin with logic to apply WCAG 2.2 AA rules by default.
+
 ## Table of Contents
 
 - [Utility Guide: Axe](#utility-guide-axe)
   - [Table of Contents](#table-of-contents)
   - [Using the Axe class](#using-the-axe-class)
   - [.run(): Single page scan](#run-single-page-scan)
-    - [Required arguments](#required-arguments)
-    - [Optional arguments](#optional-arguments)
-    - [Returns](#returns)
+    - [Further reading](#further-reading)
     - [Example usage](#example-usage)
   - [.run\_list(): Multiple page scan](#run_list-multiple-page-scan)
-    - [Required arguments](#required-arguments-1)
-    - [Optional arguments](#optional-arguments-1)
-    - [Returns](#returns-1)
+    - [Further reading](#further-reading-1)
     - [Example usage](#example-usage-1)
 
 ## Using the Axe class
@@ -43,30 +41,9 @@ By default, the `Axe.run(page)` command will do the following:
 - Any steps after the `Axe.run()` command will continue to execute, and it will not cause the test in progress to fail (it runs a passive scan of the page)
 - Will return the full response from axe-core as a dict object if the call is set to a variable, e.g. `axe_results = Axe.run(page)` will populate `axe_results` to interact with as required
 
-### Required arguments
+### Further reading
 
-The following are required for `Axe.run()`:
-
-| Argument | Format                   | Description                                  |
-| -------- | ------------------------ | -------------------------------------------- |
-| page     | playwright.sync_api.Page | A Playwright Page on the page to be checked. |
-
-### Optional arguments
-
-The `Axe.run(page)` has the following optional arguments that can be passed in:
-
-| Argument                   | Format      | Supported Values                                                                            | Default Value                                                                          | Description                                                                                                                                                      |
-| -------------------------- | ----------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ruleset`                  | `list[str]` | Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/) | `['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice']` | The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.                                                     |
-| `filename`                 | `str`       | A string valid for a filename (e.g. `test_report`)                                          |                                                                                        | If provided, HTML and JSON reports will save with the filename provided. If not provided (default), the URL of the page under test will be used as the filename. |
-| `report_on_violation_only` | `bool`      | `True`, `False`                                                                             | `False`                                                                                | If True, HTML and JSON reports will only be generated if at least one violation is found.                                                                        |
-| `strict_mode`              | `bool`      | `True`, `False`                                                                             | `False`                                                                                | If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.                                                               |
-| `html_report_generated`    | `bool`      | `True`, `False`                                                                             | `True`                                                                                 | If True, a HTML report will be generated summarising the axe-core findings.                                                                                      |
-| `json_report_generated`    | `bool`      | `True`, `False`                                                                             | `True`                                                                                 | If True, a JSON report will be generated with the full axe-core findings.                                                                                        |
-
-### Returns
-
-This function can be used independently, but when set to a variable returns a `dict` with the axe-core results.
+This class directly extends the pytest-playwright-axe plugin version of this function, so please see the [single page scan documentation](https://github.com/davethepunkyone/pytest-playwright-axe?tab=readme-ov-file#run-single-page-scan) for additional arguments that can be used.
 
 ### Example usage
 
@@ -85,33 +62,9 @@ To scan multiple URLs within your application, you can use the following method:
 
 This runs the `Axe.run()` function noted above against each URL provided in the `page_list` argument, and will generate reports as required.
 
-### Required arguments
+### Further reading
 
-The following are required for `Axe.run_list()`:
-
-| Argument  | Format                   | Description                                                        |
-| --------- | ------------------------ | ------------------------------------------------------------------ |
-| page      | playwright.sync_api.Page | A Playwright Page object to drive navigation to each page to test. |
-| page_list | list[str]                | A list of URLs to execute against                                  |
-
-> NOTE: It is heavily recommended that when using the `run_list` command, that you set a `--base-url` either via the pytest.ini file or by passing in the value when using the `pytest` command in the command line. By doing this, the list you pass in will not need to contain the base URL value and therefore make any scanning transferrable between environments.
-
-### Optional arguments
-
-The `Axe.run_list(page, page_list)` function has the following optional arguments that can be passed in:
-
-| Argument                   | Format      | Supported Values                                                                            | Default Value                                                                          | Description                                                                                                     |
-| -------------------------- | ----------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `use_list_for_filename`    | `bool`      | `True`, `False`                                                                             | `True`                                                                                 | If True, the filename will be derived from the value provided in the list. If False, the full URL will be used. |
-| `ruleset`                  | `list[str]` | Any provided by [axe-core](https://www.deque.com/axe/core-documentation/api-documentation/) | `['wcag2a', 'wcag21a', 'wcag2aa', 'wcag21aa', 'wcag22a', 'wcag22aa', 'best-practice']` | The tags that axe-core uses to filter specific checks. Defaulted to rules used for the WCAG 2.2 AA standard.    |
-| `report_on_violation_only` | `bool`      | `True`, `False`                                                                             | `False`                                                                                | If True, HTML and JSON reports will only be generated if at least one violation is found.                       |
-| `strict_mode`              | `bool`      | `True`, `False`                                                                             | `False`                                                                                | If True, when a violation is found an AxeAccessibilityException is raised, causing a test failure.              |
-| `html_report_generated`    | `bool`      | `True`, `False`                                                                             | `True`                                                                                 | If True, a HTML report will be generated summarising the axe-core findings.                                     |
-| `json_report_generated`    | `bool`      | `True`, `False`                                                                             | `True`                                                                                 | If True, a JSON report will be generated with the full axe-core findings.                                       |
-
-### Returns
-
-This function can be used independently, but when set to a variable returns a `dict` with the axe-core results for all pages scanned (using the URL value in the list provided as the key).
+This class directly extends the pytest-playwright-axe plugin version of this function, so please see the [multiple page scan documentation](https://github.com/davethepunkyone/pytest-playwright-axe?tab=readme-ov-file#run_list-multiple-page-scan) for additional arguments that can be used.
 
 ### Example usage
 

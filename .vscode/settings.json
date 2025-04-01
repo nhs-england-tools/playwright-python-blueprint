@@ -6,6 +6,7 @@
   },
   "cSpell.words": [
     "addopts",
+    "autouse",
     "codegen",
     "customisable",
     "customised",
@@ -20,7 +21,8 @@
     "ruleset",
     "utilise",
     "utilised",
-    "Utilising"
+    "Utilising",
+    "WCAG"
   ],
   "python.testing.pytestArgs": [
     "."
