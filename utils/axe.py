@@ -16,6 +16,7 @@ class Axe():
     under test to identify any accessibility concerns.
     """
 
+    @staticmethod
     def run(
         page: Page,
         filename: str = "",
@@ -56,6 +57,7 @@ class Axe():
             json_report_generated=json_report_generated,
         )
 
+    @staticmethod
     def run_list(
         page: Page,
         page_list: list[str],

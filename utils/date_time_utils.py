@@ -6,9 +6,6 @@ class DateTimeUtils:
     A utility class for doing common actions with datetimes.
     """
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def current_datetime(format_date: str = "%d/%m/%Y %H:%M") -> str:
         """Gets the current datetime in the specified format.
