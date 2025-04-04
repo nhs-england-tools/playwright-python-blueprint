@@ -1,15 +1,13 @@
-import os
-
 from playwright.sync_api import Page
+from pages.base_page import BasePage
 
-
-class CognitoLoginPage:
-
+class CognitoLoginPage(BasePage):
     def __init__(self, page: Page):
+        super().__init__(page)
         self.page = page
-        self.username = page.get_by_role("textbox", name="Username")
-        self.password = page.get_by_role("textbox", name="Password")
-        self.submit_button = page.get_by_role("button", name="submit")
+        self.username = self.page.get_by_role("textbox", name="Username")
+        self.password = self.page.get_by_role("textbox", name="Password")
+        self.submit_button = self.page.get_by_role("button", name="submit")
 
     def login_as_user(self, username: str, password: str) -> None:
         """Logs in to bcss with specified user credentials
@@ -22,4 +20,4 @@ class CognitoLoginPage:
         # Retrieve and enter password from .env file
         self.password.fill(password)
         # Click Submit
-        self.submit_button.click()
+        self.click(self.submit_button)

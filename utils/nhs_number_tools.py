@@ -1,6 +1,5 @@
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -8,6 +7,7 @@ class NHSNumberTools:
     """
     A utility class providing functionality around NHS numbers.
     """
+
     def __init__(self) -> None:
         pass
 

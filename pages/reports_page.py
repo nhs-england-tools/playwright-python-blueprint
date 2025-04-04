@@ -1,109 +1,97 @@
-from datetime import datetime
-from utils import date_time_utils
 from playwright.sync_api import Page
+from pages.base_page import BasePage
 
 
-class ReportsPageUtils:
-    def __init__(self):
-        pass
+class ReportsPage(BasePage):
+    def __init__(self, page):
+        super().__init__(page)
+        self.page = page
+        # Reports page main menu links
+        self.bureau_reports_page = self.page.get_by_role("link", name="Bureau Reports")
+        self.failsafe_reports_page = self.page.get_by_role("link", name="Failsafe Reports")
+        self.operational_reports_page = self.page.get_by_role("link", name="Operational Reports")
+        self.strategic_reports_page = self.page.get_by_role("link", name="Strategic Reports")
+        self.cancer_waiting_times_reports_page = self.page.get_by_role("link", name="Cancer Waiting Times Reports")
+        self.dashboard = self.page.get_by_role("link", name="Dashboard")
+        self.qa_report_dataset_completion_page = self.page.get_by_role("link", name="QA Report : Dataset Completion")
+        # Reports pages shared buttons & links
+        self.refresh_page_button = self.page.get_by_role("button", name="Refresh")
+        self.generate_report_button = self.page.get_by_role("button", name="Generate Report")
+        self.reports_update_button = self.page.get_by_role("button", name="Update")
+        self.report_timestamp_element = self.page.locator("b")
+        self.set_patients_screening_centre_dropdown = self.page.locator("#cboScreeningCentre")
 
+        # Failsafe Reports menu links
+        self.date_report_last_requested_page = self.page.get_by_role("link", name="Date Report Last Requested")
+        self.screening_subjects_with_inactive_open_episode_link_page = self.page.get_by_role("link", name="Screening Subjects With")
+        self.subjects_ceased_due_to_date_of_birth_changes_page = self.page.get_by_role("link", name="Subjects Ceased Due to Date")
+        self.allocate_sc_for_patient_movements_within_hub_boundaries_page = self.page.get_by_role("link", name="Allocate SC for Patient Movements within Hub Boundaries")
+        self.allocate_sc_for_patient_movements_into_your_hub_page = self.page.get_by_role("link", name="Allocate SC for Patient Movements into your Hub")
+        self.identify_and_link_new_gp_page = self.page.get_by_role("link", name="Identify and link new GP")
+        # Operational Reports menu links
+        self.appointment_attendance_not_updated_page = self.page.get_by_role("link", name="Appointment Attendance Not")
+        self.fobt_kits_logged_but_not_read_page = self.page.get_by_role("link", name="FOBT Kits Logged but Not Read")
+        self.demographic_update_inconsistent_with_manual_update_page = self.page.get_by_role("link", name="Demographic Update")
+        self.screening_practitioner_6_weeks_availability_not_set_up_report_page = page.get_by_role("link", name="Screening Practitioner 6")
+        self.screening_practitioner_appointments_page = self.page.get_by_role("link", name="Screening Practitioner Appointments")
 
-# Timestamp Date Formatting
-def report_timestamp_date_format() -> str:
-    """Gets the current date time and converts it to the timestamp format used on the report pages
+    # Reports page main menu links
+    def go_to_failsafe_reports_page(self) -> None:
+        self.click(self.failsafe_reports_page)
 
-    Returns:
-        date report last requested (str): The current datetime in the "date report last requested" timestamp format.
+    def go_to_operational_reports_page(self) -> None:
+        self.click(self.operational_reports_page)
 
-    """
-    dtu = date_time_utils.DateTimeUtils
-    return dtu.format_date(datetime.now(), "%d/%m/%Y" + " at " + "%H:%M:%S")
+    def go_to_strategic_reports_page(self) -> None:
+        self.click(self.strategic_reports_page)
 
+    def go_to_cancer_waiting_times_reports_page(self) -> None:
+        self.click(self.cancer_waiting_times_reports_page)
 
-def fobt_kits_logged_but_not_read_report_timestamp_date_format() -> str:
-    """Gets the current date time and converts it to the timestamp format used on the fobt_kits_logged_but_not_read report page
+    def go_to_dashboard(self) -> None:
+        self.click(self.dashboard)
 
-    Returns:
-        fobt_kits_logged_but_not_read timestamp (str): The current datetime in the "fobt_kits_logged_but_not_read report" timestamp format.
+    # Reports pages shared buttons actions
+    def click_refresh_button(self) -> None:
+        self.click(self.refresh_page_button)
 
-    """
-    dtu = date_time_utils.DateTimeUtils
-    return dtu.format_date(datetime.now(), "%d %b %Y %H:%M:%S")
+    def click_generate_report_button(self) -> None:
+        self.click(self.generate_report_button)
 
+    def click_reports_pages_update_button(self) -> None:
+        self.click(self.reports_update_button)
 
-def screening_practitioner_appointments_report_timestamp_date_format() -> str:
-    """Gets the current date time and converts it to the timestamp format used on the screening practitioner appointments report page
+    # Failsafe Reports menu links
+    def go_to_date_report_last_requested_page(self) -> None:
+        self.click(self.date_report_last_requested_page)
 
-    Returns:
-        screening practitioner appointments timestamp (str): The current datetime in the "screening practitioner appointments report" timestamp format.
+    def go_to_screening_subjects_with_inactive_open_episode_link_page(self) -> None:
+        self.click(self.screening_subjects_with_inactive_open_episode_link_page)
 
-    """
-    dtu = date_time_utils.DateTimeUtils
-    return dtu.format_date(datetime.now(), "%d.%m.%Y" + " at " + "%H:%M:%S")
+    def go_to_subjects_ceased_due_to_date_of_birth_changes_page(self) -> None:
+        self.click(self.subjects_ceased_due_to_date_of_birth_changes_page)
 
+    def go_to_allocate_sc_for_patient_movements_within_hub_boundaries_page(self) -> None:
+        self.click(self.allocate_sc_for_patient_movements_within_hub_boundaries_page)
 
-# Reports page main menu links
-def go_to_failsafe_reports_page(page: Page) -> None:
-    page.get_by_role("link", name="Failsafe Reports").click()
+    def go_to_allocate_sc_for_patient_movements_into_your_hub_page(self) -> None:
+        self.click(self.allocate_sc_for_patient_movements_into_your_hub_page)
 
+    def go_to_identify_and_link_new_gp_page(self) -> None:
+        self.click(self.identify_and_link_new_gp_page)
 
-def go_to_operational_reports_page(page: Page) -> None:
-    page.get_by_role("link", name="Operational Reports").click()
+    # Operational Reports menu links
+    def go_to_appointment_attendance_not_updated_page(self) -> None:
+        self.click(self.appointment_attendance_not_updated_page)
 
+    def go_to_fobt_kits_logged_but_not_read_page(self) -> None:
+        self.click(self.fobt_kits_logged_but_not_read_page)
 
-def go_to_strategic_reports_page(page: Page) -> None:
-    page.get_by_role("link", name="Strategic Reports").click()
+    def go_to_demographic_update_inconsistent_with_manual_update_page(self) -> None:
+        self.click(self.demographic_update_inconsistent_with_manual_update_page)
 
+    def go_to_screening_practitioner_6_weeks_availability_not_set_up_report_page(self) -> None:
+        self.click(self.screening_practitioner_6_weeks_availability_not_set_up_report_page)
 
-def go_to_cancer_waiting_times_reports_page(page: Page) -> None:
-    page.get_by_role("link", name="Cancer Waiting Times Reports").click()
-
-
-def go_to_dashboard(page: Page) -> None:
-    page.get_by_role("link", name="Dashboard").click()
-
-
-# Failsafe Reports menu links
-def go_to_date_report_last_requested_page(page: Page) -> None:
-    page.get_by_role("link", name="Date Report Last Requested").click()
-
-
-def go_to_screening_subjects_with_inactive_open_episode_link_page(page: Page) -> None:
-    page.get_by_role("link", name="Screening Subjects With").click()
-
-
-def go_to_subjects_ceased_due_to_date_of_birth_changes_page(page: Page) -> None:
-    page.get_by_role("link", name="Subjects Ceased Due to Date").click()
-
-
-def go_to_allocate_sc_for_patient_movements_within_hub_boundaries_page(page: Page) -> None:
-    page.get_by_role("link", name="Allocate SC for Patient Movements within Hub Boundaries").click()
-
-
-def go_to_allocate_sc_for_patient_movements_into_your_hub_page(page: Page) -> None:
-    page.get_by_role("link", name="Allocate SC for Patient Movements into your Hub").click()
-
-
-def go_to_identify_and_link_new_gp_page(page: Page) -> None:
-    page.get_by_role("link", name="Identify and link new GP").click()
-
-
-# Operational Reports menu links
-def go_to_appointment_attendance_not_updated_page(page: Page) -> None:
-    page.get_by_role("link", name="Appointment Attendance Not").click()
-
-
-def go_to_fobt_kits_logged_but_not_read_page(page: Page) -> None:
-    page.get_by_role("link", name="FOBT Kits Logged but Not Read").click()
-
-
-def go_to_demographic_update_inconsistent_with_manual_update_page(page: Page) -> None:
-    page.get_by_role("link", name="Demographic Update").click()
-
-
-def go_to_screening_practitioner_6_weeks_availability_not_set_up_report_page(page: Page) -> None:
-    page.get_by_role("link", name="Screening Practitioner 6").click()
-
-
-def go_to_screening_practitioner_appointments_page(page: Page) -> None:
-    page.get_by_role("link", name="Screening Practitioner Appointments").click()
+    def go_to_screening_practitioner_appointments_page(self) -> None:
+        self.click(self.screening_practitioner_appointments_page)
