@@ -1,6 +1,5 @@
 import pytest
 from playwright.sync_api import Page, expect
-from sys import platform
 from pages.base_page import BasePage
 from pages.reports_page import ReportsPage
 from utils.click_helper import click
@@ -46,12 +45,8 @@ def test_reports_page_navigation(page: Page) -> None:
     are loaded when the links are clicked
     """
 
-    # Locators
-    bureau_reports_link = page.get_by_text("Bureau Reports")
-    qa_report_data_completion_link = page.get_by_text("QA Report : Dataset Completion")
-
     # Bureau reports link is visible
-    expect(bureau_reports_link).to_be_visible()
+    expect(ReportsPage(page).bureau_reports_link).to_be_visible()
 
     # Failsafe reports page opens as expected
     ReportsPage(page).go_to_failsafe_reports_page()
@@ -87,7 +82,7 @@ def test_reports_page_navigation(page: Page) -> None:
     # BasePage(page).click_back_button()
 
     # QA Report : Dataset Completion link is visible
-    expect(qa_report_data_completion_link).to_be_visible()
+    expect(ReportsPage(page).qa_report_dataset_completion_link).to_be_visible()
 
     # Return to main menu
     BasePage(page).click_main_menu_link()
@@ -137,7 +132,7 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     Confirms 'screening_subjects_with_inactive_open_episode' page loads, 'generate report' button works as expected
     and that a screening subject record can be opened
     """
-    # Locators
+    # Test Data
     nhs_number_link = page.get_by_role(
         "cell", name="7652"
     )  # This value is specific to this test only
@@ -176,7 +171,7 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     """
 
     # Test Data
-    report_start_date = "18/03/2023"
+    report_start_date = "18/03/2023"  # This date is specific to this test only
 
     # Go to failsafe reports page
     ReportsPage(page).go_to_failsafe_reports_page()
@@ -306,10 +301,6 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     can be opened from here
     """
 
-    nhs_number_cell_link = page.locator(
-        "//*[@id='listReportDataTable']/tbody/tr[3]/td[2]"
-    )
-
     # Go to failsafe reports page
     ReportsPage(page).go_to_failsafe_reports_page()
 
@@ -340,7 +331,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     )
 
     # Open a screening subject record from the first row/second cell of the table
-    nhs_number_cell_link.click()
+    ReportsPage(page).identify_link_new_gp_nhs_number_link.click()
 
     # Verify page title is "Link GP practice to Screening Centre"
     BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
@@ -360,11 +351,6 @@ def test_operational_reports_appointment_attendance_not_updated(
     an appointment record can be opened from here
     """
 
-    nhs_number_link = page.locator(
-        "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a"
-    )
-    set_patients_screening_centre_dropdown = page.get_by_label("Screening Centre")
-
     # Go to operational reports page
     ReportsPage(page).go_to_operational_reports_page()
 
@@ -377,7 +363,9 @@ def test_operational_reports_appointment_attendance_not_updated(
     )
 
     # Select a screening centre from the drop-down options
-    set_patients_screening_centre_dropdown.select_option(
+    ReportsPage(
+        page
+    ).attendance_not_updated_set_patients_screening_centre_dropdown.select_option(
         tests_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
@@ -391,7 +379,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     )
 
     # Open an appointment record from the report
-    nhs_number_link.click()
+    ReportsPage(page).operational_report_not_updated_nhs_number_link.click()
 
     # Verify the page title is "Appointment Detail"
     BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
@@ -405,8 +393,6 @@ def test_operational_reports_fobt_kits_logged_but_not_read(page: Page) -> None:
     the 'refresh' button works as expected and
     the timestamp updates to current date and time when refreshed
     """
-
-    report_generated_timestamp = page.locator("#report-generated")
 
     # Go to operational reports page
     ReportsPage(page).go_to_operational_reports_page()
@@ -426,9 +412,9 @@ def test_operational_reports_fobt_kits_logged_but_not_read(page: Page) -> None:
     report_timestamp = (
         DateTimeUtils.fobt_kits_logged_but_not_read_report_timestamp_date_format()
     )
-    expect(report_generated_timestamp).to_contain_text(
-        f"Report generated on {report_timestamp}."
-    )
+    expect(
+        ReportsPage(page).fobt_logged_not_read_report_timestamp_element
+    ).to_contain_text(f"Report generated on {report_timestamp}.")
 
 
 def test_operational_reports_demographic_update_inconsistent_with_manual_update(
@@ -461,9 +447,6 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
     the timestamp updates to current date and time when refreshed
     """
 
-    set_patients_screening_centre_dropdown = page.get_by_label("Screening Centre")
-    report_generated_timestamp_element = page.locator("#displayGenerateDate")
-
     # Go to operational reports page
     ReportsPage(page).go_to_operational_reports_page()
 
@@ -478,7 +461,9 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
     )
 
     # Select a screening centre
-    set_patients_screening_centre_dropdown.select_option(
+    ReportsPage(
+        page
+    ).six_weeks_availability_not_set_up_set_patients_screening_centre_dropdown.select_option(
         tests_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
@@ -487,14 +472,22 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
 
     # Verify timestamp has updated to current date and time
     report_timestamp = DateTimeUtils.report_timestamp_date_format()
-    expect(report_generated_timestamp_element).to_contain_text(report_timestamp)
+    ReportsPage(
+        page
+    ).six_weeks_availability_not_set_up_report_timestamp_element.to_contain_text(
+        report_timestamp
+    )
 
     # Click "Refresh" button
     ReportsPage(page).click_refresh_button()
 
     # Verify timestamp has updated to current date and time
     report_timestamp = DateTimeUtils.report_timestamp_date_format()
-    expect(report_generated_timestamp_element).to_contain_text(report_timestamp)
+    ReportsPage(
+        page
+    ).six_weeks_availability_not_set_up_report_timestamp_element.to_contain_text(
+        report_timestamp
+    )
 
 
 def test_operational_reports_screening_practitioner_appointments(
@@ -506,13 +499,6 @@ def test_operational_reports_screening_practitioner_appointments(
     the 'generate report' button works as expected and
     the timestamp updates to current date and time when refreshed
     """
-
-    # Locators
-    set_patients_screening_centre_dropdown = page.get_by_label("Screening Centre")
-    screening_practitioner_dropdown = page.locator("#A_C_NURSE")
-    generate_report_button = page.locator(
-        "#submitThisForm"
-    )  # The locator appears to be unique to this generate report button
 
     # Go to operational reports page
     ReportsPage(page).go_to_operational_reports_page()
@@ -526,22 +512,24 @@ def test_operational_reports_screening_practitioner_appointments(
     )
 
     # Select a screening centre
-    set_patients_screening_centre_dropdown.select_option(
+    ReportsPage(
+        page
+    ).practitioner_appointments_set_patients_screening_centre_dropdown.select_option(
         tests_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Select a screening practitioner
-    screening_practitioner_dropdown.select_option(
+    ReportsPage(page).screening_practitioner_dropdown.select_option(
         tests_properties["screening_practitioner_named_another_stubble"]
     )
 
     # Click "Generate Report"
-    generate_report_button.click()
+    ReportsPage(page).operational_reports_sp_appointments_generate_report_button.click()
 
     # Verify timestamp has updated to current date and time
     report_timestamp = (
         DateTimeUtils.screening_practitioner_appointments_report_timestamp_date_format()
     )
-    expect(ReportsPage(page).common_report_timestamp_element).to_contain_text(
+    expect(ReportsPage(Page).common_report_timestamp_element).to_contain_text(
         report_timestamp
     )
