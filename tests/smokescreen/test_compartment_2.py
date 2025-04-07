@@ -2,10 +2,10 @@ import logging
 from datetime import datetime
 import pytest
 from playwright.sync_api import Page
-from pages.fit_test_kits_page import FITTestKits
+from pages.fit_test_kits.fit_test_kits_page import FITTestKits
 from pages.base_page import BasePage
-from pages.log_out_page import Logout
-from pages.log_devices_page import LogDevices
+from pages.logout.log_out_page import Logout
+from pages.fit_test_kits.log_devices_page import LogDevices
 from utils.batch_processing import batch_processing
 from utils.fit_kit_generation import create_fit_id_df
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no

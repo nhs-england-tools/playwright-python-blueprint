@@ -1,8 +1,8 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.bowel_scope_page import BowelScope
-from pages.bowel_scope_appointments_page import BowelScopeAppointments
+from pages.bowel_scope.bowel_scope_page import BowelScope
+from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointments
 from utils.user_tools import UserTools
 
 

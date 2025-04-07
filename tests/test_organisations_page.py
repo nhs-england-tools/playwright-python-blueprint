@@ -3,7 +3,7 @@ import pytest
 from jproperties import Properties
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
-from pages.organisations_page import OrganisationsPage
+from pages.organisations.organisations_page import OrganisationsPage
 from utils.user_tools import UserTools
 
 

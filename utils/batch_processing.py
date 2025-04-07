@@ -1,7 +1,7 @@
 from pages.base_page import BasePage
-from pages.communications_production_page import CommunicationsProduction
-from pages.manage_active_batch_page import ManageActiveBatch
-from pages.batch_list_page import ActiveBatchList, ArchivedBatchList
+from pages.communication_production.communications_production_page import CommunicationsProduction
+from pages.communication_production.manage_active_batch_page import ManageActiveBatch
+from pages.communication_production.batch_list_page import ActiveBatchList, ArchivedBatchList
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
 from utils.oracle.oracle import OracleDB

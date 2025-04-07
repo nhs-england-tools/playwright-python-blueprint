@@ -2,14 +2,14 @@ from sys import platform
 import pytest
 import logging
 from jproperties import Properties
-from pages.log_out_page import Logout
+from pages.logout.log_out_page import Logout
 from utils.user_tools import UserTools
 from pages.base_page import BasePage
-from pages.call_and_recall_page import CallAndRecall
-from pages.invitations_monitoring_page import InvitationsMonitoring
-from pages.invitations_plans_page import InvitationsPlans
-from pages.create_a_plan_page import CreateAPlan
-from pages.generate_invitations_page import GenerateInvitations
+from pages.call_and_recall.call_and_recall_page import CallAndRecall
+from pages.call_and_recall.invitations_monitoring_page import InvitationsMonitoring
+from pages.call_and_recall.invitations_plans_page import InvitationsPlans
+from pages.call_and_recall.create_a_plan_page import CreateAPlan
+from pages.call_and_recall.generate_invitations_page import GenerateInvitations
 from playwright.sync_api import Page
 from utils.batch_processing import batch_processing
 

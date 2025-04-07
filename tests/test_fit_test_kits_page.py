@@ -1,12 +1,12 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.fit_test_kits_page import FITTestKits
-from pages.fit_rollout_summary_page import FITRolloutSummary
+from pages.fit_test_kits.fit_test_kits_page import FITTestKits
+from pages.fit_test_kits.fit_rollout_summary_page import FITRolloutSummary
 from pages.log_devices_page import LogDevices
-from pages.view_fit_kit_result_page import ViewFITKitResult
-from pages.kit_service_management_page import KitServiceManagement
-from pages.kit_result_audit_page import KitResultAudit
+from pages.fit_test_kits.view_fit_kit_result_page import ViewFITKitResult
+from pages.fit_test_kits.kit_service_management_page import KitServiceManagement
+from pages.fit_test_kits.kit_result_audit_page import KitResultAudit
 from pages.view_algorithms_page import ViewAlgorithms
 from pages.view_screening_centre_fit_configuration_page import (
     ViewScreeningCentreFITConfiguration,

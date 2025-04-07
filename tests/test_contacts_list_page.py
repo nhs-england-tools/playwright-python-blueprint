@@ -1,11 +1,11 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.contacts_list_page import ContactsListPage
-from pages.view_contacts_page import ViewContacts
-from pages.edit_my_contact_details_page import EditMyContactDetails
-from pages.maintain_contacts_page import MaintainContacts
-from pages.my_preference_settings_page import MyPreferenceSettings
+from pages.contacts_list.contacts_list_page import ContactsListPage
+from pages.contacts_list.view_contacts_page import ViewContacts
+from pages.contacts_list.edit_my_contact_details_page import EditMyContactDetails
+from pages.contacts_list.maintain_contacts_page import MaintainContacts
+from pages.contacts_list.my_preference_settings_page import MyPreferenceSettings
 from utils.user_tools import UserTools
 
 

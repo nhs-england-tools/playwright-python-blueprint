@@ -2,13 +2,13 @@ import pytest
 from sys import platform
 from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.call_and_recall_page import CallAndRecall
-from pages.invitations_monitoring_page import InvitationsMonitoring
-from pages.generate_invitations_page import GenerateInvitations
-from pages.non_invitations_days_page import NonInvitationDays
-from pages.age_extension_rollout_plans_page import AgeExtensionRolloutPlans
-from pages.invitations_plans_page import InvitationsPlans
-from pages.create_a_plan_page import CreateAPlan
+from pages.call_and_recall.call_and_recall_page import CallAndRecall
+from pages.call_and_recall.invitations_monitoring_page import InvitationsMonitoring
+from pages.call_and_recall.generate_invitations_page import GenerateInvitations
+from pages.call_and_recall.non_invitations_days_page import NonInvitationDays
+from pages.call_and_recall.age_extension_rollout_plans_page import AgeExtensionRolloutPlans
+from pages.call_and_recall.invitations_plans_page import InvitationsPlans
+from pages.call_and_recall.create_a_plan_page import CreateAPlan
 from utils.user_tools import UserTools
 from jproperties import Properties
 

@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import Page, expect
 from sys import platform
 from pages.base_page import BasePage
-from pages.reports_page import ReportsPage
+from pages.reports.reports_page import ReportsPage
 from utils.date_time_utils import DateTimeUtils
 from utils.user_tools import UserTools
 from jproperties import Properties

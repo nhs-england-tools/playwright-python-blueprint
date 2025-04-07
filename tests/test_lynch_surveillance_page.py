@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.lynch_invitation_page import LynchInvitationPage
-from pages.set_lynch_invitation_rates_page import SetLynchInvitationRatesPage
+from pages.lynch_surveillance.lynch_invitation_page import LynchInvitationPage
+from pages.lynch_surveillance.set_lynch_invitation_rates_page import SetLynchInvitationRatesPage
 from utils.user_tools import UserTools
 
 

@@ -1,11 +1,9 @@
 import pytest
 from playwright.sync_api import Page
 from utils.user_tools import UserTools
-from pages import (
-    log_out_page as logout,
-    login_failure_screen as login_failure,
-    base_page as bcss_home,
-)
+from pages.logout import log_out_page as logout
+from pages.login import login_failure_screen as login_failure
+from pages import base_page as bcss_home
 from utils.oracle.oracle import OracleDB
 
 

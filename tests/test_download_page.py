@@ -1,12 +1,12 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.downloads_page import DownloadsPage
-from pages.individual_download_request_and_retrieval_page import (
+from pages.download.downloads_page import DownloadsPage
+from pages.download.individual_download_request_and_retrieval_page import (
     IndividualDownloadRequestAndRetrieval,
 )
-from pages.list_of_individual_downloads_page import ListOfIndividualDownloads
-from pages.batch_download_request_and_retrieval_page import (
+from pages.download.list_of_individual_downloads_page import ListOfIndividualDownloads
+from pages.download.batch_download_request_and_retrieval_page import (
     BatchDownloadRequestAndRetrieval,
 )
 from utils.user_tools import UserTools

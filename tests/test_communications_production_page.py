@@ -1,11 +1,11 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.communications_production_page import CommunicationsProduction
-from pages.batch_list_page import ActiveBatchList, ArchivedBatchList
-from pages.letter_library_index_page import LetterLibraryIndex
-from pages.letter_signatory_page import LetterSignatory
-from pages.electronic_communications_management import ElectronicCommunicationManagement
+from pages.communication_production.communications_production_page import CommunicationsProduction
+from pages.communication_production.batch_list_page import ActiveBatchList, ArchivedBatchList
+from pages.communication_production.letter_library_index_page import LetterLibraryIndex
+from pages.communication_production.letter_signatory_page import LetterSignatory
+from pages.communication_production.electronic_communications_management import ElectronicCommunicationManagement
 from utils.user_tools import UserTools
 
 

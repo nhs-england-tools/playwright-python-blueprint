@@ -2,12 +2,12 @@ import pytest
 from sys import platform
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
-from pages.subject_screening_search_page import (
+from pages.screening_subject_search.subject_screening_search_page import (
     ScreeningStatusSearchOptions,
     LatestEpisodeStatusSearchOptions,
     SearchAreaSearchOptions,
 )
-from pages.subject_screening_summary import SubjectScreeningSummary
+from pages.screening_subject_search.subject_screening_summary import SubjectScreeningSummary
 from utils.screening_subject_page_searcher import (
     search_subject_by_nhs_number,
     search_subject_by_surname,

@@ -1,11 +1,11 @@
 import pytest
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
-from pages.screening_practitioner_appointments import (
+from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
     ScreeningPractitionerAppointmentsPage,
 )
-from pages.bowel_scope_appointments_page import BowelScopeAppointments
-from pages.colonoscopy_assessment_appointments_page import (
+from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointments
+from pages.screening_practitioner_appointments.colonoscopy_assessment_appointments_page import (
     ColonoscopyAssessmentAppointments,
 )
 from utils.user_tools import UserTools

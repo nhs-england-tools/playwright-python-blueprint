@@ -2,13 +2,16 @@ import pytest
 from playwright.sync_api import Page
 
 from pages.base_page import BasePage
-from pages.gFOBT_test_kits_page import GFOBTTestKits
-from pages.gFOBT_test_kit_logging_page import TestKitLogging
-from pages.gFOBT_test_kit_quality_control_reading_page import (
+from pages.gfobt_test_kits.gfobt_test_kits_page import GFOBTTestKits
+from pages.gfobt_test_kits.gfobt_test_kit_logging_page import TestKitLogging
+from pages.gfobt_test_kits.gfobt_test_kit_quality_control_reading_page import (
     TestKitQualityControlReading,
 )
-from pages.gFOBT_view_test_kit_result import ViewTestKitResult
-from pages.gFOBT_create_qc_kit_page import CreateQCKit, ReadingDropdownOptions
+from pages.gfobt_test_kits.gfobt_view_test_kit_result import ViewTestKitResult
+from pages.gfobt_test_kits.gfobt_create_qc_kit_page import (
+    CreateQCKit,
+    ReadingDropdownOptions,
+)
 from utils.user_tools import UserTools
 
 
