@@ -70,3 +70,18 @@ class DateTimeUtils:
             str: The day of the week relating to the specified date.
         """
         return date.strftime("%A")
+
+    @staticmethod
+    def report_timestamp_date_format() -> str:
+        """Gets the current datetime in the timestamp format used on the report pages."""
+        return DateTimeUtils.format_date(datetime.now(), "%d/%m/%Y at %H:%M:%S")
+
+    @staticmethod
+    def fobt_kits_logged_but_not_read_report_timestamp_date_format() -> str:
+        """Gets the current datetime in the format used for FOBT Kits Logged but Not Read report."""
+        return DateTimeUtils.format_date(datetime.now(), "%d %b %Y %H:%M:%S")
+
+    @staticmethod
+    def screening_practitioner_appointments_report_timestamp_date_format() -> str:
+        """Gets the current datetime in the format used for Screening Practitioner Appointments report."""
+        return DateTimeUtils.format_date(datetime.now(), "%d.%m.%Y at %H:%M:%S")

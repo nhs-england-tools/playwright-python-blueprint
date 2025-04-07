@@ -2,8 +2,8 @@ import pytest
 import utils.date_time_utils
 from datetime import datetime, timedelta
 
-
 pytestmark = [pytest.mark.utils]
+
 
 def test_current_datetime():
     dtu = utils.date_time_utils.DateTimeUtils()

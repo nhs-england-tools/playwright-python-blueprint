@@ -1,19 +1,23 @@
 import pytest
 from playwright.sync_api import Page, expect
-from pages.bcss_home_page import MainMenu
+from pages.base_page import BasePage
+from pages.downloads_page import DownloadsPage
+from pages.individual_download_request_and_retrieval_page import IndividualDownloadRequestAndRetrieval
+from pages.list_of_individual_downloads_page import ListOfIndividualDownloads
+from pages.batch_download_request_and_retrieval_page import BatchDownloadRequestAndRetrieval
 from utils.user_tools import UserTools
 
 
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     """
-    Before every test is executed, this fixture logs in to BCSS as the specified user and navigates to the download page
+    Before every test is executed, this fixture logs in to BCSS as a test user and navigates to the download page
     """
     # Log in to BCSS
     UserTools.user_login(page, "Hub Manager State Registered")
 
     # Go to download page
-    MainMenu(page).go_to_download_page()
+    BasePage(page).go_to_download_page()
 
 
 @pytest.mark.smoke
@@ -24,26 +28,26 @@ def test_download_facility_page_navigation(page: Page) -> None:
     on the relevant pages
     """
     # Individual download request and retrieval page loads as expected
-    page.get_by_role("link", name="Individual Download Request").click()
-    expect(page.locator("#ntshPageTitle")).to_contain_text("Individual Download Request and Retrieval")
+    DownloadsPage(page).go_to_individual_download_request_page()
+    IndividualDownloadRequestAndRetrieval(page).verify_individual_download_request_and_retrieval_title()
 
     # Individual download request and retrieval page contains warning message
-    expect(page.locator("form[name=\"frm\"]")).to_contain_text("Warning - FS Screening data will not be downloaded")
-    page.get_by_role("link", name="Back", exact=True).click()
+    IndividualDownloadRequestAndRetrieval(page).expect_form_to_have_warning()
+    BasePage(page).click_back_button()
 
     # List of Individual downloads page loads as expected
-    page.get_by_role("link", name="List of Individual Downloads").click()
-    expect(page.locator("#ntshPageTitle")).to_contain_text("List of Individual Downloads")
-    page.get_by_role("link", name="Back", exact=True).click()
+    DownloadsPage(page).go_to_list_of_individual_downloads_page()
+    ListOfIndividualDownloads(page).verify_list_of_individual_downloads_title()
+    BasePage(page).click_back_button()
 
     # Batch download request and retrieval page loads as expected
-    page.get_by_role("link", name="Batch Download Request and").click()
-    expect(page.locator("#ntshPageTitle")).to_contain_text("Batch Download Request and Retrieval")
+    DownloadsPage(page).go_to_batch_download_request_and_page()
+    BatchDownloadRequestAndRetrieval(page).verify_batch_download_request_and_retrieval_title()
 
     # Batch download request and retrieval page contains warning message
-    expect(page.locator("form[name=\"frm\"]")).to_contain_text("Warning - FS Screening data will not be downloaded")
-    page.get_by_role("link", name="Back", exact=True).click()
+    BatchDownloadRequestAndRetrieval(page).expect_form_to_have_warning()
+    BasePage(page).click_back_button()
 
     # Return to main menu
-    page.get_by_role("link", name="Main Menu").click()
-    expect(page.locator("#ntshPageTitle")).to_contain_text("Main Menu")
+    BasePage(page).click_main_menu_link()
+    BasePage(page).main_menu_header_is_displayed()

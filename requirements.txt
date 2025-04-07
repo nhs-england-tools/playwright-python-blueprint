@@ -1,4 +1,8 @@
 pytest-playwright>=0.5.1
 pytest-html>=4.1.1
 pytest-json-report>=1.5.0
+oracledb~=3.0.0
+pandas~=2.2.3
 python-dotenv~=1.0.1
+sqlalchemy>=2.0.38
+jproperties~=2.1.2

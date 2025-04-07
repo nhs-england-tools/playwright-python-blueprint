@@ -1,14 +1,14 @@
 import pytest
 from playwright.sync_api import Page, expect
 from utils.user_tools import UserTools
-from pages.bcss_home_page import BcssHomePage
+from pages.base_page import BasePage
 from utils.date_time_utils import DateTimeUtils
 
 
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     """
-    Before every test is executed, this fixture logs in to BCSS as the specified user and results in the home page
+    Before every test is executed, this fixture logs in to BCSS as a test user and results in the home page
     being displayed
     """
     # Log in to BCSS
@@ -20,7 +20,7 @@ def test_home_page_links_navigation(page: Page) -> None:
     """
     Confirms that homepage links are visible and clickable, and the expected pages open when clicking the links
     """
-    homepage = BcssHomePage(page)
+    homepage = BasePage(page)
 
     # Click 'show sub menu' link
     homepage.click_sub_menu_link()
@@ -52,9 +52,7 @@ def test_home_page_links_navigation(page: Page) -> None:
     # Click the refresh alerts link
     homepage.click_refresh_alerts_link()
     # Verify that the 'last updated' timestamp matches the current date and time
-    expect(page.locator("form[name=\"refreshCockpit\"]")).to_contain_text(
-        f"Refresh alerts (last updated :{DateTimeUtils.current_datetime()})"
-    )
+    (expect(page.locator("form[name=\"refreshCockpit\"]")).to_contain_text("Refresh alerts (last updated :" + DateTimeUtils.current_datetime()))
 
     # Click the user guide link
     with page.expect_popup() as page1_info:

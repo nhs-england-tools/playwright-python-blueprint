@@ -3,8 +3,8 @@ import utils.user_tools
 from utils.user_tools import UserTools, UserToolsException
 from pathlib import Path
 
-
 pytestmark = [pytest.mark.utils]
+
 
 def test_retrieve_user(monkeypatch: object) -> None:
     monkeypatch.setattr(utils.user_tools, "USERS_FILE", Path(__file__).parent / "resources" / "test_users.json")
