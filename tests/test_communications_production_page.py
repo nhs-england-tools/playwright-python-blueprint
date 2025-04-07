@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from pages.communications_production_page import CommunicationsProduction
-from pages.batch_list_page import ActiveBatchList,ArchivedBatchList
+from pages.batch_list_page import ActiveBatchList, ArchivedBatchList
 from pages.letter_library_index_page import LetterLibraryIndex
 from pages.letter_signatory_page import LetterSignatory
 from pages.electronic_communications_management import ElectronicCommunicationManagement
@@ -53,7 +53,9 @@ def test_communications_production_page_navigation(page: Page) -> None:
 
     # Electronic communication management page loads as expected
     CommunicationsProduction(page).go_to_electronic_communication_management_page()
-    ElectronicCommunicationManagement(page).verify_electronic_communication_management_title()
+    ElectronicCommunicationManagement(
+        page
+    ).verify_electronic_communication_management_title()
 
     # Return to main menu
     # main_menu_link = page.get_by_role("link", name="Main Menu")

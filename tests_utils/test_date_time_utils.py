@@ -9,8 +9,12 @@ def test_current_datetime():
     dtu = utils.date_time_utils.DateTimeUtils()
     current_date = datetime.now()
     assert dtu.current_datetime() == current_date.strftime("%d/%m/%Y %H:%M")
-    assert dtu.current_datetime("%Y-%m-%d %H:%M") == current_date.strftime("%Y-%m-%d %H:%M")
-    assert dtu.current_datetime("%d %B %Y %H:%M") == current_date.strftime("%d %B %Y %H:%M")
+    assert dtu.current_datetime("%Y-%m-%d %H:%M") == current_date.strftime(
+        "%Y-%m-%d %H:%M"
+    )
+    assert dtu.current_datetime("%d %B %Y %H:%M") == current_date.strftime(
+        "%d %B %Y %H:%M"
+    )
 
 
 def test_format_date():
@@ -32,11 +36,27 @@ def test_get_day_of_week_for_today():
     dtu = utils.date_time_utils.DateTimeUtils()
     date = datetime.now()
     day_of_week = dtu.get_a_day_of_week(date)
-    assert day_of_week in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    assert day_of_week in [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
 
 
 def test_get_a_day_of_week():
     dtu = utils.date_time_utils.DateTimeUtils()
     date = datetime(2023, 11, 8)
     day_of_week = dtu.get_a_day_of_week(date)
-    assert day_of_week in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    assert day_of_week in [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]

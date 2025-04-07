@@ -7,7 +7,11 @@ pytestmark = [pytest.mark.utils]
 
 
 def test_retrieve_user(monkeypatch: object) -> None:
-    monkeypatch.setattr(utils.user_tools, "USERS_FILE", Path(__file__).parent / "resources" / "test_users.json")
+    monkeypatch.setattr(
+        utils.user_tools,
+        "USERS_FILE",
+        Path(__file__).parent / "resources" / "test_users.json",
+    )
 
     test_user = UserTools.retrieve_user("Test User")
     assert test_user["username"] == "TEST_USER1"
@@ -17,5 +21,7 @@ def test_retrieve_user(monkeypatch: object) -> None:
     assert test_user2["username"] == "TEST_USER2"
     assert test_user2["test_key"] == "TEST B"
 
-    with pytest.raises(UserToolsException, match=r'User \[Invalid User\] is not present in users.json'):
+    with pytest.raises(
+        UserToolsException, match=r"User \[Invalid User\] is not present in users.json"
+    ):
         UserTools.retrieve_user("Invalid User")

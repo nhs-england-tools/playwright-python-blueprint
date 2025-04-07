@@ -5,6 +5,7 @@ from pages.lynch_invitation_page import LynchInvitationPage
 from pages.set_lynch_invitation_rates_page import SetLynchInvitationRatesPage
 from utils.user_tools import UserTools
 
+
 @pytest.fixture(scope="function", autouse=True)
 def before_each(page: Page):
     """
@@ -16,6 +17,7 @@ def before_each(page: Page):
 
     # Go to Lynch Surveillance page
     BasePage(page).go_to_lynch_surveillance_page()
+
 
 @pytest.mark.smoke
 def test_lynch_surveillance_page_navigation(page: Page) -> None:

@@ -17,9 +17,13 @@ class NHSNumberTools:
             nhs_number (str): The NHS number to check.
         """
         if not nhs_number.isnumeric():
-            raise NHSNumberToolsException("The NHS number provided ({}) is not numeric.".format(nhs_number))
+            raise NHSNumberToolsException(
+                "The NHS number provided ({}) is not numeric.".format(nhs_number)
+            )
         if len(nhs_number) != 10:
-            raise NHSNumberToolsException("The NHS number provided ({}) is not 10 digits.".format(nhs_number))
+            raise NHSNumberToolsException(
+                "The NHS number provided ({}) is not 10 digits.".format(nhs_number)
+            )
 
     @staticmethod
     def spaced_nhs_number(nhs_number: int | str) -> str:

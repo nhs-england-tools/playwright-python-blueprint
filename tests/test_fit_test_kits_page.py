@@ -8,7 +8,9 @@ from pages.view_fit_kit_result_page import ViewFITKitResult
 from pages.kit_service_management_page import KitServiceManagement
 from pages.kit_result_audit_page import KitResultAudit
 from pages.view_algorithms_page import ViewAlgorithms
-from pages.view_screening_centre_fit_configuration_page import ViewScreeningCentreFITConfiguration
+from pages.view_screening_centre_fit_configuration_page import (
+    ViewScreeningCentreFITConfiguration,
+)
 from pages.screening_incidents_list_page import ScreeningIncidentsList
 from pages.manage_qc_products_page import ManageQCProducts
 from pages.maintain_analysers_page import MaintainAnalysers

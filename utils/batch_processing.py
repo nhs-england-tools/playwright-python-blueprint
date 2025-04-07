@@ -11,7 +11,13 @@ from playwright.sync_api import Page
 import logging
 
 
-def batch_processing(page: Page, batch_type: str, batch_description: str, latest_event_status: str, run_timed_events: bool = False) -> None:
+def batch_processing(
+    page: Page,
+    batch_type: str,
+    batch_description: str,
+    latest_event_status: str,
+    run_timed_events: bool = False,
+) -> None:
     """
     This util is used to process batches. It expects the following inputs:
     - page: This is playwright page variable
@@ -28,7 +34,9 @@ def batch_processing(page: Page, batch_type: str, batch_description: str, latest
 
     batch_description_cells = page.locator(f"//td[text()='{batch_description}']")
 
-    if batch_description_cells.count() == 0 and page.locator("td", has_text="No matching records found"):
+    if batch_description_cells.count() == 0 and page.locator(
+        "td", has_text="No matching records found"
+    ):
         pytest.fail(f"No {batch_type} {batch_description} batch found")
 
     for i in range(batch_description_cells.count()):
@@ -39,16 +47,24 @@ def batch_processing(page: Page, batch_type: str, batch_description: str, latest
             # Find the first link in that row and click it
             link = row.locator("a").first
             link_text = link.inner_text()  # Get the batch id dynamically
-            logging.info(f"Successfully found open '{batch_type} - {batch_description}' batch")
+            logging.info(
+                f"Successfully found open '{batch_type} - {batch_description}' batch"
+            )
             try:
-                logging.info(f"Attempting to get NHS Numbers for batch {link_text} from the DB")
+                logging.info(
+                    f"Attempting to get NHS Numbers for batch {link_text} from the DB"
+                )
                 nhs_no_df = get_nhs_no_from_batch_id(link_text)
-                logging.info(f"Successfully retrieved NHS Numbers from batch {link_text}")
+                logging.info(
+                    f"Successfully retrieved NHS Numbers from batch {link_text}"
+                )
             except Exception as e:
-                pytest.fail(f"Failed to retrieve NHS Numbers from batch {link_text}, {str(e)}")
+                pytest.fail(
+                    f"Failed to retrieve NHS Numbers from batch {link_text}, {str(e)}"
+                )
             link.click()
             break
-        elif (i+1) == batch_description_cells.count():
+        elif (i + 1) == batch_description_cells.count():
             pytest.fail(f"No open '{batch_type} - {batch_description}' batch found")
 
     prepare_and_print_batch(page, link_text)
@@ -58,12 +74,15 @@ def batch_processing(page: Page, batch_type: str, batch_description: str, latest
     first_nhs_no = nhs_no_df["subject_nhs_number"].iloc[0]
     try:
         verify_subject_event_status_by_nhs_no(page, first_nhs_no, latest_event_status)
-        logging.info(f"Successfully verified NHS number {first_nhs_no} with status {latest_event_status}")
+        logging.info(
+            f"Successfully verified NHS number {first_nhs_no} with status {latest_event_status}"
+        )
     except Exception as e:
         pytest.fail(f"Verification failed for NHS number {first_nhs_no}: {str(e)}")
 
     if run_timed_events:
         OracleDB().exec_bcss_timed_events(nhs_no_df)
+
 
 def prepare_and_print_batch(page: Page, link_text) -> None:
     """
@@ -72,7 +91,8 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
     """
     ManageActiveBatch(page).click_prepare_button()
     page.wait_for_timeout(
-        1000)  # This one second timeout does not affect the time to execute, as it is just used to ensure the reprepare batch button is clicked and does not instantly advance to the next step
+        1000
+    )  # This one second timeout does not affect the time to execute, as it is just used to ensure the reprepare batch button is clicked and does not instantly advance to the next step
     ManageActiveBatch(page).reprepare_batch_text.wait_for()
 
     # This loops through each Retrieve button and clicks each one
@@ -96,7 +116,9 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
     # This loops through each Confirm printed button and clicks each one
     try:
         for confirm_printed_button in range(retrieve_button_count):
-            logging.info(f"Clicking confirm printed button {confirm_printed_button + 1}")
+            logging.info(
+                f"Clicking confirm printed button {confirm_printed_button + 1}"
+            )
             page.once("dialog", lambda dialog: dialog.accept())
             ManageActiveBatch(page).confirm_button.nth(0).click()
     except Exception as e:
@@ -108,6 +130,7 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
         logging.info(f"Batch {link_text} successfully archived")
     except Exception as e:
         pytest.fail(f"Batch successfully archived message is not shown: {str(e)}")
+
 
 def check_batch_in_archived_batch_list(page: Page, link_text) -> None:
     """

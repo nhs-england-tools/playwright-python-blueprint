@@ -1,5 +1,6 @@
-from playwright.sync_api import Page,expect
+from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
+
 
 class ViewTestKitResult(BasePage):
     def __init__(self, page: Page):

@@ -29,7 +29,7 @@ def get_kit_id_from_db() -> pd.DataFrame:
 def get_nhs_no_from_batch_id(batch_id) -> pd.DataFrame:
     """
     This query returns a dataframe of NHS Numbers of the subjects in a certain batch
-    We provide the batch ID e.g. 8812 and then we have a list of NHS Numbers we can verify the statuses of
+    We provide the batch ID e.g. 8812 and then we have a list of NHS Numbers we can verify the statuses
     """
     nhs_number_df = OracleDB().execute_query(f"""
     SELECT SUBJECT_NHS_NUMBER

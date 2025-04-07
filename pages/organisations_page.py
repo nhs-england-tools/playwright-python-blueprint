@@ -9,11 +9,21 @@ class OrganisationsPage(BasePage):
         self.page = page
 
         # Organisations page links
-        self.screening_centre_parameters_page = self.page.get_by_role("link", name="Screening Centre Parameters")
-        self.organisation_parameters_page = self.page.get_by_role("link", name="Organisation Parameters")
-        self.organisations_and_site_details_page = self.page.get_by_role("link", name="Organisation and Site Details")
-        self.gp_practice_endorsement_page = self.page.get_by_role("link", name="GP Practice Endorsement")
-        self.upload_nacs_data_bureau_page = self.page.get_by_role("link", name="Upload NACS data (Bureau)")
+        self.screening_centre_parameters_page = self.page.get_by_role(
+            "link", name="Screening Centre Parameters"
+        )
+        self.organisation_parameters_page = self.page.get_by_role(
+            "link", name="Organisation Parameters"
+        )
+        self.organisations_and_site_details_page = self.page.get_by_role(
+            "link", name="Organisation and Site Details"
+        )
+        self.gp_practice_endorsement_page = self.page.get_by_role(
+            "link", name="GP Practice Endorsement"
+        )
+        self.upload_nacs_data_bureau_page = self.page.get_by_role(
+            "link", name="Upload NACS data (Bureau)"
+        )
         self.bureau_page = self.page.get_by_role("link", name="Bureau")
 
     def go_to_screening_centre_parameters_page(self) -> None:

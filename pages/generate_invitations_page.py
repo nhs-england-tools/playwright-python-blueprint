@@ -3,29 +3,34 @@ from pages.base_page import BasePage
 import pytest
 import logging
 
+
 class GenerateInvitations(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
         # Generate Invitations - page links
-        self.generate_invitations_button = self.page.get_by_role("button", name="Generate Invitations")
+        self.generate_invitations_button = self.page.get_by_role(
+            "button", name="Generate Invitations"
+        )
         self.display_rs = self.page.locator("#displayRS")
         self.refresh_button = self.page.get_by_role("button", name="Refresh")
         self.planned_invitations_total = self.page.locator("#col8_total")
         self.self_referrals_total = self.page.locator("#col9_total")
         self.generate_invitations_title = self.page.locator("#ntshPageTitle")
 
-    def click_generate_invitations_button(self)->None:
+    def click_generate_invitations_button(self) -> None:
         self.click(self.generate_invitations_button)
 
-    def click_refresh_button(self)->None:
+    def click_refresh_button(self) -> None:
         self.click(self.refresh_button)
 
     def verify_generate_invitations_title(self) -> None:
         expect(self.generate_invitations_title).to_contain_text("Generate Invitations")
 
     def verify_invitation_generation_progress_title(self) -> None:
-        expect(self.generate_invitations_title).to_contain_text("Invitation Generation Progress")
+        expect(self.generate_invitations_title).to_contain_text(
+            "Invitation Generation Progress"
+        )
 
     def wait_for_invitation_generation_complete(self) -> bool:
         """
@@ -48,7 +53,9 @@ class GenerateInvitations(BasePage):
 
         # Loop until the table no longer contains "Queued"
         logging.info("Waiting for successful generation")
-        while elapsed < timeout:  # there may be a stored procedure to speed this process up
+        while (
+            elapsed < timeout
+        ):  # there may be a stored procedure to speed this process up
             table_text = self.display_rs.text_content()
             if "Failed" in table_text:
                 pytest.fail("Invitation has failed to generate")
@@ -68,7 +75,9 @@ class GenerateInvitations(BasePage):
         except Exception as e:
             pytest.fail(f"Invitations not generated successfully: {str(e)}")
 
-        value = self.planned_invitations_total.text_content().strip()  # Get text and remove extra spaces
+        value = (
+            self.planned_invitations_total.text_content().strip()
+        )  # Get text and remove extra spaces
         if int(value) < 5:
             pytest.fail("There are less than 5 invitations generated")
 

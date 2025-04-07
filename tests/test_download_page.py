@@ -2,9 +2,13 @@ import pytest
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from pages.downloads_page import DownloadsPage
-from pages.individual_download_request_and_retrieval_page import IndividualDownloadRequestAndRetrieval
+from pages.individual_download_request_and_retrieval_page import (
+    IndividualDownloadRequestAndRetrieval,
+)
 from pages.list_of_individual_downloads_page import ListOfIndividualDownloads
-from pages.batch_download_request_and_retrieval_page import BatchDownloadRequestAndRetrieval
+from pages.batch_download_request_and_retrieval_page import (
+    BatchDownloadRequestAndRetrieval,
+)
 from utils.user_tools import UserTools
 
 
@@ -29,7 +33,9 @@ def test_download_facility_page_navigation(page: Page) -> None:
     """
     # Individual download request and retrieval page loads as expected
     DownloadsPage(page).go_to_individual_download_request_page()
-    IndividualDownloadRequestAndRetrieval(page).verify_individual_download_request_and_retrieval_title()
+    IndividualDownloadRequestAndRetrieval(
+        page
+    ).verify_individual_download_request_and_retrieval_title()
 
     # Individual download request and retrieval page contains warning message
     IndividualDownloadRequestAndRetrieval(page).expect_form_to_have_warning()
@@ -42,7 +48,9 @@ def test_download_facility_page_navigation(page: Page) -> None:
 
     # Batch download request and retrieval page loads as expected
     DownloadsPage(page).go_to_batch_download_request_and_page()
-    BatchDownloadRequestAndRetrieval(page).verify_batch_download_request_and_retrieval_title()
+    BatchDownloadRequestAndRetrieval(
+        page
+    ).verify_batch_download_request_and_retrieval_title()
 
     # Batch download request and retrieval page contains warning message
     BatchDownloadRequestAndRetrieval(page).expect_form_to_have_warning()

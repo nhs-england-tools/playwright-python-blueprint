@@ -13,6 +13,7 @@ from utils.user_tools import UserTools
 from jproperties import Properties
 from sys import platform
 
+
 @pytest.fixture
 def smokescreen_properties() -> dict:
     """
@@ -23,13 +24,16 @@ def smokescreen_properties() -> dict:
         dict: A dictionary containing the values loaded from the 'bcss_smokescreen_tests.properties' file.
     """
     configs = Properties()
-    if platform == "win32": # File path from content root is required on Windows OS
-        with open('tests/smokescreen/bcss_smokescreen_tests.properties', 'rb') as read_prop:
+    if platform == "win32":  # File path from content root is required on Windows OS
+        with open(
+            "tests/smokescreen/bcss_smokescreen_tests.properties", "rb"
+        ) as read_prop:
             configs.load(read_prop)
-    elif platform == "darwin": # Only the filename is required on macOS
-        with open('bcss_smokescreen_tests.properties', 'rb') as read_prop:
+    elif platform == "darwin":  # Only the filename is required on macOS
+        with open("bcss_smokescreen_tests.properties", "rb") as read_prop:
             configs.load(read_prop)
     return configs.properties
+
 
 @pytest.mark.smoke
 @pytest.mark.smokescreen
@@ -64,9 +68,12 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
 
     nhs_no = subjectdf["subject_nhs_number"].iloc[0]
     try:
-        verify_subject_event_status_by_nhs_no(page, nhs_no, "S43 - Kit Returned and Logged (Initial Test)")
+        verify_subject_event_status_by_nhs_no(
+            page, nhs_no, "S43 - Kit Returned and Logged (Initial Test)"
+        )
         logging.info(
-            f"Successfully verified NHS number {nhs_no} with status S43 - Kit Returned and Logged (Initial Test)")
+            f"Successfully verified NHS number {nhs_no} with status S43 - Kit Returned and Logged (Initial Test)"
+        )
     except Exception as e:
         pytest.fail(f"Verification failed for NHS number {nhs_no}: {str(e)}")
 
@@ -85,7 +92,9 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
     except Exception as e:
         pytest.fail(f"{spoilt_fit_device_id} Unsuccessfully logged: {str(e)}")
 
-    batch_processing(page, "S3", "Retest (Spoilt) (FIT)", "S11 - Retest Kit Sent (Spoilt)")
+    batch_processing(
+        page, "S3", "Retest (Spoilt) (FIT)", "S11 - Retest Kit Sent (Spoilt)"
+    )
 
     # Log out
     Logout(page).log_out()

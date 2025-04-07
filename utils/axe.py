@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 PATH_FOR_REPORT = Path(os.getcwd()) / "axe-reports"
 
 
-class Axe():
+class Axe:
     """
     This utility allows for interaction with axe-core, to allow for accessibility scanning of pages
     under test to identify any accessibility concerns.

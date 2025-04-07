@@ -15,6 +15,7 @@ def create_fit_id_df() -> pd.DataFrame:
     df["fit_device_id"] = df["fit_device_id"].apply(convert_kit_id_to_fit_device_id)
     return df
 
+
 def calculate_check_digit(kit_id: str) -> str:
     """
     This function used used to calculate the check digit of a kit ID
@@ -30,6 +31,7 @@ def calculate_check_digit(kit_id: str) -> str:
         total += char_string.index(kit_id[i - 1])
     check_digit = char_string[total % 43]
     return f"{kit_id}-{check_digit}"
+
 
 def convert_kit_id_to_fit_device_id(kit_id: str) -> str:
     """

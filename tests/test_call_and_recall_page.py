@@ -24,10 +24,10 @@ def tests_properties() -> dict:
     """
     configs = Properties()
     if platform == "win32":  # File path from content root is required on Windows OS
-        with open('tests/bcss_tests.properties', 'rb') as read_prop:
+        with open("tests/bcss_tests.properties", "rb") as read_prop:
             configs.load(read_prop)
     elif platform == "darwin":  # Only the filename is required on macOS
-        with open('bcss_tests.properties', 'rb') as read_prop:
+        with open("bcss_tests.properties", "rb") as read_prop:
             configs.load(read_prop)
     return configs.properties
 
@@ -87,7 +87,9 @@ def test_view_an_invitation_plan(page: Page, tests_properties: dict) -> None:
     CallAndRecall(page).go_to_planning_and_monitoring_page()
 
     # Select a screening centre
-    InvitationsMonitoring(page).go_to_invitation_plan_page(tests_properties["screening_centre_code"])
+    InvitationsMonitoring(page).go_to_invitation_plan_page(
+        tests_properties["screening_centre_code"]
+    )
 
     # Select an invitation plan
     InvitationsPlans(page).go_to_first_available_plan()

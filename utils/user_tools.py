@@ -32,7 +32,9 @@ class UserTools:
         # Retrieve username from users.json
         user_details = UserTools.retrieve_user(username)
         # Login to bcss using retrieved username and a password stored in the .env file
-        CognitoLoginPage(page).login_as_user(user_details["username"], os.getenv("BCSS_PASS"))
+        CognitoLoginPage(page).login_as_user(
+            user_details["username"], os.getenv("BCSS_PASS")
+        )
 
     @staticmethod
     def retrieve_user(user: str) -> dict:
@@ -45,7 +47,7 @@ class UserTools:
         Returns:
             dict: A Python dictionary with the details of the user requested, if present.
         """
-        with open(USERS_FILE, 'r') as file:
+        with open(USERS_FILE, "r") as file:
             user_data = json.loads(file.read())
 
         if user not in user_data:

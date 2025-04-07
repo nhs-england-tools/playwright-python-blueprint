@@ -4,6 +4,7 @@ from utils.user_tools import UserTools
 from pages.base_page import BasePage
 from dotenv import load_dotenv
 
+
 class BcssLoginPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
