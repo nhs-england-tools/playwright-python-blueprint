@@ -48,7 +48,7 @@ class UserTools:
         with open(USERS_FILE, 'r') as file:
             user_data = json.loads(file.read())
 
-        if not user in user_data:
+        if user not in user_data:
             raise UserToolsException(f"User [{user}] is not present in users.json")
 
         logger.debug(f"Returning user: {user_data[user]}")

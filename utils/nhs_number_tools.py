@@ -8,9 +8,6 @@ class NHSNumberTools:
     A utility class providing functionality around NHS numbers.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def _nhs_number_checks(nhs_number: str) -> None:
         """
@@ -21,7 +18,7 @@ class NHSNumberTools:
         """
         if not nhs_number.isnumeric():
             raise NHSNumberToolsException("The NHS number provided ({}) is not numeric.".format(nhs_number))
-        if not len(nhs_number) == 10:
+        if len(nhs_number) != 10:
             raise NHSNumberToolsException("The NHS number provided ({}) is not 10 digits.".format(nhs_number))
 
     @staticmethod
