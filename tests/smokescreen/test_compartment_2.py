@@ -60,6 +60,7 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
         sample_date = datetime.now().strftime("%#d %b %Y")
         logging.info("Setting sample date to today's date")
         LogDevices(page).fill_sample_date_field(sample_date)
+        LogDevices(page).log_devices_title.get_by_text("Scan Device").wait_for()
         try:
             LogDevices(page).verify_successfully_logged_device_text()
             logging.info(f"{fit_device_id} Successfully logged")
