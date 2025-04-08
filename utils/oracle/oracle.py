@@ -126,7 +126,7 @@ class OracleDB:
                 self.disconnect_from_db(conn)
 
     def execute_query(
-        self, query: str
+        self, query: str, parameters: list | None = None
     ) -> pd.DataFrame:  # To use when "select xxxx" (stored procedures)
         """
         This is used to execute any sql queries.
@@ -135,9 +135,7 @@ class OracleDB:
         conn = self.connect_to_db()
         engine = create_engine("oracle+oracledb://", creator=lambda: conn)
         try:
-            logging.info("Attempting to execute query")
-            df = pd.read_sql(query, engine)
-            logging.info("Query execution successful!")
+            df = pd.read_sql(query, engine) if parameters == None else pd.read_sql(query, engine, params = parameters)
         except Exception as executionError:
             logging.error(
                 f"Failed to execute query with execution error {executionError}"

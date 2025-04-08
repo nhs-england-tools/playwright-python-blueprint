@@ -1,9 +1,11 @@
 from pages.base_page import BasePage
-from pages.subject_screening_search_page import (
+from pages.screening_subject_search.subject_screening_search_page import (
     SubjectScreeningPage,
     SearchAreaSearchOptions,
 )
-from pages.subject_screening_summary import SubjectScreeningSummary
+from pages.screening_subject_search.subject_screening_summary import (
+    SubjectScreeningSummary,
+)
 from playwright.sync_api import Page, expect
 
 

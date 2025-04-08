@@ -3,17 +3,17 @@ from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.fit_test_kits.fit_test_kits_page import FITTestKits
 from pages.fit_test_kits.fit_rollout_summary_page import FITRolloutSummary
-from pages.log_devices_page import LogDevices
+from pages.fit_test_kits.log_devices_page import LogDevices
 from pages.fit_test_kits.view_fit_kit_result_page import ViewFITKitResult
 from pages.fit_test_kits.kit_service_management_page import KitServiceManagement
 from pages.fit_test_kits.kit_result_audit_page import KitResultAudit
-from pages.view_algorithms_page import ViewAlgorithms
-from pages.view_screening_centre_fit_configuration_page import (
+from pages.fit_test_kits.view_algorithms_page import ViewAlgorithms
+from pages.fit_test_kits.view_screening_centre_fit_configuration_page import (
     ViewScreeningCentreFITConfiguration,
 )
-from pages.screening_incidents_list_page import ScreeningIncidentsList
-from pages.manage_qc_products_page import ManageQCProducts
-from pages.maintain_analysers_page import MaintainAnalysers
+from pages.fit_test_kits.screening_incidents_list_page import ScreeningIncidentsList
+from pages.fit_test_kits.manage_qc_products_page import ManageQCProducts
+from pages.fit_test_kits.maintain_analysers_page import MaintainAnalysers
 from utils.user_tools import UserTools
 
 
