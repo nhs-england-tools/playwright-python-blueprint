@@ -47,7 +47,7 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
     - Logging FIT Devices as Spoilt
     - Processing the generated S3 batch
     """
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     BasePage(page).go_to_fit_test_kits_page()
     FITTestKits(page).go_to_log_devices_page()

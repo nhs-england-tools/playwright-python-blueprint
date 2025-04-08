@@ -13,7 +13,7 @@ def before_each(page: Page):
     lynch surveillance page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Go to Lynch Surveillance page
     BasePage(page).go_to_lynch_surveillance_page()

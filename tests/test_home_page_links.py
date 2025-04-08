@@ -12,7 +12,7 @@ def before_each(page: Page):
     being displayed
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
 
 @pytest.mark.smoke

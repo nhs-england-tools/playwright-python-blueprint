@@ -22,7 +22,7 @@ def before_each(page: Page):
     gfobt test kits page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Go to gFOBT test kits page
     BasePage(page).go_to_gfobt_test_kits_page()

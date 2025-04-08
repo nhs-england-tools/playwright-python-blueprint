@@ -24,7 +24,7 @@ def before_each(page: Page):
     fit test kits page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Go to fit test kits page
     BasePage(page).go_to_fit_test_kits_page()

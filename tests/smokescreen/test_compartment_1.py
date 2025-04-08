@@ -43,7 +43,7 @@ def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> No
     This is used to create the invitations plan. As it is not always needed it is separate to the main Compartment 1 function
     """
     logging.info("Compartment 1 - Create Invitations Plan")
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     # Create plan - England
     BasePage(page).go_to_call_and_recall_page()
     CallAndRecall(page).go_to_planning_and_monitoring_page()
@@ -77,7 +77,7 @@ def test_compartment_1(page: Page) -> None:
     - Processes S10 (FIT) batches
     """
     logging.info("Compartment 1 - Generate Invitations")
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Generate Invitations
     BasePage(page).click_main_menu_link()

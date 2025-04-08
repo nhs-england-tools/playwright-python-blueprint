@@ -46,7 +46,7 @@ def test_compartment_3(page: Page, smokescreen_properties: dict) -> None:
     It then checks that the status of the subject is as expected using the subject screening summary page
     Then it process two batches performing checks on the subjects to ensure they always have the correct event status
     """
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Find data , separate it into normal and abnormal, Add results to the test records in the KIT_QUEUE table (i.e. mimic receiving results from the middleware)
     # and get device IDs and their flags
