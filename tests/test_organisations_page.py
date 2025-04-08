@@ -33,7 +33,7 @@ def before_each(page: Page):
     organisations page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Go to organisations page
     BasePage(page).go_to_organisations_page()

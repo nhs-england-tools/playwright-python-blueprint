@@ -13,7 +13,7 @@ def before_test(page: Page):
     This fixture confirms that users can log in successfully in to BCSS whilst the approved users list is empty
     """
     # Log in to BCSS as bcss401 user, then log out
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     bcss_home.BasePage(page).bowel_cancer_screening_system_header_is_displayed()
     bcss_home.BasePage(page).click_log_out_link()
     logout.Logout(page).verify_log_out_page()
@@ -32,7 +32,7 @@ def test_only_users_on_approved_can_login_to_bcss(page: Page) -> None:
     # Add bcss401 user to approved users list table
     OracleDB().populate_ui_approved_users_table("BCSS401")
     # BCSS401 user successfully logs in to BCSS whilst on the approved list
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     bcss_home.BasePage(page).bowel_cancer_screening_system_header_is_displayed()
     # BCSS401 user logs out
     bcss_home.BasePage(page).click_log_out_link()

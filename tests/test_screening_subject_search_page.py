@@ -50,7 +50,7 @@ def before_each(page: Page):
     screening_subject_search page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Go to screening subject search page
     BasePage(page).go_to_screening_subject_search_page()

@@ -34,7 +34,7 @@ def before_each(page: Page):
     reports page
     """
     # Log in to BCSS
-    UserTools.user_login(page, "Hub Manager State Registered")
+    UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Open reports page
     BasePage(page).go_to_reports_page()
