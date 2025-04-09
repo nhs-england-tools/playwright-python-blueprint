@@ -19,21 +19,35 @@ class BasePage:
         # Main menu - page links
         self.contacts_list_page = self.page.get_by_role("link", name="Contacts List")
         self.bowel_scope_page = self.page.get_by_role("link", name="Bowel Scope")
-        self.call_and_recall_page = self.page.get_by_role("link", name="Call and Recall")
-        self.communications_production_page = self.page.get_by_role("link", name="Communications Production")
+        self.call_and_recall_page = self.page.get_by_role(
+            "link", name="Call and Recall"
+        )
+        self.communications_production_page = self.page.get_by_role(
+            "link", name="Communications Production"
+        )
         self.download_page = self.page.get_by_role("link", name="Download")
         self.fit_test_kits_page = self.page.get_by_role("link", name="FIT Test Kits")
-        self.gfobt_test_kits_page = self.page.get_by_role("link", name="gFOBT Test Kits")
-        self.lynch_surveillance_page = self.page.get_by_role("link", name="Lynch Surveillance")
+        self.gfobt_test_kits_page = self.page.get_by_role(
+            "link", name="gFOBT Test Kits"
+        )
+        self.lynch_surveillance_page = self.page.get_by_role(
+            "link", name="Lynch Surveillance"
+        )
         self.organisations_page = self.page.get_by_role("link", name="Organisations")
         self.reports_page = self.page.get_by_role("link", name="Reports")
-        self.screening_practitioner_appointments_page = self.page.get_by_role("link", name="Screening Practitioner")
-        self.screening_subject_search_page = self.page.get_by_role("link", name="Screening Subject Search")
+        self.screening_practitioner_appointments_page = self.page.get_by_role(
+            "link", name="Screening Practitioner"
+        )
+        self.screening_subject_search_page = self.page.get_by_role(
+            "link", name="Screening Subject Search"
+        )
         # Bowel Cancer Screening System header
         self.bowel_cancer_screening_system_header = self.page.locator("#ntshAppTitle")
         # Bowel Cancer Screening Page header
         self.bowel_cancer_screening_page_title = self.page.locator("#page-title")
-        self.bowel_cancer_screening_ntsh_page_title = self.page.locator("#ntshPageTitle")
+        self.bowel_cancer_screening_ntsh_page_title = self.page.locator(
+            "#ntshPageTitle"
+        )
         self.main_menu__header = self.page.locator("#ntshPageTitle")
 
     def click_main_menu_link(self) -> None:
@@ -70,7 +84,9 @@ class BasePage:
         self.click(self.help_link)
 
     def bowel_cancer_screening_system_header_is_displayed(self) -> None:
-        expect(self.bowel_cancer_screening_system_header).to_contain_text("Bowel Cancer Screening System")
+        expect(self.bowel_cancer_screening_system_header).to_contain_text(
+            "Bowel Cancer Screening System"
+        )
 
     def main_menu_header_is_displayed(self) -> None:
         expect(self.main_menu__header).to_contain_text("Main Menu")
@@ -78,35 +94,18 @@ class BasePage:
     def bowel_cancer_screening_page_title_contains_text(self, text: str) -> None:
         """Asserts that the page title contains the specified text.
 
-            Args:
-                text (str): The expected text that you want to assert for the page title ("#page-title") element.
+        Args:
+            text (str): The expected text that you want to assert for the page title element.
+        Page elements of interest:
+            self.bowel_cancer_screening_page_title
+            self.bowel_cancer_screening_ntsh_page_title
         """
-        expect(self.bowel_cancer_screening_page_title).to_contain_text(text)
-
-    def bowel_cancer_screening_ntsh_page_title_contains_text(self, text: str) -> None:
-        """Asserts that the page title contains the specified text.
-
-            Args:
-                text (str): The expected text that you want to assert for the page title ("#ntshPageTitle") element.
-        """
-        expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
-
-    def bowel_cancer_screening_page_header_contains_text(self, text: str) -> None:
-         """Asserts that the page title contains the specified text.
-
-             Args:
-                 text (str): The expected text that you want to assert for the page title element.
-             Page elements of interest:
-                 self.bowel_cancer_screening_page_title
-                 self.bowel_cancer_screening_ntsh_page_title
-         """
-         self.page.wait_for_load_state('load')
-         self.page.wait_for_load_state('domcontentloaded')
-         if self.bowel_cancer_screening_page_title.is_visible():
-             expect(self.bowel_cancer_screening_page_title).to_contain_text(text)
-         else:
-             expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
-    
+        self.page.wait_for_load_state("load")
+        self.page.wait_for_load_state("domcontentloaded")
+        if self.bowel_cancer_screening_page_title.is_visible():
+            expect(self.bowel_cancer_screening_page_title).to_contain_text(text)
+        else:
+            expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
 
     def go_to_contacts_list_page(self) -> None:
         self.click(self.contacts_list_page)
@@ -152,12 +151,14 @@ class BasePage:
         - Increases the reliability of clicks to avoid issues with the normal click method
         """
         try:
-            self.page.wait_for_load_state('load')
-            self.page.wait_for_load_state('domcontentloaded')
+            self.page.wait_for_load_state("load")
+            self.page.wait_for_load_state("domcontentloaded")
             locator.wait_for(state="attached")
             locator.wait_for(state="visible")
             locator.click()
 
         except Exception as locatorClickError:
-            logging.warning(f"Failed to click element with error: {locatorClickError}, trying again...")
+            logging.warning(
+                f"Failed to click element with error: {locatorClickError}, trying again..."
+            )
             locator.click()
