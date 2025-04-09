@@ -1,30 +1,15 @@
 import pytest
 from playwright.sync_api import Page, expect
-from sys import platform
 from pages.base_page import BasePage
 from pages.reports.reports_page import ReportsPage
 from utils.date_time_utils import DateTimeUtils
 from utils.user_tools import UserTools
-from jproperties import Properties
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
-def tests_properties() -> dict:
-    """
-    Reads the 'bcss_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open("tests/bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -204,7 +189,7 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
 
 
 def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundaries(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms 'allocate_sc_for_patient_movements_within_hub_boundaries' page loads,
@@ -247,7 +232,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
 
     # Select another screening centre
     set_patients_screening_centre_dropdown.select_option(
-        tests_properties["coventry_and_warwickshire_bcs_centre"]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Click update
@@ -255,7 +240,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
 
     # Verify new screening centre has saved
     expect(ReportsPage(page).set_patients_screening_centre_dropdown).to_have_value(
-        tests_properties["coventry_and_warwickshire_bcs_centre"]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
 
@@ -346,7 +331,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
 
 # Operational Reports
 def test_operational_reports_appointment_attendance_not_updated(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms 'appointment_attendance_not_updated' page loads,
@@ -375,7 +360,7 @@ def test_operational_reports_appointment_attendance_not_updated(
 
     # Select a screening centre from the drop-down options
     set_patients_screening_centre_dropdown.select_option(
-        tests_properties["coventry_and_warwickshire_bcs_centre"]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Click "Generate Report" button
@@ -447,7 +432,7 @@ def test_operational_reports_demographic_update_inconsistent_with_manual_update(
 
 
 def test_operational_reports_screening_practitioner_6_weeks_availability_not_set_up(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms 'screening_practitioner_6_weeks_availability_not_set_up_report' page loads,
@@ -474,7 +459,7 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
 
     # Select a screening centre
     set_patients_screening_centre_dropdown.select_option(
-        tests_properties["coventry_and_warwickshire_bcs_centre"]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Click "Generate Report"
@@ -494,7 +479,7 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
 
 @pytest.mark.only
 def test_operational_reports_screening_practitioner_appointments(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms 'screening_practitioner_appointments' page loads,
@@ -523,12 +508,12 @@ def test_operational_reports_screening_practitioner_appointments(
 
     # Select a screening centre
     set_patients_screening_centre_dropdown.select_option(
-        tests_properties["coventry_and_warwickshire_bcs_centre"]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Select a screening practitioner
     screening_practitioner_dropdown.select_option(
-        tests_properties["screening_practitioner_named_another_stubble"]
+        general_properties["screening_practitioner_named_another_stubble"]
     )
 
     # Click "Generate Report"

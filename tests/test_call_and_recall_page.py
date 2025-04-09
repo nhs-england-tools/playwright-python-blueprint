@@ -1,5 +1,4 @@
 import pytest
-from sys import platform
 from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.call_and_recall.call_and_recall_page import CallAndRecall
@@ -10,26 +9,12 @@ from pages.call_and_recall.age_extension_rollout_plans_page import AgeExtensionR
 from pages.call_and_recall.invitations_plans_page import InvitationsPlans
 from pages.call_and_recall.create_a_plan_page import CreateAPlan
 from utils.user_tools import UserTools
-from jproperties import Properties
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
-def tests_properties() -> dict:
-    """
-    Reads the 'bcss_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open("tests/bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -79,7 +64,7 @@ def test_call_and_recall_page_navigation(page: Page) -> None:
     BasePage(page).main_menu_header_is_displayed()
 
 
-def test_view_an_invitation_plan(page: Page, tests_properties: dict) -> None:
+def test_view_an_invitation_plan(page: Page, general_properties: dict) -> None:
     """
     Confirms that an invitation plan can be viewed via a screening centre from the planning ad monitoring page
     """
@@ -88,7 +73,7 @@ def test_view_an_invitation_plan(page: Page, tests_properties: dict) -> None:
 
     # Select a screening centre
     InvitationsMonitoring(page).go_to_invitation_plan_page(
-        tests_properties["screening_centre_code"]
+        general_properties["screening_centre_code"]
     )
 
     # Select an invitation plan

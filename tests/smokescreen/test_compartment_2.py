@@ -10,29 +10,12 @@ from utils.batch_processing import batch_processing
 from utils.fit_kit_generation import create_fit_id_df
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.user_tools import UserTools
-from jproperties import Properties
-from sys import platform
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
 def smokescreen_properties() -> dict:
-    """
-    Reads the 'bcss_smokescreen_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_smokescreen_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open(
-            "tests/smokescreen/bcss_smokescreen_tests.properties", "rb"
-        ) as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_smokescreen_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
+    return PropertiesFile().get_smokescreen_properties()
 
 
 @pytest.mark.smoke

@@ -1,7 +1,5 @@
-from sys import platform
 import pytest
 import logging
-from jproperties import Properties
 from pages.logout.log_out_page import Logout
 from utils.user_tools import UserTools
 from pages.base_page import BasePage
@@ -12,28 +10,12 @@ from pages.call_and_recall.create_a_plan_page import CreateAPlan
 from pages.call_and_recall.generate_invitations_page import GenerateInvitations
 from playwright.sync_api import Page
 from utils.batch_processing import batch_processing
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
 def smokescreen_properties() -> dict:
-    """
-    Reads the 'bcss_smokescreen_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_smokescreen_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open(
-            "tests/smokescreen/bcss_smokescreen_tests.properties", "rb"
-        ) as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_smokescreen_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
-
+    return PropertiesFile().get_smokescreen_properties()
 
 @pytest.mark.smoke
 @pytest.mark.compartment1

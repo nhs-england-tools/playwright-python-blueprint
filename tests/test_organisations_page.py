@@ -1,29 +1,14 @@
-from sys import platform
 import pytest
-from jproperties import Properties
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from pages.organisations.organisations_page import OrganisationsPage
 from utils.user_tools import UserTools
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
-def tests_properties() -> dict:
-    """
-    Reads the 'bcss_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open("tests/bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -86,7 +71,7 @@ def test_organisations_page_navigation(page: Page) -> None:
 
 
 def test_view_an_organisations_system_parameters(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms that an organisation's system parameters can be accessed and viewed
@@ -95,7 +80,7 @@ def test_view_an_organisations_system_parameters(
     OrganisationsPage(page).go_to_screening_centre_parameters_page()
 
     # View an Organisation
-    page.get_by_role("link", name=tests_properties["screening_centre_code"]).click()
+    page.get_by_role("link", name=general_properties["screening_centre_code"]).click()
     BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
         "System Parameters"
     )

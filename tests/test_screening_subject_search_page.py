@@ -1,6 +1,5 @@
 import pytest
-from sys import platform
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.screening_subject_search.subject_screening_search_page import (
     ScreeningStatusSearchOptions,
@@ -21,26 +20,12 @@ from utils.screening_subject_page_searcher import (
     search_subject_by_search_area,
 )
 from utils.user_tools import UserTools
-from jproperties import Properties
+from utils.load_properties_file import PropertiesFile
 
 
 @pytest.fixture
-def tests_properties() -> dict:
-    """
-    Reads the 'bcss_tests.properties' file and populates a 'Properties' object.
-    Returns a dictionary of properties for use in tests.
-
-    Returns:
-        dict: A dictionary containing the values loaded from the 'bcss_tests.properties' file.
-    """
-    configs = Properties()
-    if platform == "win32":  # File path from content root is required on Windows OS
-        with open("tests/bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    elif platform == "darwin":  # Only the filename is required on macOS
-        with open("bcss_tests.properties", "rb") as read_prop:
-            configs.load(read_prop)
-    return configs.properties
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -58,7 +43,7 @@ def before_each(page: Page):
 
 @pytest.mark.smoke
 def test_search_screening_subject_by_nhs_number(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms a screening subject can be searched for, using their nhs number by doing the following:
@@ -68,11 +53,11 @@ def test_search_screening_subject_by_nhs_number(
     - Click search button
     - Verify the Subject Screening Summary page is displayed
     """
-    search_subject_by_nhs_number(page, tests_properties["nhs_number"])
+    search_subject_by_nhs_number(page, general_properties["nhs_number"])
 
 
 def test_search_screening_subject_by_surname(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms a screening subject can be searched for, using their surname by doing the following:
@@ -82,11 +67,11 @@ def test_search_screening_subject_by_surname(
     - Click search button
     - Verify the subject summary page is displayed
     """
-    search_subject_by_surname(page, tests_properties["surname"])
+    search_subject_by_surname(page, general_properties["surname"])
 
 
 def test_search_screening_subject_by_forename(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms a screening subject can be searched for, using their forename by doing the following:
@@ -96,10 +81,10 @@ def test_search_screening_subject_by_forename(
     - Click search button
     - Verify the subject summary page is displayed
     """
-    search_subject_by_forename(page, tests_properties["forename"])
+    search_subject_by_forename(page, general_properties["forename"])
 
 
-def test_search_screening_subject_by_dob(page: Page, tests_properties: dict) -> None:
+def test_search_screening_subject_by_dob(page: Page, general_properties: dict) -> None:
     """
     Confirms a screening subject can be searched for, using their date of birth by doing the following:
     - Clear filters
@@ -108,7 +93,7 @@ def test_search_screening_subject_by_dob(page: Page, tests_properties: dict) -> 
     - Click search button
     - Verify the subject search results page is displayed
     """
-    search_subject_by_dob(page, tests_properties["subject_dob"])
+    search_subject_by_dob(page, general_properties["subject_dob"])
 
 
 def test_search_screening_subject_by_postcode(page: Page) -> None:
@@ -124,7 +109,7 @@ def test_search_screening_subject_by_postcode(page: Page) -> None:
 
 
 def test_search_screening_subject_by_episode_closed_date(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms a screening subject can be searched for, using their episode closed date by doing the following:
@@ -135,18 +120,18 @@ def test_search_screening_subject_by_episode_closed_date(
     - Verify the subject search results page is displayed
     - Verify the results contain the date that was searched for
     """
-    search_subject_by_episode_closed_date(page, tests_properties["episode_closed_date"])
+    search_subject_by_episode_closed_date(page, general_properties["episode_closed_date"])
 
 
 def test_search_criteria_clear_filters_button(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms the 'clear filters' button on the search page works as expected by doing the following:
     - Enter number in NHS field and verify value
     - Click clear filters button and verify field is empty
     """
-    check_clear_filters_button_works(page, tests_properties["nhs_number"])
+    check_clear_filters_button_works(page, general_properties["nhs_number"])
 
 
 # Tests searching via the "Screening Status" drop down list
@@ -359,7 +344,7 @@ def test_search_screening_subject_by_home_hub(page: Page) -> None:
 
 
 def test_search_screening_subject_by_gp_practice(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms screening subjects can be searched for, using the search area (home hub) by doing the following:
@@ -375,12 +360,12 @@ def test_search_screening_subject_by_gp_practice(
         page,
         ScreeningStatusSearchOptions.CALL_STATUS.value,
         SearchAreaSearchOptions.SEARCH_AREA_GP_PRACTICE.value,
-        tests_properties["gp_practice_code"],
+        general_properties["gp_practice_code"],
     )
     SubjectScreeningSummary(page).verify_result_contains_text("SPRINGS HEALTH CENTRE")
 
 
-def test_search_screening_subject_by_ccg(page: Page, tests_properties: dict) -> None:
+def test_search_screening_subject_by_ccg(page: Page, general_properties: dict) -> None:
     """
     Confirms screening subjects can be searched for, using the search area (ccg) by doing the following:
     - Clear filters
@@ -395,13 +380,13 @@ def test_search_screening_subject_by_ccg(page: Page, tests_properties: dict) -> 
         page,
         ScreeningStatusSearchOptions.CALL_STATUS.value,
         SearchAreaSearchOptions.SEARCH_AREA_CCG.value,
-        tests_properties["ccg_code"],
-        tests_properties["gp_practice_code"],
+        general_properties["ccg_code"],
+        general_properties["gp_practice_code"],
     )
 
 
 def test_search_screening_subject_by_screening_centre(
-    page: Page, tests_properties: dict
+    page: Page, general_properties: dict
 ) -> None:
     """
     Confirms screening subjects can be searched for, using the search area (screening centre) by doing the following:
@@ -416,7 +401,7 @@ def test_search_screening_subject_by_screening_centre(
         page,
         ScreeningStatusSearchOptions.CALL_STATUS.value,
         SearchAreaSearchOptions.SEARCH_AREA_CCG.value,
-        tests_properties["screening_centre_code"],
+        general_properties["screening_centre_code"],
     )
 
 
