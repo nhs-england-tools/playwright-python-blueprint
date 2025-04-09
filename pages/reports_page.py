@@ -73,23 +73,6 @@ class ReportsPage(BasePage):
             self.page.locator("#displayGenerateDate")
         )
 
-        # NHS Number (on report table) Link locators
-        self.subject_ceased_table_nhs_number_link = self.page.locator(
-            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a"
-        )
-        self.subject_ceased_table_nhs_number_link = self.page.locator(
-            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a"
-        )
-        self.allocate_sc_hub_boundaries_nhs_number_link = self.page.locator(
-            "//*[@id='listReportDataTable']/tbody/tr[3]/td[1]"
-        )
-        self.identify_link_new_gp_nhs_number_link = self.page.locator(
-            "//*[@id='listReportDataTable']/tbody/tr[3]/td[2]"
-        )
-        self.operational_report_not_updated_nhs_number_link = page.locator(
-            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a"
-        )
-
         # Failsafe Reports menu links
         self.date_report_last_requested_link = self.page.get_by_role(
             "link", name="Date Report Last Requested"
@@ -197,3 +180,26 @@ class ReportsPage(BasePage):
 
     def go_to_screening_practitioner_appointments_page(self) -> None:
         self.click(self.screening_practitioner_appointments_link)
+
+    def click_nhs_number_link(self, page: Page) -> None:
+        """
+        Clicks the first NHS number link present on the screen if any are found.
+        """
+        locators = [
+            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a",
+            "//*[@id='listReportDataTable']/tbody/tr[3]/td[1]",
+            "//*[@id='listReportDataTable']/tbody/tr[3]/td[2]",
+            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a",
+            "#subjInactiveOpenEpisodes > tbody > tr:nth-child(1) > td.NHS_NUMBER.dt-type-numeric > a",
+        ]
+
+        for locator_string in locators:
+            try:
+                # Use page.locator to get a locator object
+                locator = page.locator(locator_string)
+                # Check if the locator is visible
+                if locator.is_visible():
+                    # Click the locator
+                    locator.click()
+            except Exception:
+                print("No NHS number links found on the page")
