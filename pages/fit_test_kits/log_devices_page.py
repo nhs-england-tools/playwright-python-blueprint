@@ -1,6 +1,8 @@
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from enum import Enum
+from datetime import datetime
+from utils.calendar_picker import CalendarPicker
 
 
 class LogDevices(BasePage):
@@ -41,9 +43,8 @@ class LogDevices(BasePage):
     def click_device_spoilt_button(self) -> None:
         self.click(self.device_spoilt_button)
 
-    def fill_sample_date_field(self, value) -> None:
-        self.sample_date_field.fill(value)
-        self.sample_date_field.press("Enter")
+    def fill_sample_date_field(self, date: datetime) -> None:
+        CalendarPicker(self.page).calendar_picker_ddmonyy(date, self.sample_date_field)
 
     def verify_successfully_logged_device_text(self) -> None:
         expect(self.successfully_logged_device_text).to_be_visible()

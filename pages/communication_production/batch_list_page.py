@@ -1,5 +1,7 @@
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
+from datetime import datetime
+from utils.calendar_picker import CalendarPicker
 
 
 class BatchList(BasePage):
@@ -20,6 +22,11 @@ class BatchList(BasePage):
             'text="Batch Successfully Archived and Printed"'
         )
         self.batch_list_page_title = self.page.locator("#page-title")
+        self.deadline_calendar_picker = self.page.locator("i")
+        self.deadline_date_filter = self.page.get_by_role("cell", name="").get_by_role(
+            "textbox"
+        )
+        self.deadline_date_clear_button = self.page.get_by_role("cell", name="Clear")
 
     def verify_batch_list_page_title(self, text) -> None:
         expect(self.batch_list_page_title).to_contain_text(text)
@@ -58,6 +65,14 @@ class BatchList(BasePage):
     def enter_count_filter(self, search_text: str) -> None:
         self.count_filter.fill(search_text)
         self.count_filter.press("Enter")
+
+    def enter_deadline_date_filter(self, date: datetime) -> None:
+        self.click(self.deadline_calendar_picker)
+        CalendarPicker(self.page).v2_calendar_picker(date)
+
+    def clear_deadline_filter_date(self) -> None:
+        self.click(self.deadline_calendar_picker)
+        self.click(self.deadline_date_clear_button)
 
 
 class ActiveBatchList(BatchList):

@@ -40,7 +40,7 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
         fit_device_id = subjectdf["fit_device_id"].iloc[subject]
         logging.info(f"Logging FIT Device ID: {fit_device_id}")
         LogDevices(page).fill_fit_device_id_field(fit_device_id)
-        sample_date = datetime.now().strftime("%#d %b %Y")
+        sample_date = datetime.now()
         logging.info("Setting sample date to today's date")
         LogDevices(page).fill_sample_date_field(sample_date)
         LogDevices(page).log_devices_title.get_by_text("Scan Device").wait_for()
