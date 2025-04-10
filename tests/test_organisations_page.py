@@ -36,21 +36,19 @@ def test_organisations_page_navigation(page: Page) -> None:
     """
     # Screening centre parameters page loads as expected
     OrganisationsPage(page).go_to_screening_centre_parameters_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Screening Centre Parameters"
     )
     BasePage(page).click_back_button()
 
     # Organisation parameters page loads as expected
     OrganisationsPage(page).go_to_organisation_parameters_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
-        "System Parameters"
-    )
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("System Parameters")
     BasePage(page).click_back_button()
 
     # Organisation and site details page loads as expected
     OrganisationsPage(page).go_to_organisations_and_site_details_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Organisation and Site Details"
     )
     BasePage(page).click_back_button()
@@ -61,13 +59,13 @@ def test_organisations_page_navigation(page: Page) -> None:
 
     # GP practice endorsement page loads as expected
     OrganisationsPage(page).go_to_gp_practice_endorsement_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "GP Practice Endorsement"
     )
 
     # Return to main menu
     BasePage(page).click_main_menu_link()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text("Main Menu")
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("Main Menu")
 
 
 def test_view_an_organisations_system_parameters(
@@ -81,6 +79,4 @@ def test_view_an_organisations_system_parameters(
 
     # View an Organisation
     page.get_by_role("link", name=general_properties["screening_centre_code"]).click()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
-        "System Parameters"
-    )
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("System Parameters")

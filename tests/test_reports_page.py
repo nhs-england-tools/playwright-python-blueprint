@@ -39,28 +39,24 @@ def test_reports_page_navigation(page: Page) -> None:
 
     # Failsafe reports page opens as expected
     ReportsPage(page).go_to_failsafe_reports_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
-        "Failsafe Reports"
-    )
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("Failsafe Reports")
     BasePage(page).click_back_button()
 
     # Operational reports page opens as expected
     ReportsPage(page).go_to_operational_reports_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Operational Reports"
     )
     BasePage(page).click_back_button()
 
     # Strategic reports page opens as expected
     ReportsPage(page).go_to_strategic_reports_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
-        "Strategic Reports"
-    )
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("Strategic Reports")
     BasePage(page).click_back_button()
 
     # "Cancer waiting times reports" page opens as expected
     ReportsPage(page).go_to_cancer_waiting_times_reports_page()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Cancer Waiting Times Reports"
     )
     BasePage(page).click_back_button()
@@ -75,7 +71,7 @@ def test_reports_page_navigation(page: Page) -> None:
 
     # Return to main menu
     BasePage(page).click_main_menu_link()
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text("Main Menu")
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("Main Menu")
 
 
 # Failsafe Reports
@@ -93,7 +89,7 @@ def test_failsafe_reports_date_report_last_requested(page: Page) -> None:
     ReportsPage(page).go_to_date_report_last_requested_page()
 
     # Verify 'Date Report Last Requested' is the page title
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Date Report Last Requested"
     )
 
@@ -140,7 +136,7 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     nhs_number_link.click()
 
     # Verify "Subject Screening Summary" is the page title
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Screening Summary"
     )
 
@@ -183,7 +179,7 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     nhs_number_link.click()
 
     # Verify page title is "Subject Demographic"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Demographic"
     )
 
@@ -211,7 +207,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
     failsafe_report_page.go_to_allocate_sc_for_patient_movements_within_hub_boundaries_page()
 
     # Verify page title is "Allocate SC for Patient Movements within Hub Boundaries"
-    failsafe_report_page.bowel_cancer_screening_ntsh_page_title_contains_text(
+    failsafe_report_page.bowel_cancer_screening_page_title_contains_text(
         "Allocate SC for Patient Movements within Hub Boundaries"
     )
 
@@ -226,7 +222,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
     nhs_number_link.click()
 
     # Verify page title is "Set Patient's Screening Centre"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Set Patient's Screening Centre"
     )
 
@@ -262,7 +258,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_into_your_hub(
     ReportsPage(page).go_to_allocate_sc_for_patient_movements_into_your_hub_page()
 
     # Verify page title is "Date Report Last Requested"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Allocate SC for Patient Movements into your Hub"
     )
 
@@ -302,7 +298,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     ReportsPage(page).go_to_identify_and_link_new_gp_page()
 
     # Verify page title is "Identify and link new GP practices"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Identify and link new GP practices"
     )
 
@@ -324,7 +320,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     nhs_number_cell_link.click()
 
     # Verify page title is "Link GP practice to Screening Centre"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Link GP practice to Screening Centre"
     )
 
@@ -354,7 +350,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     ReportsPage(page).go_to_appointment_attendance_not_updated_page()
 
     # Verify page title is "Appointment Attendance Not Updated"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Appointment Attendance Not Updated"
     )
 
@@ -374,9 +370,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     nhs_number_link.click()
 
     # Verify the page title is "Appointment Detail"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
-        "Appointment Detail"
-    )
+    BasePage(page).bowel_cancer_screening_page_title_contains_text("Appointment Detail")
 
 
 def test_operational_reports_fobt_kits_logged_but_not_read(page: Page) -> None:
@@ -453,7 +447,7 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
     ).go_to_screening_practitioner_6_weeks_availability_not_set_up_report_page()
 
     # Verify page title is "Screening Practitioner 6 Weeks Availability Not Set Up"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Screening Practitioner 6 Weeks Availability Not Set Up"
     )
 
@@ -502,7 +496,7 @@ def test_operational_reports_screening_practitioner_appointments(
     ReportsPage(page).go_to_screening_practitioner_appointments_page()
 
     # Verify page title is "Screening Practitioner Appointments"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Screening Practitioner Appointments"
     )
 

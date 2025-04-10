@@ -95,17 +95,17 @@ class BasePage:
         """Asserts that the page title contains the specified text.
 
         Args:
-            text (str): The expected text that you want to assert for the page title ("#page-title") element.
+            text (str): The expected text that you want to assert for the page title element.
+        Page elements of interest:
+            self.bowel_cancer_screening_page_title
+            self.bowel_cancer_screening_ntsh_page_title
         """
-        expect(self.bowel_cancer_screening_page_title).to_contain_text(text)
-
-    def bowel_cancer_screening_ntsh_page_title_contains_text(self, text: str) -> None:
-        """Asserts that the page title contains the specified text.
-
-        Args:
-            text (str): The expected text that you want to assert for the page title ("#ntshPageTitle") element.
-        """
-        expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
+        self.page.wait_for_load_state("load")
+        self.page.wait_for_load_state("domcontentloaded")
+        if self.bowel_cancer_screening_page_title.is_visible():
+            expect(self.bowel_cancer_screening_page_title).to_contain_text(text)
+        else:
+            expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
 
     def go_to_contacts_list_page(self) -> None:
         self.click(self.contacts_list_page)
