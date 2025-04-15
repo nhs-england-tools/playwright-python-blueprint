@@ -4,13 +4,15 @@ from datetime import datetime
 import logging
 
 
-def create_fit_id_df() -> pd.DataFrame:
+def create_fit_id_df(
+    tk_type_id: int, hub_id: int, no_of_kits_to_retrieve: int
+) -> pd.DataFrame:
     """
     The first step here is to get the relevant test data for compartment 2
     Then it calculates the check digit for each kit id retrieved
     Finally it adds the final part on the end (expiry date + random characters)
     """
-    df = get_kit_id_from_db()
+    df = get_kit_id_from_db(tk_type_id, hub_id, no_of_kits_to_retrieve)
     df["fit_device_id"] = df["kitid"].apply(calculate_check_digit)
     df["fit_device_id"] = df["fit_device_id"].apply(convert_kit_id_to_fit_device_id)
     return df

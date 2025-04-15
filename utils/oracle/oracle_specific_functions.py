@@ -2,9 +2,19 @@ from oracle.oracle import OracleDB
 import logging
 import pandas as pd
 from datetime import datetime
+from enum import IntEnum
 
 
-def get_kit_id_from_db() -> pd.DataFrame:
+class SqlQueryValues(IntEnum):
+    S10_EVENT_STATUS = 11198
+    S19_EVENT_STATUS = 11213
+    S43_EVENT_STATUS = 11223
+    OPEN_EPISODE_STATUS_ID = 11352
+
+
+def get_kit_id_from_db(
+    tk_type_id: int, hub_id: int, no_of_kits_to_retrieve: int
+) -> pd.DataFrame:
     """
     This query is used to obtain test kits used in compartment 2
     It searches for kits that have not been logged and meet the following criteria:
@@ -14,19 +24,19 @@ def get_kit_id_from_db() -> pd.DataFrame:
     """
     logging.info("Retrieving useable test kit ids")
     kit_id_df = OracleDB().execute_query(
-        """select tk.kitid, tk.screening_subject_id, sst.subject_nhs_number
+        f"""select tk.kitid, tk.screening_subject_id, sst.subject_nhs_number
     from tk_items_t tk
     inner join ep_subject_episode_t se on se.screening_subject_id = tk.screening_subject_id
     inner join screening_subject_t sst on (sst.screening_subject_id = tk.screening_subject_id)
     inner join sd_contact_t sdc on (sdc.nhs_number = sst.subject_nhs_number)
-    where tk.tk_type_id = 2
+    where tk.tk_type_id = {tk_type_id}
     and tk.logged_in_flag = 'N'
-    and sdc.hub_id = 23159
+    and sdc.hub_id = {hub_id}
     and device_id is null
     and tk.invalidated_date is null
-    and se.latest_event_status_id in (11198, 11213)
+    and se.latest_event_status_id in ({SqlQueryValues.S10_EVENT_STATUS}, {SqlQueryValues.S19_EVENT_STATUS})
     order by tk.kitid DESC
-    fetch first 10 rows only"""
+    fetch first {no_of_kits_to_retrieve} rows only"""
     )
     return kit_id_df
 
@@ -65,13 +75,13 @@ def get_kit_id_logged_from_db(smokescreen_properties: dict) -> pd.DataFrame:
     INNER JOIN ep_subject_episode_t se ON se.screening_subject_id = tk.screening_subject_id
     WHERE tk.logged_in_flag = 'Y'
     AND kq.test_kit_status IN ('LOGGED', 'POSTED')
-    AND se.episode_status_id = 11352
+    AND se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
     AND tk.tk_type_id = 2
-    AND se.latest_event_status_id = 11223
+    AND se.latest_event_status_id = {SqlQueryValues.S43_EVENT_STATUS}
     AND tk.logged_in_at = {smokescreen_properties["c3_fit_kit_results_test_org_id"]}
     AND tk.reading_flag = 'N'
     AND tk.test_results IS NULL
-    fetch first 9 rows only
+    fetch first {smokescreen_properties["c3_total_fit_kits_to_retieve"]} rows only
     """
     )
 
@@ -113,9 +123,7 @@ def get_service_management_by_device_id(device_id: str) -> pd.DataFrame:
     LEFT OUTER JOIN ORG lo ON lo.org_code = kq.logged_by_hub
     WHERE kq.test_kit_type = 'FIT' AND kq.device_id = :device_id
     """
-    params = {
-        "device_id": device_id
-    }
+    params = {"device_id": device_id}
     get_service_management_df = OracleDB().execute_query(query, params)
     return get_service_management_df
 
@@ -160,9 +168,9 @@ def update_kit_service_management_entity(
     kq.test_result = :test_result,
     kq.calculated_result = :calculated_result,
     kq.error_code = NULL,
-    kq.analyser_code = 'UU2_tdH3',
+    kq.analyser_code = :analyser_code,
     kq.date_time_authorised = TO_TIMESTAMP(:date_time_authorised, 'DD-Mon-YY HH24.MI.SS.FF9'),
-    kq.authoriser_user_code = 'AUTO1',
+    kq.authoriser_user_code = :authoriser_user_code,
     kq.post_response = :post_response,
     kq.post_attempts = :post_attempts,
     kq.put_response = :put_response,
@@ -179,7 +187,9 @@ def update_kit_service_management_entity(
         "date_time_logged": date_time_logged,
         "test_result": int(test_result),
         "calculated_result": calculated_result,
+        "analyser_code": smokescreen_properties["c3_fit_kit_analyser_code"],
         "date_time_authorised": str(date_time_authorised),
+        "authoriser_user_code": smokescreen_properties["c3_fit_kit_authorised_user"],
         "post_response": int(post_response) if post_response is not None else 0,
         "post_attempts": int(post_attempts) if post_attempts is not None else 0,
         "put_response": put_response,

@@ -17,6 +17,7 @@ from utils.load_properties_file import PropertiesFile
 def smokescreen_properties() -> dict:
     return PropertiesFile().get_smokescreen_properties()
 
+
 @pytest.mark.smoke
 @pytest.mark.compartment1
 @pytest.mark.compartment1_plan_creation
@@ -50,7 +51,7 @@ def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> No
 @pytest.mark.smoke
 @pytest.mark.smokescreen
 @pytest.mark.compartment1
-def test_compartment_1(page: Page) -> None:
+def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:
     """
     This is the main compartment 1 function. It covers the following:
     - Generating invitations based on the invitation plan
@@ -69,7 +70,9 @@ def test_compartment_1(page: Page) -> None:
     GenerateInvitations(page).click_generate_invitations_button()
     self_referrals_available = GenerateInvitations(
         page
-    ).wait_for_invitation_generation_complete()
+    ).wait_for_invitation_generation_complete(
+        int(smokescreen_properties["c1_daily_invitation_rate"])
+    )
 
     # Print the batch of Pre-Invitation Letters - England
     logging.info("Compartment 1 - Process S1 Batch")

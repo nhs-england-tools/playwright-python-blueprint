@@ -32,7 +32,9 @@ class GenerateInvitations(BasePage):
             "Invitation Generation Progress"
         )
 
-    def wait_for_invitation_generation_complete(self) -> bool:
+    def wait_for_invitation_generation_complete(
+        self, number_of_invitations: int
+    ) -> bool:
         """
         This function is used to wait for the invitations to be generated.
         Every 5 seconds it refreshes the table and checks to see if the invitations have been generated.
@@ -78,8 +80,10 @@ class GenerateInvitations(BasePage):
         value = (
             self.planned_invitations_total.text_content().strip()
         )  # Get text and remove extra spaces
-        if int(value) < 5:
-            pytest.fail("There are less than 5 invitations generated")
+        if int(value) < number_of_invitations:
+            pytest.fail(
+                f"There are less than {number_of_invitations} invitations generated"
+            )
 
         self_referrals_total = int(self.self_referrals_total.text_content().strip())
         if self_referrals_total >= 1:
