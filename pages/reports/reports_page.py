@@ -1,11 +1,16 @@
 from playwright.sync_api import Page
 from pages.base_page import BasePage
+from utils.table_util import TableUtils
 
 
 class ReportsPage(BasePage):
     def __init__(self, page):
         super().__init__(page)
         self.page = page
+
+        # Initialize TableUtils for different tables
+        self.failsafe_reports_sub_links_table = TableUtils(page, "#listReportDataTable")
+        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table = TableUtils(page, "#subjInactiveOpenEpisodes")
 
         # Reports page main menu links
         self.bureau_reports_link = self.page.get_by_text("Bureau Reports")
@@ -179,32 +184,22 @@ class ReportsPage(BasePage):
         )
 
     def go_to_screening_practitioner_appointments_page(self) -> None:
-        self.click(self.screening_practitioner_appointments_link)
+        self.click(self.screening_practitioner_appointments_page)
 
-    def click_nhs_number_link(self, page: Page) -> None:
+    def click_failsafe_reports_sub_links(self):
         """
-        Clicks the first NHS number link present on the screen if any are found.
+        Clicks the first NHS number link from the primary report table.
         """
-        # List of locators to check for NHS number links.
-        # This implementation is a workaround for the fact that the NHS number
-        # links are not using the same locators accross bcss
-        # This is a temporary solution until
-        # we have a table utility that will allow us to interact with tables across bcss.
-        locators = [
-            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a",
-            "//*[@id='listReportDataTable']/tbody/tr[3]/td[1]",
-            "//*[@id='listReportDataTable']/tbody/tr[3]/td[2]",
-            "#listReportDataTable > tbody > tr:nth-child(3) > td:nth-child(1) > a",
-            "#subjInactiveOpenEpisodes > tbody > tr:nth-child(1) > td.NHS_NUMBER.dt-type-numeric > a",
-        ]
+        self.failsafe_reports_sub_links_table.click_first_link_in_column("NHS Number")
 
-        for locator_string in locators:
-            try:
-                # Use page.locator to get a locator object
-                locator = page.locator(locator_string)
-                # Check if the locator is visible
-                if locator.is_visible():
-                    # Click the locator
-                    locator.click()
-            except Exception:
-                print("No NHS number links found on the page")
+    def click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link(self):
+        """
+        Clicks the first NHS number link from the primary report table.
+        """
+        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table.click_first_link_in_column("NHS Number")
+
+    def click_fail_safe_reports_identify_and_link_new_gp_practices_link(self):
+        """
+        Clicks the first Practice Code link from the primary report table.
+        """
+        self.failsafe_reports_sub_links_table.click_first_link_in_column("Practice Code")

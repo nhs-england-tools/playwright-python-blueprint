@@ -25,7 +25,7 @@ def before_each(page: Page):
     BasePage(page).go_to_reports_page()
 
 
-@pytest.mark.smoke
+
 def test_reports_page_navigation(page: Page) -> None:
     """
     Confirms all menu items are displayed on the reports page, and that the relevant pages
@@ -131,13 +131,12 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     ReportsPage(page).click_generate_report_button()
 
     # Open a screening subject record
-    ReportsPage(page).click_nhs_number_link(page)
+    ReportsPage(page).click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link()
 
     # Verify the page title is "Subject Screening Summary"
     BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
         "Subject Screening Summary"
     )
-
 
 def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     page: Page,
@@ -170,13 +169,13 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     )
 
     # Open a screening subject record from the search results
-    ReportsPage(page).click_nhs_number_link(page)
+
+    ReportsPage(page).click_failsafe_reports_sub_links()
 
     # Verify page title is "Subject Demographic"
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Demographic"
     )
-
 
 def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundaries(
     page: Page, general_properties: dict
@@ -211,7 +210,8 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
     )
 
     # Open a screening subject record from the first row/first cell of the table
-    ReportsPage(page).click_nhs_number_link(page)
+    # nhs_number_link.click()
+    ReportsPage(page).click_failsafe_reports_sub_links()
 
     # Verify page title is "Set Patient's Screening Centre"
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
@@ -309,8 +309,8 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
         report_timestamp
     )
 
-    # Open a screening subject record from the first row/second cell of the table
-    ReportsPage(page).click_nhs_number_link(page)
+    # Open a practice code from the first row/second cell of the table
+    ReportsPage(page).click_fail_safe_reports_identify_and_link_new_gp_practices_link()
 
     # Verify page title is "Link GP practice to Screening Centre"
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
@@ -319,6 +319,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
 
 
 # Operational Reports
+
 def test_operational_reports_appointment_attendance_not_updated(
     page: Page, general_properties: dict
 ) -> None:
@@ -360,7 +361,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     )
 
     # Open an appointment record from the report
-    ReportsPage(page).click_nhs_number_link(page)
+    ReportsPage(page).click_failsafe_reports_sub_links()
 
     # Verify the page title is "Appointment Detail"
     BasePage(page).bowel_cancer_screening_page_title_contains_text("Appointment Detail")
