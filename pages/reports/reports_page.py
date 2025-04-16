@@ -1,4 +1,5 @@
 from playwright.sync_api import Page
+import pytest
 from pages.base_page import BasePage
 from utils.table_util import TableUtils
 
@@ -10,7 +11,9 @@ class ReportsPage(BasePage):
 
         # Initialize TableUtils for different tables
         self.failsafe_reports_sub_links_table = TableUtils(page, "#listReportDataTable")
-        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table = TableUtils(page, "#subjInactiveOpenEpisodes")
+        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table = (
+            TableUtils(page, "#subjInactiveOpenEpisodes")
+        )
 
         # Reports page main menu links
         self.bureau_reports_link = self.page.get_by_text("Bureau Reports")
@@ -50,17 +53,18 @@ class ReportsPage(BasePage):
         )
 
         # Set patients screening centre dropdown locators
+        SCREENING_CENTRE = "Screening Centre"
         self.set_patients_screening_centre_dropdown = self.page.locator(
             "#cboScreeningCentre"
         )
         self.six_weeks_availability_not_set_up_set_patients_screening_centre_dropdown = self.page.get_by_label(
-            "Screening Centre"
+            SCREENING_CENTRE
         )
         self.practitioner_appointments_set_patients_screening_centre_dropdown = (
-            page.get_by_label("Screening Centre")
+            page.get_by_label(SCREENING_CENTRE)
         )
         self.attendance_not_updated_set_patients_screening_centre_dropdown = (
-            page.get_by_label("Screening Centre")
+            page.get_by_label(SCREENING_CENTRE)
         )
 
         # Select screening practitioner dropdown locators
@@ -192,14 +196,20 @@ class ReportsPage(BasePage):
         """
         self.failsafe_reports_sub_links_table.click_first_link_in_column("NHS Number")
 
-    def click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link(self):
+    def click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link(
+        self,
+    ):
         """
         Clicks the first NHS number link from the primary report table.
         """
-        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table.click_first_link_in_column("NHS Number")
+        self.fail_safe_reports_screening_subjects_with_inactive_open_episodes_table.click_first_link_in_column(
+            "NHS Number"
+        )
 
     def click_fail_safe_reports_identify_and_link_new_gp_practices_link(self):
         """
         Clicks the first Practice Code link from the primary report table.
         """
-        self.failsafe_reports_sub_links_table.click_first_link_in_column("Practice Code")
+        self.failsafe_reports_sub_links_table.click_first_link_in_column(
+            "Practice Code"
+        )

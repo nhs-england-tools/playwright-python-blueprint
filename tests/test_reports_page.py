@@ -134,7 +134,7 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     ReportsPage(page).click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link()
 
     # Verify the page title is "Subject Screening Summary"
-    BasePage(page).bowel_cancer_screening_ntsh_page_title_contains_text(
+    BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Screening Summary"
     )
 
@@ -219,7 +219,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
     )
 
     # Select another screening centre
-    (ReportsPage(page).set_patients_screening_centre_dropdown).select_option(
+    ReportsPage(page).set_patients_screening_centre_dropdown.select_option(
         general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
@@ -346,9 +346,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     ReportsPage(
         page
     ).attendance_not_updated_set_patients_screening_centre_dropdown.select_option(
-        ReportsPage(page).general_properties_properties[
-            "coventry_and_warwickshire_bcs_centre"
-        ]
+        general_properties["coventry_and_warwickshire_bcs_centre"]
     )
 
     # Click "Generate Report" button
