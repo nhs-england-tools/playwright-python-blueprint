@@ -2,6 +2,7 @@ name: "Run Util & Example Tests"
 runs-on: ubuntu-latest
 timeout-minutes: 3
 runs:
+  using: "composite"
   steps:
     - name: Set up Python
       uses: actions/setup-python@v5
