@@ -19,6 +19,7 @@ class SubjectScreeningSummary(BasePage):
             "link", name="Subject Events & Notes"
         )
         self.list_episodes = self.page.get_by_role("link", name="List Episodes")
+        self.episodes_list_expander_icon = self.page.locator("#ID_LINK_EPISODES_img")
         self.subject_demographics = self.page.get_by_role(
             "link", name="Subject Demographics"
         )
@@ -44,6 +45,9 @@ class SubjectScreeningSummary(BasePage):
         )
         self.subject_search_results_title = self.page.locator("#ntshPageTitle")
         self.display_rs = self.page.locator("#displayRS")
+        self.first_fobt_episode_link = page.get_by_role(
+            "link", name="FOBT Screening"
+        ).first
 
     def verify_result_contains_text(self, text) -> None:
         expect(self.display_rs).to_contain_text(text)
@@ -111,6 +115,12 @@ class SubjectScreeningSummary(BasePage):
 
     def select_reason(self, option: str) -> None:
         self.reason.select_option(option)
+
+    def expand_episodes_list(self) -> None:
+        self.click(self.episodes_list_expander_icon)
+
+    def click_first_fobt_episode_link(self) -> None:
+        self.click(self.first_fobt_episode_link)
 
 
 class ChangeScreeningStatusOptions(Enum):

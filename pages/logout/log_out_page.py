@@ -13,8 +13,9 @@ class Logout(BasePage):
     def verify_log_out_page(self) -> None:
         expect(self.log_out_msg).to_be_visible()
 
-    def log_out(self) -> None:
-        logging.info("Test Complete - Logging Out")
+    def log_out(self, close_page: bool = True) -> None:
+        logging.info("Logging Out")
         self.click_log_out_link()
         expect(self.log_out_msg).to_be_visible()
-        self.page.close()
+        if close_page:
+            self.page.close()

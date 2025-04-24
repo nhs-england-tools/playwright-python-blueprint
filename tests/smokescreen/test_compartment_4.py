@@ -1,8 +1,28 @@
-import logging
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.logout.log_out_page import Logout
 from pages.base_page import BasePage
+from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
+    ScreeningPractitionerAppointmentsPage,
+)
+from pages.screening_practitioner_appointments.set_availability_page import (
+    SetAvailabilityPage,
+)
+from pages.screening_practitioner_appointments.practitioner_availability_page import (
+    PractitionerAvailabilityPage,
+)
+from pages.screening_practitioner_appointments.colonoscopy_assessment_appointments_page import (
+    ColonoscopyAssessmentAppointments,
+)
+from pages.screening_practitioner_appointments.book_appointment_page import (
+    BookAppointmentPage,
+)
+from pages.screening_subject_search.subject_screening_summary import (
+    SubjectScreeningSummary,
+)
+from pages.screening_subject_search.episode_events_and_notes_page import (
+    EpisodeEventsAndNotesPage,
+)
 from utils.user_tools import UserTools
 from utils.load_properties_file import PropertiesFile
 from utils.calendar_picker import CalendarPicker
@@ -46,42 +66,48 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
 
     UserTools.user_login(page, "Screening Centre Manager at BCS001")
     BasePage(page).go_to_screening_practitioner_appointments_page()
-    page.get_by_role("link", name="Set Availability").click()
-    page.get_by_role("link", name="Practitioner Availability -").click()
-    page.locator("#UI_SITE_ID").select_option(index=1)
-    page.locator("#UI_PRACTITIONER_ID").select_option(index=1)
-    page.get_by_role("button", name="Calendar").click()
+    ScreeningPractitionerAppointmentsPage(page).go_to_set_availability_page()
+    SetAvailabilityPage(page).go_to_practitioner_availability_page()
+    PractitionerAvailabilityPage(page).select_site_dropdown_option(
+        "THE ROYAL HOSPITAL (WOLVERHAMPTON)"
+    )
+    PractitionerAvailabilityPage(page).select_practitioner_dropdown_option(
+        "Astonish, Ethanol"
+    )
+    PractitionerAvailabilityPage(page).click_calendar_button()
     CalendarPicker(page).select_day(
         datetime.today()
     )  # This will make it so that we can only run this test once a day, or we need to restore the DB back to the snapshot
-    page.get_by_role("button", name="Show").dblclick()
-    page.get_by_role("textbox", name="From:").click()
-    page.get_by_role("textbox", name="From:").fill("09:00")
-    page.get_by_role("textbox", name="To:").click()
-    page.get_by_role("textbox", name="To:").fill("17:15")
-    page.get_by_role("button", name="Calculate Slots").click()
-    page.locator("#FOR_WEEKS").click()
-    page.locator("#FOR_WEEKS").fill("6")
-    page.locator("#FOR_WEEKS").press("Enter")
-    page.get_by_role("button", name="Save").click()
-    expect(page.get_by_text("Slots Updated for 6 Weeks")).to_be_visible()
-    Logout(page).log_out()
+    PractitionerAvailabilityPage(page).click_show_button()
+    PractitionerAvailabilityPage(page).enter_start_time("09:00")
+    PractitionerAvailabilityPage(page).enter_end_time("17:15")
+    PractitionerAvailabilityPage(page).click_calculate_slots_button()
+    PractitionerAvailabilityPage(page).enter_number_of_weeks("6")
+    PractitionerAvailabilityPage(page).click_save_button()
+    PractitionerAvailabilityPage(page).slots_updated_message_is_displayed(
+        "Slots Updated for 6 Weeks"
+    )
+    Logout(page).log_out(close_page=False)
 
-    page.get_by_role("button", name="Log in").click()
+    ScreeningPractitionerAppointmentsPage(page).go_to_log_in_page()
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     BasePage(page).go_to_screening_practitioner_appointments_page()
-    page.get_by_role("link", name="Patients that Require").click()
+    ScreeningPractitionerAppointmentsPage(page).go_to_patients_that_require_page()
     # Add for loop to loop x times (depends on how many we want to run it for) 70 - 79
-    page.locator("#nhsNumberFilter").click()
-    page.locator("#nhsNumberFilter").fill("9991406131")
-    page.locator("#nhsNumberFilter").press("Enter")
-    page.get_by_role("link", name="999 140 6131").click()
-    page.get_by_label("Screening Centre ( All)").select_option("23162")
-    page.locator("#UI_NEW_SITE").select_option("42808")
-    page.locator('input[name="fri2"]').click()  # Todays date if available
-    page.locator("#UI_NEW_SLOT_SELECTION_ID_359119").check()
-    page.get_by_role("button", name="Save").click()
-    expect(page.get_by_text("Appointment booked")).to_be_visible()
+    ColonoscopyAssessmentAppointments(page).filter_by_nhs_number("999 205 6339")
+    ColonoscopyAssessmentAppointments(page).click_nhs_number_link("999 205 6339")
+    BookAppointmentPage(page).select_screening_centre_dropdown_option(
+        "BCS001 - Wolverhampton Bowel Cancer Screening Centre"
+    )
+    BookAppointmentPage(page).select_site_dropdown_option("Holly Hall Clinic (? km)")
+    BookAppointmentPage(page).choose_day_with_available_slots()
+    # page.locator("#UI_NEW_SLOT_SELECTION_ID_359119").check()
+    # Will be revisited as part of Utilities update
+    BookAppointmentPage(page).choose_appointment_time()
+    BookAppointmentPage(page).click_save_button()
+    BookAppointmentPage(page).appointment_booked_confirmation_is_displayed(
+        "Appointment booked"
+    )
 
     batch_processing(
         page,
@@ -96,9 +122,10 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
         "GP Result (Abnormal)",
         "A25 - 1st Colonoscopy Assessment Appointment Booked, letter sent",
     )
-    page.locator("#ID_LINK_EPISODES_img").click()
-    page.get_by_role("link", name="FOBT Screening").click()
-    expect(
-        page.get_by_role("cell", name="A167 - GP Abnormal FOBT Result Sent", exact=True)
-    ).to_be_visible()
+
+    SubjectScreeningSummary(page).expand_episodes_list()
+    SubjectScreeningSummary(page).click_first_fobt_episode_link()
+    EpisodeEventsAndNotesPage(page).expected_episode_event_is_displayed(
+        "A167 - GP Abnormal FOBT Result Sent"
+    )
     Logout(page).log_out()
