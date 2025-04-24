@@ -25,7 +25,7 @@ class GFOBTTestKits(BasePage):
         self.click(self.test_kit_reading_page)
 
     def go_to_test_kit_result_page(self) -> None:
-        self.click(self.test_kit_reading_page)
+        self.click(self.test_kit_result_page)
 
     def go_to_create_qc_kit_page(self) -> None:
         self.click(self.create_qc_kit_page)

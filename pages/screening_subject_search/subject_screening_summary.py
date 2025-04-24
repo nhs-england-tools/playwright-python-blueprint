@@ -1,6 +1,7 @@
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 from enum import Enum
+import pytest
 
 
 class SubjectScreeningSummary(BasePage):

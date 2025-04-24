@@ -63,7 +63,6 @@ def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
     # Generate Invitations
-    BasePage(page).click_main_menu_link()
     BasePage(page).go_to_call_and_recall_page()
     CallAndRecall(page).go_to_generate_invitations_page()
     logging.info("Generating invitations based on the invitations plan")

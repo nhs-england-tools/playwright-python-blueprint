@@ -2,7 +2,7 @@ from datetime import datetime
 from utils.date_time_utils import DateTimeUtils
 from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
-import logging
+from sys import platform
 
 
 class CalendarPicker(BasePage):
@@ -36,7 +36,10 @@ class CalendarPicker(BasePage):
             date (datetime): The date we want to enter into the locator
             locator (Locator): The locator of the element in which we want to enter the date
         """
-        formatted_date = DateTimeUtils.format_date(date, "%#d %b %Y")
+        if platform == "win32":  # Windows
+            formatted_date = DateTimeUtils.format_date(date, "%#d %b %Y")
+        else:  # Linux or Mac
+            formatted_date = DateTimeUtils.format_date(date, "%-d %b %Y")
         locator.fill(formatted_date)
         locator.press("Enter")
 
@@ -78,7 +81,10 @@ class CalendarPicker(BasePage):
         This function is used by both the v1 and v2 calendar picker
         It extracts the day from the date and then selects that value in the calendar picker
         """
-        day_to_select = str(date.strftime("%#d"))
+        if platform == "win32":  # Windows
+            day_to_select = str(date.strftime("%#d"))
+        else:  # Linux or Mac
+            day_to_select = str(date.strftime("%-d"))
         number_of_cells_with_day = self.page.get_by_role(
             "cell", name=day_to_select
         ).count()

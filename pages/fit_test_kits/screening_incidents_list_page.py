@@ -11,5 +11,5 @@ class ScreeningIncidentsList(BasePage):
 
     def verify_screening_incidents_list_title(self) -> None:
         expect(self.screening_incidents_list_title).to_contain_text(
-            "Select Screening Centre"
+            "Screening Incidents List"
         )

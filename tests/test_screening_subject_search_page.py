@@ -6,7 +6,9 @@ from pages.screening_subject_search.subject_screening_search_page import (
     LatestEpisodeStatusSearchOptions,
     SearchAreaSearchOptions,
 )
-from pages.screening_subject_search.subject_screening_summary import SubjectScreeningSummary
+from pages.screening_subject_search.subject_screening_summary import (
+    SubjectScreeningSummary,
+)
 from utils.screening_subject_page_searcher import (
     search_subject_by_nhs_number,
     search_subject_by_surname,
@@ -54,6 +56,9 @@ def test_search_screening_subject_by_nhs_number(
     - Verify the Subject Screening Summary page is displayed
     """
     search_subject_by_nhs_number(page, general_properties["nhs_number"])
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_screening_summary()
 
 
 def test_search_screening_subject_by_surname(
@@ -68,6 +73,9 @@ def test_search_screening_subject_by_surname(
     - Verify the subject summary page is displayed
     """
     search_subject_by_surname(page, general_properties["surname"])
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_screening_summary()
 
 
 def test_search_screening_subject_by_forename(
@@ -82,6 +90,9 @@ def test_search_screening_subject_by_forename(
     - Verify the subject summary page is displayed
     """
     search_subject_by_forename(page, general_properties["forename"])
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_screening_summary()
 
 
 def test_search_screening_subject_by_dob(page: Page, general_properties: dict) -> None:
@@ -94,6 +105,9 @@ def test_search_screening_subject_by_dob(page: Page, general_properties: dict) -
     - Verify the subject search results page is displayed
     """
     search_subject_by_dob(page, general_properties["subject_dob"])
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_postcode(page: Page) -> None:
@@ -106,6 +120,9 @@ def test_search_screening_subject_by_postcode(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_postcode(page, "*")
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_episode_closed_date(
@@ -120,7 +137,15 @@ def test_search_screening_subject_by_episode_closed_date(
     - Verify the subject search results page is displayed
     - Verify the results contain the date that was searched for
     """
-    search_subject_by_episode_closed_date(page, general_properties["episode_closed_date"])
+    search_subject_by_episode_closed_date(
+        page, general_properties["episode_closed_date"]
+    )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
+    SubjectScreeningSummary(page).verify_result_contains_text(
+        general_properties["episode_closed_date"]
+    )
 
 
 def test_search_criteria_clear_filters_button(
@@ -145,6 +170,9 @@ def test_search_screening_subject_by_status_call(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_status(page, ScreeningStatusSearchOptions.CALL_STATUS.value)
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_inactive(page: Page) -> None:
@@ -157,6 +185,9 @@ def test_search_screening_subject_by_status_inactive(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_status(page, ScreeningStatusSearchOptions.INACTIVE_STATUS.value)
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_opt_in(page: Page) -> None:
@@ -169,6 +200,9 @@ def test_search_screening_subject_by_status_opt_in(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_status(page, ScreeningStatusSearchOptions.OPT_IN_STATUS.value)
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_recall(page: Page) -> None:
@@ -181,6 +215,9 @@ def test_search_screening_subject_by_status_recall(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_status(page, ScreeningStatusSearchOptions.RECALL_STATUS.value)
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_self_referral(page: Page) -> None:
@@ -195,6 +232,9 @@ def test_search_screening_subject_by_status_self_referral(page: Page) -> None:
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.SELF_REFERRAL_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_surveillance(page: Page) -> None:
@@ -209,6 +249,9 @@ def test_search_screening_subject_by_status_surveillance(page: Page) -> None:
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.SURVEILLANCE_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_seeking_further_data(page: Page) -> None:
@@ -223,6 +266,9 @@ def test_search_screening_subject_by_status_seeking_further_data(page: Page) -> 
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.SEEKING_FURTHER_DATA_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_ceased(page: Page) -> None:
@@ -235,6 +281,9 @@ def test_search_screening_subject_by_status_ceased(page: Page) -> None:
     - Verify the subject search results page is displayed
     """
     search_subject_by_status(page, ScreeningStatusSearchOptions.CEASED_STATUS.value)
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
@@ -249,6 +298,9 @@ def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.BOWEL_SCOPE_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> None:
@@ -263,6 +315,9 @@ def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> No
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.LYNCH_SURVEILLANCE_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_status_lynch_self_referral(page: Page) -> None:
@@ -277,6 +332,9 @@ def test_search_screening_subject_by_status_lynch_self_referral(page: Page) -> N
     search_subject_by_status(
         page, ScreeningStatusSearchOptions.LYNCH_SELF_REFERRAL_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_screening_summary()
 
 
 # search_subject_by_latest_event_status
@@ -294,6 +352,9 @@ def test_search_screening_subject_by_latest_episode_status_open_paused(
     search_subject_by_latest_event_status(
         page, LatestEpisodeStatusSearchOptions.OPEN_PAUSED_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_latest_episode_status_closed(page: Page) -> None:
@@ -308,6 +369,9 @@ def test_search_screening_subject_by_latest_episode_status_closed(page: Page) ->
     search_subject_by_latest_event_status(
         page, LatestEpisodeStatusSearchOptions.CLOSED_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_latest_episode_status_no_episode(
@@ -324,6 +388,9 @@ def test_search_screening_subject_by_latest_episode_status_no_episode(
     search_subject_by_latest_event_status(
         page, LatestEpisodeStatusSearchOptions.NO_EPISODE_STATUS.value
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 # Tests searching via the "Search Area" drop down list
@@ -341,6 +408,9 @@ def test_search_screening_subject_by_home_hub(page: Page) -> None:
         ScreeningStatusSearchOptions.RECALL_STATUS.value,
         SearchAreaSearchOptions.SEARCH_AREA_HOME_HUB.value,
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_gp_practice(
@@ -362,6 +432,9 @@ def test_search_screening_subject_by_gp_practice(
         SearchAreaSearchOptions.SEARCH_AREA_GP_PRACTICE.value,
         general_properties["gp_practice_code"],
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
     SubjectScreeningSummary(page).verify_result_contains_text("SPRINGS HEALTH CENTRE")
 
 
@@ -383,6 +456,9 @@ def test_search_screening_subject_by_ccg(page: Page, general_properties: dict) -
         general_properties["ccg_code"],
         general_properties["gp_practice_code"],
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_screening_centre(
@@ -400,9 +476,12 @@ def test_search_screening_subject_by_screening_centre(
     search_subject_by_search_area(
         page,
         ScreeningStatusSearchOptions.CALL_STATUS.value,
-        SearchAreaSearchOptions.SEARCH_AREA_CCG.value,
+        SearchAreaSearchOptions.SEARCH_AREA_SCREENING_CENTRE.value,
         general_properties["screening_centre_code"],
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()
 
 
 def test_search_screening_subject_by_whole_database(page: Page) -> None:
@@ -419,3 +498,6 @@ def test_search_screening_subject_by_whole_database(page: Page) -> None:
         ScreeningStatusSearchOptions.RECALL_STATUS.value,
         SearchAreaSearchOptions.SEARCH_AREA_WHOLE_DATABASE.value,
     )
+    SubjectScreeningSummary(
+        page
+    ).verify_subject_search_results_title_subject_search_results()

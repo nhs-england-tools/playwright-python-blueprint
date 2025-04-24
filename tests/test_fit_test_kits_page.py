@@ -15,6 +15,12 @@ from pages.fit_test_kits.screening_incidents_list_page import ScreeningIncidents
 from pages.fit_test_kits.manage_qc_products_page import ManageQCProducts
 from pages.fit_test_kits.maintain_analysers_page import MaintainAnalysers
 from utils.user_tools import UserTools
+from utils.load_properties_file import PropertiesFile
+
+
+@pytest.fixture
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -31,7 +37,7 @@ def before_each(page: Page):
 
 
 @pytest.mark.smoke
-def test_fit_test_kits_page_navigation(page: Page) -> None:
+def test_fit_test_kits_page_navigation(page: Page, general_properties: dict) -> None:
     """
     Confirms all menu items are displayed on the fit test kits page, and that the relevant pages
     are loaded when the links are clicked
@@ -68,8 +74,12 @@ def test_fit_test_kits_page_navigation(page: Page) -> None:
 
     # Verify View Screening Centre FIT page opens as expected
     FITTestKits(page).go_to_view_screening_centre_fit()
-    ViewScreeningCentreFITConfiguration(page).verify_view_screening_centre_body()
-    BasePage(page).click_back_button()
+    FITTestKits(page).sc_fit_configuration_page_screening_centre_dropdown.select_option(
+        general_properties["coventry_and_warwickshire_bcs_centre"]
+    )
+    ViewScreeningCentreFITConfiguration(page).verify_view_screening_centre_fit_title()
+    BasePage(page).click_back_button()  # Go back to the Select Screening Centre page
+    BasePage(page).click_back_button()  # Go back to the FIT Test Kits page
 
     # Verify Screening Incidents List page opens as expected
     FITTestKits(page).go_to_screening_incidents_list()

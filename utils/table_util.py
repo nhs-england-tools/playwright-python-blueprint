@@ -34,9 +34,13 @@ class TableUtils:
         :param column_name: Name of the column (e.g., 'NHS Number')
         :return: 1-based column index or -1 if not found
         """
-        header_row = (
-            self.table.locator("tbody tr").filter(has=self.page.locator("th")).first
-        )
+        # Try to find headers in <thead> first
+        header_row = self.table.locator("thead tr").first
+        if not header_row.locator("th").count():
+            # Fallback: look for header in <tbody> if <thead> is missing or empty
+            header_row = (
+                self.table.locator("tbody tr").filter(has=self.page.locator("th")).first
+            )
 
         headers = header_row.locator("th")
         header_texts = headers.evaluate_all("ths => ths.map(th => th.innerText.trim())")

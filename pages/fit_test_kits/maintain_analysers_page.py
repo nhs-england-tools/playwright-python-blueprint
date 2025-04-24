@@ -10,4 +10,4 @@ class MaintainAnalysers(BasePage):
         self.maintain_analysers_title = self.page.locator("#ntshPageTitle")
 
     def verify_maintain_analysers_title(self) -> None:
-        expect(self.maintain_analysers_title).to_contain_text("FIT QC Products")
+        expect(self.maintain_analysers_title).to_contain_text("Maintain Analysers")

@@ -153,7 +153,7 @@ class ReportsPage(BasePage):
     def go_to_date_report_last_requested_page(self) -> None:
         self.click(self.date_report_last_requested_link)
 
-    def go_to_screening_subjects_with_inactive_open_episode_link_page(self) -> None:
+    def go_to_screening_subjects_with_inactive_open_episode_page(self) -> None:
         self.click(self.screening_subjects_with_inactive_open_episode_link)
 
     def go_to_subjects_ceased_due_to_date_of_birth_changes_page(self) -> None:

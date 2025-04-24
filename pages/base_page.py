@@ -36,7 +36,7 @@ class BasePage:
         self.organisations_page = self.page.get_by_role("link", name="Organisations")
         self.reports_page = self.page.get_by_role("link", name="Reports")
         self.screening_practitioner_appointments_page = self.page.get_by_role(
-            "link", name="Screening Practitioner"
+            "link", name="Screening Practitioner Appointments"
         )
         self.screening_subject_search_page = self.page.get_by_role(
             "link", name="Screening Subject Search"
@@ -51,10 +51,7 @@ class BasePage:
         self.main_menu__header = self.page.locator("#ntshPageTitle")
 
     def click_main_menu_link(self) -> None:
-        for _ in range(3):  # Try up to 3 times
-            if self.main_menu_link.is_visible():
-                self.click(self.main_menu_link)
-                return  # Exit if successful
+        self.click(self.main_menu_link)
 
     def click_log_out_link(self) -> None:
         self.click(self.log_out_link)
@@ -144,15 +141,22 @@ class BasePage:
         self.click(self.screening_subject_search_page)
 
     def click(self, locator: Locator) -> None:
+        # Alerts table locator
+        alerts_table = locator.get_by_role("table", name="cockpitalertbox")
         """
         This is used to click on a locator
         The reason for this being used over the normal playwright click method is due to:
         - BCSS sometimes takes a while to render and so the normal click function 'clicks' on a locator before its available
         - Increases the reliability of clicks to avoid issues with the normal click method
         """
+        if alerts_table.is_visible():
+            alerts_table.wait_for(state="attached")
+            alerts_table.wait_for(state="visible")
+
         try:
             self.page.wait_for_load_state("load")
             self.page.wait_for_load_state("domcontentloaded")
+            self.page.wait_for_load_state("networkidle")
             locator.wait_for(state="attached")
             locator.wait_for(state="visible")
             locator.click()

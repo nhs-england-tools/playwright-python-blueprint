@@ -25,7 +25,6 @@ def before_each(page: Page):
     BasePage(page).go_to_reports_page()
 
 
-
 def test_reports_page_navigation(page: Page) -> None:
     """
     Confirms all menu items are displayed on the reports page, and that the relevant pages
@@ -120,7 +119,7 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     ReportsPage(page).go_to_failsafe_reports_page()
 
     # Click screening subjects with inactive open episode link
-    ReportsPage(page).go_to_screening_subjects_with_inactive_open_episode_link_page()
+    ReportsPage(page).go_to_screening_subjects_with_inactive_open_episode_page()
 
     # Verify "Screening Subjects With Inactive Open Episode" is the page title
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
@@ -131,12 +130,15 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     ReportsPage(page).click_generate_report_button()
 
     # Open a screening subject record
-    ReportsPage(page).click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link()
+    ReportsPage(
+        page
+    ).click_fail_safe_reports_screening_subjects_with_inactive_open_episodes_link()
 
     # Verify the page title is "Subject Screening Summary"
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Screening Summary"
     )
+
 
 def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     page: Page,
@@ -176,6 +178,7 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     BasePage(page).bowel_cancer_screening_page_title_contains_text(
         "Subject Demographic"
     )
+
 
 def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundaries(
     page: Page, general_properties: dict
@@ -320,6 +323,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
 
 # Operational Reports
 
+
 def test_operational_reports_appointment_attendance_not_updated(
     page: Page, general_properties: dict
 ) -> None:
@@ -450,22 +454,18 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
 
     # Verify timestamp has updated to current date and time
     report_timestamp = DateTimeUtils.report_timestamp_date_format()
-    ReportsPage(
-        page
-    ).six_weeks_availability_not_set_up_report_timestamp_element.to_contain_text(
-        report_timestamp
-    )
+    expect(
+        ReportsPage(page).six_weeks_availability_not_set_up_report_timestamp_element
+    ).to_contain_text(report_timestamp)
 
     # Click "Refresh" button
     ReportsPage(page).click_refresh_button()
 
     # Verify timestamp has updated to current date and time
     report_timestamp = DateTimeUtils.report_timestamp_date_format()
-    ReportsPage(
-        page
-    ).six_weeks_availability_not_set_up_report_timestamp_element.to_contain_text(
-        report_timestamp
-    )
+    expect(
+        ReportsPage(page).six_weeks_availability_not_set_up_report_timestamp_element
+    ).to_contain_text(report_timestamp)
 
 
 def test_operational_reports_screening_practitioner_appointments(
@@ -508,6 +508,6 @@ def test_operational_reports_screening_practitioner_appointments(
     report_timestamp = (
         DateTimeUtils.screening_practitioner_appointments_report_timestamp_date_format()
     )
-    expect(ReportsPage(Page).common_report_timestamp_element).to_contain_text(
+    expect(ReportsPage(page).common_report_timestamp_element).to_contain_text(
         report_timestamp
     )

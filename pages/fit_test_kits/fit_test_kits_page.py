@@ -36,6 +36,10 @@ class FITTestKits(BasePage):
         self.fit_device_id = self.page.get_by_role("textbox", name="FIT Device ID")
         self.fit_test_kits_title = self.page.locator("#ntshPageTitle")
 
+        self.sc_fit_configuration_page_screening_centre_dropdown = page.locator(
+            "#screeningCentres"
+        )
+
     def verify_fit_test_kits_title(self) -> None:
         expect(self.fit_test_kits_title).to_contain_text("FIT Test Kits")
 

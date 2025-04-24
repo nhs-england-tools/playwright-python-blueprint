@@ -27,7 +27,6 @@ def before_each(page: Page):
     # Go to gFOBT test kits page
     BasePage(page).go_to_gfobt_test_kits_page()
 
-
 @pytest.mark.smoke
 def test_gfobt_test_kit_page_navigation(page: Page) -> None:
     """
@@ -40,7 +39,7 @@ def test_gfobt_test_kit_page_navigation(page: Page) -> None:
     BasePage(page).click_back_button()
 
     # Test kit reading page opens as expected
-    GFOBTTestKits(page).go_to_test_kit_result_page()
+    GFOBTTestKits(page).go_to_test_kit_reading_page()
     TestKitQualityControlReading(page).verify_test_kit_logging_tile()
     BasePage(page).click_back_button()
 

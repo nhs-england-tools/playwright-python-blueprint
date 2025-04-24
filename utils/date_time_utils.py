@@ -1,10 +1,7 @@
-from datetime import datetime, timedelta, tzinfo
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta
 
 
 class DateTimeUtils:
-    UTC_TIMEZONE = "UTC"
-    DST_TIMEZONE = "Europe/London"
     """
     A utility class for doing common actions with datetimes.
     """
@@ -72,54 +69,31 @@ class DateTimeUtils:
         return date.strftime("%A")
 
     @staticmethod
-    def report_timestamp_date_format(use_utc: bool = True) -> str:
+    def report_timestamp_date_format() -> str:
         """Gets the current datetime in the timestamp format used on the report pages.
-        Based on the value of `use_utc`, it chooses the appropriate timezone.
+        Returns:
+            str: The current date and time in the format 'dd/mm/yyyy at hh:mm:ss'.
+            e.g. '24/01/2025 at 12:00:00'
         """
 
-        if use_utc:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.UTC_TIMEZONE)),
-                "%d/%m/%Y at %H:%M:%S",
-            )
-        else:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.DST_TIMEZONE)),
-                "%d/%m/%Y at %H:%M:%S",
-            )
+        return DateTimeUtils.format_date(datetime.now(), "%d/%m/%Y at %H:%M:%S")
 
     @staticmethod
-    def fobt_kits_logged_but_not_read_report_timestamp_date_format(
-        use_utc: bool = False,
-    ) -> str:
+    def fobt_kits_logged_but_not_read_report_timestamp_date_format() -> str:
         """Gets the current datetime in the format used for FOBT Kits Logged but Not Read report.
-        Based on the value of `use_utc`, it chooses the appropriate timezone.
+        Returns:
+            str: The current date and time in the format 'dd MonthName yyyy hh:mm:ss'.
+            e.g. '24 Jan 2025 12:00:00'
         """
 
-        if use_utc:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.UTC_TIMEZONE)), "%d %b %Y %H:%M:%S"
-            )
-        else:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.DST_TIMEZONE)), "%d %b %Y %H:%M:%S"
-            )
+        return DateTimeUtils.format_date(datetime.now(), "%d %b %Y %H:%M:%S")
 
     @staticmethod
-    def screening_practitioner_appointments_report_timestamp_date_format(
-        use_utc: bool = True,
-    ) -> str:
-        """Gets the current datetime in the format used for Screening Practitioner Appointments report.
-        Based on the value of `use_utc`, it chooses the appropriate timezone.
+    def screening_practitioner_appointments_report_timestamp_date_format() -> str:
+        """Gets the current datetime in the format used for the screening practitioner appointments report.
+        Returns:
+            str: the current datetime in the format 'dd.mm.yyyy at hh:mm:ss'
+            e.g. '24.01.2025 at 12:00:00'
         """
 
-        if use_utc:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.UTC_TIMEZONE)),
-                "%d.%m.%Y at %H:%M:%S",
-            )
-        else:
-            return DateTimeUtils.format_date(
-                datetime.now(ZoneInfo(DateTimeUtils.DST_TIMEZONE)),
-                "%d.%m.%Y at %H:%M:%S",
-            )
+        return DateTimeUtils.format_date(datetime.now(), "%d.%m.%Y at %H:%M:%S")
