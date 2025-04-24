@@ -1,0 +1,36 @@
+name: "Run Util & Example Tests"
+runs-on: ubuntu-latest
+timeout-minutes: 3
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Ensure browsers are installed
+      shell: bash
+      run: python -m playwright install --with-deps
+    - name: Run util tests
+      shell: bash
+      run: pytest -m "utils" --ignore=tests/
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: result-output-utils
+        path: test-results/
+        retention-days: 3
+    - name: Run example tests
+      shell: bash
+      run: pytest --ignore=tests_utils/
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: result-output-example
+        path: test-results/
+        retention-days: 3
