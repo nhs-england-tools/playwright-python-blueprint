@@ -4,8 +4,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from playwright.sync_api import Page
-
-from pages.cognito_login_page import CognitoLoginPage
+from pages.login.cognito_login_page import CognitoLoginPage
 
 logger = logging.getLogger(__name__)
 USERS_FILE = Path(__file__).parent.parent / "users.json"

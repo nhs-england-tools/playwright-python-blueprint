@@ -27,9 +27,9 @@ def before_test(page: Page):
     OracleDB().delete_all_users_from_approved_users_table()
 
 
-# @pytest.mark.smoke
+@pytest.mark.vpn_required
+@pytest.mark.smoke
 def test_only_users_on_approved_can_login_to_bcss(page: Page) -> None:
-    #NOTE: You must be connected to the non prod vpn to connect to oracle DB and run this test
     # Add bcss401 user to approved users list table
     OracleDB().populate_ui_approved_users_table("BCSS401")
     # BCSS401 user successfully logs in to BCSS whilst on the approved list

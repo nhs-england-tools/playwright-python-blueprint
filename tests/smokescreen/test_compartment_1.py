@@ -48,6 +48,7 @@ def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> No
     logging.info("Invitation plan created")
 
 
+@pytest.mark.vpn_required
 @pytest.mark.smoke
 @pytest.mark.smokescreen
 @pytest.mark.compartment1

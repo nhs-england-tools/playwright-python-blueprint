@@ -51,7 +51,8 @@ class BasePage:
         self.main_menu__header = self.page.locator("#ntshPageTitle")
 
     def click_main_menu_link(self) -> None:
-        self.click(self.main_menu_link)
+        if self.main_menu_link.is_visible():
+            self.click(self.main_menu_link)
 
     def click_log_out_link(self) -> None:
         self.click(self.log_out_link)

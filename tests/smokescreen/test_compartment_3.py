@@ -18,6 +18,7 @@ def smokescreen_properties() -> dict:
     return PropertiesFile().get_smokescreen_properties()
 
 
+@pytest.mark.vpn_required
 @pytest.mark.smokescreen
 @pytest.mark.compartment3
 def test_compartment_3(page: Page, smokescreen_properties: dict) -> None:
