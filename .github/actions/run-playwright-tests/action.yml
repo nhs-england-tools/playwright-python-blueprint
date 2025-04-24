@@ -3,7 +3,6 @@ runs-on: ubuntu-latest
 timeout-minutes: 3
 runs:
   steps:
-    - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
