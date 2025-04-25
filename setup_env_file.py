@@ -1,6 +1,6 @@
 """
 This script creates a local.env file that can be used to populate secrets such as passwords or API keys
-locally. This is useful for local development and testing, as it allows you to keep sensitive information 
+locally. This is useful for local development and testing, as it allows you to keep sensitive information
 out of your codebase.
 
 This is designed to be generated when setting up this project, so if new variables are required, these
