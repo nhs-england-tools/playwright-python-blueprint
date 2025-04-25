@@ -1,10 +1,11 @@
 import json
+import os
 import logging
 from pathlib import Path
 
 
 logger = logging.getLogger(__name__)
-USERS_FILE = Path(__file__).parent.parent / "users.json"
+USERS_FILE = Path(os.getcwd()) / "users.json"
 
 
 class UserTools:
