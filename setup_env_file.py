@@ -16,7 +16,7 @@ DEFAULT_LOCAL_ENV_PATH = Path(os.getcwd()) / 'local.env'
 
 def create_env_file():
     """
-    Create a .env file with the required keys.
+    Create a local.env file with the required keys.
     """
     with open(DEFAULT_LOCAL_ENV_PATH, 'w') as f:
         f.write("# Use this file to populate secrets without committing them to the codebase (as this file is set in .gitignore).\n")
