@@ -41,7 +41,7 @@ def test_basic_example(page: Page) -> None:
     2) Asserts that the README contents rendered by GitHub contains the text "Playwright Python Blueprint"
     3) Asserts that the main section of the page contains the topic label "playwright-python"
     '''
-    
+
     # Assert repo text is present
     expect(page.get_by_role("article")).to_contain_text("Playwright Python Blueprint")
 
