@@ -1,7 +1,12 @@
 from pages.base_page import BasePage
-from pages.communication_production.communications_production_page import CommunicationsProduction
+from pages.communication_production.communications_production_page import (
+    CommunicationsProduction,
+)
 from pages.communication_production.manage_active_batch_page import ManageActiveBatch
-from pages.communication_production.batch_list_page import ActiveBatchList, ArchivedBatchList
+from pages.communication_production.batch_list_page import (
+    ActiveBatchList,
+    ArchivedBatchList,
+)
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
 from utils.oracle.oracle import OracleDB
@@ -93,7 +98,7 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
     page.wait_for_timeout(
         1000
     )  # This one second timeout does not affect the time to execute, as it is just used to ensure the reprepare batch button is clicked and does not instantly advance to the next step
-    ManageActiveBatch(page).reprepare_batch_text.wait_for()
+    ManageActiveBatch(page).reprepare_batch_text.wait_for(timeout=60000)
 
     # This loops through each Retrieve button and clicks each one
     retrieve_button_count = 0
@@ -119,8 +124,9 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
             logging.info(
                 f"Clicking confirm printed button {confirm_printed_button + 1}"
             )
-            page.once("dialog", lambda dialog: dialog.accept())
-            ManageActiveBatch(page).confirm_button.nth(0).click()
+            ManageActiveBatch(page).safe_accept_dialog(
+                ManageActiveBatch(page).confirm_button.nth(0)
+            )
     except Exception as e:
         pytest.fail(f"No confirm printed button available to click: {str(e)}")
 

@@ -8,6 +8,10 @@ class ColonoscopyAssessmentAppointments(BasePage):
         self.page = page
         # Colonoscopy Assessment Appointments - page locators
         self.page_header = self.page.locator("#page-title")
+        self.page_header_with_title = self.page.locator(
+            "#page-title",
+            has_text="Patients that Require Colonoscopy Assessment Appointments",
+        )
         self.nhs_number_filter_text_field = self.page.locator("#nhsNumberFilter")
 
     def verify_page_header(self) -> None:
@@ -15,7 +19,11 @@ class ColonoscopyAssessmentAppointments(BasePage):
             "Patients that Require Colonoscopy Assessment Appointments"
         )
 
+    def wait_for_page_header(self) -> None:
+        self.page_header_with_title.wait_for()
+
     def filter_by_nhs_number(self, nhs_number: str) -> None:
+        self.click(self.nhs_number_filter_text_field)
         self.nhs_number_filter_text_field.fill(nhs_number)
         self.nhs_number_filter_text_field.press("Enter")
 

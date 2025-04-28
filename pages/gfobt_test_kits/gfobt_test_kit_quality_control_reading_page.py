@@ -2,7 +2,7 @@ from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 
 
-class TestKitQualityControlReading(BasePage):
+class GFOBTTestKitQualityControlReading(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page

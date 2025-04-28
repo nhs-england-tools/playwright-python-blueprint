@@ -59,14 +59,32 @@ class TableUtils:
         if column_index == -1:
             raise ValueError(f"Column '{column_name}' not found in table")
 
-        # Create a dynamic locator for the esired column
+        # Create a dynamic locator for the desired column
         link_locator = f"{self.table_id} tbody tr td:nth-child({column_index}) a"
         links = self.page.locator(link_locator)
 
         if links.count() > 0:
             links.first.click()
         else:
-            logging.info(f"No links found in column '{column_name}'")
+            logging.error(f"No links found in column '{column_name}'")
+
+    def click_first_input_in_column(self, column_name: str):
+        """
+        Clicks the first input found in the given column. E.g. Radios
+        :param column_name: Name of the column containing inputs
+        """
+        column_index = self.get_column_index(column_name)
+        if column_index == -1:
+            raise ValueError(f"Column '{column_name}' not found in table")
+
+        # Create a dynamic locator for the desired column
+        input_locator = f"{self.table_id} tbody tr td:nth-child({column_index}) input"
+        inputs = self.page.locator(input_locator)
+
+        if inputs.count() > 0:
+            inputs.first.click()
+        else:
+            logging.error(f"No inputs found in column '{column_name}'")
 
     def _format_inner_text(self, data: str) -> dict:
         """

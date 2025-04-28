@@ -34,3 +34,6 @@ class ScreeningPractitionerAppointmentsPage(BasePage):
 
     def go_to_patients_that_require_page(self) -> None:
         self.click(self.patients_that_require_page)
+
+    def go_to_set_availability_page(self) -> None:
+        self.click(self.set_availability_link)

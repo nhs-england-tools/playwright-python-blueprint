@@ -97,3 +97,30 @@ class DateTimeUtils:
         """
 
         return DateTimeUtils.format_date(datetime.now(), "%d.%m.%Y at %H:%M:%S")
+
+    def month_string_to_number(self, string: str) -> int:
+        """
+        This is used to convert a month from a string to an integer.
+        It accepts the full month or the short version and is not case sensitive
+        """
+        months = {
+            "jan": 1,
+            "feb": 2,
+            "mar": 3,
+            "apr": 4,
+            "may": 5,
+            "jun": 6,
+            "jul": 7,
+            "aug": 8,
+            "sep": 9,
+            "oct": 10,
+            "nov": 11,
+            "dec": 12,
+        }
+        month_short = string.strip()[:3].lower()
+
+        try:
+            out = months[month_short]
+            return out
+        except Exception:
+            raise ValueError("Not a month")

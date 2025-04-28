@@ -10,6 +10,7 @@ class SqlQueryValues(IntEnum):
     S19_EVENT_STATUS = 11213
     S43_EVENT_STATUS = 11223
     OPEN_EPISODE_STATUS_ID = 11352
+    A8_EVENT_STATUS = 11132
 
 
 def get_kit_id_from_db(
@@ -209,7 +210,7 @@ def execute_fit_kit_stored_procedures() -> None:
     This method executes two stored procedures:
     - PKG_TEST_KIT_QUEUE.p_validate_kit_queue
     - PKG_TEST_KIT_QUEUE.p_calculate_result
-    This is needed for compartment 3 after we update the KIT_QUE table on the DB
+    This is needed for compartment 3 after we update the KIT_QUEUE table on the DB
     """
     db_instance = OracleDB()  # Create an instance of the OracleDB class
     logging.info("start: oracle.OracleDB.execute_stored_procedure")
@@ -220,3 +221,31 @@ def execute_fit_kit_stored_procedures() -> None:
         "PKG_TEST_KIT_QUEUE.p_calculate_result"
     )  # Run stored procedure - calculate result
     logging.info("exit: oracle.OracleDB.execute_stored_procedure")
+
+
+def get_subjects_for_appointments(subjects_to_retrieve: int) -> pd.DataFrame:
+    """
+    This is used to get subjects for compartment 4
+    It finds subjects with open episodes and the event status A8
+    It also checks that the episode is less than 2 years old
+    """
+    subjects_df = OracleDB().execute_query(
+        f"""
+    select tk.kitid, ss.subject_nhs_number, se.screening_subject_id
+    from tk_items_t tk
+    inner join ep_subject_episode_t se on se.screening_subject_id = tk.screening_subject_id
+    inner join screening_subject_t ss on ss.screening_subject_id = se.screening_subject_id
+    inner join sd_contact_t c on c.nhs_number = ss.subject_nhs_number
+    where se.latest_event_status_id = {SqlQueryValues.A8_EVENT_STATUS}
+    and tk.logged_in_flag = 'Y'
+    and se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
+    and ss.screening_status_id != 4008
+    and tk.logged_in_at = 23159
+    and c.hub_id = 23159
+    and tk.tk_type_id = 2
+    and tk.datestamp > add_months(sysdate,-24)
+    order by ss.subject_nhs_number desc
+    fetch first {subjects_to_retrieve} rows only
+    """
+    )
+    return subjects_df

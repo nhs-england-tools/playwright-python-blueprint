@@ -3,9 +3,9 @@ from playwright.sync_api import Page
 
 from pages.base_page import BasePage
 from pages.gfobt_test_kits.gfobt_test_kits_page import GFOBTTestKits
-from pages.gfobt_test_kits.gfobt_test_kit_logging_page import TestKitLogging
+from pages.gfobt_test_kits.gfobt_test_kit_logging_page import GFOBTTestKitLogging
 from pages.gfobt_test_kits.gfobt_test_kit_quality_control_reading_page import (
-    TestKitQualityControlReading,
+    GFOBTTestKitQualityControlReading,
 )
 from pages.gfobt_test_kits.gfobt_view_test_kit_result import ViewTestKitResult
 from pages.gfobt_test_kits.gfobt_create_qc_kit_page import (
@@ -27,6 +27,7 @@ def before_each(page: Page):
     # Go to gFOBT test kits page
     BasePage(page).go_to_gfobt_test_kits_page()
 
+
 @pytest.mark.smoke
 def test_gfobt_test_kit_page_navigation(page: Page) -> None:
     """
@@ -35,12 +36,12 @@ def test_gfobt_test_kit_page_navigation(page: Page) -> None:
     """
     # Test kit logging page opens as expected
     GFOBTTestKits(page).go_to_test_kit_logging_page()
-    TestKitLogging(page).verify_test_kit_logging_title()
+    GFOBTTestKitLogging(page).verify_test_kit_logging_title()
     BasePage(page).click_back_button()
 
     # Test kit reading page opens as expected
     GFOBTTestKits(page).go_to_test_kit_reading_page()
-    TestKitQualityControlReading(page).verify_test_kit_logging_tile()
+    GFOBTTestKitQualityControlReading(page).verify_test_kit_logging_tile()
     BasePage(page).click_back_button()
 
     # View test kit result page opens as expected

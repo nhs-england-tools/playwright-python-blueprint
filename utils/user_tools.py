@@ -24,6 +24,7 @@ class UserTools:
             page (playwright.sync_api.Page): The Playwright page object to interact with.
             username (str): Enter a username that exists in the users.json file.
         """
+        logging.info(f"Logging in as {username}")
         # Load dotenv to enable retrieval of a password from .env file
         load_dotenv()
         # Go to base url

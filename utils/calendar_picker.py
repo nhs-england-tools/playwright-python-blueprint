@@ -3,6 +3,8 @@ from utils.date_time_utils import DateTimeUtils
 from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 from sys import platform
+import logging
+import pytest
 
 
 class CalendarPicker(BasePage):
@@ -14,6 +16,13 @@ class CalendarPicker(BasePage):
         self.v1_prev_month = self.page.get_by_role("cell", name="‹").locator("div")
         self.v1_next_month = self.page.get_by_role("cell", name="›").locator("div")
         self.v1_next_year = self.page.get_by_role("cell", name="»").locator("div")
+        # Book Appointment picker locators
+        self.appointments_prev_month = self.page.get_by_role(
+            "link", name="<-", exact=True
+        )
+        self.appointments_next_month = self.page.get_by_role(
+            "link", name="->", exact=True
+        )
 
     # Calendar Methods
     def calendar_picker_ddmmyyyy(self, date: datetime, locator: Locator) -> None:
@@ -276,3 +285,82 @@ class CalendarPicker(BasePage):
         )
 
         self.select_day(date)
+
+    def book_first_eligble_appointment(
+        self,
+        current_month_displayed: str,
+        locator: Locator,
+        bg_colours: list,
+    ) -> None:
+        """
+        This is used to select the first eligible appointment date
+        It first sets the calendar to the current month
+        Then gets all available dates, and then clicks on the first one starting from today's date
+        If no available dates are found it moves onto the next month and repeats this 2 more times
+        If in the end no available dates are found the test will fail.
+        """
+        current_month_displayed_int = DateTimeUtils().month_string_to_number(
+            current_month_displayed
+        )
+        if platform == "win32":  # Windows
+            current_month_int = int(datetime.now().strftime("%#m"))
+        else:  # Linux or Mac
+            current_month_int = int(datetime.now().strftime("%-m"))
+
+        self.book_appointments_go_to_month(
+            current_month_displayed_int, current_month_int
+        )
+
+        months_looped = 0
+        appointment_clicked = False
+        while (
+            months_looped < 3 and not appointment_clicked
+        ):  # This loops through this month + next two months to find available appointments. If none found it has failed
+            appointment_clicked = self.check_for_eligible_appointment_dates(
+                locator, bg_colours
+            )
+
+            if not appointment_clicked:
+                self.click(self.appointments_next_month)
+                months_looped += 1
+
+        if not appointment_clicked:
+            pytest.fail("No available appointments found for the current month")
+
+    def book_appointments_go_to_month(
+        self, current_displayed_month: int, wanted_month: int
+    ):
+        """
+        This is used to move the calendar on the appointments page to the wanted month
+        """
+        month_difference = current_displayed_month - wanted_month
+        if month_difference > 0:
+            for _ in range(month_difference):
+                self.click(self.appointments_prev_month)
+        elif month_difference < 0:
+            for _ in range(month_difference * -1):
+                self.click(self.appointments_next_month)
+
+    def check_for_eligible_appointment_dates(
+        self, locator: Locator, bg_colours: list
+    ) -> bool:
+        """
+        This function loops through all of the appointment date cells and if the bacground colour matches
+        It then checks that the length of the name is less than 5.
+        This is done the name length is the only differentiating factor between the two calendar tables on the page
+        - 1st table has a length of 4 (e.g. wed2, fri5) and the 2nd table has a length of 5 (e.g. wed11, fri14)
+        """
+
+        locator_count = locator.count()
+
+        for i in range(locator_count):
+            locator_element = locator.nth(i)
+            background_colour = locator_element.evaluate(
+                "el => window.getComputedStyle(el).backgroundColor"
+            )
+
+            if background_colour in bg_colours:
+                value = locator_element.get_attribute("name")
+                if len(value) < 5:
+                    self.click(locator.nth(i))
+                    return True
