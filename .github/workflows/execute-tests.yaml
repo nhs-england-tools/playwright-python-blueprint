@@ -1,0 +1,28 @@
+name: "Test Runner"
+
+on:
+  workflow_call:
+    inputs:
+      bcss_cloud_environment:
+        description: "The environment to run against in lower case (e.g. bcss-1234)"
+        required: true
+        type: string
+        default: "bcss-18680"
+      marker_to_use:
+        description: "The test marker to use when running tests (e.g. smokescreen)"
+        required: true
+        type: string
+
+jobs:
+  run-tests:
+    name: "Run Specified Tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+      - name: "Run Tests"
+        uses: ./.github/actions/run-playwright-tests
+        with:
+          bcss_cloud_environment: "${{ inputs.bcss_cloud_environment }}"
+          marker_to_use: "${{ inputs.marker_to_use }}"

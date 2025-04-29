@@ -1,6 +1,17 @@
-name: "Run Util & Example Tests"
+name: "Run Playwright Tests"
 runs-on: ubuntu-latest
-timeout-minutes: 3
+timeout-minutes: 10
+
+inputs:
+  bcss_cloud_environment:
+    description: "The environment to run against in lower case (e.g. bcss-1234)"
+    required: true
+    type: string
+  marker_to_use:
+    description: "The test marker to use when running tests (e.g. smokescreen)"
+    required: true
+    type: string
+
 runs:
   using: "composite"
   steps:
@@ -16,18 +27,15 @@ runs:
     - name: Ensure browsers are installed
       shell: bash
       run: python -m playwright install --with-deps
-    - name: Run util tests
+    - name: Run specified tests
       shell: bash
-      run: pytest -m "utils" --ignore=tests/
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: result-output-utils
-        path: test-results/
-        retention-days: 3
-    - name: Run example tests
-      shell: bash
-      run: pytest --ignore=tests_utils/
+      run: pytest -m ${{ inputs.marker_to_use }} --base-url=$URL_TO_USE --ignore=tests_utils/
+      env:
+        BCSS_PASS: ${{ secrets.BCSS_PASS }}
+        ORACLE_DB: ${ ${{ secrets.ORACLE_DB }}/<REPLACE>/${{ inputs.bcss_cloud_environment }} }
+        ORACLE_USERNAME: ${{ secrets.ORACLE_USERNAME }}
+        ORACLE_PASS: ${{ secrets.ORACLE_PASS }}
+        URL_TO_USE: ${ ${{ vars.CLOUD_ENV_URL }}/<REPLACE>/${{ inputs.bcss_cloud_environment }} }
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
