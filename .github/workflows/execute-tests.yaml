@@ -1,7 +1,7 @@
 name: "Test Runner"
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       bcss_cloud_environment:
         description: "The environment to run against in lower case (e.g. bcss-1234)"
