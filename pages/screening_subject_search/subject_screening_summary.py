@@ -48,6 +48,10 @@ class SubjectScreeningSummary(BasePage):
         self.first_fobt_episode_link = page.get_by_role(
             "link", name="FOBT Screening"
         ).first
+        self.datasets_link = self.page.get_by_role("link", name="Datasets")
+        self.advance_fobt_screening_episode_button = self.page.get_by_role(
+            "button", name="Advance FOBT Screening Episode"
+        )
 
     def verify_result_contains_text(self, text) -> None:
         expect(self.display_rs).to_contain_text(text)
@@ -121,6 +125,12 @@ class SubjectScreeningSummary(BasePage):
 
     def click_first_fobt_episode_link(self) -> None:
         self.click(self.first_fobt_episode_link)
+
+    def click_datasets_link(self) -> None:
+        self.click(self.datasets_link)
+
+    def click_advance_fobt_screening_episode_button(self) -> None:
+        self.click(self.advance_fobt_screening_episode_button)
 
 
 class ChangeScreeningStatusOptions(Enum):

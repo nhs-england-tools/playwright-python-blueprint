@@ -52,11 +52,11 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
     page.get_by_role("button", name="View appointments on this day").click()
     page.get_by_role("button", name="Calendar").click()
-    date_from_util = datetime(2025, 4, 28)
+    date_from_util = datetime(2025, 4, 29)
     CalendarPicker(page).v1_calender_picker(date_from_util)
 
     # Select subject from inital test data util
-    page.get_by_role("link", name="HAT-PIN UNTRUTH").click()
+    page.get_by_role("link", name="DELIRIOUS DELUXE").click()
 
     # Select Attendance radio button, tick Attended checkbox, set Attended Date to yesterday's (system) date and then press Save
     page.get_by_role("radio", name="Attendance").check()
@@ -69,13 +69,13 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     # Repeat for x Abnormal  patients
 
     # Navigate to the 'Subject Screening Summary' screen for the 1st Abnormal patient
-    nhs_no = "9543076472"  # Test NHS NO for Scaliding Cod
+    nhs_no = "9937265193"  # Test NHS NO for Scaliding Cod
     verify_subject_event_status_by_nhs_no(
         page, nhs_no, "J10 - Attended Colonoscopy Assessment Appointment"
     )
 
     # Click on 'Datasets' link
-    page.get_by_role("link", name="Datasets").click()
+    SubjectScreeningSummary(page).click_datasets_link()
 
     # Click on 'Show Dataset' next to the Colonoscopy Assessment
 
@@ -100,7 +100,7 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
     # On the Subject Screening Summary click on the 'Advance FOBT Screening Episode' button and then click on the 'Suitable for Endoscopic Test' button
     # Click OK after message
-    page.get_by_role("button", name="Advance FOBT Screening Episode").click()
+    SubjectScreeningSummary(page).click_advance_fobt_screening_episode_button()
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("button", name="Suitable for Endoscopic Test").click()
 
@@ -136,7 +136,7 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     verify_subject_event_status_by_nhs_no(
         page, nhs_no, "A259 - Attended Diagnostic Test"
     )
-    page.get_by_role("button", name="Advance FOBT Screening Episode").click()
+    SubjectScreeningSummary(page).click_advance_fobt_screening_episode_button()
 
     # Click 'Other Post-investigation Contact Required' button
     # Click 'OK'
