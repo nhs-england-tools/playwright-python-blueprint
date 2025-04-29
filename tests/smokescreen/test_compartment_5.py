@@ -8,6 +8,9 @@ from pages.screening_practitioner_appointments.screening_practitioner_appointmen
 from pages.screening_subject_search.subject_screening_summary import (
     SubjectScreeningSummary,
 )
+from pages.screening_practitioner_appointments.screening_practitioner_day_view import (
+    ScreeningPractitionerDayView,
+)
 from utils.user_tools import UserTools
 from utils.load_properties_file import PropertiesFile
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
@@ -51,12 +54,12 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     page.locator("#UI_SITE").select_option(label="The Royal Hospital (Wolverhampton)")
 
     page.get_by_role("button", name="View appointments on this day").click()
-    page.get_by_role("button", name="Calendar").click()
+    ScreeningPractitionerDayView(page).click_calendar_button()
     date_from_util = datetime(2025, 4, 29)
     CalendarPicker(page).v1_calender_picker(date_from_util)
 
     # Select subject from inital test data util
-    page.get_by_role("link", name="DELIRIOUS DELUXE").click()
+    ScreeningPractitionerDayView(page).click_patient_link("STARLESS BLUSH")
 
     # Select Attendance radio button, tick Attended checkbox, set Attended Date to yesterday's (system) date and then press Save
     page.get_by_role("radio", name="Attendance").check()
