@@ -8,6 +8,9 @@ from pages.screening_practitioner_appointments.screening_practitioner_appointmen
 from pages.screening_subject_search.subject_screening_summary import (
     SubjectScreeningSummary,
 )
+from pages.screening_subject_search.advance_fobt_screening_episode_page import (
+    AdvanceFOBTScreeningEpisode,
+)
 from pages.screening_practitioner_appointments.screening_practitioner_day_view import (
     ScreeningPractitionerDayView,
 )
@@ -104,26 +107,24 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     # On the Subject Screening Summary click on the 'Advance FOBT Screening Episode' button and then click on the 'Suitable for Endoscopic Test' button
     # Click OK after message
     SubjectScreeningSummary(page).click_advance_fobt_screening_episode_button()
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Suitable for Endoscopic Test").click()
+    AdvanceFOBTScreeningEpisode(page).click_suitable_for_endoscopic_test_button()
 
     # Enter a 'First Offered Appointment Date' (enter a date after the attended appt)
-    page.get_by_role("button", name="Calendar").click()
+    AdvanceFOBTScreeningEpisode(page).click_calendar_button()
     CalendarPicker(page).v1_calender_picker(datetime.today())
 
     # Select 'Colonoscopy' from the 'Type of Test' from the drop down list
-    page.locator("#UI_EXT_TEST_TYPE_2233").select_option(label="Colonoscopy")
+    AdvanceFOBTScreeningEpisode(page).select_test_type_dropdown_option("Colonoscopy")
 
     # Click the 'Invite for Diagnostic Test >>' button
     # Click 'OK'
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Invite for Diagnostic Test >>").click()
+    AdvanceFOBTScreeningEpisode(page).click_invite_for_diagnostic_test_button()
     SubjectScreeningSummary(page).verify_latest_event_status_value(
         "A59 - Invited for Diagnostic Test"
     )
 
     # Click 'Attend Diagnostic Test' button
-    page.get_by_role("button", name="Attend Diagnostic Test").click()
+    AdvanceFOBTScreeningEpisode(page).click_attend_diagnostic_test_button()
 
     # Select Colonoscopy from drop down list. Enter the actual appointment date as today's date and select 'Save'
     page.locator("#UI_CONFIRMED_TYPE_OF_TEST").select_option(label="Colonoscopy")
@@ -143,16 +144,15 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
     # Click 'Other Post-investigation Contact Required' button
     # Click 'OK'
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Other Post-investigation").click()
-    expect(
-        page.get_by_role(
-            "cell", name="A361 - Other Post-investigation Contact Required", exact=True
-        )
-    ).to_be_visible()
+    AdvanceFOBTScreeningEpisode(page).click_other_post_investigation_button()
+    AdvanceFOBTScreeningEpisode(page).verify_latest_event_status_value(
+        "A361 - Other Post-investigation Contact Required"
+    )
 
     # Select 'Record other post-investigation contact' button
-    page.get_by_role("button", name="Record other post-").click()
+    AdvanceFOBTScreeningEpisode(
+        page
+    ).click_record_other_post_investigation_contact_button()
 
     # Complete 'Contact Direction',   To patient
     # 'Contact made between patient and',  Selects the top option in the dropdown
