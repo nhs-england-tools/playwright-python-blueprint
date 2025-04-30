@@ -14,7 +14,9 @@ from pages.screening_subject_search.advance_fobt_screening_episode_page import (
 from pages.screening_practitioner_appointments.screening_practitioner_day_view import (
     ScreeningPractitionerDayView,
 )
-from pages.screening_subject_search.appointment_detail_page import AppointmentDetail
+from pages.screening_practitioner_appointments.appointment_detail_page import (
+    AppointmentDetail,
+)
 from utils.user_tools import UserTools
 from utils.load_properties_file import PropertiesFile
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
