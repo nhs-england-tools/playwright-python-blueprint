@@ -14,6 +14,7 @@ from pages.screening_subject_search.advance_fobt_screening_episode_page import (
 from pages.screening_practitioner_appointments.screening_practitioner_day_view import (
     ScreeningPractitionerDayView,
 )
+from pages.screening_subject_search.appointment_detail_page import AppointmentDetail
 from utils.user_tools import UserTools
 from utils.load_properties_file import PropertiesFile
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
@@ -65,12 +66,12 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     ScreeningPractitionerDayView(page).click_patient_link("STARLESS BLUSH")
 
     # Select Attendance radio button, tick Attended checkbox, set Attended Date to yesterday's (system) date and then press Save
-    page.get_by_role("radio", name="Attendance").check()
-    page.locator("#UI_ATTENDED").check()
-    page.get_by_role("button", name="Calendar").click()
+    AppointmentDetail(page).check_attendance_radio()
+    AppointmentDetail(page).check_attendented_check_box()
+    AppointmentDetail(page).click_calendar_button()
     CalendarPicker(page).v1_calender_picker(datetime.today() - timedelta(1))
-    page.get_by_role("button", name="Save").click()
-    expect(page.get_by_text("Record updated")).to_be_visible()
+    AppointmentDetail(page).click_save_button()
+    AppointmentDetail(page).verify_text_visible("Record updated")
 
     # Repeat for x Abnormal  patients
 
