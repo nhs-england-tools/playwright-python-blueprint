@@ -17,6 +17,9 @@ from pages.screening_practitioner_appointments.screening_practitioner_day_view i
 from pages.screening_practitioner_appointments.appointment_detail_page import (
     AppointmentDetail,
 )
+from pages.screening_practitioner_appointments.appointment_calendar_page import (
+    AppointmentCalendar,
+)
 from utils.user_tools import UserTools
 from utils.load_properties_file import PropertiesFile
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
@@ -53,13 +56,17 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     ScreeningPractitionerAppointmentsPage(page).go_to_view_appointments_page()
 
     # Select the Appointment Type, Site, Screening Practitioner and required date of the appointment and click 'View appointments on this day' button
-    page.locator("#UI_APPOINTMENT_TYPE").select_option(label="Colonoscopy Assessment")
-    page.locator("#UI_SCREENING_CENTRE").select_option(
-        label="BCS001 - Wolverhampton Bowel Cancer Screening Centre"
+    AppointmentCalendar(page).select_appointment_type_dropdown(
+        smokescreen_properties["c5_eng_appointment_type"]
     )
-    page.locator("#UI_SITE").select_option(label="The Royal Hospital (Wolverhampton)")
+    AppointmentCalendar(page).select_screening_centre_dropdown(
+        smokescreen_properties["c5_eng_screening_centre"]
+    )
+    AppointmentCalendar(page).select_site_dropdown(
+        smokescreen_properties["c5_eng_site"]
+    )
 
-    page.get_by_role("button", name="View appointments on this day").click()
+    AppointmentCalendar(page).click_view_appointments_on_this_day_button()
     ScreeningPractitionerDayView(page).click_calendar_button()
     date_from_util = datetime(2025, 4, 29)
     CalendarPicker(page).v1_calender_picker(date_from_util)
