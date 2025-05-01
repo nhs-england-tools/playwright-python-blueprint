@@ -8,15 +8,15 @@ class AppointmentDetail(BasePage):
         self.page = page
         # Appointment Detail - page filters
         self.attendance_radio = self.page.get_by_role("radio", name="Attendance")
-        self.attendented_check_box = self.page.locator("#UI_ATTENDED")
+        self.attended_check_box = self.page.locator("#UI_ATTENDED")
         self.calendar_button = self.page.get_by_role("button", name="Calendar")
-        self.save_button = self.page.get_by_role("button", name="Save").click()
+        self.save_button = self.page.get_by_role("button", name="Save")
 
     def check_attendance_radio(self) -> None:
         self.attendance_radio.check()
 
-    def check_attendented_check_box(self) -> None:
-        self.attendented_check_box.check()
+    def check_attended_check_box(self) -> None:
+        self.attended_check_box.check()
 
     def click_calendar_button(self) -> None:
         self.click(self.calendar_button)
