@@ -5,6 +5,11 @@ from pages.base_page import BasePage
 from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
     ScreeningPractitionerAppointmentsPage,
 )
+from pages.screening_practitioner_appointments.subject_datasets import (
+    SubjectDatasets,
+    FitForColonoscopySspOptions,
+    AsaGradeOptions,
+)
 from pages.screening_subject_search.subject_screening_summary import (
     SubjectScreeningSummary,
 )
@@ -94,22 +99,25 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     SubjectScreeningSummary(page).click_datasets_link()
 
     # Click on 'Show Dataset' next to the Colonoscopy Assessment
+    SubjectDatasets(page).click_show_datasets()
 
     # Populate Colonoscopy Assessment Details fields
 
     # ASA Grade  - I - Fit
+    SubjectDatasets(page).select_asa_grade_option(AsaGradeOptions.FIT.value)
+
     # Fit for Colonoscopy (SSP) - Yes
+    SubjectDatasets(page).select_fit_for_colonoscopy_option(
+        FitForColonoscopySspOptions.YES.value
+    )
 
     # Click 'Yes' for Dataset Complete?
+    SubjectDatasets(page).click_dataset_complete_radio_button_yes()
+
     # Click Save Dataset button
+    SubjectDatasets(page).save_dataset()
+
     # Click Back
-    page.get_by_role("link", name="Show Dataset").click()
-    page.get_by_label("ASA Grade").select_option("17009")
-    page.get_by_label("Fit for Colonoscopy (SSP)").select_option("17058")
-    page.get_by_role("radio", name="Yes").check()
-    page.locator("#UI_DIV_BUTTON_SAVE1").get_by_role(
-        "button", name="Save Dataset"
-    ).click()
     BasePage(page).click_back_button()
     BasePage(page).click_back_button()
     # This brings you back to the subject screening summary page
