@@ -1,12 +1,15 @@
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from pages.logout.log_out_page import Logout
 from pages.base_page import BasePage
 from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
     ScreeningPractitionerAppointmentsPage,
 )
-from pages.screening_practitioner_appointments.subject_datasets import (
-    SubjectDatasets,
+from pages.datasets.subject_datasets_page import (
+    SubjectDatasetsPage,
+)
+from pages.datasets.colonoscopy_dataset_page import (
+    ColonoscopyDatasetsPage,
     FitForColonoscopySspOptions,
     AsaGradeOptions,
 )
@@ -76,11 +79,11 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
     AppointmentCalendar(page).click_view_appointments_on_this_day_button()
     ScreeningPractitionerDayView(page).click_calendar_button()
-    date_from_util = datetime(2025, 4, 29)
+    date_from_util = datetime(2025, 4, 30)
     CalendarPicker(page).v1_calender_picker(date_from_util)
 
     # Select subject from inital test data util
-    ScreeningPractitionerDayView(page).click_patient_link("STARLESS BLUSH")
+    ScreeningPractitionerDayView(page).click_patient_link("DIVIDEND MUZZLE")
 
     # Select Attendance radio button, tick Attended checkbox, set Attended Date to yesterday's (system) date and then press Save
     AppointmentDetail(page).check_attendance_radio()
@@ -93,7 +96,7 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     # Repeat for x Abnormal  patients
 
     # Navigate to the 'Subject Screening Summary' screen for the 1st Abnormal patient
-    nhs_no = "9937265193"  # Test NHS NO for Scaliding Cod
+    nhs_no = "9852356488"  # Test NHS NO for DIVIDEND MUZZLE
     verify_subject_event_status_by_nhs_no(
         page, nhs_no, "J10 - Attended Colonoscopy Assessment Appointment"
     )
@@ -102,23 +105,23 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
     SubjectScreeningSummary(page).click_datasets_link()
 
     # Click on 'Show Dataset' next to the Colonoscopy Assessment
-    SubjectDatasets(page).click_show_datasets()
+    SubjectDatasetsPage(page).click_colonoscopy_show_datasets()
 
     # Populate Colonoscopy Assessment Details fields
 
     # ASA Grade  - I - Fit
-    SubjectDatasets(page).select_asa_grade_option(AsaGradeOptions.FIT.value)
+    ColonoscopyDatasetsPage(page).select_asa_grade_option(AsaGradeOptions.FIT.value)
 
     # Fit for Colonoscopy (SSP) - Yes
-    SubjectDatasets(page).select_fit_for_colonoscopy_option(
+    ColonoscopyDatasetsPage(page).select_fit_for_colonoscopy_option(
         FitForColonoscopySspOptions.YES.value
     )
 
     # Click 'Yes' for Dataset Complete?
-    SubjectDatasets(page).click_dataset_complete_radio_button_yes()
+    ColonoscopyDatasetsPage(page).click_dataset_complete_radio_button_yes()
 
     # Click Save Dataset button
-    SubjectDatasets(page).save_dataset()
+    ColonoscopyDatasetsPage(page).save_dataset()
 
     # Click Back
     BasePage(page).click_back_button()
