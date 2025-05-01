@@ -1,5 +1,10 @@
 name: "Test Runner"
 
+# This workflow is triggered manually and allows the user to specify the environment and test marker to run.
+# It is functional, however will not work against BCSS test environments until we configure some self-hosted
+# GitHub runners, as the GitHub-hosted runners are based outside of the UK so get blocked by the WAF on the
+# environments.
+
 on:
   workflow_dispatch:
     inputs:
@@ -17,12 +22,19 @@ jobs:
   run-tests:
     name: "Run Specified Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
       - name: "Run Tests"
+        id: run-tests
         uses: ./.github/actions/run-playwright-tests
         with:
           bcss_cloud_environment: "${{ inputs.bcss_cloud_environment }}"
           marker_to_use: "${{ inputs.marker_to_use }}"
+        env:
+          BCSS_PASS: ${{ secrets.BCSS_PASS }}
+          ORACLE_DB_DEFAULT: ${{ secrets.ORACLE_DB }}
+          ORACLE_USERNAME: ${{ secrets.ORACLE_USERNAME }}
+          ORACLE_PASS: ${{ secrets.ORACLE_PASS }}
+          URL_TO_USE_DEFAULT: ${{ vars.CLOUD_ENV_URL }}

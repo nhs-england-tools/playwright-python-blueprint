@@ -8,7 +8,7 @@ inputs:
     required: true
     type: string
   marker_to_use:
-    description: "The test marker to use when running tests (e.g. smokescreen)"
+    description: "The test marker to use when running tests (e.g. smoke)"
     required: true
     type: string
 
@@ -29,13 +29,10 @@ runs:
       run: python -m playwright install --with-deps
     - name: Run specified tests
       shell: bash
-      run: pytest -m ${{ inputs.marker_to_use }} --base-url=$URL_TO_USE --ignore=tests_utils/
-      env:
-        BCSS_PASS: ${{ secrets.BCSS_PASS }}
-        ORACLE_DB: ${ ${{ secrets.ORACLE_DB }}/<REPLACE>/${{ inputs.bcss_cloud_environment }} }
-        ORACLE_USERNAME: ${{ secrets.ORACLE_USERNAME }}
-        ORACLE_PASS: ${{ secrets.ORACLE_PASS }}
-        URL_TO_USE: ${ ${{ vars.CLOUD_ENV_URL }}/<REPLACE>/${{ inputs.bcss_cloud_environment }} }
+      run: |
+        URL_TO_USE="${URL_TO_USE_DEFAULT//<REPLACE>/${{ inputs.bcss_cloud_environment }}}"
+        ORACLE_DB="${ORACLE_DB_DEFAULT//<REPLACE>/${{ inputs.bcss_cloud_environment }}}"
+        pytest -m ${{ inputs.marker_to_use }} --base-url=https://$URL_TO_USE --ignore=tests_utils/
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
