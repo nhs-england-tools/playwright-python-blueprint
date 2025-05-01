@@ -88,7 +88,7 @@ def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:
             "Skipping S1 Pre-invitation (FIT) (digital leaflet) as no self referral invitations were generated"
         )
     batch_processing(
-        page, "S1", "Pre-invitation (FIT)", "S9 - Pre-invitation Sent", True
+        page, "S1", "Pre-invitation (FIT)", "S9 - Pre-invitation Sent", True, True
     )
 
     # Print the batch of Invitation & Test Kit Letters - England

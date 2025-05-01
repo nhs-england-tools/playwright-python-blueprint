@@ -10,10 +10,12 @@ from pages.communication_production.batch_list_page import (
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
 from utils.oracle.oracle import OracleDB
+from utils.pdf_reader import extract_nhs_no_from_pdf
 import os
 import pytest
 from playwright.sync_api import Page
 import logging
+import pandas as pd
 
 
 def batch_processing(
@@ -22,6 +24,7 @@ def batch_processing(
     batch_description: str,
     latest_event_status: str,
     run_timed_events: bool = False,
+    get_subjects_from_pdf: bool = False,
 ) -> None:
     """
     This util is used to process batches. It expects the following inputs:
@@ -30,6 +33,7 @@ def batch_processing(
     - batch_description: This is the description of the batch. E.g. Pre-invitation (FIT)
     - latest_event_status: This is the status the subject will get updated to after the batch has been processed.
     - run_timed_events: This is an optional input that executes bcss_timed_events if set to True
+    - get_subjects_from_pdf: This is an optial input to change the method of retrieving subjects from the batch from the Db to the PDF file.
     """
     logging.info(f"Processing {batch_type} - {batch_description} batch")
     BasePage(page).click_main_menu_link()
@@ -39,8 +43,9 @@ def batch_processing(
 
     batch_description_cells = page.locator(f"//td[text()='{batch_description}']")
 
-    if batch_description_cells.count() == 0 and page.locator(
-        "td", has_text="No matching records found"
+    if (
+        batch_description_cells.count() == 0
+        and page.locator("td", has_text="No matching records found").is_visible()
     ):
         pytest.fail(f"No {batch_type} {batch_description} batch found")
 
@@ -55,41 +60,31 @@ def batch_processing(
             logging.info(
                 f"Successfully found open '{batch_type} - {batch_description}' batch"
             )
-            try:
-                logging.info(
-                    f"Attempting to get NHS Numbers for batch {link_text} from the DB"
-                )
-                nhs_no_df = get_nhs_no_from_batch_id(link_text)
-                logging.info(
-                    f"Successfully retrieved NHS Numbers from batch {link_text}"
-                )
-            except Exception as e:
-                pytest.fail(
-                    f"Failed to retrieve NHS Numbers from batch {link_text}, {str(e)}"
-                )
             link.click()
             break
         elif (i + 1) == batch_description_cells.count():
             pytest.fail(f"No open '{batch_type} - {batch_description}' batch found")
 
-    prepare_and_print_batch(page, link_text)
+    if get_subjects_from_pdf:
+        logging.info(f"Getting NHS Numbers for batch {link_text} from the PDF File")
+        nhs_no_df = prepare_and_print_batch(page, link_text, get_subjects_from_pdf)
+    else:
+        logging.info(f"Getting NHS Numbers for batch {link_text} from the DB")
+        prepare_and_print_batch(page, link_text, get_subjects_from_pdf)
+        nhs_no_df = get_nhs_no_from_batch_id(link_text)
 
     check_batch_in_archived_batch_list(page, link_text)
 
     first_nhs_no = nhs_no_df["subject_nhs_number"].iloc[0]
-    try:
-        verify_subject_event_status_by_nhs_no(page, first_nhs_no, latest_event_status)
-        logging.info(
-            f"Successfully verified NHS number {first_nhs_no} with status {latest_event_status}"
-        )
-    except Exception as e:
-        pytest.fail(f"Verification failed for NHS number {first_nhs_no}: {str(e)}")
+    verify_subject_event_status_by_nhs_no(page, first_nhs_no, latest_event_status)
 
     if run_timed_events:
         OracleDB().exec_bcss_timed_events(nhs_no_df)
 
 
-def prepare_and_print_batch(page: Page, link_text) -> None:
+def prepare_and_print_batch(
+    page: Page, link_text: str, get_subjects_from_pdf: bool = False
+) -> pd.DataFrame | None:
     """
     This method prepares the batch, retreives the files and confirms them as printed
     Once those buttons have been pressed it waits for the message 'Batch Successfully Archived'
@@ -114,6 +109,11 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
             file = download_file.suggested_filename
             # Wait for the download process to complete and save the downloaded file in a temp folder
             download_file.save_as(file)
+            nhs_no_df = (
+                extract_nhs_no_from_pdf(file)
+                if file.endswith(".pdf") and get_subjects_from_pdf
+                else None
+            )
             os.remove(file)  # Deletes the file after extracting the necessary data
     except Exception as e:
         pytest.fail(f"No retrieve button available to click: {str(e)}")
@@ -136,6 +136,8 @@ def prepare_and_print_batch(page: Page, link_text) -> None:
         logging.info(f"Batch {link_text} successfully archived")
     except Exception as e:
         pytest.fail(f"Batch successfully archived message is not shown: {str(e)}")
+
+    return nhs_no_df
 
 
 def check_batch_in_archived_batch_list(page: Page, link_text) -> None:
