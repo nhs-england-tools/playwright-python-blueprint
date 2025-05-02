@@ -3,11 +3,13 @@ from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.download.downloads_page import DownloadsPage
 from pages.download.individual_download_request_and_retrieval_page import (
-    IndividualDownloadRequestAndRetrieval,
+    IndividualDownloadRequestAndRetrievalPage,
 )
-from pages.download.list_of_individual_downloads_page import ListOfIndividualDownloads
+from pages.download.list_of_individual_downloads_page import (
+    ListOfIndividualDownloadsPage,
+)
 from pages.download.batch_download_request_and_retrieval_page import (
-    BatchDownloadRequestAndRetrieval,
+    BatchDownloadRequestAndRetrievalPage,
 )
 from utils.user_tools import UserTools
 
@@ -33,27 +35,27 @@ def test_download_facility_page_navigation(page: Page) -> None:
     """
     # Individual download request and retrieval page loads as expected
     DownloadsPage(page).go_to_individual_download_request_page()
-    IndividualDownloadRequestAndRetrieval(
+    IndividualDownloadRequestAndRetrievalPage(
         page
     ).verify_individual_download_request_and_retrieval_title()
 
     # Individual download request and retrieval page contains warning message
-    IndividualDownloadRequestAndRetrieval(page).expect_form_to_have_warning()
+    IndividualDownloadRequestAndRetrievalPage(page).expect_form_to_have_warning()
     BasePage(page).click_back_button()
 
     # List of Individual downloads page loads as expected
     DownloadsPage(page).go_to_list_of_individual_downloads_page()
-    ListOfIndividualDownloads(page).verify_list_of_individual_downloads_title()
+    ListOfIndividualDownloadsPage(page).verify_list_of_individual_downloads_title()
     BasePage(page).click_back_button()
 
     # Batch download request and retrieval page loads as expected
     DownloadsPage(page).go_to_batch_download_request_and_page()
-    BatchDownloadRequestAndRetrieval(
+    BatchDownloadRequestAndRetrievalPage(
         page
     ).verify_batch_download_request_and_retrieval_title()
 
     # Batch download request and retrieval page contains warning message
-    BatchDownloadRequestAndRetrieval(page).expect_form_to_have_warning()
+    BatchDownloadRequestAndRetrievalPage(page).expect_form_to_have_warning()
     BasePage(page).click_back_button()
 
     # Return to main menu

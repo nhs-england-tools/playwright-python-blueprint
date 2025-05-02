@@ -1,12 +1,12 @@
 import pytest
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
-from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
+from pages.screening_practitioner_appointments.screening_practitioner_appointments_page import (
     ScreeningPractitionerAppointmentsPage,
 )
-from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointments
+from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointmentsPage
 from pages.screening_practitioner_appointments.colonoscopy_assessment_appointments_page import (
-    ColonoscopyAssessmentAppointments,
+    ColonoscopyAssessmentAppointmentsPage,
 )
 from utils.user_tools import UserTools
 
@@ -32,14 +32,14 @@ def test_screening_practitioner_appointments_page_navigation(page: Page) -> None
     """
     # Verify View appointments page opens as expected
     ScreeningPractitionerAppointmentsPage(page).go_to_view_appointments_page()
-    BowelScopeAppointments(page).verify_page_title()
-    BowelScopeAppointments(page).click_back_button()
+    BowelScopeAppointmentsPage(page).verify_page_title()
+    BowelScopeAppointmentsPage(page).click_back_button()
 
     # Verify Patients that Require Colonoscopy Assessment Appointments page opens as expected
     ScreeningPractitionerAppointmentsPage(page).go_to_patients_that_require_page()
-    ColonoscopyAssessmentAppointments(page).verify_page_header()
+    ColonoscopyAssessmentAppointmentsPage(page).verify_page_header()
 
-    ColonoscopyAssessmentAppointments(page).click_back_button()
+    ColonoscopyAssessmentAppointmentsPage(page).click_back_button()
 
     expect(
         ScreeningPractitionerAppointmentsPage(

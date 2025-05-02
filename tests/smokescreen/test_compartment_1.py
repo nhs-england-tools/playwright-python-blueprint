@@ -1,13 +1,13 @@
 import pytest
 import logging
-from pages.logout.log_out_page import Logout
+from pages.logout.log_out_page import LogoutPage
 from utils.user_tools import UserTools
 from pages.base_page import BasePage
-from pages.call_and_recall.call_and_recall_page import CallAndRecall
-from pages.call_and_recall.invitations_monitoring_page import InvitationsMonitoring
-from pages.call_and_recall.invitations_plans_page import InvitationsPlans
-from pages.call_and_recall.create_a_plan_page import CreateAPlan
-from pages.call_and_recall.generate_invitations_page import GenerateInvitations
+from pages.call_and_recall.call_and_recall_page import CallAndRecallPage
+from pages.call_and_recall.invitations_monitoring_page import InvitationsMonitoringPage
+from pages.call_and_recall.invitations_plans_page import InvitationsPlansPage
+from pages.call_and_recall.create_a_plan_page import CreateAPlanPage
+from pages.call_and_recall.generate_invitations_page import GenerateInvitationsPage
 from playwright.sync_api import Page
 from utils.batch_processing import batch_processing
 from utils.load_properties_file import PropertiesFile
@@ -29,22 +29,22 @@ def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> No
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     # Create plan - England
     BasePage(page).go_to_call_and_recall_page()
-    CallAndRecall(page).go_to_planning_and_monitoring_page()
-    InvitationsMonitoring(page).go_to_invitation_plan_page(
+    CallAndRecallPage(page).go_to_planning_and_monitoring_page()
+    InvitationsMonitoringPage(page).go_to_invitation_plan_page(
         smokescreen_properties["c1_screening_centre_code"]
     )
-    InvitationsPlans(page).go_to_create_a_plan_page()
+    InvitationsPlansPage(page).go_to_create_a_plan_page()
     logging.info("Setting daily invitation rate")
-    CreateAPlan(page).click_set_all_button()
-    CreateAPlan(page).fill_daily_invitation_rate_field(
+    CreateAPlanPage(page).click_set_all_button()
+    CreateAPlanPage(page).fill_daily_invitation_rate_field(
         smokescreen_properties["c1_daily_invitation_rate"]
     )
-    CreateAPlan(page).click_update_button()
-    CreateAPlan(page).click_confirm_button()
-    CreateAPlan(page).click_save_button()
-    CreateAPlan(page).fill_note_field("test data")
-    CreateAPlan(page).click_save_note_button()
-    InvitationsPlans(page).invitations_plans_title.wait_for()
+    CreateAPlanPage(page).click_update_button()
+    CreateAPlanPage(page).click_confirm_button()
+    CreateAPlanPage(page).click_save_button()
+    CreateAPlanPage(page).fill_note_field("test data")
+    CreateAPlanPage(page).click_save_note_button()
+    InvitationsPlansPage(page).invitations_plans_title.wait_for()
     logging.info("Invitation plan created")
 
 
@@ -65,10 +65,10 @@ def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:
 
     # Generate Invitations
     BasePage(page).go_to_call_and_recall_page()
-    CallAndRecall(page).go_to_generate_invitations_page()
+    CallAndRecallPage(page).go_to_generate_invitations_page()
     logging.info("Generating invitations based on the invitations plan")
-    GenerateInvitations(page).click_generate_invitations_button()
-    self_referrals_available = GenerateInvitations(
+    GenerateInvitationsPage(page).click_generate_invitations_button()
+    self_referrals_available = GenerateInvitationsPage(
         page
     ).wait_for_invitation_generation_complete(
         int(smokescreen_properties["c1_daily_invitation_rate"])
@@ -108,4 +108,4 @@ def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:
     )
 
     # Log out
-    Logout(page).log_out()
+    LogoutPage(page).log_out()

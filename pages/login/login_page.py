@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 
 class BcssLoginPage(BasePage):
+    """Login Page locators, and methods for interacting with the page."""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page

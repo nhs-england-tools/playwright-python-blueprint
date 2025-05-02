@@ -1,11 +1,20 @@
 import pytest
 from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.communication_production.communications_production_page import CommunicationsProduction
-from pages.communication_production.batch_list_page import ActiveBatchList, ArchivedBatchList
-from pages.communication_production.letter_library_index_page import LetterLibraryIndex
-from pages.communication_production.letter_signatory_page import LetterSignatory
-from pages.communication_production.electronic_communications_management import ElectronicCommunicationManagement
+from pages.communication_production.communications_production_page import (
+    CommunicationsProductionPage,
+)
+from pages.communication_production.batch_list_page import (
+    ActiveBatchListPage,
+    ArchivedBatchListPage,
+)
+from pages.communication_production.letter_library_index_page import (
+    LetterLibraryIndexPage,
+)
+from pages.communication_production.letter_signatory_page import LetterSignatoryPage
+from pages.communication_production.electronic_communications_management_page import (
+    ElectronicCommunicationManagementPage,
+)
 from utils.user_tools import UserTools
 
 
@@ -29,31 +38,31 @@ def test_communications_production_page_navigation(page: Page) -> None:
     are loaded when the links are clicked
     """
     # Active batch list page loads as expected
-    CommunicationsProduction(page).go_to_active_batch_list_page()
-    ActiveBatchList(page).verify_batch_list_page_title("Active Batch List")
+    CommunicationsProductionPage(page).go_to_active_batch_list_page()
+    ActiveBatchListPage(page).verify_batch_list_page_title("Active Batch List")
     BasePage(page).click_back_button()
 
     # Archived batch list page loads as expected
-    CommunicationsProduction(page).go_to_archived_batch_list_page()
-    ArchivedBatchList(page).verify_batch_list_page_title("Archived Batch List")
+    CommunicationsProductionPage(page).go_to_archived_batch_list_page()
+    ArchivedBatchListPage(page).verify_batch_list_page_title("Archived Batch List")
     BasePage(page).click_back_button()
 
     # Letter library index page loads as expected
-    CommunicationsProduction(page).go_to_letter_library_index_page()
-    LetterLibraryIndex(page).verify_letter_library_index_title()
+    CommunicationsProductionPage(page).go_to_letter_library_index_page()
+    LetterLibraryIndexPage(page).verify_letter_library_index_title()
     BasePage(page).click_back_button()
 
     # Manage individual letter link is visible (not clickable due to user role permissions)
-    CommunicationsProduction(page).verify_manage_individual_letter_page_visible()
+    CommunicationsProductionPage(page).verify_manage_individual_letter_page_visible()
 
     # Letter signatory page loads as expected
-    CommunicationsProduction(page).go_to_letter_signatory_page()
-    LetterSignatory(page).verify_letter_signatory_title()
+    CommunicationsProductionPage(page).go_to_letter_signatory_page()
+    LetterSignatoryPage(page).verify_letter_signatory_title()
     BasePage(page).click_back_button()
 
     # Electronic communication management page loads as expected
-    CommunicationsProduction(page).go_to_electronic_communication_management_page()
-    ElectronicCommunicationManagement(
+    CommunicationsProductionPage(page).go_to_electronic_communication_management_page()
+    ElectronicCommunicationManagementPage(
         page
     ).verify_electronic_communication_management_title()
 

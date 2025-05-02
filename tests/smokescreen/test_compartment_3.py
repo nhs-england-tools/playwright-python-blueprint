@@ -1,7 +1,7 @@
 import logging
 import pytest
 from playwright.sync_api import Page
-from pages.logout.log_out_page import Logout
+from pages.logout.log_out_page import LogoutPage
 from utils.batch_processing import batch_processing
 from utils.fit_kit_logged import process_kit_data
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
@@ -95,4 +95,4 @@ def test_compartment_3(page: Page, smokescreen_properties: dict) -> None:
     )
 
     # Log out
-    Logout(page).log_out()
+    LogoutPage(page).log_out()

@@ -2,9 +2,9 @@ from pages.screening_subject_search.subject_screening_search_page import (
     SubjectScreeningPage,
 )
 from pages.communication_production.communications_production_page import (
-    CommunicationsProduction,
+    CommunicationsProductionPage,
 )
-from pages.communication_production.batch_list_page import ActiveBatchList
+from pages.communication_production.batch_list_page import ActiveBatchListPage
 import pytest
 from playwright.sync_api import Page
 from pages.base_page import BasePage
@@ -41,11 +41,11 @@ def test_calender_picker_v2(page: Page) -> None:
     """
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
     BasePage(page).go_to_communications_production_page()
-    CommunicationsProduction(page).go_to_active_batch_list_page()
-    ActiveBatchList(page).enter_deadline_date_filter(datetime(1961, 12, 30))
-    ActiveBatchList(page).clear_deadline_filter_date()
-    ActiveBatchList(page).enter_deadline_date_filter(datetime(2026, 12, 1))
-    ActiveBatchList(page).clear_deadline_filter_date()
-    ActiveBatchList(page).enter_deadline_date_filter(datetime(1989, 6, 15))
-    ActiveBatchList(page).clear_deadline_filter_date()
-    ActiveBatchList(page).enter_deadline_date_filter(datetime.today())
+    CommunicationsProductionPage(page).go_to_active_batch_list_page()
+    ActiveBatchListPage(page).enter_deadline_date_filter(datetime(1961, 12, 30))
+    ActiveBatchListPage(page).clear_deadline_filter_date()
+    ActiveBatchListPage(page).enter_deadline_date_filter(datetime(2026, 12, 1))
+    ActiveBatchListPage(page).clear_deadline_filter_date()
+    ActiveBatchListPage(page).enter_deadline_date_filter(datetime(1989, 6, 15))
+    ActiveBatchListPage(page).clear_deadline_filter_date()
+    ActiveBatchListPage(page).enter_deadline_date_filter(datetime.today())

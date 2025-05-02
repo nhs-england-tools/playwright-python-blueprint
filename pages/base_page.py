@@ -3,6 +3,8 @@ import logging
 
 
 class BasePage:
+    """Base Page locators and methods for interacting with the page."""
+
     def __init__(self, page: Page):
         self.page = page
         # Homepage/Navigation Bar links
@@ -51,42 +53,54 @@ class BasePage:
         self.main_menu__header = self.page.locator("#ntshPageTitle")
 
     def click_main_menu_link(self) -> None:
+        """Click the Base Page 'Main Menu' link if it is visible."""
         if self.main_menu_link.is_visible():
             self.click(self.main_menu_link)
 
     def click_log_out_link(self) -> None:
+        """Click the Base Page 'Log-out' link."""
         self.click(self.log_out_link)
 
     def click_sub_menu_link(self) -> None:
+        """Click the Base Page 'Show Sub-menu' link."""
         self.click(self.sub_menu_link)
 
     def click_hide_sub_menu_link(self) -> None:
+        """Click the Base Page 'Hide Sub-menu' link."""
         self.click(self.hide_sub_menu_link)
 
     def click_select_org_link(self) -> None:
+        """Click the Base Page 'Select Org' link."""
         self.click(self.select_org_link)
 
     def click_back_button(self) -> None:
+        """Click the Base Page 'Back' button."""
         self.click(self.back_button)
 
     def click_release_notes_link(self) -> None:
+        """Click the Base Page 'Release Notes' link."""
         self.click(self.release_notes_link)
 
     def click_refresh_alerts_link(self) -> None:
+        """Click the Base Page 'Refresh alerts' link."""
         self.click(self.refresh_alerts_link)
 
     def click_user_guide_link(self) -> None:
+        """Click the Base Page 'User guide' link."""
         self.click(self.user_guide_link)
 
     def click_help_link(self) -> None:
+        """Click the Base Page 'Help' link."""
         self.click(self.help_link)
 
     def bowel_cancer_screening_system_header_is_displayed(self) -> None:
+        """Asserts that the Bowel Cancer Screening System header is displayed."""
         expect(self.bowel_cancer_screening_system_header).to_contain_text(
             "Bowel Cancer Screening System"
         )
 
     def main_menu_header_is_displayed(self) -> None:
+        """Asserts that the Main Menu header is displayed."""
         expect(self.main_menu__header).to_contain_text("Main Menu")
 
     def bowel_cancer_screening_page_title_contains_text(self, text: str) -> None:
@@ -106,39 +120,51 @@ class BasePage:
             expect(self.bowel_cancer_screening_ntsh_page_title).to_contain_text(text)
 
     def go_to_contacts_list_page(self) -> None:
+        """Click the Base Page 'Contacts List' link."""
         self.click(self.contacts_list_page)
 
     def go_to_bowel_scope_page(self) -> None:
+        """Click the Base Page 'Bowel Scope' link."""
         self.click(self.bowel_scope_page)
 
     def go_to_call_and_recall_page(self) -> None:
+        """Click the Base Page 'Call and Recall' link."""
         self.click(self.call_and_recall_page)
 
     def go_to_communications_production_page(self) -> None:
+        """Click the Base Page 'Communications Production' link."""
         self.click(self.communications_production_page)
 
     def go_to_download_page(self) -> None:
+        """Click the Base Page 'Download' link."""
         self.click(self.download_page)
 
     def go_to_fit_test_kits_page(self) -> None:
+        """Click the Base Page 'FIT Test Kits' link."""
         self.click(self.fit_test_kits_page)
 
     def go_to_gfobt_test_kits_page(self) -> None:
+        """Click the Base Page 'gFOBT Test Kits' link."""
         self.click(self.gfobt_test_kits_page)
 
     def go_to_lynch_surveillance_page(self) -> None:
+        """Click the Base Page 'Lynch Surveillance' link."""
         self.click(self.lynch_surveillance_page)
 
     def go_to_organisations_page(self) -> None:
+        """Click the Base Page 'Organisations' link."""
         self.click(self.organisations_page)
 
     def go_to_reports_page(self) -> None:
+        """Click the Base Page 'Reports' link."""
         self.click(self.reports_page)
 
     def go_to_screening_practitioner_appointments_page(self) -> None:
+        """Click the Base Page 'Screening Practitioner Appointments' link."""
         self.click(self.screening_practitioner_appointments_page)
 
     def go_to_screening_subject_search_page(self) -> None:
+        """Click the Base Page 'Screening Subject Search' link."""
         self.click(self.screening_subject_search_page)
 
     def click(self, locator: Locator) -> None:

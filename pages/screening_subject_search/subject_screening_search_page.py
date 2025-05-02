@@ -5,6 +5,8 @@ from utils.calendar_picker import CalendarPicker
 
 
 class SubjectScreeningPage(BasePage):
+    """Subject Screening Page locators and methods for interacting with the page."""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
@@ -54,77 +56,102 @@ class SubjectScreeningPage(BasePage):
         self.dob_calendar_picker = self.page.locator("#A_C_DOB_From_LinkOrButton")
 
     def click_clear_filters_button(self) -> None:
+        """Click the 'Clear Filters' button."""
         self.click(self.clear_filters_button)
 
     def click_search_button(self) -> None:
+        """Click the 'Search' button."""
         self.click(self.search_button)
 
     def click_episodes_filter(self) -> None:
+        """Click the 'Episodes' filter."""
         self.episodes_filter.check()
 
     def click_demographics_filter(self) -> None:
+        """Click the 'Demographics' filter."""
         self.demographics_filter.check()
 
     def click_datasets_filter(self) -> None:
+        """Click the 'Datasets' filter."""
         self.datasets_filter.check()
 
     def click_nhs_number_filter(self) -> None:
+        """Click the 'NHS Number' filter."""
         self.click(self.nhs_number_filter)
 
     def click_surname_filter(self) -> None:
+        """Click the 'Surname' filter."""
         self.click(self.surname_filter)
 
     def click_soundex_filter(self) -> None:
+        """Click the 'Use soundex' filter."""
         self.soundex_filter.check()
 
     def click_forename_filter(self) -> None:
+        """Click the 'Forename' filter."""
         self.click(self.forename_filter)
 
     def click_date_of_birth_filter(self) -> None:
+        """Click the 'Date of Birth' filter."""
         self.click(self.date_of_birth_filter)
 
     def click_date_of_birth_range_filter(self) -> None:
+        """Click the 'Date of Birth Range' filter."""
         self.click(self.data_of_birth_range_filter)
 
     def click_postcode_filter(self) -> None:
+        """Click the 'Postcode' filter."""
         self.click(self.postcode_filter)
 
     def click_episodes_closed_date_filter(self) -> None:
+        """Click the 'Episode Closed Date' filter."""
         self.click(self.episode_closed_date_filter)
 
     def click_kit_batch_number_filter(self) -> None:
+        """Click the 'Kit Batch Number' filter."""
         self.click(self.kit_batch_number_filter)
 
     def click_kit_number_filter(self) -> None:
+        """Click the 'Kit Number' filter."""
         self.click(self.kit_number_filter)
 
     def click_fit_device_id_filter(self) -> None:
+        """Click the 'FIT Device ID' filter."""
         self.click(self.fit_device_id_filter)
 
     def click_laboratory_name_filter(self) -> None:
+        """Click the 'Laboratory Name' filter."""
         self.click(self.laboratory_name_filter)
 
     def click_laboratory_test_date_filter(self) -> None:
+        """Click the 'Laboratory Test Date' filter."""
         self.click(self.laboratory_test_date_filter)
 
     def click_diagnostic_test_actual_date_filter(self) -> None:
+        """Click the 'Diagnostic Test Actual Date' filter."""
         self.click(self.diagnostic_test_actual_date_filter)
 
     def select_screening_status_options(self, option: str) -> None:
+        """Select a given option from the Screening Status dropdown."""
         self.select_screening_status.select_option(option)
 
     def select_episode_status_option(self, option: str) -> None:
+        """Select a given option from the Episode Status dropdown."""
         self.select_episode_status.select_option(option)
 
     def select_search_area_option(self, option: str) -> None:
+        """Select a given option from the Search Area dropdown."""
         self.select_search_area.select_option(option)
 
     def select_dob_using_calendar_picker(self, date) -> None:
+        """Select a date using the calendar picker for the Date of Birth filter."""
         self.click(self.dob_calendar_picker)
         CalendarPicker(self.page).v1_calender_picker(date)
 
 
 class ScreeningStatusSearchOptions(Enum):
+    """Enum for Screening Status Search Options"""
+
     CALL_STATUS = "4001"
     INACTIVE_STATUS = "4002"
     RECALL_STATUS = "4004"
@@ -139,12 +166,16 @@ class ScreeningStatusSearchOptions(Enum):
 
 
 class LatestEpisodeStatusSearchOptions(Enum):
+    """Enum for Latest Episode Status Search Options"""
+
     OPEN_PAUSED_STATUS = "1"
     CLOSED_STATUS = "2"
     NO_EPISODE_STATUS = "3"
 
 
 class SearchAreaSearchOptions(Enum):
+    """Enum for Search Area Search Options"""
+
     SEARCH_AREA_HOME_HUB = "01"
     SEARCH_AREA_GP_PRACTICE = "02"
     SEARCH_AREA_CCG = "03"

@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
 from pages.base_page import BasePage
-from pages.bowel_scope.bowel_scope_page import BowelScope
-from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointments
+from pages.bowel_scope.bowel_scope_page import BowelScopePage
+from pages.bowel_scope.bowel_scope_appointments_page import BowelScopeAppointmentsPage
 from utils.user_tools import UserTools
 
 
@@ -25,8 +25,8 @@ def test_bowel_scope_page_navigation(page: Page) -> None:
     main menu button returns the user to the main menu
     """
     # Bowel scope appointments page loads as expected
-    BowelScope(page).go_to_bowel_scope_page()
-    BowelScopeAppointments(page).verify_page_title()
+    BowelScopePage(page).go_to_bowel_scope_page()
+    BowelScopeAppointmentsPage(page).verify_page_title()
 
     # Return to main menu
     BasePage(page).click_main_menu_link()

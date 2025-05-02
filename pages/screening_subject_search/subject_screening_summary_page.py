@@ -1,10 +1,11 @@
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 from enum import Enum
-import pytest
 
 
-class SubjectScreeningSummary(BasePage):
+class SubjectScreeningSummaryPage(BasePage):
+    """Subject Screening Summary Page locators, and methods for interacting with the page."""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
@@ -54,88 +55,116 @@ class SubjectScreeningSummary(BasePage):
         )
 
     def verify_result_contains_text(self, text) -> None:
+        """Verify that the result contains the given text."""
         expect(self.display_rs).to_contain_text(text)
 
     def verify_subject_search_results_title_subject_screening_summary(self) -> None:
+        """Verify that the subject search results title contains 'Subject Screening Summary'."""
         expect(self.subject_search_results_title).to_contain_text(
             "Subject Screening Summary"
         )
 
     def verify_subject_search_results_title_subject_search_results(self) -> None:
+        """Verify that the subject search results title contains 'Subject Search Results'."""
         expect(self.subject_search_results_title).to_contain_text(
             "Subject Search Results"
         )
 
     def get_latest_event_status_cell(self, latest_event_status: str) -> Locator:
+        """Get the latest event status cell by its name."""
         return self.page.get_by_role("cell", name=latest_event_status, exact=True)
 
     def verify_subject_screening_summary(self) -> None:
+        """Verify that the subject screening summary is visible."""
         expect(self.subject_screening_summary).to_be_visible()
 
     def verify_latest_event_status_header(self) -> None:
+        """Verify that the latest event status header is visible."""
         expect(self.latest_event_status).to_be_visible()
 
     def verify_latest_event_status_value(self, latest_event_status: str) -> None:
+        """Verify that the latest event status value is visible."""
         latest_event_status_cell = self.get_latest_event_status_cell(
             latest_event_status
         )
         expect(latest_event_status_cell).to_be_visible()
 
     def click_subjects_events_notes(self) -> None:
+        """Click on the 'Subject Events & Notes' link."""
         self.click(self.subjects_events_notes)
 
     def click_list_episodes(self) -> None:
+        """Click on the 'List Episodes' link."""
         self.click(self.list_episodes)
 
     def click_subject_demographics(self) -> None:
+        """Click on the 'Subject Demographics' link."""
         self.click(self.subject_demographics)
 
     def click_datasets(self) -> None:
+        """Click on the 'Datasets' link."""
         self.click(self.datasets)
 
     def click_individual_letters(self) -> None:
+        """Click on the 'Individual Letters' link."""
         self.click(self.individual_letters)
 
     def click_patient_contacts(self) -> None:
+        """Click on the 'Patient Contacts' link."""
         self.click(self.patient_contacts)
 
     def click_more(self) -> None:
+        """Click on the 'More' link."""
         self.click(self.more)
 
     def click_update_subject_data(self) -> None:
+        """Click on the 'Update Subject Data' button."""
         self.click(self.update_subject_data)
 
     def click_close_fobt_screening_episode(self) -> None:
+        """Click on the 'Close FOBT Screening Episode' button."""
         self.click(self.close_fobt_screening_episode)
 
     def go_to_a_page_to_advance_the_episode(self) -> None:
+        """Click on the link to go to a page to advance the episode."""
         self.click(self.a_page_to_advance_the_episode)
 
     def go_to_a_page_to_close_the_episode(self) -> None:
+        """Click on the link to go to a page to close the episode."""
         self.click(self.a_page_to_close_the_episode)
 
     def select_change_screening_status(self, option: str) -> None:
+        """Select the given 'change screening status' option."""
         self.change_screening_status.select_option(option)
 
     def select_reason(self, option: str) -> None:
+        """Select the given 'reason' option."""
         self.reason.select_option(option)
 
     def expand_episodes_list(self) -> None:
+        """Click on the episodes list expander icon."""
         self.click(self.episodes_list_expander_icon)
 
     def click_first_fobt_episode_link(self) -> None:
+        """Click on the first FOBT episode link."""
         self.click(self.first_fobt_episode_link)
 
     def click_datasets_link(self) -> None:
+        """Click on the 'Datasets' link."""
         self.click(self.datasets_link)
 
     def click_advance_fobt_screening_episode_button(self) -> None:
+        """Click on the 'Advance FOBT Screening Episode' button."""
         self.click(self.advance_fobt_screening_episode_button)
 
 
 class ChangeScreeningStatusOptions(Enum):
+    """Enum for Change Screening Status options."""
+
     SEEKING_FURTHER_DATA = "4007"
 
 
 class ReasonOptions(Enum):
+    """Enum for Reason options."""
+
     UNCERTIFIED_DEATH = "11314"

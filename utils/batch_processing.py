@@ -1,11 +1,13 @@
 from pages.base_page import BasePage
 from pages.communication_production.communications_production_page import (
-    CommunicationsProduction,
+    CommunicationsProductionPage,
 )
-from pages.communication_production.manage_active_batch_page import ManageActiveBatch
+from pages.communication_production.manage_active_batch_page import (
+    ManageActiveBatchPage,
+)
 from pages.communication_production.batch_list_page import (
-    ActiveBatchList,
-    ArchivedBatchList,
+    ActiveBatchListPage,
+    ArchivedBatchListPage,
 )
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
@@ -38,8 +40,8 @@ def batch_processing(
     logging.info(f"Processing {batch_type} - {batch_description} batch")
     BasePage(page).click_main_menu_link()
     BasePage(page).go_to_communications_production_page()
-    CommunicationsProduction(page).go_to_active_batch_list_page()
-    ActiveBatchList(page).enter_event_code_filter(batch_type)
+    CommunicationsProductionPage(page).go_to_active_batch_list_page()
+    ActiveBatchListPage(page).enter_event_code_filter(batch_type)
 
     batch_description_cells = page.locator(f"//td[text()='{batch_description}']")
 
@@ -89,22 +91,24 @@ def prepare_and_print_batch(
     This method prepares the batch, retreives the files and confirms them as printed
     Once those buttons have been pressed it waits for the message 'Batch Successfully Archived'
     """
-    ManageActiveBatch(page).click_prepare_button()
+    ManageActiveBatchPage(page).click_prepare_button()
     page.wait_for_timeout(
         1000
     )  # This one second timeout does not affect the time to execute, as it is just used to ensure the reprepare batch button is clicked and does not instantly advance to the next step
-    ManageActiveBatch(page).reprepare_batch_text.wait_for(timeout=60000)
+    ManageActiveBatchPage(page).reprepare_batch_text.wait_for(timeout=60000)
 
     # This loops through each Retrieve button and clicks each one
     retrieve_button_count = 0
     try:
-        for retrieve_button in range(ManageActiveBatch(page).retrieve_button.count()):
+        for retrieve_button in range(
+            ManageActiveBatchPage(page).retrieve_button.count()
+        ):
             retrieve_button_count += 1
             logging.info(f"Clicking retrieve button {retrieve_button_count}")
             # Start waiting for the pdf download
             with page.expect_download() as download_info:
                 # Perform the action that initiates download. The line below is running in a FOR loop to click every retrieve button as in some cases more than 1 is present
-                ManageActiveBatch(page).retrieve_button.nth(retrieve_button).click()
+                ManageActiveBatchPage(page).retrieve_button.nth(retrieve_button).click()
             download_file = download_info.value
             file = download_file.suggested_filename
             # Wait for the download process to complete and save the downloaded file in a temp folder
@@ -124,14 +128,14 @@ def prepare_and_print_batch(
             logging.info(
                 f"Clicking confirm printed button {confirm_printed_button + 1}"
             )
-            ManageActiveBatch(page).safe_accept_dialog(
-                ManageActiveBatch(page).confirm_button.nth(0)
+            ManageActiveBatchPage(page).safe_accept_dialog(
+                ManageActiveBatchPage(page).confirm_button.nth(0)
             )
     except Exception as e:
         pytest.fail(f"No confirm printed button available to click: {str(e)}")
 
     try:
-        ActiveBatchList(page).batch_successfully_archived_msg.wait_for()
+        ActiveBatchListPage(page).batch_successfully_archived_msg.wait_for()
 
         logging.info(f"Batch {link_text} successfully archived")
     except Exception as e:
@@ -146,10 +150,10 @@ def check_batch_in_archived_batch_list(page: Page, link_text) -> None:
     """
     BasePage(page).click_main_menu_link()
     BasePage(page).go_to_communications_production_page()
-    CommunicationsProduction(page).go_to_archived_batch_list_page()
-    ArchivedBatchList(page).enter_id_filter(link_text)
+    CommunicationsProductionPage(page).go_to_archived_batch_list_page()
+    ArchivedBatchListPage(page).enter_id_filter(link_text)
     try:
-        ArchivedBatchList(page).verify_table_data(link_text)
+        ArchivedBatchListPage(page).verify_table_data(link_text)
         logging.info(f"Batch {link_text} visible in archived batch list")
     except Exception as e:
         logging.error(f"Batch {link_text} not visible in archived batch list: {str(e)}")

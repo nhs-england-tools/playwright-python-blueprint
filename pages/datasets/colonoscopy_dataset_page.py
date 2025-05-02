@@ -4,9 +4,7 @@ from enum import Enum
 
 
 class ColonoscopyDatasetsPage(BasePage):
-    """
-    This class contains locators and methods to interact with the Colonoscopy Datasets page.
-    """
+    """Colonoscopy Datasets Page locators, and methods for interacting with the page"""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -32,6 +30,7 @@ class ColonoscopyDatasetsPage(BasePage):
         )
 
     def save_dataset(self) -> None:
+        """Clicks the Save Dataset button on the colonoscopy datasets page."""
         self.click(self.save_dataset_button)
 
     def select_asa_grade_option(self, option: str) -> None:
@@ -57,9 +56,11 @@ class ColonoscopyDatasetsPage(BasePage):
         self.select_fit_for_colonoscopy_dropdown.select_option(option)
 
     def click_dataset_complete_radio_button_yes(self) -> None:
+        """Clicks the 'Yes' radio button for the dataset complete option."""
         self.dataset_complete_radio_button_yes.check()
 
     def click_dataset_complete_radio_button_no(self) -> None:
+        """Clicks the 'No' radio button for the dataset complete option."""
         self.dataset_complete_radio_button_no.check()
 
 

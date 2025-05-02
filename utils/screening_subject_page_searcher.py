@@ -3,8 +3,8 @@ from pages.screening_subject_search.subject_screening_search_page import (
     SubjectScreeningPage,
     SearchAreaSearchOptions,
 )
-from pages.screening_subject_search.subject_screening_summary import (
-    SubjectScreeningSummary,
+from pages.screening_subject_search.subject_screening_summary_page import (
+    SubjectScreeningSummaryPage,
 )
 from playwright.sync_api import Page, expect
 
@@ -26,9 +26,11 @@ def verify_subject_event_status_by_nhs_no(
         SearchAreaSearchOptions.SEARCH_AREA_WHOLE_DATABASE.value
     )
     SubjectScreeningPage(page).click_search_button()
-    SubjectScreeningSummary(page).verify_subject_screening_summary()
-    SubjectScreeningSummary(page).verify_latest_event_status_header()
-    SubjectScreeningSummary(page).verify_latest_event_status_value(latest_event_status)
+    SubjectScreeningSummaryPage(page).verify_subject_screening_summary()
+    SubjectScreeningSummaryPage(page).verify_latest_event_status_header()
+    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
+        latest_event_status
+    )
 
 
 def search_subject_by_nhs_number(page: Page, nhs_number) -> None:

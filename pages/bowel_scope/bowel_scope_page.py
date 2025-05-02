@@ -1,8 +1,10 @@
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Page
 from pages.base_page import BasePage
 
 
-class BowelScope(BasePage):
+class BowelScopePage(BasePage):
+    """Bowel Scope page locators, and methods to interact with the page"""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
@@ -12,4 +14,5 @@ class BowelScope(BasePage):
         )
 
     def go_to_view_bowel_scope_appointments_page(self) -> None:
+        """Clicks the link to navigate to the Bowel Scope Appointments page"""
         self.click(self.view_bowel_scope_appointments_page)

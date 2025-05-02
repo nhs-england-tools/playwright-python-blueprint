@@ -2,10 +2,10 @@ import pytest
 from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.contacts_list.contacts_list_page import ContactsListPage
-from pages.contacts_list.view_contacts_page import ViewContacts
-from pages.contacts_list.edit_my_contact_details_page import EditMyContactDetails
-from pages.contacts_list.maintain_contacts_page import MaintainContacts
-from pages.contacts_list.my_preference_settings_page import MyPreferenceSettings
+from pages.contacts_list.view_contacts_page import ViewContactsPage
+from pages.contacts_list.edit_my_contact_details_page import EditMyContactDetailsPage
+from pages.contacts_list.maintain_contacts_page import MaintainContactsPage
+from pages.contacts_list.my_preference_settings_page import MyPreferenceSettingsPage
 from utils.user_tools import UserTools
 
 
@@ -29,22 +29,22 @@ def test_contacts_list_page_navigation(page: Page) -> None:
     """
     # View contacts page loads as expected
     ContactsListPage(page).go_to_view_contacts_page()
-    ViewContacts(page).verify_view_contacts_title()
+    ViewContactsPage(page).verify_view_contacts_title()
     BasePage(page).click_back_button()
 
     # Edit my contact details page loads as expected
     ContactsListPage(page).go_to_edit_my_contact_details_page()
-    EditMyContactDetails(page).verify_edit_my_contact_details_title()
+    EditMyContactDetailsPage(page).verify_edit_my_contact_details_title()
     BasePage(page).click_back_button()
 
     # Maintain contacts page loads as expected
     ContactsListPage(page).go_to_maintain_contacts_page()
-    MaintainContacts(page).verify_maintain_contacts_title()
+    MaintainContactsPage(page).verify_maintain_contacts_title()
     BasePage(page).click_back_button()
 
     # My preference settings page loads as expected
     ContactsListPage(page).go_to_my_preference_settings_page()
-    MyPreferenceSettings(page).verify_my_preference_settings_title()
+    MyPreferenceSettingsPage(page).verify_my_preference_settings_title()
     BasePage(page).click_back_button()
 
     # Other links are visible (Not clickable due to user role permissions)

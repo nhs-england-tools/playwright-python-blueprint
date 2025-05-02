@@ -4,7 +4,9 @@ import pytest
 import logging
 
 
-class GenerateInvitations(BasePage):
+class GenerateInvitationsPage(BasePage):
+    """Generate Invitations page locators, and methods to interact with the page"""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
@@ -19,15 +21,19 @@ class GenerateInvitations(BasePage):
         self.generate_invitations_title = self.page.locator("#ntshPageTitle")
 
     def click_generate_invitations_button(self) -> None:
+        """This function is used to click the Generate Invitations button."""
         self.click(self.generate_invitations_button)
 
     def click_refresh_button(self) -> None:
+        """This function is used to click the Refresh button."""
         self.click(self.refresh_button)
 
     def verify_generate_invitations_title(self) -> None:
+        """This function is used to verify the Generate Invitations page title."""
         expect(self.generate_invitations_title).to_contain_text("Generate Invitations")
 
     def verify_invitation_generation_progress_title(self) -> None:
+        """This function is used to verify the Invitation Generation Progress page title."""
         expect(self.generate_invitations_title).to_contain_text(
             "Invitation Generation Progress"
         )

@@ -3,9 +3,7 @@ from pages.base_page import BasePage
 
 
 class SubjectDatasetsPage(BasePage):
-    """
-    This class contains locators and methods to interact with the Subject Datasets page.
-    """
+    """Subject Datasets Page locators, and methods for interacting with the page"""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -27,13 +25,9 @@ class SubjectDatasetsPage(BasePage):
         )
 
     def click_colonoscopy_show_datasets(self) -> None:
-        """
-        This method clicks on the 'Show Dataset' button for the Colonoscopy Assessment row on the Subject Datasets Page.
-        """
+        """Clicks on the 'Show Dataset' button for the Colonoscopy Assessment row on the Subject Datasets Page."""
         self.click(self.colonoscopy_show_dataset_button)
 
     def click_investigation_show_datasets(self) -> None:
-        """
-        This method clicks on the 'Show Dataset' button for the Investigation row on the Subject Datasets Page.
-        """
+        """Clicks on the 'Show Dataset' button for the Investigation row on the Subject Datasets Page."""
         self.click(self.investigation_show_dataset_button)

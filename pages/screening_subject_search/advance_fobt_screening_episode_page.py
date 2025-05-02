@@ -2,7 +2,9 @@ from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 
 
-class AdvanceFOBTScreeningEpisode(BasePage):
+class AdvanceFOBTScreeningEpisodePage(BasePage):
+    """Advance FOBT Screening Episode Page locators, and methods for interacting with the page."""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
@@ -26,37 +28,46 @@ class AdvanceFOBTScreeningEpisode(BasePage):
         )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
-        AdvanceFOBTScreeningEpisode(self.page).safe_accept_dialog(
+        """Click the 'Suitable for Endoscopic Test' button."""
+        AdvanceFOBTScreeningEpisodePage(self.page).safe_accept_dialog(
             self.suitable_for_endoscopic_test_button
         )
 
     def click_calendar_button(self) -> None:
+        """Click the calendar button to open the calendar picker."""
         self.click(self.calendar_button)
 
     def select_test_type_dropdown_option(self, text: str) -> None:
+        """Select the test type from the dropdown."""
         self.test_type_dropdown.select_option(label=text)
 
     def click_invite_for_diagnostic_test_button(self) -> None:
-        AdvanceFOBTScreeningEpisode(self.page).safe_accept_dialog(
+        """Click the 'Invite for Diagnostic Test' button."""
+        AdvanceFOBTScreeningEpisodePage(self.page).safe_accept_dialog(
             self.invite_for_diagnostic_test_button
         )
 
     def click_attend_diagnostic_test_button(self) -> None:
+        """Click the 'Attend Diagnostic Test' button."""
         self.click(self.attend_diagnostic_test_button)
 
     def click_other_post_investigation_button(self) -> None:
-        AdvanceFOBTScreeningEpisode(self.page).safe_accept_dialog(
+        """Click the 'Other Post-investigation' button."""
+        AdvanceFOBTScreeningEpisodePage(self.page).safe_accept_dialog(
             self.other_post_investigation_button
         )
 
     def get_latest_event_status_cell(self, latest_event_status: str) -> Locator:
+        """Get the cell containing the latest event status."""
         return self.page.get_by_role("cell", name=latest_event_status, exact=True)
 
     def verify_latest_event_status_value(self, latest_event_status: str) -> None:
+        """Verify the latest event status value."""
         latest_event_status_cell = self.get_latest_event_status_cell(
             latest_event_status
         )
         expect(latest_event_status_cell).to_be_visible()
 
     def click_record_other_post_investigation_contact_button(self) -> None:
+        """Click the 'Record other post-investigation contact' button."""
         self.click(self.record_other_post_investigation_contact_button)

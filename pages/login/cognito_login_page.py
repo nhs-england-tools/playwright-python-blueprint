@@ -3,6 +3,8 @@ from pages.base_page import BasePage
 
 
 class CognitoLoginPage(BasePage):
+    """Cognito Login Page locators, and methods for logging in to bcss via the page."""
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page

@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
-from pages.logout.log_out_page import Logout
+from pages.logout.log_out_page import LogoutPage
 from pages.base_page import BasePage
-from pages.screening_practitioner_appointments.screening_practitioner_appointments import (
+from pages.screening_practitioner_appointments.screening_practitioner_appointments_page import (
     ScreeningPractitionerAppointmentsPage,
 )
 from pages.screening_practitioner_appointments.set_availability_page import (
@@ -12,13 +12,13 @@ from pages.screening_practitioner_appointments.practitioner_availability_page im
     PractitionerAvailabilityPage,
 )
 from pages.screening_practitioner_appointments.colonoscopy_assessment_appointments_page import (
-    ColonoscopyAssessmentAppointments,
+    ColonoscopyAssessmentAppointmentsPage,
 )
 from pages.screening_practitioner_appointments.book_appointment_page import (
     BookAppointmentPage,
 )
-from pages.screening_subject_search.subject_screening_summary import (
-    SubjectScreeningSummary,
+from pages.screening_subject_search.subject_screening_summary_page import (
+    SubjectScreeningSummaryPage,
 )
 from pages.screening_subject_search.episode_events_and_notes_page import (
     EpisodeEventsAndNotesPage,
@@ -81,7 +81,7 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
     PractitionerAvailabilityPage(page).slots_updated_message_is_displayed(
         f"Slots Updated for {smokescreen_properties["c4_eng_weeks_to_make_available"]} Weeks"
     )
-    Logout(page).log_out(close_page=False)
+    LogoutPage(page).log_out(close_page=False)
 
     logging.info(
         f"Compartment 4 - Booking {smokescreen_properties["c4_eng_number_of_appointments_to_book"]} subjects to appointments"
@@ -99,8 +99,10 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
         logging.info(f"Booking appointment for: {nhs_number}")
 
         nhs_number_spaced = NHSNumberTools().spaced_nhs_number(nhs_number)
-        ColonoscopyAssessmentAppointments(page).filter_by_nhs_number(nhs_number)
-        ColonoscopyAssessmentAppointments(page).click_nhs_number_link(nhs_number_spaced)
+        ColonoscopyAssessmentAppointmentsPage(page).filter_by_nhs_number(nhs_number)
+        ColonoscopyAssessmentAppointmentsPage(page).click_nhs_number_link(
+            nhs_number_spaced
+        )
         BookAppointmentPage(page).select_screening_centre_dropdown_option(
             smokescreen_properties["c4_eng_centre_name"]
         )
@@ -134,7 +136,7 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
         except Exception as e:
             pytest.fail(f"Appointment not booked successfully: {e}")
         BasePage(page).click_back_button()
-    ColonoscopyAssessmentAppointments(page).wait_for_page_header()
+    ColonoscopyAssessmentAppointmentsPage(page).wait_for_page_header()
 
     logging.info("Compartment 4 - Sending out appointment invitations")
     batch_processing(
@@ -151,9 +153,9 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
         "A25 - 1st Colonoscopy Assessment Appointment Booked, letter sent",
     )
 
-    SubjectScreeningSummary(page).expand_episodes_list()
-    SubjectScreeningSummary(page).click_first_fobt_episode_link()
+    SubjectScreeningSummaryPage(page).expand_episodes_list()
+    SubjectScreeningSummaryPage(page).click_first_fobt_episode_link()
     EpisodeEventsAndNotesPage(page).expected_episode_event_is_displayed(
         "A167 - GP Abnormal FOBT Result Sent"
     )
-    Logout(page).log_out()
+    LogoutPage(page).log_out()
