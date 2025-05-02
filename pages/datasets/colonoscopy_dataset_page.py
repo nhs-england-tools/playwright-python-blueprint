@@ -38,10 +38,10 @@ class ColonoscopyDatasetsPage(BasePage):
         """
         This method is designed to select a specific grade option from the colonoscopy dataset page, ASA Grade dropdown menu.
         Args:
-        option (str): The ASA grade option to be selected. This should be a string that matches one of the available options in the dropdown menu.
-            Valid options are: "FIT", "RELEVANT_DISEASE", "UNABLE_TO_ASSESS", RESTRICTIVE_DISEASE, "LIFE_THREATENING_DISEASE", "MORIBUND", "NOT_APPLICABLE", or "NOT_KNOWN".
+            option (str): The ASA grade option to be selected. This should be a string that matches one of the available options in the dropdown menu.
+                Valid options are: "FIT", "RELEVANT_DISEASE", "UNABLE_TO_ASSESS", RESTRICTIVE_DISEASE, "LIFE_THREATENING_DISEASE", "MORIBUND", "NOT_APPLICABLE", or "NOT_KNOWN".
         Returns:
-        None
+            None
         """
         self.select_asa_grade_dropdown.select_option(option)
 
@@ -49,10 +49,10 @@ class ColonoscopyDatasetsPage(BasePage):
         """
         This method is designed to select a specific option from the colonoscopy dataset page, Fit for Colonoscopy (SSP) dropdown menu.
         Args:
-        option (str): The option to be selected. This should be a string that matches one of the available options in the dropdown menu.
-            Valid options are: "YES", "NO", or "UNABLE_TO_ASSESS".
+            option (str): The option to be selected. This should be a string that matches one of the available options in the dropdown menu.
+                Valid options are: "YES", "NO", or "UNABLE_TO_ASSESS".
         Returns:
-        None
+            None
         """
         self.select_fit_for_colonoscopy_dropdown.select_option(option)
 
