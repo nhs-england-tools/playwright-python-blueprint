@@ -1,40 +1,175 @@
 # Contributing To This Project
 
-With this project, we actively encourage anyone who may have any ideas or code that could make this repository better to contribute
-in any way they can.
+This document outlines the general guidance that should be applied when contributing new code to this project,
+to ensure that coding standards and principles remain consistent throughout the project.
 
-## How To Contribute
+## Table of Contents
 
-If you have an idea about something new that could be added, then please raise a
-[Feature Request via the Issues tab](https://github.com/nhs-england-tools/playwright-python-blueprint/issues/new/choose) for this
-repository. Even if you don't feel you have the technical ability to implement the request, please raise an issue regardless as
-the maintainers of this project will frequently review any requests and attempt to implement if deemed suitable for this blueprint.
+- [Contributing To This Project](#contributing-to-this-project)
+  - [Table of Contents](#table-of-contents)
+  - [General Principles](#general-principles)
+    - [Use Playwright and pytest documentation as our standard](#use-playwright-and-pytest-documentation-as-our-standard)
+    - [Proving tests work before raising a pull request](#proving-tests-work-before-raising-a-pull-request)
+    - [Evidencing tests](#evidencing-tests)
+      - [Example](#example)
+  - [Coding Practices](#coding-practices)
+    - [Tests](#tests)
+      - [Docstring](#docstring)
+        - [Example](#example-1)
+    - [Page objects](#page-objects)
+      - [Naming Conventions](#naming-conventions)
+      - [Docstring](#docstring-1)
+        - [Example](#example-2)
+    - [Utilities](#utilities)
+      - [Docstring](#docstring-2)
+        - [Example](#example-3)
+    - [Package management](#package-management)
+  - [Last Reviewed](#last-reviewed)
 
-If you have some code you think could be implemented, please raise a Feature Request and
-[create a fork of this repository](https://github.com/nhs-england-tools/playwright-python-blueprint/fork) to experiment and ensure
-that the change you want to push back works as intended.
+## General Principles
 
-## Contribution Requirements
+### Use Playwright and pytest documentation as our standard
 
-For any contributions to this project, the following requirements need to be met:
+When contributing to this project, we should be following the guidance outlined in the
+[Playwright](https://playwright.dev/python/docs/api/class-playwright) and
+[pytest](https://docs.pytest.org/en/stable/)
+documentation in the first instance to ensure our code remains as close to the recommended standard as possible.
+This will allow anyone contributing to this project to follow the code and when we use elements from either
+Playwright or pytest, easily reference the implementation from their documentation.
 
-- You must be a member of the [NHS England Tools](https://github.com/nhs-england-tools) organisation on GitHub.
-- [Any commits must be signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits), so they show as verified once they reach GitHub. This checking serves as part of our CI/CD process, so unsigned commits will prevent a pull request from being merged.
-- For any utility methods that are added to this framework in the `utils` directory, the following applies:
-  - Unit tests for the utility should be added to the `tests_utils` directory and need to be tagged with the `utils` mark.
-  - Documentation for these classes and how to use any methods should also be added to the `docs/utilities-guide` directory.
-  - Each method that is intended to be used as part of a class should have a correctly formatted docstring, to allow for developers using Intellisense within their IDE to understand what the code is intended to do.
-- All CI/CD checks will need to pass before any code is merged to the `main` branch - this includes ensuring appropriate formatting of code and documentation, security checks and that all unit and example tests pass.
+In the event we need to deviate away from this for any reason, we should clearly document the reasons why and explain
+this in any pull request raised.
 
-## Things We Want
+### Proving tests work before raising a pull request
 
-What we are particularly interested in is:
+When creating or modifying any code, if tests in the framework have been impacted by the change we should ensure that
+we execute the tests prior to raising a pull request (to ensure we are not asking for a code review for code that does
+not work as intended). This can either be done locally or via a pipeline/workflow.
 
-- Any utility classes that can uniformly applied to any project. This may be something that's been created for your own project and by doing some minor abstraction any other teams working in a similar way could adopt this functionality.
-- Any development code that supports executing this project in a CI/CD fashion. This primarily covers any changes that support development principles outlined in the [Software Engineering Quality Framework](https://github.com/NHSDigital/software-engineering-quality-framework), and could include logic around how the test code is containerized.
-- Any changes that allow for test reporting in a consistent, reliable, maintainable and interesting format for varying stakeholders. This includes logic that expands on from the reporting we generate, such as example scripts for how to generate dashboards using the data we generate.
+### Evidencing tests
 
-Examples:
+When we create new tests, or significantly change the functionality of a test, we should demonstrate these tests work
+by [recording the trace using Playwright](https://playwright.dev/python/docs/trace-viewer-intro) and attaching the
+generated trace file to the associated ticket within `Jira`.
 
-- Say you've created a utility for generating test patients within your application. Any elements of this code that could be universally applied and other teams are likely to use (e.g. NHS number, patient name) we would want in this blueprint. If there's something business specific to your project that exists as part of this code (e.g. a unique reference number that only applies to your service), then we would advise removing that logic from any code before raising a pull request here.
-  - If you do end up adding a utility class in this format in a more generic way to this project, you can subsequently [inherit the utility class](https://docs.python.org/3/tutorial/classes.html#inheritance) to include your additional business-specific requirements within your own version of the class.
+> NOTE: If the trace file exceeds the maximum file attachment size for `Jira`, we should
+> upload the file to a Confluence page instead and link this back to the ticket.
+
+When we modify existing tests (including any page objects or utilities used by these tests) but the behaviour of the test
+has not fundamentally changed, we should upload the generated HTML report from the Playwright execution to the
+`Jira` ticket.
+
+#### Example
+
+We introduce a new test that covers the send a kit functionality for a single subject using `codegen` in the first instance.
+To demonstrate this test has worked as intended, we should turn tracing on and generate a trace file from Playwright and
+attach this to the ticket in `Jira`.
+
+We then decide to refactor the test so that it uses a page object model for the send a kit page, but this does not change
+the behaviour of the test in any way (just makes the elements reusable). In this instance, we should upload the HTML report
+to the `Jira` ticket showing the test passing as the logic of the test has not changed in any way.
+
+We then decide to create a utility that loops through several subjects at once and apply this to the previously created send
+a kit test. In this instance, we should turn tracing on again and generate a trace file from Playwright and attach this to the
+ticket in `Jira`, because the logic of the test has fundamentally changed.
+
+## Coding Practices
+
+### Tests
+
+The following guidance applies to any files in the /tests directory.
+
+#### Docstring
+
+For any tests in the project, we should add a docstring that explains the test in a non-technical way, outlining the following
+points:
+
+- The steps undertaken as part of the test
+- References to any applicable acceptance criteria this test covers
+
+This information will be populated on the HTML report provided by the framework, allowing for non-technical stakeholders to
+understand the purpose of a test without specifically needing to view the code directly.
+
+This should always be done using a [multi-line docstring](https://peps.python.org/pep-0257/#multi-line-docstrings), even if
+the test description is reasonably short.
+
+##### Example
+
+    def test_example_scenario(page: Page) -> None:
+        """
+        This test covers an example scenario whereby the user navigates to the subject search page,
+        selects a subject who is 70 years old and validates their age is correctly displayed on the
+        screening subject summary page.
+
+        This test is used for the following acceptance criteria:
+        - BCSS-1234 (A/C 1)
+        """
+
+### Page objects
+
+The following guidance applies to any files in the /pages directory.
+
+#### Naming Conventions
+
+For any newly created page objects, we should apply the following logic:
+
+- The filename should end with `_page` (Example: `send_a_kit_page.py`)
+- The class name should end with `Page` (Example: `SendAKitPage`)
+
+#### Docstring
+
+For any page objects in the project, we need to ensure for any class methods or functions we give a
+brief description of the intent of the function for the benefit of anyone reading the project or using
+intellisense. This can be done using a [single-line docstring](https://peps.python.org/pep-0257/#one-line-docstrings)
+where possible.
+
+##### Example
+
+    class ExamplePage:
+
+        def __init__(page: Page) -> None:
+            self.page = page
+
+        def click_on_locator(locator: Locator) -> None:
+            """Clicks on the provided locator."""
+            locator.click()
+
+        def get_text_from_locator(locator: Locator) -> str:
+            """Returns the text from the locator as a string."""
+            return locator.inner_text()
+
+### Utilities
+
+The following guidance applies to any files in the /utils directory.
+
+#### Docstring
+
+For any utilities added to the project, we should add docstrings that outline the functionality including
+any arguments and returns. These should be formatted as
+[multi-line docstrings](https://peps.python.org/pep-0257/#multi-line-docstrings) with a description, Args and
+Returns provided.
+
+##### Example
+
+    def example_util(user: str) -> dict:
+        """
+        Takes the user string and retrieves example information applicable to this user.
+
+        Args:
+            user (str): The user details required, using the record key from users.json.
+
+        Returns:
+            dict: A Python dictionary with the example details of the user requested.
+        """
+
+### Package management
+
+If we need to introduce a new Python package (via requirements.txt) into this project to allow for
+appropriate testing, we need to have critically reviewed the package and ensure the following:
+
+- The package we intend to use is actively being maintained (e.g. has had recent updates or has a large active community behind it)
+- The package has appropriate documentation that will allow us to easily implement and maintain the dependency in our code
+
+## Last Reviewed
+
+This document was last reviewed on 01/05/2025.
