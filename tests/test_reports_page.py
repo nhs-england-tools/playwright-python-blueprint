@@ -4,12 +4,6 @@ from pages.base_page import BasePage
 from pages.reports.reports_page import ReportsPage
 from utils.date_time_utils import DateTimeUtils
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def general_properties() -> dict:
-    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)

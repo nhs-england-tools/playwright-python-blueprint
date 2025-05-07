@@ -26,8 +26,6 @@ class UserTools:
             username (str): Enter a username that exists in the users.json file.
         """
         logging.info(f"Logging in as {username}")
-        # Load dotenv to enable retrieval of a password from .env file
-        load_dotenv()
         # Go to base url
         page.goto("/")
         # Retrieve username from users.json

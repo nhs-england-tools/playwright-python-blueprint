@@ -10,12 +10,6 @@ from pages.call_and_recall.create_a_plan_page import CreateAPlanPage
 from pages.call_and_recall.generate_invitations_page import GenerateInvitationsPage
 from playwright.sync_api import Page
 from utils.batch_processing import batch_processing
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def smokescreen_properties() -> dict:
-    return PropertiesFile().get_smokescreen_properties()
 
 
 @pytest.mark.smoke

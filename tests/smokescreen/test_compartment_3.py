@@ -10,12 +10,6 @@ from utils.oracle.oracle_specific_functions import (
     execute_fit_kit_stored_procedures,
 )
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def smokescreen_properties() -> dict:
-    return PropertiesFile().get_smokescreen_properties()
 
 
 @pytest.mark.vpn_required

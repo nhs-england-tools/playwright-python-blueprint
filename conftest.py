@@ -8,8 +8,9 @@ import pytest
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from utils.load_properties_file import PropertiesFile
 
-LOCAL_ENV_PATH = Path(os.getcwd()) / 'local.env'
+LOCAL_ENV_PATH = Path(os.getcwd()) / "local.env"
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -24,3 +25,13 @@ def import_local_env_file() -> None:
     """
     if Path.is_file(LOCAL_ENV_PATH):
         load_dotenv(LOCAL_ENV_PATH, override=False)
+
+
+@pytest.fixture
+def smokescreen_properties() -> dict:
+    return PropertiesFile().get_smokescreen_properties()
+
+
+@pytest.fixture
+def general_properties() -> dict:
+    return PropertiesFile().get_general_properties()

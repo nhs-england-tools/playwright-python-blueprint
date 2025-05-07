@@ -3,12 +3,6 @@ from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from pages.organisations.organisations_page import OrganisationsPage
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def general_properties() -> dict:
-    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)

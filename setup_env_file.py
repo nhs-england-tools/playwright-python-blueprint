@@ -11,19 +11,26 @@ keys required to run this project.
 import os
 from pathlib import Path
 
-REQUIRED_KEYS = ["USER_PASS"]
-DEFAULT_LOCAL_ENV_PATH = Path(os.getcwd()) / 'local.env'
+REQUIRED_KEYS = ["BCSS_PASS", "ORACLE_USERNAME", "ORACLE_DB", "ORACLE_PASS"]
+DEFAULT_LOCAL_ENV_PATH = Path(os.getcwd()) / "local.env"
+
 
 def create_env_file():
     """
     Create a local.env file with the required keys.
     """
-    with open(DEFAULT_LOCAL_ENV_PATH, 'w') as f:
-        f.write("# Use this file to populate secrets without committing them to the codebase (as this file is set in .gitignore).\n")
-        f.write("# To retrieve values as part of your tests, use os.getenv('VARIABLE_NAME').\n")
-        f.write("# Note: When running in a pipeline or workflow, you should pass these variables in at runtime.\n\n")
+    with open(DEFAULT_LOCAL_ENV_PATH, "w") as f:
+        f.write(
+            "# Use this file to populate secrets without committing them to the codebase (as this file is set in .gitignore).\n"
+        )
+        f.write(
+            "# To retrieve values as part of your tests, use os.getenv('VARIABLE_NAME').\n"
+        )
+        f.write(
+            "# Note: When running in a pipeline or workflow, you should pass these variables in at runtime.\n\n"
+        )
         for key in REQUIRED_KEYS:
-            f.write(f'{key}=\n')
+            f.write(f"{key}=\n")
 
 
 if __name__ == "__main__":

@@ -24,18 +24,12 @@ from pages.screening_subject_search.episode_events_and_notes_page import (
     EpisodeEventsAndNotesPage,
 )
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
 from utils.calendar_picker import CalendarPicker
 from utils.batch_processing import batch_processing
 from datetime import datetime
 from utils.oracle.oracle_specific_functions import get_subjects_for_appointments
 from utils.nhs_number_tools import NHSNumberTools
 import logging
-
-
-@pytest.fixture
-def smokescreen_properties() -> dict:
-    return PropertiesFile().get_smokescreen_properties()
 
 
 @pytest.mark.vpn_required

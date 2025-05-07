@@ -10,12 +10,6 @@ from utils.batch_processing import batch_processing
 from utils.fit_kit_generation import create_fit_id_df
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def smokescreen_properties() -> dict:
-    return PropertiesFile().get_smokescreen_properties()
 
 
 @pytest.mark.vpn_required

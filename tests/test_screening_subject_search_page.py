@@ -22,12 +22,6 @@ from utils.screening_subject_page_searcher import (
     search_subject_by_search_area,
 )
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def general_properties() -> dict:
-    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)

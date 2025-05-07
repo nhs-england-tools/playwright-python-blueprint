@@ -11,12 +11,6 @@ from pages.call_and_recall.age_extension_rollout_plans_page import (
 from pages.call_and_recall.invitations_plans_page import InvitationsPlansPage
 from pages.call_and_recall.create_a_plan_page import CreateAPlanPage
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def general_properties() -> dict:
-    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)

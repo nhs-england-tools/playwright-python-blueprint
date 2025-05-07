@@ -15,12 +15,6 @@ from pages.fit_test_kits.screening_incidents_list_page import ScreeningIncidents
 from pages.fit_test_kits.manage_qc_products_page import ManageQCProductsPage
 from pages.fit_test_kits.maintain_analysers_page import MaintainAnalysersPage
 from utils.user_tools import UserTools
-from utils.load_properties_file import PropertiesFile
-
-
-@pytest.fixture
-def general_properties() -> dict:
-    return PropertiesFile().get_general_properties()
 
 
 @pytest.fixture(scope="function", autouse=True)
