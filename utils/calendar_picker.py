@@ -3,7 +3,6 @@ from utils.date_time_utils import DateTimeUtils
 from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 from sys import platform
-import logging
 import pytest
 
 
@@ -16,6 +15,13 @@ class CalendarPicker(BasePage):
         self.v1_prev_month = self.page.get_by_role("cell", name="‹").locator("div")
         self.v1_next_month = self.page.get_by_role("cell", name="›").locator("div")
         self.v1_next_year = self.page.get_by_role("cell", name="»").locator("div")
+        self.v1_calendar_current_date = self.page.locator(
+            'td.title[colspan="5"][style="cursor: move;"]'
+        )
+        # V2 Calendar picker locators
+        self.v2date_picker_switch = self.page.locator(
+            'th.datepicker-switch[colspan="5"]:visible'
+        )
         # Book Appointment picker locators
         self.appointments_prev_month = self.page.get_by_role(
             "link", name="<-", exact=True
@@ -26,7 +32,8 @@ class CalendarPicker(BasePage):
 
     # Calendar Methods
     def calendar_picker_ddmmyyyy(self, date: datetime, locator: Locator) -> None:
-        """Enters a date in the format dd/mm/yyyy (e.g. 16/01/2025) into the specified locator
+        """
+        Enters a date in the format dd/mm/yyyy (e.g. 16/01/2025) into the specified locator
         This is for the older style pages v1
 
         Args:
@@ -38,7 +45,8 @@ class CalendarPicker(BasePage):
         locator.press("Enter")
 
     def calendar_picker_ddmonyy(self, date: datetime, locator: Locator) -> None:
-        """Enters a date in the format dd month yy (e.g. 16 Jan 25) into the specified locator
+        """
+        Enters a date in the format dd month yy (e.g. 16 Jan 25) into the specified locator
         This is for the more modern style pages v2
 
         Args:
@@ -58,14 +66,29 @@ class CalendarPicker(BasePage):
         """
         This function is used when using the v1 calendar picker
         It calculates how many years and months it needs to traverse
+
+        Args:
+            date (datetime): The date we want to go to
+            current_date (datetime): The current date
+
+        Returns:
+            years_to_traverse (int): The number of years we need to traverse
+            years_to_traverse (int): The number of months we need to traverse
         """
-        years_to_traverse = int(current_date.strftime("%Y")) - int(date.strftime("%Y"))
-        months_to_traverse = int(current_date.strftime("%m")) - int(date.strftime("%m"))
+        years_to_traverse = int(DateTimeUtils.format_date(current_date, "%Y")) - int(
+            DateTimeUtils.format_date(date, "%Y")
+        )
+        months_to_traverse = int(DateTimeUtils.format_date(current_date, "%m")) - int(
+            DateTimeUtils.format_date(date, "%m")
+        )
         return years_to_traverse, months_to_traverse
 
     def traverse_years_in_v1_calendar(self, years_to_traverse: int) -> None:
         """
         This function traverses the years on the v1 calendar picker by the number specified in years_to_traverse
+
+        Args:
+            years_to_traverse (int): The number of years we need to traverse
         """
         if years_to_traverse > 0:
             for _ in range(years_to_traverse):
@@ -77,6 +100,9 @@ class CalendarPicker(BasePage):
     def traverse_months_in_v1_calendar(self, months_to_traverse: int) -> None:
         """
         This function traverses the months on the v1 calendar picker by the number specified in months_to_traverse
+
+        Args:
+            months_to_traverse (int): The number of months we need to traverse
         """
         if months_to_traverse > 0:
             for _ in range(months_to_traverse):
@@ -89,32 +115,47 @@ class CalendarPicker(BasePage):
         """
         This function is used by both the v1 and v2 calendar picker
         It extracts the day from the date and then selects that value in the calendar picker
+
+        Args:
+            date (datetime): The date we want to select
         """
         if platform == "win32":  # Windows
-            day_to_select = str(date.strftime("%#d"))
+            day_to_select = DateTimeUtils.format_date(date, "%#d")
         else:  # Linux or Mac
-            day_to_select = str(date.strftime("%-d"))
+            day_to_select = DateTimeUtils.format_date(date, "%-d")
         number_of_cells_with_day = self.page.get_by_role(
             "cell", name=day_to_select
         ).count()
 
+        all_days = self.page.locator(".day").all()
+
+        matching_days = [
+            day
+            for day in all_days
+            if day.evaluate("el => el.textContent.trim()") == day_to_select
+        ]
+
         if int(day_to_select) < 15 and number_of_cells_with_day > 1:
-            self.click(self.page.locator(".day", has_text=day_to_select).first)
+            self.click(matching_days[0].first)
         elif int(day_to_select) > 15 and number_of_cells_with_day > 1:
-            self.click(self.page.locator(".day", has_text=day_to_select).last)
+            self.click(matching_days[0].last)
         else:
-            self.click(self.page.locator(".day", has_text=day_to_select))
+            self.click(matching_days[0])
 
     def v1_calender_picker(self, date: datetime) -> None:
         """
         This is the main method used to traverse the v1 calendar picker (e.g. the one on the subject screening search page)
         You provide it with a date and it will call the necessary functions to calculate how to navigate to the specified date
+
+        Args:
+            date (datetime): The date we want to select
         """
-        current_date = datetime.today()
+        current_date = datetime.strptime(
+            self.v1_calendar_current_date.inner_text(), "%B, %Y"
+        )
         years_to_traverse, months_to_traverse = (
             self.calculate_years_and_months_to_traverse(date, current_date)
         )
-
         self.traverse_years_in_v1_calendar(years_to_traverse)
 
         self.traverse_months_in_v1_calendar(months_to_traverse)
@@ -123,36 +164,37 @@ class CalendarPicker(BasePage):
 
     def calculate_v2_calendar_variables(
         self, date: datetime, current_date: datetime
-    ) -> tuple[str, str, str, int, int, str, int, int, str, int, int]:
+    ) -> tuple[str, str, str, int, int, int, int, int, int]:
         """
         This function calculates all of the variables needed to traverse through the v2 calendar picker
+
         Args:
-            current_month_long: the current month in long format (e.g. April)
-            month_long: the wanted month in long format (e.g. June)
-            month_short: the wanted month is short format (e.g. Jun)
-            current_year: the current year in yyyy format (e.g. 2025)
-            year: the wanted year in yyyy format (e.g. 1983)
-            end_of_current_decade: the end of the current decade in yyyy format (e.g. 2029)
-            current_decade: the current decade in yyyy format (e.g. 2020)
-            decade: the wanted decade in yyyy format (e.g. 1980)
-            end_of_current_century: 10 years before the end of the current century in yyyy format (e.g. 2090)
-            current_century: the current century in yyyy format (e.g. 2000/2100)
-            century: the wanted century in yyyy format (e.g. 1900)
+            date (datetime): The date we want to select
+            current_date (datetime): The current date
+
+        Returns:
+            current_month_long (str): The current month in long format (e.g. April)
+            month_long (str): The wanted month in long format (e.g. June)
+            month_short (str): The wanted month is short format (e.g. Jun)
+            current_year (int): The current year in yyyy format (e.g. 2025)
+            year (int): The wanted year in yyyy format (e.g. 1983)
+            current_decade (int): The current decade in yyyy format (e.g. 2020)
+            decade (int): The wanted decade in yyyy format (e.g. 1980)
+            current_century (int): The current century in yyyy format (e.g. 2000/2100)
+            century (int): The wanted century in yyyy format (e.g. 1900)
         """
-        current_month_long = str(current_date.strftime("%B"))
-        current_year = int(current_date.strftime("%Y"))
+        current_month_long = DateTimeUtils.format_date(current_date, "%B")
+        current_year = int(DateTimeUtils.format_date(current_date, "%Y"))
         current_century = (current_year // 100) * 100
-        end_of_current_century = str(current_century + 90)
         current_decade = (
             ((current_year - current_century) // 10) * 10
         ) + current_century
-        end_of_current_decade = str(current_decade + 9)
 
-        year = int(date.strftime("%Y"))
+        year = int(DateTimeUtils.format_date(date, "%Y"))
         century = (year // 100) * 100
         decade = (((year - century) // 10) * 10) + century
-        month_short = str(date.strftime("%b"))
-        month_long = str(date.strftime("%B"))
+        month_short = DateTimeUtils.format_date(date, "%b")
+        month_long = DateTimeUtils.format_date(date, "%B")
 
         return (
             current_month_long,
@@ -160,10 +202,8 @@ class CalendarPicker(BasePage):
             month_short,
             current_year,
             year,
-            end_of_current_decade,
             current_decade,
             decade,
-            end_of_current_century,
             current_century,
             century,
         )
@@ -174,10 +214,8 @@ class CalendarPicker(BasePage):
         month_long: str,
         current_year: int,
         year: int,
-        end_of_current_decade: str,
         current_decade: int,
         decade: int,
-        end_of_current_century: str,
         current_century: int,
         century: int,
     ) -> tuple[bool, bool, bool, bool]:
@@ -185,6 +223,22 @@ class CalendarPicker(BasePage):
         This function is used to "go back in time" / "expand" on the v2 calendar picker
         By selecting the top locator we can increase the range of dates available to be clicked
         It uses the variables calculated in 'calculate_v2_calendar_variables' to know which locators to select
+
+        Args:
+            current_month_long (str): The current month in long format (e.g. April)
+            month_long (str): The wanted month in long format (e.g. June)
+            current_year (int): The current year in yyyy format (e.g. 2025)
+            year (int): The wanted year in yyyy format (e.g. 1983)
+            current_decade (int): The current decade in yyyy format (e.g. 2020)
+            decade (int): The wanted decade in yyyy format (e.g. 1980)
+            current_century (int): The current century in yyyy format (e.g. 2000/2100)
+            century (int): The wanted century in yyyy format (e.g. 1900)
+
+        Returns:
+            click_month (bool): True/False depending on if we clicked on the month
+            click_year (bool): True/False depending on if we clicked on the year
+            click_decade (bool): True/False depending on if we clicked on the decade
+            click_century (bool): True/False depending on if we clicked on the century
         """
 
         click_month = False
@@ -193,22 +247,16 @@ class CalendarPicker(BasePage):
         click_century = False
 
         if current_month_long != month_long:
-            self.click(self.page.get_by_role("cell", name=current_month_long))
+            self.click(self.v2date_picker_switch)
             click_month = True
         if current_year != year:
-            self.click(
-                self.page.get_by_role("cell", name=str(current_year), exact=True)
-            )
+            self.click(self.v2date_picker_switch)
             click_year = True
         if current_decade != decade:
-            self.click(
-                self.page.get_by_role("cell", name=("-" + str(end_of_current_decade)))
-            )
+            self.click(self.v2date_picker_switch)
             click_decade = True
         if current_century != century:
-            self.click(
-                self.page.get_by_role("cell", name=("-" + str(end_of_current_century)))
-            )
+            self.click(self.v2date_picker_switch)
             click_century = True
 
         return click_month, click_year, click_decade, click_century
@@ -223,10 +271,20 @@ class CalendarPicker(BasePage):
         decade: str,
         year: str,
         month_short: str,
-    ):
+    ) -> None:
         """
         This function is used to "go forward" through the v2 calendar picker after the date range has been expanded
         It uses the variables calculated in 'calculate_v2_calendar_variables' to know which locators to select
+
+        Args:
+            click_month (bool): True/False depending on if we need to click on the month
+            click_year (bool): True/False depending on if we need to click on the year
+            click_decade (bool): True/False depending on if we need to click on the decade
+            click_century (bool): True/False depending on if we need to click on the century
+            century (str): The century of the date we want to select
+            decade (str): The decade of the date we want to select
+            year (str): The year of the date we want to select
+            month_short (str): The month of the date we want to select
         """
 
         if click_century:
@@ -242,6 +300,9 @@ class CalendarPicker(BasePage):
         """
         This is the main method to navigate the v2 calendar picker (like the one on the Active Batch List page)
         This calls all the relevant functions in order to know how to traverse the picker
+
+        Args:
+            date (datetime): The date we want to select
         """
         current_date = datetime.today()
         (
@@ -250,10 +311,8 @@ class CalendarPicker(BasePage):
             month_short,
             current_year,
             year,
-            end_of_current_decade,
             current_decade,
             decade,
-            end_of_current_century,
             current_century,
             century,
         ) = self.calculate_v2_calendar_variables(date, current_date)
@@ -264,10 +323,8 @@ class CalendarPicker(BasePage):
                 month_long,
                 current_year,
                 year,
-                end_of_current_decade,
                 current_decade,
                 decade,
-                end_of_current_century,
                 current_century,
                 century,
             )
@@ -286,7 +343,7 @@ class CalendarPicker(BasePage):
 
         self.select_day(date)
 
-    def book_first_eligble_appointment(
+    def book_first_eligible_appointment(
         self,
         current_month_displayed: str,
         locator: Locator,
@@ -298,14 +355,19 @@ class CalendarPicker(BasePage):
         Then gets all available dates, and then clicks on the first one starting from today's date
         If no available dates are found it moves onto the next month and repeats this 2 more times
         If in the end no available dates are found the test will fail.
+
+        Args:
+            current_month_displayed (str): The current month that is displayed by the calendar
+            locator (Locator): The locator of the cells containing the days
+            bg_colours (list): A list containing all of the background colours of cells we would like to select
         """
         current_month_displayed_int = DateTimeUtils().month_string_to_number(
             current_month_displayed
         )
         if platform == "win32":  # Windows
-            current_month_int = int(datetime.now().strftime("%#m"))
+            current_month_int = int(DateTimeUtils.format_date(datetime.now(), "%#m"))
         else:  # Linux or Mac
-            current_month_int = int(datetime.now().strftime("%-m"))
+            current_month_int = int(DateTimeUtils.format_date(datetime.now(), "%-m"))
 
         self.book_appointments_go_to_month(
             current_month_displayed_int, current_month_int
@@ -332,6 +394,10 @@ class CalendarPicker(BasePage):
     ):
         """
         This is used to move the calendar on the appointments page to the wanted month
+
+        Args:
+            current_displayed_month (int): The current month shown as an integer
+            wanted_month (int): The month we want to go to as an integer
         """
         month_difference = current_displayed_month - wanted_month
         if month_difference > 0:
@@ -345,10 +411,17 @@ class CalendarPicker(BasePage):
         self, locator: Locator, bg_colours: list
     ) -> bool:
         """
-        This function loops through all of the appointment date cells and if the bacground colour matches
+        This function loops through all of the appointment date cells and if the background colour matches
         It then checks that the length of the name is less than 5.
         This is done the name length is the only differentiating factor between the two calendar tables on the page
         - 1st table has a length of 4 (e.g. wed2, fri5) and the 2nd table has a length of 5 (e.g. wed11, fri14)
+
+        Args:
+            locator (Locator): The locator of the cells containing the days
+            bg_colours (list): A list containing all of the background colours of cells we would like to select
+
+        Returns:
+            True
         """
 
         locator_count = locator.count()

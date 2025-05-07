@@ -45,10 +45,10 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
     """
     This is the main compartment 4 method
     First it obtains the necessary test data from the DB
-    Then it logs on as a Screening Centre Manager and sets the availablity of a practitioner from 09:00 to 17:15 from todays date for the next 6 weeks
+    Then it logs on as a Screening Centre Manager and sets the availability of a practitioner from 09:00 to 17:15 from todays date for the next 6 weeks
     After It logs out an logs back in as a Hub Manager
     Once logging back in it books appointments for the subjects retrieved earlier
-    Finally it processes the necessary batches to send out the letters and checks the subjects satus has been updated to what is expected
+    Finally it processes the necessary batches to send out the letters and checks the subjects status has been updated to what is expected
     """
 
     subjects_df = get_subjects_for_appointments(
@@ -116,7 +116,7 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
         current_month_displayed = BookAppointmentPage(
             page
         ).get_current_month_displayed()
-        CalendarPicker(page).book_first_eligble_appointment(
+        CalendarPicker(page).book_first_eligible_appointment(
             current_month_displayed,
             BookAppointmentPage(page).appointment_cell_locators,
             [
