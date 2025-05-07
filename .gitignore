@@ -10,10 +10,13 @@
 *.code-workspace
 !project.code-workspace
 
-# Please, add your custom content below!
+# Specific to this blueprint
 
 __pycache__/
 .pytest_cache/
 test-results/
 axe-reports/
 .env
+local.env
+
+# Please, add your custom content below!
