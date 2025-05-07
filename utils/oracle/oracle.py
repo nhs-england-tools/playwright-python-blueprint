@@ -16,6 +16,9 @@ class OracleDB:
     def connect_to_db(self) -> oracledb.Connection:
         """
         This function is used to connect to the Oracle DB. All the credentials are retrieved from a .env file
+
+        Returns:
+            conn (oracledb.Connection): The Oracle DB connection object
         """
         try:
             logging.info("Attempting DB connection...")
@@ -29,17 +32,26 @@ class OracleDB:
                 f"Failed to to extract subject ID with error: {queryExecutionError}"
             )
 
-    def disconnect_from_db(self, conn) -> None:
+    def disconnect_from_db(self, conn: oracledb.Connection) -> None:
+        """
+        Disconnects from the DB
+
+        Args:
+            conn (oracledb.Connection): The Oracle DB connection object
+        """
         conn.close()
         logging.info("Connection Closed")
 
     def exec_bcss_timed_events(
-        self, nhs_number_df
+        self, nhs_number_df: pd.DataFrame
     ) -> None:  # Executes bcss_timed_events when given NHS numbers
         """
-        this function is used to execute bcss_timed_events against NHS Numbers.
+        This function is used to execute bcss_timed_events against NHS Numbers.
         It expects the nhs_numbers to be in a dataframe, and runs a for loop to get the subject_screening_id for each nhs number
         Once a subject_screening_id is retrieved, it will then run the command: exec bcss_timed_events [<subject_id>,'Y']
+
+        Args:
+            nhs_number_df (pd.DataFrame): A dataframe containing all of the NHS numbers as separate rows
         """
         conn = self.connect_to_db()
         try:
@@ -66,9 +78,15 @@ class OracleDB:
             if conn is not None:
                 self.disconnect_from_db(conn)
 
-    def get_subject_id_from_nhs_number(self, nhs_number) -> str:
+    def get_subject_id_from_nhs_number(self, nhs_number: str) -> str:
         """
         This function is used to obtain the subject_screening_id of a subject when given an nhs number
+
+        Args:
+            nhs_number (str): The NHS number of the subject
+
+        Returns:
+            subject_id (str): The subject id for the provided nhs number
         """
         conn = self.connect_to_db()
         logging.info(f"Attempting to get subject_id from nhs number: {nhs_number}")
@@ -86,6 +104,9 @@ class OracleDB:
     ) -> None:  # To add users to the UI_APPROVED_USERS table
         """
         This function is used to add a user to the UI_APPROVED_USERS table
+
+        Args:
+            user (str): The user you want to add to the table
         """
         conn = self.connect_to_db()
         try:
@@ -131,11 +152,22 @@ class OracleDB:
         """
         This is used to execute any sql queries.
         A query is provided and then the result is returned as a pandas dataframe
+
+        Args:
+            query (str): The SQL query you wish to run
+            parameters (list | None): Optional - Any parameters you want to pass on in a list
+
+        Returns:
+            df (pd.DataFrame): A pandas dataframe of the result of the query
         """
         conn = self.connect_to_db()
         engine = create_engine("oracle+oracledb://", creator=lambda: conn)
         try:
-            df = pd.read_sql(query, engine) if parameters == None else pd.read_sql(query, engine, params = parameters)
+            df = (
+                pd.read_sql(query, engine)
+                if parameters == None
+                else pd.read_sql(query, engine, params=parameters)
+            )
         except Exception as executionError:
             logging.error(
                 f"Failed to execute query with execution error {executionError}"
@@ -151,6 +183,9 @@ class OracleDB:
         """
         This is to be used whenever we need to execute a stored procedure.
         It is provided with the stored procedure name and then executes it
+
+        Args:
+            procedure (str): The stored procedure you want to run
         """
         conn = self.connect_to_db()
         try:
@@ -168,11 +203,15 @@ class OracleDB:
                 self.disconnect_from_db(conn)
 
     def update_or_insert_data_to_table(
-        self, statement, params
+        self, statement: str, params: list
     ) -> None:  # To update or insert data into a table
         """
         This is used to update or insert data into a table.
         It is provided with the SQL statement along with the arguments
+
+        Args:
+            statement (str): The SQL query you wish to run
+            params (list | None): Any parameters you want to pass on in a list
         """
         conn = self.connect_to_db()
         try:

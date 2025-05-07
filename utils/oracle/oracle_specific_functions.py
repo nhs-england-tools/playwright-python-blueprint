@@ -19,10 +19,14 @@ def get_kit_id_from_db(
 ) -> pd.DataFrame:
     """
     This query is used to obtain test kits used in compartment 2
-    It searches for kits that have not been logged and meet the following criteria:
-    - tk.tk_type_id = 2 (Only FIT Kits)
-    - sdc.hub_id = 23159 (Hub ID that the compartments are running in)
-    - se.latest_event_status_id is 11198 or 11213 (Only kits at the status we want S10/S19 are retrieved)
+
+    Args:
+        tk_type_id (int): The id of the kit type
+        hub_id (int): The hub ID of the screening center
+        no_of_kits_to_retrieve (int): The amount of kits you want to retrieve
+
+    Returns:
+        kit_id_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     logging.info("Retrieving useable test kit ids")
     kit_id_df = OracleDB().execute_query(
@@ -43,10 +47,16 @@ def get_kit_id_from_db(
     return kit_id_df
 
 
-def get_nhs_no_from_batch_id(batch_id) -> pd.DataFrame:
+def get_nhs_no_from_batch_id(batch_id: str) -> pd.DataFrame:
     """
     This query returns a dataframe of NHS Numbers of the subjects in a certain batch
     We provide the batch ID e.g. 8812 and then we have a list of NHS Numbers we can verify the statuses
+
+    Args:
+        batch_id (str): The batch ID you want to get the subjects from
+
+    Returns:
+        nhs_number_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     nhs_number_df = OracleDB().execute_query(
         f"""
@@ -66,9 +76,12 @@ def get_nhs_no_from_batch_id(batch_id) -> pd.DataFrame:
 def get_kit_id_logged_from_db(smokescreen_properties: dict) -> pd.DataFrame:
     """
     This query is used to obtain test data used in compartment 3
-    It searches for kits that have not been logged and meet the following criteria:
-    - tk.tk_type_id = 2 (Only FIT Kits)
-    - tk.logged_in_at = 23159 (Hub ID that the compartments are running in)
+
+    Args:
+        smokescreen_properties(): A dictionary containing all values needed to run the query
+
+    Returns:
+        return kit_id_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     kit_id_df = OracleDB().execute_query(
         f"""SELECT tk.kitid,tk.device_id,tk.screening_subject_id
@@ -83,7 +96,7 @@ def get_kit_id_logged_from_db(smokescreen_properties: dict) -> pd.DataFrame:
     AND tk.logged_in_at = {smokescreen_properties["c3_fit_kit_results_test_org_id"]}
     AND tk.reading_flag = 'N'
     AND tk.test_results IS NULL
-    fetch first {smokescreen_properties["c3_total_fit_kits_to_retieve"]} rows only
+    fetch first {smokescreen_properties["c3_total_fit_kits_to_retrieve"]} rows only
     """
     )
 
@@ -93,6 +106,12 @@ def get_kit_id_logged_from_db(smokescreen_properties: dict) -> pd.DataFrame:
 def get_service_management_by_device_id(device_id: str) -> pd.DataFrame:
     """
     This SQL is similar to the one used in pkg_test_kit_queue.p_get_fit_monitor_details, but adapted to allow us to pick out sub-sets of records
+
+    Args:
+        device_id (str): The device ID
+
+    Returns:
+        get_service_management_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
 
     query = """SELECT kq.device_id, kq.test_kit_name, kq.test_kit_type, kq.test_kit_status,
@@ -136,6 +155,14 @@ def update_kit_service_management_entity(
     """
     This method is used to update the KIT_QUEUE table on the DB
     This is done so that we can then run two stored procedures to update the subjects and kits status to either normal or abnormal
+
+    Args:
+        device_id (str): The device ID
+        normal (bool): Whether the device should be marked as normal or abnormal
+        smokescreen_properties(): A dictionary containing all values needed to run the query
+
+    Returns:
+        subject_nhs_number (str): The NHS Number of the affected subject
     """
     get_service_management_df = get_service_management_by_device_id(device_id)
 
@@ -229,6 +256,12 @@ def get_subjects_for_appointments(subjects_to_retrieve: int) -> pd.DataFrame:
     This is used to get subjects for compartment 4
     It finds subjects with open episodes and the event status A8
     It also checks that the episode is less than 2 years old
+
+    Args:
+        subjects_to_retrieve (int): The number of subjects to retrieve
+
+    Returns:
+        subjects_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     subjects_df = OracleDB().execute_query(
         f"""
@@ -257,6 +290,12 @@ def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataF
     This is used to get subjects for compartment 5
     It finds subjects with appointments book and letters sent
     and makes sure appointments are prior to todays date
+
+    Args:
+        subjects_to_retrieve (int): The number of subjects to retrieve
+
+    Returns:
+        subjects_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     subjects_df = OracleDB().execute_query(
         f"""
