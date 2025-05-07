@@ -11,6 +11,7 @@ class SqlQueryValues(IntEnum):
     S43_EVENT_STATUS = 11223
     OPEN_EPISODE_STATUS_ID = 11352
     A8_EVENT_STATUS = 11132
+    POSITIVE_APPOINTMENT_BOOKED = 11119
 
 
 def get_kit_id_from_db(
@@ -245,6 +246,51 @@ def get_subjects_for_appointments(subjects_to_retrieve: int) -> pd.DataFrame:
     and tk.tk_type_id = 2
     and tk.datestamp > add_months(sysdate,-24)
     order by ss.subject_nhs_number desc
+    fetch first {subjects_to_retrieve} rows only
+    """
+    )
+    return subjects_df
+
+
+def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataFrame:
+    """
+    This is used to get subjects for compartment 5
+    It finds subjects with appointments book and letters sent
+    and makes sure appointments are prior to todays date
+    """
+    subjects_df = OracleDB().execute_query(
+        f"""
+    select a.appointment_date, s.subject_nhs_number, c.person_family_name, c.person_given_name
+    from
+    (select count(*), ds.screening_subject_id
+    from
+    (
+    select ep.screening_subject_id, ep.subject_epis_id
+    from  ep_subject_episode_t ep
+    inner join ds_patient_assessment_t pa
+    on pa.episode_id = ep.subject_epis_id
+    ) ds
+    group by ds.screening_subject_id
+    having count(*) = 1
+    ) ss
+    inner join tk_items_t tk on tk.screening_subject_id = ss.screening_subject_id
+    inner join ep_subject_episode_t se on se.screening_subject_id = tk.screening_subject_id
+    and se.subject_epis_id = tk.logged_subject_epis_id
+    inner join screening_subject_t s on s.screening_subject_id = se.screening_subject_id
+    inner join sd_contact_t c on c.nhs_number = s.subject_nhs_number
+    inner join appointment_t a on se.subject_epis_id = a.subject_epis_id
+    where se.latest_event_status_id = {SqlQueryValues.POSITIVE_APPOINTMENT_BOOKED}
+    and tk.logged_in_flag = 'Y'
+    and se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
+    and tk.logged_in_at = 23159
+    --and a.appointment_date > sysdate-27
+    and a.cancel_date is null
+    and a.attend_info_id is null and a.attend_date is null
+    and a.cancel_dna_reason_id is null
+    and a.appointment_date <= sysdate
+    and tk.tk_type_id = 2
+    --and tk.datestamp > add_months(sysdate,-24)
+    order by a.appointment_date desc
     fetch first {subjects_to_retrieve} rows only
     """
     )

@@ -29,13 +29,15 @@ def batch_processing(
     get_subjects_from_pdf: bool = False,
 ) -> None:
     """
-    This util is used to process batches. It expects the following inputs:
-    - page: This is playwright page variable
-    - batch_type: This is the event code of the batch. E.g. S1 or S9
-    - batch_description: This is the description of the batch. E.g. Pre-invitation (FIT)
-    - latest_event_status: This is the status the subject will get updated to after the batch has been processed.
-    - run_timed_events: This is an optional input that executes bcss_timed_events if set to True
-    - get_subjects_from_pdf: This is an optial input to change the method of retrieving subjects from the batch from the Db to the PDF file.
+    This is used to process batches.
+
+    Args:
+        page (Page): This is the playwright page object
+        batch_type (str): The event code of the batch. E.g. S1 or S9
+        batch_description (str): The description of the batch. E.g. Pre-invitation (FIT)
+        latest_event_status (str): The status the subject will get updated to after the batch has been processed.
+        run_timed_events (bool): An optional input that executes bcss_timed_events if set to True
+        get_subjects_from_pdf (bool): An optional input to change the method of retrieving subjects from the batch from the DB to the PDF file.
     """
     logging.info(f"Processing {batch_type} - {batch_description} batch")
     BasePage(page).click_main_menu_link()
@@ -88,8 +90,16 @@ def prepare_and_print_batch(
     page: Page, link_text: str, get_subjects_from_pdf: bool = False
 ) -> pd.DataFrame | None:
     """
-    This method prepares the batch, retreives the files and confirms them as printed
+    This prepares the batch, retreives the files and confirms them as printed
     Once those buttons have been pressed it waits for the message 'Batch Successfully Archived'
+
+    Args:
+        page (Page): This is the playwright page object
+        link_text (str): The batch ID
+        get_subjects_from_pdf (bool): An optional input to change the method of retrieving subjects from the batch from the DB to the PDF file.
+
+    Returns:
+        nhs_no_df (pd.DataFrame | None): if get_subjects_from_pdf is True, this is a DataFrame with the column 'subject_nhs_number' and each NHS number being a record, otherwise it is None
     """
     ManageActiveBatchPage(page).click_prepare_button()
     page.wait_for_timeout(
@@ -146,7 +156,11 @@ def prepare_and_print_batch(
 
 def check_batch_in_archived_batch_list(page: Page, link_text) -> None:
     """
-    This method checks the the batch that was just prepared and printed is now visible in the archived batch list
+    Checks the the batch that was just prepared and printed is now visible in the archived batch list.
+
+    Args:
+        page (Page): This is the playwright page object
+        link_text (str): The batch ID
     """
     BasePage(page).click_main_menu_link()
     BasePage(page).go_to_communications_production_page()

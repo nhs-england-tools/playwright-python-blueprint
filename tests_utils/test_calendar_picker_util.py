@@ -14,10 +14,8 @@ def test_calculate_v2_calendar_variables(page: Page):
         month_short,
         current_year,
         year,
-        end_of_current_decade,
         current_decade,
         decade,
-        end_of_current_century,
         current_century,
         century,
     ) = calendar_picker.calculate_v2_calendar_variables(
@@ -29,10 +27,8 @@ def test_calculate_v2_calendar_variables(page: Page):
     assert month_short == "Apr"
     assert current_year == 2020
     assert year == 2025
-    assert end_of_current_decade == "2029"
     assert current_decade == 2020
     assert decade == 2020
-    assert end_of_current_century == "2090"
     assert current_century == 2000
     assert century == 2000
 
@@ -42,10 +38,8 @@ def test_calculate_v2_calendar_variables(page: Page):
         month_short,
         current_year,
         year,
-        end_of_current_decade,
         current_decade,
         decade,
-        end_of_current_century,
         current_century,
         century,
     ) = calendar_picker.calculate_v2_calendar_variables(
@@ -57,10 +51,8 @@ def test_calculate_v2_calendar_variables(page: Page):
     assert month_short == "Jan"
     assert current_year == 2020
     assert year == 1963
-    assert end_of_current_decade == "2029"
     assert current_decade == 2020
     assert decade == 1960
-    assert end_of_current_century == "2090"
     assert current_century == 2000
     assert century == 1900
 
@@ -70,10 +62,8 @@ def test_calculate_v2_calendar_variables(page: Page):
         month_short,
         current_year,
         year,
-        end_of_current_decade,
         current_decade,
         decade,
-        end_of_current_century,
         current_century,
         century,
     ) = calendar_picker.calculate_v2_calendar_variables(
@@ -85,10 +75,8 @@ def test_calculate_v2_calendar_variables(page: Page):
     assert month_short == "Dec"
     assert current_year == 2020
     assert year == 2356
-    assert end_of_current_decade == "2029"
     assert current_decade == 2020
     assert decade == 2350
-    assert end_of_current_century == "2090"
     assert current_century == 2000
     assert century == 2300
 

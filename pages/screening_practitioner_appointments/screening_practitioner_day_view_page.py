@@ -10,6 +10,7 @@ class ScreeningPractitionerDayViewPage(BasePage):
         self.page = page
         # Screening Practitioner Day View   - page locators
         self.calendar_button = page.get_by_role("button", name="Calendar")
+        self.practitioner_dropdown = self.page.locator("#UI_PRACTITIONER_NDV")
 
     def click_calendar_button(self) -> None:
         """Click on the Calendar button to open the calendar picker."""
@@ -18,3 +19,7 @@ class ScreeningPractitionerDayViewPage(BasePage):
     def click_patient_link(self, patient_name: str) -> None:
         """Click on the patient link to navigate to the patient's details page."""
         self.click(self.page.get_by_role("link", name=patient_name))
+
+    def select_practitioner_dropdown_option(self, practitioner: str | list) -> None:
+        """Select given practitioner from the practitioner dropdown list"""
+        self.practitioner_dropdown.select_option(label=practitioner)

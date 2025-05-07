@@ -28,6 +28,9 @@ class BatchListPage(BasePage):
         self.deadline_date_filter = self.page.get_by_role("cell", name="").get_by_role(
             "textbox"
         )
+        self.deadline_date_filter_with_input = self.page.locator(
+            "input.form-control.filter.filtering"
+        )
         self.deadline_date_clear_button = self.page.get_by_role("cell", name="Clear")
 
     def verify_batch_list_page_title(self, text) -> None:
@@ -87,6 +90,9 @@ class BatchListPage(BasePage):
         """Clear the date in the Deadline Date filter"""
         self.click(self.deadline_calendar_picker)
         self.click(self.deadline_date_clear_button)
+
+    def verify_deadline_date_filter_input(self, expected_text: str) -> None:
+        expect(self.deadline_date_filter_with_input).to_have_value(expected_text)
 
 
 class ActiveBatchListPage(BatchListPage):

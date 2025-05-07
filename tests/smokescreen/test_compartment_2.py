@@ -56,15 +56,9 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
             pytest.fail(f"{fit_device_id} unsuccessfully logged: {str(e)}")
 
     nhs_no = subjectdf["subject_nhs_number"].iloc[0]
-    try:
-        verify_subject_event_status_by_nhs_no(
-            page, nhs_no, "S43 - Kit Returned and Logged (Initial Test)"
-        )
-        logging.info(
-            f"Successfully verified NHS number {nhs_no} with status S43 - Kit Returned and Logged (Initial Test)"
-        )
-    except Exception as e:
-        pytest.fail(f"Verification failed for NHS number {nhs_no}: {str(e)}")
+    verify_subject_event_status_by_nhs_no(
+        page, nhs_no, "S43 - Kit Returned and Logged (Initial Test)"
+    )
 
     BasePage(page).click_main_menu_link()
     BasePage(page).go_to_fit_test_kits_page()

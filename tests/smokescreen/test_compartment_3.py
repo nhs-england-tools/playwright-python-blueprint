@@ -66,16 +66,7 @@ def test_compartment_3(page: Page, smokescreen_properties: dict) -> None:
             f"Verifying NHS number: {nhs_number} with expected status: {expected_status}"
         )
 
-        try:
-            verify_subject_event_status_by_nhs_no(page, nhs_number, expected_status)
-            logging.info(
-                f"Successfully verified NHS number {nhs_number} with status {expected_status}"
-            )
-        except Exception as e:
-            logging.error(
-                f"Verification failed for NHS number {nhs_number} with status {expected_status}: {str(e)}"
-            )
-            raise
+        verify_subject_event_status_by_nhs_no(page, nhs_number, expected_status)
 
     # Process S2 batch
     batch_processing(
