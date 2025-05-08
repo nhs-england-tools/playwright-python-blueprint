@@ -29,21 +29,30 @@ def get_kit_id_from_db(
         kit_id_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
     logging.info("Retrieving useable test kit ids")
-    kit_id_df = OracleDB().execute_query(
-        f"""select tk.kitid, tk.screening_subject_id, sst.subject_nhs_number
+    query = """select tk.kitid, tk.screening_subject_id, sst.subject_nhs_number
     from tk_items_t tk
     inner join ep_subject_episode_t se on se.screening_subject_id = tk.screening_subject_id
     inner join screening_subject_t sst on (sst.screening_subject_id = tk.screening_subject_id)
     inner join sd_contact_t sdc on (sdc.nhs_number = sst.subject_nhs_number)
-    where tk.tk_type_id = {tk_type_id}
+    where tk.tk_type_id = :tk_type_id
     and tk.logged_in_flag = 'N'
-    and sdc.hub_id = {hub_id}
+    and sdc.hub_id = :hub_id
     and device_id is null
     and tk.invalidated_date is null
-    and se.latest_event_status_id in ({SqlQueryValues.S10_EVENT_STATUS}, {SqlQueryValues.S19_EVENT_STATUS})
+    and se.latest_event_status_id in (:s10_event_status, :s19_event_status)
     order by tk.kitid DESC
-    fetch first {no_of_kits_to_retrieve} rows only"""
-    )
+    fetch first :subjects_to_retrieve rows only"""
+
+    params = {
+        "s10_event_status": SqlQueryValues.S10_EVENT_STATUS,
+        "s19_event_status": SqlQueryValues.S19_EVENT_STATUS,
+        "tk_type_id": tk_type_id,
+        "hub_id": hub_id,
+        "subjects_to_retrieve": no_of_kits_to_retrieve,
+    }
+
+    kit_id_df = OracleDB().execute_query(query, params)
+
     return kit_id_df
 
 
@@ -83,22 +92,29 @@ def get_kit_id_logged_from_db(smokescreen_properties: dict) -> pd.DataFrame:
     Returns:
         return kit_id_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
-    kit_id_df = OracleDB().execute_query(
-        f"""SELECT tk.kitid,tk.device_id,tk.screening_subject_id
+    query = """SELECT tk.kitid,tk.device_id,tk.screening_subject_id
     FROM tk_items_t tk
     INNER JOIN kit_queue kq ON kq.device_id = tk.device_id
     INNER JOIN ep_subject_episode_t se ON se.screening_subject_id = tk.screening_subject_id
     WHERE tk.logged_in_flag = 'Y'
     AND kq.test_kit_status IN ('LOGGED', 'POSTED')
-    AND se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
+    AND se.episode_status_id = :open_episode_status_id
     AND tk.tk_type_id = 2
-    AND se.latest_event_status_id = {SqlQueryValues.S43_EVENT_STATUS}
-    AND tk.logged_in_at = {smokescreen_properties["c3_fit_kit_results_test_org_id"]}
+    AND se.latest_event_status_id = :s43_event_status
+    AND tk.logged_in_at = :logged_in_at
     AND tk.reading_flag = 'N'
     AND tk.test_results IS NULL
-    fetch first {smokescreen_properties["c3_total_fit_kits_to_retrieve"]} rows only
+    fetch first :subjects_to_retrieve rows only
     """
-    )
+
+    params = {
+        "s43_event_status": SqlQueryValues.S43_EVENT_STATUS,
+        "logged_in_at": smokescreen_properties["c3_fit_kit_results_test_org_id"],
+        "open_episode_status_id": SqlQueryValues.OPEN_EPISODE_STATUS_ID,
+        "subjects_to_retrieve": smokescreen_properties["c3_total_fit_kits_to_retrieve"],
+    }
+
+    kit_id_df = OracleDB().execute_query(query, params)
 
     return kit_id_df
 
@@ -263,25 +279,31 @@ def get_subjects_for_appointments(subjects_to_retrieve: int) -> pd.DataFrame:
     Returns:
         subjects_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
-    subjects_df = OracleDB().execute_query(
-        f"""
-    select tk.kitid, ss.subject_nhs_number, se.screening_subject_id
+
+    query = """select tk.kitid, ss.subject_nhs_number, se.screening_subject_id
     from tk_items_t tk
     inner join ep_subject_episode_t se on se.screening_subject_id = tk.screening_subject_id
     inner join screening_subject_t ss on ss.screening_subject_id = se.screening_subject_id
     inner join sd_contact_t c on c.nhs_number = ss.subject_nhs_number
-    where se.latest_event_status_id = {SqlQueryValues.A8_EVENT_STATUS}
+    where se.latest_event_status_id = :a8_event_status
     and tk.logged_in_flag = 'Y'
-    and se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
+    and se.episode_status_id = :open_episode_status_id
     and ss.screening_status_id != 4008
     and tk.logged_in_at = 23159
     and c.hub_id = 23159
     and tk.tk_type_id = 2
     and tk.datestamp > add_months(sysdate,-24)
     order by ss.subject_nhs_number desc
-    fetch first {subjects_to_retrieve} rows only
+    fetch first :subjects_to_retrieve rows only
     """
-    )
+    params = {
+        "a8_event_status": SqlQueryValues.A8_EVENT_STATUS,
+        "open_episode_status_id": SqlQueryValues.OPEN_EPISODE_STATUS_ID,
+        "subjects_to_retrieve": subjects_to_retrieve,
+    }
+
+    subjects_df = OracleDB().execute_query(query, params)
+
     return subjects_df
 
 
@@ -297,9 +319,8 @@ def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataF
     Returns:
         subjects_df (pd.DataFrame): A pandas DataFrame containing the result of the query
     """
-    subjects_df = OracleDB().execute_query(
-        f"""
-    select a.appointment_date, s.subject_nhs_number, c.person_family_name, c.person_given_name
+
+    query = """select distinct(s.subject_nhs_number), a.appointment_date, c.person_family_name, c.person_given_name
     from
     (select count(*), ds.screening_subject_id
     from
@@ -318,10 +339,11 @@ def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataF
     inner join screening_subject_t s on s.screening_subject_id = se.screening_subject_id
     inner join sd_contact_t c on c.nhs_number = s.subject_nhs_number
     inner join appointment_t a on se.subject_epis_id = a.subject_epis_id
-    where se.latest_event_status_id = {SqlQueryValues.POSITIVE_APPOINTMENT_BOOKED}
+    where se.latest_event_status_id = :positive_appointment_booked
     and tk.logged_in_flag = 'Y'
-    and se.episode_status_id = {SqlQueryValues.OPEN_EPISODE_STATUS_ID}
+    and se.episode_status_id = :open_episode_status_id
     and tk.logged_in_at = 23159
+    and tk.algorithm_sc_id = 23162
     --and a.appointment_date > sysdate-27
     and a.cancel_date is null
     and a.attend_info_id is null and a.attend_date is null
@@ -330,7 +352,15 @@ def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataF
     and tk.tk_type_id = 2
     --and tk.datestamp > add_months(sysdate,-24)
     order by a.appointment_date desc
-    fetch first {subjects_to_retrieve} rows only
+    fetch first :subjects_to_retrieve rows only
     """
-    )
+
+    params = {
+        "positive_appointment_booked": SqlQueryValues.POSITIVE_APPOINTMENT_BOOKED,
+        "open_episode_status_id": SqlQueryValues.OPEN_EPISODE_STATUS_ID,
+        "subjects_to_retrieve": subjects_to_retrieve,
+    }
+
+    subjects_df = OracleDB().execute_query(query, params)
+
     return subjects_df

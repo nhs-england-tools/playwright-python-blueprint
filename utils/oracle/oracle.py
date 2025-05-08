@@ -29,7 +29,7 @@ class OracleDB:
             return conn
         except Exception as queryExecutionError:
             logging.error(
-                f"Failed to to extract subject ID with error: {queryExecutionError}"
+                f"Failed to extract subject ID with error: {queryExecutionError}"
             )
 
     def disconnect_from_db(self, conn: oracledb.Connection) -> None:
@@ -147,7 +147,7 @@ class OracleDB:
                 self.disconnect_from_db(conn)
 
     def execute_query(
-        self, query: str, parameters: list | None = None
+        self, query: str, parameters: dict | None = None
     ) -> pd.DataFrame:  # To use when "select xxxx" (stored procedures)
         """
         This is used to execute any sql queries.
@@ -155,7 +155,7 @@ class OracleDB:
 
         Args:
             query (str): The SQL query you wish to run
-            parameters (list | None): Optional - Any parameters you want to pass on in a list
+            parameters (dict | None): Optional - Any parameters you want to pass on in a dictionary
 
         Returns:
             df (pd.DataFrame): A pandas dataframe of the result of the query
