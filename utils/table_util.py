@@ -31,8 +31,11 @@ class TableUtils:
         Finds the column index dynamically based on column name.
         Works even if <thead> is missing and header is inside <tbody>.
 
-        :param column_name: Name of the column (e.g., 'NHS Number')
-        :return: 1-based column index or -1 if not found
+        Args:
+            column_name (str): Name of the column (e.g., 'NHS Number')
+
+        Return:
+            An int (1-based column index or -1 if not found)
         """
         # Try to find headers in <thead> first
         header_row = self.table.locator("thead tr").first
@@ -53,7 +56,9 @@ class TableUtils:
     def click_first_link_in_column(self, column_name: str):
         """
         Clicks the first link found in the given column.
-        :param column_name: Name of the column containing links
+
+        Args:
+            column_name (str): Name of the column containing links
         """
         column_index = self.get_column_index(column_name)
         if column_index == -1:
@@ -71,7 +76,9 @@ class TableUtils:
     def click_first_input_in_column(self, column_name: str):
         """
         Clicks the first input found in the given column. E.g. Radios
-        :param column_name: Name of the column containing inputs
+
+        Args:
+            column_name (str): Name of the column containing inputs
         """
         column_index = self.get_column_index(column_name)
         if column_index == -1:
