@@ -7,7 +7,7 @@ from pages.base_page import BasePage
 from pages.logout.log_out_page import LogoutPage
 from pages.fit_test_kits.log_devices_page import LogDevicesPage
 from utils.batch_processing import batch_processing
-from utils.fit_kit_generation import create_fit_id_df
+from utils.fit_kit import FitKitGeneration
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.user_tools import UserTools
 
@@ -33,8 +33,7 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
     tk_type_id = smokescreen_properties["c2_fit_kit_tk_type_id"]
     hub_id = smokescreen_properties["c2_fit_kit_logging_test_org_id"]
     no_of_kits_to_retrieve = smokescreen_properties["c2_total_fit_kits_to_retieve"]
-    subjectdf = create_fit_id_df(tk_type_id, hub_id, no_of_kits_to_retrieve)
-
+    subjectdf = FitKitGeneration().create_fit_id_df(tk_type_id, hub_id, no_of_kits_to_retrieve)
     for subject in range(int(smokescreen_properties["c2_normal_kits_to_log"])):
         fit_device_id = subjectdf["fit_device_id"].iloc[subject]
         logging.info(f"Logging FIT Device ID: {fit_device_id}")
