@@ -36,6 +36,9 @@ from pages.datasets.investigation_dataset_page import (
     PolypInterventionDeviceOptions,
     PolypInterventionExcisionTechniqueOptions,
 )
+from pages.screening_subject_search.advance_fobt_screening_episode_page import (
+    AdvanceFOBTScreeningEpisodePage,
+)
 
 
 # This should go into a util. Adding it here to avoid SonarQube duplication errors:
@@ -207,7 +210,8 @@ def after_high_risk_result(page: Page) -> None:
 
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
     # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Enter Diagnostic Test Outcome").click()
+    AdvanceFOBTScreeningEpisodePage(page).click_enter_diagnostic_test_outcome_button()
+
     # The following code is on the diagnostic test outcome page
     expect(page.get_by_role("cell", name="High-risk findings").nth(1)).to_be_visible()
     page.get_by_label("Outcome of Diagnostic Test").select_option("20365")
@@ -225,7 +229,7 @@ def after_lnpcp_result(page: Page) -> None:
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
 
     # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Enter Diagnostic Test Outcome").click()
+    AdvanceFOBTScreeningEpisodePage(page).click_enter_diagnostic_test_outcome_button()
 
     # The following code is on the diagnostic test outcome page
     expect(page.get_by_role("cell", name="LNPCP").nth(1)).to_be_visible()
@@ -314,7 +318,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
 
     # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Record Diagnosis Date").click()
+    AdvanceFOBTScreeningEpisodePage(page).click_record_diagnosis_date_button()
 
     # The following code is on the record diagnosis date page
     RecordDiagnosisDatePage(page).enter_date_in_diagnosis_date_field(datetime.today())
@@ -393,7 +397,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
 
     # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Enter Diagnostic Test Outcome").click()
+    AdvanceFOBTScreeningEpisodePage(page).click_enter_diagnostic_test_outcome_button()
 
     # The following code is on the diagnostic test outcome page
     expect(
@@ -408,7 +412,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
 
     # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Record Diagnosis Date").click()
+    AdvanceFOBTScreeningEpisodePage(page).click_record_diagnosis_date_button()
 
     # The following code is on the record diagnosis date page
     RecordDiagnosisDatePage(page).enter_date_in_diagnosis_date_field(datetime.today())

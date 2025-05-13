@@ -28,6 +28,15 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.record_other_post_investigation_contact_button = self.page.get_by_role(
             "button", name="Record other post-"
         )
+        self.enter_diagnostic_test_outcome_button = self.page.get_by_role(
+            "button", name="Enter Diagnostic Test Outcome"
+        )
+        self.handover_into_symptomatic_care_button = self.page.get_by_role(
+            "button", name="Handover into Symptomatic Care"
+        )
+        self.record_diagnosis_date_button = self.page.get_by_role(
+            "button", name="Record Diagnosis Date"
+        )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
         """Click the 'Suitable for Endoscopic Test' button."""
@@ -78,3 +87,15 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
     def click_record_other_post_investigation_contact_button(self) -> None:
         """Click the 'Record other post-investigation contact' button."""
         self.click(self.record_other_post_investigation_contact_button)
+
+    def click_enter_diagnostic_test_outcome_button(self) -> None:
+        """Click the 'Enter Diagnostic Test Outcome' button."""
+        self.click(self.enter_diagnostic_test_outcome_button)
+
+    def click_handover_into_symptomatic_care_button(self) -> None:
+        """Click the 'Handover Into Symptomatic Care' button."""
+        self.click(self.handover_into_symptomatic_care_button)
+
+    def click_record_diagnosis_date_button(self) -> None:
+        """Click the 'Record Diagnosis Date' button."""
+        self.click(self.record_diagnosis_date_button)
