@@ -84,17 +84,36 @@ class SubjectScreeningSummaryPage(BasePage):
         """Verify that the latest event status header is visible."""
         expect(self.latest_event_status).to_be_visible()
 
-    def verify_latest_event_status_value(self, latest_event_status: str) -> None:
+    def verify_latest_event_status_value(self, latest_event_status: str | list) -> None:
         """Verify that the latest event status value is visible."""
-        logging.info(f"Verifying subject has the status: {latest_event_status}")
-        latest_event_status_cell = self.get_latest_event_status_cell(
+        latest_event_status_locator = self.get_visible_status_from_list(
             latest_event_status
         )
+        status = latest_event_status_locator.inner_text()
+        logging.info(f"Verifying subject has the status: {status}")
         try:
-            expect(latest_event_status_cell).to_be_visible()
-            logging.info(f"Subject has the status: {latest_event_status}")
+            expect(latest_event_status_locator).to_be_visible()
+            logging.info(f"Subject has the status: {status}")
         except Exception:
-            pytest.fail(f"Subject does not have the status: {latest_event_status}")
+            pytest.fail(f"Subject does not have the status: {status}")
+
+    def get_visible_status_from_list(self, latest_event_status) -> Locator:
+        """
+        Get the first visible status from the latest event status string or list.
+
+        Args:
+            latest_event_status (str | list): The latest event status to check.
+
+        Returns:
+            Locator: The locator for the first visible status.
+        """
+        if isinstance(latest_event_status, str):
+            latest_event_status = [latest_event_status]
+        for status in latest_event_status:
+            locator = self.page.get_by_role("cell", name=status, exact=True)
+            if locator.is_visible():
+                return locator
+        logging.error("Unable to find any of the listed statuses")
 
     def click_subjects_events_notes(self) -> None:
         """Click on the 'Subject Events & Notes' link."""

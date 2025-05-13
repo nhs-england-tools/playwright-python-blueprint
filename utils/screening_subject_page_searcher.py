@@ -10,7 +10,7 @@ from playwright.sync_api import Page, expect
 
 
 def verify_subject_event_status_by_nhs_no(
-    page: Page, nhs_no: str, latest_event_status: str
+    page: Page, nhs_no: str, latest_event_status: str | list
 ) -> None:
     """
     This is used to check that the latest event status of a subject has been updated to what is expected

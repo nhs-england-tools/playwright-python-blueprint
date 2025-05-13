@@ -43,8 +43,8 @@ This will call the other two functions in order to successfully process a batch.
   - Type: `str`
   - This is the description of the batch. For example: **Pre-invitation (FIT)** or **Post-investigation Appointment NOT Required**
 - `latest_event_status`:
-  - Type: `str`
-  - This is the status the subject will get updated to after the batch has been processed. It is used to check that the subject has been updated to the correct status after a batch has been printed
+  - Type: `str | None`
+  - This is the status the subject will get updated to after the batch has been processed. It is used to check that the subject has been updated to the correct status after a batch has been printed. If there are multiple different status in the same batch, provide them all in a list.
 
 #### Optional Arguments
 
