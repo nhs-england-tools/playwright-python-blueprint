@@ -18,6 +18,7 @@ class CalendarPicker(BasePage):
         self.v1_calendar_current_date = self.page.locator(
             'td.title[colspan="5"][style="cursor: move;"]'
         )
+        self.v1_today_button = self.page.get_by_text("Today", exact=True)
         # V2 Calendar picker locators
         self.v2date_picker_switch = self.page.locator(
             'th.datepicker-switch[colspan="5"]:visible'
@@ -127,18 +128,20 @@ class CalendarPicker(BasePage):
             "cell", name=day_to_select
         ).count()
 
-        all_days = self.page.locator(".day").all()
+        all_matching_days = self.page.get_by_role(
+            "cell", name=day_to_select, exact=True
+        ).all()
 
         matching_days = [
             day
-            for day in all_days
+            for day in all_matching_days
             if day.evaluate("el => el.textContent.trim()") == day_to_select
         ]
 
         if int(day_to_select) < 15 and number_of_cells_with_day > 1:
             self.click(matching_days[0].first)
         elif int(day_to_select) > 15 and number_of_cells_with_day > 1:
-            self.click(matching_days[0].last)
+            self.click(matching_days[-1].last)
         else:
             self.click(matching_days[0])
 
@@ -150,6 +153,13 @@ class CalendarPicker(BasePage):
         Args:
             date (datetime): The date we want to select
         """
+
+        if DateTimeUtils.format_date(date, "%d/%m/%Y") == DateTimeUtils.format_date(
+            datetime.today(), "%d/%m/%Y"
+        ):
+            self.click(self.v1_today_button)
+            return
+
         current_date = datetime.strptime(
             self.v1_calendar_current_date.inner_text(), "%B, %Y"
         )

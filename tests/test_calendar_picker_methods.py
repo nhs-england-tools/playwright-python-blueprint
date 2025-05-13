@@ -28,8 +28,8 @@ def test_calender_picker_v1(page: Page) -> None:
     SubjectScreeningPage(page).select_dob_using_calendar_picker(datetime(2020, 3, 30))
     SubjectScreeningPage(page).verify_date_of_birth_filter_input("30/03/2020")
     SubjectScreeningPage(page).click_clear_filters_button()
-    SubjectScreeningPage(page).select_dob_using_calendar_picker(datetime(2020, 6, 15))
-    SubjectScreeningPage(page).verify_date_of_birth_filter_input("15/06/2020")
+    SubjectScreeningPage(page).select_dob_using_calendar_picker(datetime(2019, 11, 27))
+    SubjectScreeningPage(page).verify_date_of_birth_filter_input("27/11/2019")
     SubjectScreeningPage(page).click_clear_filters_button()
     SubjectScreeningPage(page).select_dob_using_calendar_picker(datetime.today())
     SubjectScreeningPage(page).verify_date_of_birth_filter_input(
