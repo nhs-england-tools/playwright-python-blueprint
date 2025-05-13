@@ -11,6 +11,9 @@ from pages.logout.log_out_page import LogoutPage
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
 from utils.calendar_picker import CalendarPicker
 from datetime import datetime
+from pages.screening_subject_search.record_diagnosis_date_page import (
+    RecordDiagnosisDatePage,
+)
 from pages.datasets.investigation_dataset_page import (
     InvestigationDatasetsPage,
     SiteLookupOptions,
@@ -230,6 +233,36 @@ def after_lnpcp_result(page: Page) -> None:
     page.get_by_role("button", name="Save").click()
 
 
+def handover_subject_to_symptomatic_care(page: Page) -> None:
+    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
+        "A394 - Handover into Symptomatic Care for Surveillance - Patient Age"
+    )
+    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+
+    # The following code is on the advance fobt screening episode page
+    page.get_by_role("button", name="Handover into Symptomatic Care").click()
+
+    # The following code is on the handover into symptomatic care page
+    page.get_by_label("Referral").select_option("20445")
+    page.get_by_role("button", name="Calendar").click()
+    CalendarPicker(page).v1_calender_picker(datetime.today())
+    page.locator("#UI_NS_CONSULTANT_PIO_SELECT_LINK").click()
+    option_locator = page.locator(
+        '[value="201"]:visible'
+    )  # Here value '201' is referring to Consultant B, Frame
+    option_locator.wait_for(state="visible")
+    option_locator.click()
+    page.get_by_role("textbox", name="Notes").click()
+    page.get_by_role("textbox", name="Notes").fill("Test Automation")
+    page.once("dialog", lambda dialog: dialog.accept())
+    page.get_by_role("button", name="Save").click()
+
+    SubjectScreeningSummaryPage(page).wait_for_page_title()
+    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
+        "A385 - Handover into Symptomatic Care"
+    )
+
+
 @pytest.mark.vpn_required
 @pytest.mark.smokescreen
 @pytest.mark.compartment6
@@ -248,7 +281,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - High Risk Result
     # Older patient
-    nhs_no = "9056553305"
+    nhs_no = "9109877185"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -260,35 +293,10 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     save_investigation_dataset(page)
     after_high_risk_result(page)
 
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A394 - Handover into Symptomatic Care for Surveillance - Patient Age"
-    )
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-
-    # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Handover into Symptomatic Care").click()
-
-    # The following code is on the handover into symptomatic care page
-    page.get_by_label("Referral").select_option("20445")
-    page.get_by_role("button", name="Calendar").click()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    page.locator("#UI_NS_CONSULTANT_PIO_SELECT_LINK").click()
-    option_locator = page.locator(
-        '[value="201"]:visible'
-    )  # Here value '201' is refering to Consultant B, Frame
-    option_locator.wait_for(state="visible")
-    option_locator.click()
-    page.get_by_role("textbox", name="Notes").click()
-    page.get_by_role("textbox", name="Notes").fill("Test Automation")
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Save").click()
-
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A385 - Handover into Symptomatic Care"
-    )
+    handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9867208471"
+    nhs_no = "9624131880"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -309,9 +317,8 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     page.get_by_role("button", name="Record Diagnosis Date").click()
 
     # The following code is on the record diagnosis date page
-    page.locator("#diagnosisDate").click()
-    CalendarPicker(page).v2_calendar_picker(datetime.today())
-    page.get_by_role("button", name="Save").click()
+    RecordDiagnosisDatePage(page).enter_date_in_diagnosis_date_field(datetime.today())
+    RecordDiagnosisDatePage(page).click_save_button()
 
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
         "A318 - Post-investigation Appointment NOT Required - Result Letter Created"
@@ -319,7 +326,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - LNPCP Result
     # Older patient
-    nhs_no = "9840013254"
+    nhs_no = "9648064792"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -331,35 +338,10 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     save_investigation_dataset(page)
     after_lnpcp_result(page)
 
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A394 - Handover into Symptomatic Care for Surveillance - Patient Age"
-    )
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-
-    # The following code is on the advance fobt screening episode page
-    page.get_by_role("button", name="Handover into Symptomatic Care").click()
-
-    # The following code is on the handover into symptomatic care page
-    page.get_by_label("Referral").select_option("20445")
-    page.get_by_role("button", name="Calendar").click()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    page.locator("#UI_NS_CONSULTANT_PIO_SELECT_LINK").click()
-    option_locator = page.locator(
-        '[value="201"]:visible'
-    )  # Here value '201' is refering to Consultant B, Frame
-    option_locator.wait_for(state="visible")
-    option_locator.click()
-    page.get_by_role("textbox", name="Notes").click()
-    page.get_by_role("textbox", name="Notes").fill("Test Automation")
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Save").click()
-
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A385 - Handover into Symptomatic Care"
-    )
+    handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9477527106"
+    nhs_no = "9627060208"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -379,18 +361,16 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     page.get_by_role("button", name="Record Diagnosis Date").click()
 
     # The following code is on the record diagnosis date page
-    page.locator("#diagnosisDate").click()
-    CalendarPicker(page).v2_calendar_picker(datetime.today())
-    page.locator("#diagnosisDate").press("Enter")
-    page.get_by_role("button", name="Save").click()
+    RecordDiagnosisDatePage(page).enter_date_in_diagnosis_date_field(datetime.today())
+    RecordDiagnosisDatePage(page).click_save_button()
 
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
         "A318 - Post-investigation Appointment NOT Required - Result Letter Created"
     )
 
     # This needs to be repeated for 1 subject, age does not matter - Normal Result
-    nhs_no = "9936724968"
-    go_to_investigation_datasets_page(page, nhs_no)
+    nhs_no_normal = "9965184321"
+    go_to_investigation_datasets_page(page, nhs_no_normal)
 
     # The following code is on the investigation datasets page
     default_investigation_dataset_forms(page)
@@ -431,18 +411,8 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     page.get_by_role("button", name="Record Diagnosis Date").click()
 
     # The following code is on the record diagnosis date page
-    page.locator("#diagnosisDate").click()
-    CalendarPicker(page).v2_calendar_picker(datetime.today())
-    page.get_by_role("button", name="Save").click()
-
-    # Modification needs to be done to accept this list. it should check if any of the values in this list are present. Something like the following:
-    # def get_first_visible_cell(page, values):
-    # if isinstance(values, str):
-    #     values = [values]
-    # for name in values:
-    #     locator = page.get_by_role("cell", name=name)
-    #     if locator.is_visible():
-    #         return locator
+    RecordDiagnosisDatePage(page).enter_date_in_diagnosis_date_field(datetime.today())
+    RecordDiagnosisDatePage(page).click_save_button()
 
     batch_processing(
         page,
@@ -453,6 +423,11 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
             "A158 - High-risk findings",
             "A157 - LNPCP",
         ],
+    )
+
+    # This is to check for the status of a normal subject as this NHS Number cannot be retrieved from the DB
+    verify_subject_event_status_by_nhs_no(
+        page, nhs_no_normal, "S61 - Normal (No Abnormalities Found)"
     )
 
     batch_processing(

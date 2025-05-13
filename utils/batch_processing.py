@@ -92,7 +92,7 @@ def prepare_and_print_batch(
     page: Page, link_text: str, get_subjects_from_pdf: bool = False
 ) -> pd.DataFrame | None:
     """
-    This prepares the batch, retreives the files and confirms them as printed
+    This prepares the batch, retrieves the files and confirms them as printed
     Once those buttons have been pressed it waits for the message 'Batch Successfully Archived'
 
     Args:
