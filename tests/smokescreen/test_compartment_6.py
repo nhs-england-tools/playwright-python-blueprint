@@ -9,6 +9,9 @@ from pages.screening_subject_search.subject_screening_summary_page import (
 from utils.batch_processing import batch_processing
 from pages.logout.log_out_page import LogoutPage
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
+from pages.screening_subject_search.handover_into_symptomatic_care_page import (
+    HandoverIntoSymptomaticCarePage
+)
 from utils.calendar_picker import CalendarPicker
 from datetime import datetime
 from pages.screening_subject_search.record_diagnosis_date_page import (
@@ -247,19 +250,12 @@ def handover_subject_to_symptomatic_care(page: Page) -> None:
     page.get_by_role("button", name="Handover into Symptomatic Care").click()
 
     # The following code is on the handover into symptomatic care page
-    page.get_by_label("Referral").select_option("20445")
-    page.get_by_role("button", name="Calendar").click()
+    HandoverIntoSymptomaticCarePage(page).select_referral_dropdown_option("20445")
+    HandoverIntoSymptomaticCarePage(page).click_calendar_button()
     CalendarPicker(page).v1_calender_picker(datetime.today())
-    page.locator("#UI_NS_CONSULTANT_PIO_SELECT_LINK").click()
-    option_locator = page.locator(
-        '[value="201"]:visible'
-    )  # Here value '201' is referring to Consultant B, Frame
-    option_locator.wait_for(state="visible")
-    option_locator.click()
-    page.get_by_role("textbox", name="Notes").click()
-    page.get_by_role("textbox", name="Notes").fill("Test Automation")
-    page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_role("button", name="Save").click()
+    HandoverIntoSymptomaticCarePage(page).select_consultant("201")
+    HandoverIntoSymptomaticCarePage(page).fill_notes("Test Automation")
+    HandoverIntoSymptomaticCarePage(page).click_save_button()
 
     SubjectScreeningSummaryPage(page).wait_for_page_title()
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
@@ -285,7 +281,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - High Risk Result
     # Older patient
-    nhs_no = "9109877185"
+    nhs_no = "9577049095"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -300,7 +296,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9624131880"
+    nhs_no = "9567180636"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -330,7 +326,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - LNPCP Result
     # Older patient
-    nhs_no = "9648064792"
+    nhs_no = "9237051190"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -345,7 +341,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9627060208"
+    nhs_no = "9564243211"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -373,7 +369,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     )
 
     # This needs to be repeated for 1 subject, age does not matter - Normal Result
-    nhs_no_normal = "9965184321"
+    nhs_no_normal = "9648226105"
     go_to_investigation_datasets_page(page, nhs_no_normal)
 
     # The following code is on the investigation datasets page
