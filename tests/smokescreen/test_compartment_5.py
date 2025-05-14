@@ -162,7 +162,7 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
         logging.info(f"Inviting {name_from_util} to diagnostic test")
         AdvanceFOBTScreeningEpisodePage(page).click_invite_for_diagnostic_test_button()
-        SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
+        AdvanceFOBTScreeningEpisodePage(page).verify_latest_event_status_value(
             "A59 - Invited for Diagnostic Test"
         )
 
