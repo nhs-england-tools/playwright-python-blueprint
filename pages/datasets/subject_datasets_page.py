@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 
 
@@ -31,3 +31,15 @@ class SubjectDatasetsPage(BasePage):
     def click_investigation_show_datasets(self) -> None:
         """Clicks on the 'Show Dataset' button for the Investigation row on the Subject Datasets Page."""
         self.click(self.investigation_show_dataset_button)
+
+    def check_investigation_dataset_complete(self) -> None:
+        """
+        Verify that the investigation dataset is marked as complete.
+
+        """
+        expect(
+            self.page.locator(
+                "h4:has-text('Investigation') span.softHighlight",
+                has_text="** Completed **",
+            )
+        ).to_be_visible()

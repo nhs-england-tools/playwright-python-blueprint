@@ -10,7 +10,7 @@ from utils.batch_processing import batch_processing
 from pages.logout.log_out_page import LogoutPage
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
 from pages.screening_subject_search.handover_into_symptomatic_care_page import (
-    HandoverIntoSymptomaticCarePage
+    HandoverIntoSymptomaticCarePage,
 )
 from utils.calendar_picker import CalendarPicker
 from datetime import datetime
@@ -18,8 +18,10 @@ from pages.screening_subject_search.record_diagnosis_date_page import (
     RecordDiagnosisDatePage,
 )
 from pages.screening_subject_search.diagnostic_test_outcome_page import (
-    DiagnosticTestOutcomePage,OutcomeOfDiagnosticTest
+    DiagnosticTestOutcomePage,
+    OutcomeOfDiagnosticTest,
 )
+from pages.datasets.subject_datasets_page import SubjectDatasetsPage
 from pages.datasets.investigation_dataset_page import (
     InvestigationDatasetsPage,
     SiteLookupOptions,
@@ -211,7 +213,7 @@ def after_high_risk_result(page: Page) -> None:
     BasePage(page).click_back_button()
 
     # The following code is on the subject datasets page
-    expect(page.get_by_text("** Completed **").nth(1)).to_be_visible()
+    SubjectDatasetsPage(page).check_investigation_dataset_complete()
     BasePage(page).click_back_button()
 
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
@@ -220,15 +222,18 @@ def after_high_risk_result(page: Page) -> None:
 
     # The following code is on the diagnostic test outcome page
     DiagnosticTestOutcomePage(page).verify_diagnostic_test_outcome("High-risk findings")
-    DiagnosticTestOutcomePage(page).select_test_outcome_option(OutcomeOfDiagnosticTest.REFER_SURVEILLANCE)
+    DiagnosticTestOutcomePage(page).select_test_outcome_option(
+        OutcomeOfDiagnosticTest.REFER_SURVEILLANCE
+    )
     DiagnosticTestOutcomePage(page).click_save_button()
+
 
 def after_lnpcp_result(page: Page) -> None:
     InvestigationDatasetsPage(page).expect_text_to_be_visible("LNPCP")
     BasePage(page).click_back_button()
 
     # The following code is on the subject datasets page
-    expect(page.get_by_text("** Completed **").nth(1)).to_be_visible()
+    SubjectDatasetsPage(page).check_investigation_dataset_complete()
     BasePage(page).click_back_button()
 
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
@@ -238,8 +243,11 @@ def after_lnpcp_result(page: Page) -> None:
 
     # The following code is on the diagnostic test outcome page
     DiagnosticTestOutcomePage(page).verify_diagnostic_test_outcome("LNPCP")
-    DiagnosticTestOutcomePage(page).select_test_outcome_option(OutcomeOfDiagnosticTest.REFER_SURVEILLANCE)
+    DiagnosticTestOutcomePage(page).select_test_outcome_option(
+        OutcomeOfDiagnosticTest.REFER_SURVEILLANCE
+    )
     DiagnosticTestOutcomePage(page).click_save_button()
+
 
 def handover_subject_to_symptomatic_care(page: Page) -> None:
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
@@ -282,7 +290,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - High Risk Result
     # Older patient
-    nhs_no = "9772286785"
+    nhs_no = "9707238623"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -297,7 +305,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9802397318"
+    nhs_no = "9526262042"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -327,7 +335,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - LNPCP Result
     # Older patient
-    nhs_no = "9359523194"
+    nhs_no = "9764755232"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -342,7 +350,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9828941813"
+    nhs_no = "9680451623"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -370,7 +378,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     )
 
     # This needs to be repeated for 1 subject, age does not matter - Normal Result
-    nhs_no_normal = "9852356488"
+    nhs_no_normal = "9823638365"
     go_to_investigation_datasets_page(page, nhs_no_normal)
 
     # The following code is on the investigation datasets page
@@ -388,7 +396,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     BasePage(page).click_back_button()
 
     # The following code is on the subject datasets page
-    expect(page.get_by_text("** Completed **").nth(1)).to_be_visible()
+    SubjectDatasetsPage(page).check_investigation_dataset_complete()
     BasePage(page).click_back_button()
 
     SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
@@ -400,7 +408,9 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     DiagnosticTestOutcomePage(page).verify_diagnostic_test_outcome(
         "Normal (No Abnormalities"
     )
-    DiagnosticTestOutcomePage(page).select_test_outcome_option(OutcomeOfDiagnosticTest.INVESTIGATION_COMPLETE)
+    DiagnosticTestOutcomePage(page).select_test_outcome_option(
+        OutcomeOfDiagnosticTest.INVESTIGATION_COMPLETE
+    )
     DiagnosticTestOutcomePage(page).click_save_button()
 
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
