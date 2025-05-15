@@ -47,6 +47,7 @@ from pages.datasets.investigation_dataset_page import (
 from pages.screening_subject_search.advance_fobt_screening_episode_page import (
     AdvanceFOBTScreeningEpisodePage,
 )
+from utils.dataset_field_util import DatasetFieldUtil
 
 
 # This should go into a util. Adding it here to avoid SonarQube duplication errors:
@@ -81,125 +82,145 @@ def default_investigation_dataset_forms(page: Page) -> None:
 
 
 def default_investigation_dataset_forms_continuation(page: Page) -> None:
-    InvestigationDatasetsPage(page).select_bowel_preparation_quality_option(
-        BowelPreparationQualityOptions.GOOD
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Bowel preparation quality", BowelPreparationQualityOptions.GOOD
     )
-    InvestigationDatasetsPage(page).select_comfort_during_examination_option(
-        ComfortOptions.NO_DISCOMFORT
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Comfort during examination", ComfortOptions.NO_DISCOMFORT
     )
-    InvestigationDatasetsPage(page).select_comfort_during_recovery_option(
-        ComfortOptions.NO_DISCOMFORT
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Comfort during recovery", ComfortOptions.NO_DISCOMFORT
     )
-    InvestigationDatasetsPage(page).select_endoscopist_defined_extent_option(
-        EndoscopyLocationOptions.ILEUM
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Endoscopist defined extent", EndoscopyLocationOptions.ILEUM
     )
-    InvestigationDatasetsPage(page).select_scope_imager_used_option(YesNoOptions.YES)
-    InvestigationDatasetsPage(page).select_retorted_view_option(YesNoOptions.NO)
-    InvestigationDatasetsPage(page).fill_start_of_intubation_time("09:00")
-    InvestigationDatasetsPage(page).fill_start_of_extubation_time("09:15")
-    InvestigationDatasetsPage(page).fill_end_time_of_procedure("09:30")
-    InvestigationDatasetsPage(page).fill_scope_id("A1")
-    InvestigationDatasetsPage(page).select_insufflation_option(InsufflationOptions.AIR)
-    InvestigationDatasetsPage(page).select_outcome_at_time_of_procedure_option(
-        OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Scope imager used", YesNoOptions.YES
     )
-    InvestigationDatasetsPage(page).select_late_outcome_option(
-        LateOutcomeOptions.NO_COMPLICATIONS
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Retroverted view", YesNoOptions.NO
+    )
+    DatasetFieldUtil(page).populate_input_locator_for_field(
+        "Start of intubation time", "09:00"
+    )
+    DatasetFieldUtil(page).populate_input_locator_for_field(
+        "Start of extubation time", "09:15"
+    )
+    DatasetFieldUtil(page).populate_input_locator_for_field(
+        "End time of procedure", "09:30"
+    )
+    DatasetFieldUtil(page).populate_input_locator_for_field("Scope ID", "A1")
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Insufflation", InsufflationOptions.AIR
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Outcome at time of procedure", OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Late outcome", LateOutcomeOptions.NO_COMPLICATIONS
     )
     InvestigationDatasetsPage(page).click_show_completion_proof_information()
     # Completion Proof Information
-    InvestigationDatasetsPage(page).select_completion_proof_option(
-        CompletionProofOptions.PHOTO_ILEO
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Proof Parameters", CompletionProofOptions.PHOTO_ILEO
     )
 
 
 def investigation_datasets_failure_reason(page: Page) -> None:
     # Failure Information
     InvestigationDatasetsPage(page).click_show_failure_information()
-    InvestigationDatasetsPage(page).select_failure_reasons_option(
-        FailureReasonsOptions.BLEEDING_INCIDENT
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Failure Reasons", "divFailureSection", FailureReasonsOptions.BLEEDING_INCIDENT
     )
 
 
 def polyps_for_high_risk_result(page: Page) -> None:
     # Polyp Information
     InvestigationDatasetsPage(page).click_add_polyp_button()
-    InvestigationDatasetsPage(page).select_polyp1_location_option(
-        EndoscopyLocationOptions.ILEUM
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Location", "divPolypNumber1Section", EndoscopyLocationOptions.ILEUM
     )
-    InvestigationDatasetsPage(page).select_polyp1_classification_option(
-        PolypClassificationOptions.LS
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Classification", "divPolypNumber1Section", PolypClassificationOptions.LS
     )
-    InvestigationDatasetsPage(page).fill_polyp1_size("15")
-    InvestigationDatasetsPage(page).select_polyp1_access_option(
-        PolypAccessOptions.NOT_KNOWN
+    DatasetFieldUtil(page).populate_input_locator_for_field_inside_div(
+        "Estimate of whole polyp size", "divPolypNumber1Section", "15"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Polyp Access", "divPolypNumber1Section", PolypAccessOptions.NOT_KNOWN
     )
     polyp1_intervention(page)
     InvestigationDatasetsPage(page).click_add_polyp_button()
-    InvestigationDatasetsPage(page).select_polyp2_location_option(
-        EndoscopyLocationOptions.CAECUM
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Location", "divPolypNumber2Section", EndoscopyLocationOptions.CAECUM
     )
-    InvestigationDatasetsPage(page).select_polyp2_classification_option(
-        PolypClassificationOptions.LS
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Classification", "divPolypNumber2Section", PolypClassificationOptions.LS
     )
-    InvestigationDatasetsPage(page).fill_polyp2_size("15")
-    InvestigationDatasetsPage(page).select_polyp2_access_option(
-        PolypAccessOptions.NOT_KNOWN
+    DatasetFieldUtil(page).populate_input_locator_for_field_inside_div(
+        "Estimate of whole polyp size", "divPolypNumber2Section", "15"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Polyp Access", "divPolypNumber2Section", PolypAccessOptions.NOT_KNOWN
     )
     InvestigationDatasetsPage(page).click_polyp2_add_intervention_button()
-    InvestigationDatasetsPage(page).select_polyp2_intervention_modality_option(
-        PolypInterventionModalityOptions.EMR
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Modality", "divPolypTherapy2_1Section", PolypInterventionModalityOptions.EMR
     )
-    InvestigationDatasetsPage(page).select_polyp2_intervention_device_option(
-        PolypInterventionDeviceOptions.HOT_SNARE
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Device", "divPolypTherapy2_1Section", PolypInterventionDeviceOptions.HOT_SNARE
     )
-    InvestigationDatasetsPage(page).select_polyp2_intervention_excised_option(
-        YesNoOptions.YES
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Excised", "divPolypResected2_1", YesNoOptions.YES
     )
-    InvestigationDatasetsPage(page).select_polyp2_intervention_retrieved_option(
-        YesNoOptions.NO
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Retrieved", "divPolypTherapy2_1Section", YesNoOptions.NO
     )
-    InvestigationDatasetsPage(
-        page
-    ).select_polyp2_intervention_excision_technique_option(
-        PolypInterventionExcisionTechniqueOptions.EN_BLOC
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Excision Technique",
+        "divPolypTherapy2_1Section",
+        PolypInterventionExcisionTechniqueOptions.EN_BLOC,
     )
 
 
 def polyps_for_lnpcp_result(page: Page) -> None:
     # Polyp Information
     InvestigationDatasetsPage(page).click_add_polyp_button()
-    InvestigationDatasetsPage(page).select_polyp1_location_option(
-        EndoscopyLocationOptions.ILEUM
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Location", "divPolypNumber1Section", EndoscopyLocationOptions.ILEUM
     )
-    InvestigationDatasetsPage(page).select_polyp1_classification_option(
-        PolypClassificationOptions.LS
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Classification", "divPolypNumber1Section", PolypClassificationOptions.LS
     )
-    InvestigationDatasetsPage(page).fill_polyp1_size("30")
-    InvestigationDatasetsPage(page).select_polyp1_access_option(
-        PolypAccessOptions.NOT_KNOWN
+    DatasetFieldUtil(page).populate_input_locator_for_field_inside_div(
+        "Estimate of whole polyp size", "divPolypNumber1Section", "30"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Polyp Access", "divPolypNumber1Section", PolypAccessOptions.NOT_KNOWN
     )
     polyp1_intervention(page)
 
 
 def polyp1_intervention(page: Page) -> None:
     InvestigationDatasetsPage(page).click_polyp1_add_intervention_button()
-    InvestigationDatasetsPage(page).select_polyp1_intervention_modality_option(
-        PolypInterventionModalityOptions.POLYPECTOMY
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Modality",
+        "divPolypTherapy1_1Section",
+        PolypInterventionModalityOptions.POLYPECTOMY,
     )
-    InvestigationDatasetsPage(page).select_polyp1_intervention_device_option(
-        PolypInterventionDeviceOptions.HOT_SNARE
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Device", "divPolypTherapy1_1Section", PolypInterventionDeviceOptions.HOT_SNARE
     )
-    InvestigationDatasetsPage(page).select_polyp1_intervention_excised_option(
-        YesNoOptions.YES
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Excised", "divPolypResected1_1", YesNoOptions.YES
     )
-    InvestigationDatasetsPage(page).select_polyp1_intervention_retrieved_option(
-        YesNoOptions.NO
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Retrieved", "divPolypTherapy1_1Section", YesNoOptions.NO
     )
-    InvestigationDatasetsPage(
-        page
-    ).select_polyp1_intervention_excision_technique_option(
-        PolypInterventionExcisionTechniqueOptions.EN_BLOC
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Excision Technique",
+        "divPolypTherapy1_1Section",
+        PolypInterventionExcisionTechniqueOptions.EN_BLOC,
     )
 
 
@@ -290,7 +311,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - High Risk Result
     # Older patient
-    nhs_no = "9707238623"
+    nhs_no = "9765492782"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -305,7 +326,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9526262042"
+    nhs_no = "9801085703"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -335,7 +356,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
 
     # This needs to be repeated for two subjects, one old and one not - LNPCP Result
     # Older patient
-    nhs_no = "9764755232"
+    nhs_no = "9840970194"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -350,7 +371,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     handover_subject_to_symptomatic_care(page)
 
     # Younger patient
-    nhs_no = "9680451623"
+    nhs_no = "9717136637"
     go_to_investigation_datasets_page(page, nhs_no)
 
     # The following code is on the investigation datasets page
@@ -378,7 +399,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     )
 
     # This needs to be repeated for 1 subject, age does not matter - Normal Result
-    nhs_no_normal = "9823638365"
+    nhs_no_normal = "9673858853"
     go_to_investigation_datasets_page(page, nhs_no_normal)
 
     # The following code is on the investigation datasets page
@@ -386,8 +407,8 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     InvestigationDatasetsPage(page).select_diagnostic_procedure_type()
     default_investigation_dataset_forms_continuation(page)
     InvestigationDatasetsPage(page).click_show_failure_information()
-    InvestigationDatasetsPage(page).select_failure_reasons_option(
-        FailureReasonsOptions.NO_FAILURE_REASONS
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        "Failure Reasons", "divFailureSection", FailureReasonsOptions.NO_FAILURE_REASONS
     )
     save_investigation_dataset(page)
     InvestigationDatasetsPage(page).expect_text_to_be_visible(

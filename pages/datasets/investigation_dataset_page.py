@@ -32,80 +32,17 @@ class InvestigationDatasetsPage(BasePage):
         self.diagnostic_procedure_type = self.page.get_by_role(
             "radio", name="Diagnostic"
         )
-        self.bowel_preparation_quality_option = self.page.get_by_label(
-            "Bowel preparation quality"
-        )
-        self.comfort_during_examination_option = self.page.get_by_label(
-            "Comfort during examination"
-        )
-        self.comfort_during_recovery_option = self.page.get_by_label(
-            "Comfort during recovery"
-        )
-        self.endoscopist_defined_extent_option = self.page.get_by_label(
-            "Endoscopist defined extent"
-        )
-        self.scope_imager_used_option = self.page.get_by_label("Scope imager used")
-        self.retorted_view_option = self.page.get_by_label("Retroverted view")
-        self.start_of_intubation_time_field = self.page.get_by_role(
-            "textbox", name="Start of intubation time"
-        )
-        self.start_of_extubation_time_field = self.page.get_by_role(
-            "textbox", name="Start of extubation time"
-        )
-        self.end_time_of_procedure_field = self.page.get_by_role(
-            "textbox", name="End time of procedure"
-        )
-        self.scope_id_field = self.page.get_by_role("textbox", name="Scope ID")
-        self.insufflation_option = self.page.get_by_label("Insufflation")
-        self.outcome_at_time_of_procedure_option = self.page.get_by_label(
-            "Outcome at time of procedure"
-        )
-        self.late_outcome_option = self.page.get_by_label("Late outcome")
         self.show_completion_proof_information_details = self.page.locator(
             "#anchorCompletionProof"
         )
-        self.completion_proof_option = self.page.get_by_label("Proof Parameters")
         self.show_failure_information_details = self.page.locator("#anchorFailure")
-        self.failure_reasons_option = self.page.get_by_label("Failure Reasons")
         self.add_polyp_button = self.page.get_by_role("button", name="Add Polyp")
-        self.polyp1_location_option = self.page.locator("#UI_POLYP_LOCATION1")
-        self.polyp1_classification_option = self.page.get_by_label("Classification ?")
-        self.polyp1_size_field = self.page.get_by_role(
-            "textbox", name="Estimate of whole polyp size"
-        )
-        self.polyp1_access_option = self.page.get_by_label("Polyp Access")
         self.polyp1_add_intervention_button = self.page.get_by_role(
             "link", name="Add Intervention"
         )
-        self.polyp1_intervention_modality_option = self.page.locator(
-            "#UI_POLYP_THERAPY_MODALITY1_1"
-        )
-        self.polyp1_intervention_device_option = self.page.locator("#UI_DEVICE1_1")
-        self.polyp1_intervention_excised_option = self.page.get_by_label("Excised")
-        self.polyp1_intervention_retrieved_option = self.page.get_by_label("Retrieved")
-        self.polyp1_intervention_excision_technique_option = self.page.get_by_label(
-            "Excision Technique"
-        )
-        self.polyp2_location_option = self.page.locator("#UI_POLYP_LOCATION2")
-        self.polyp2_classification_option = self.page.locator("#UI_POLYP_CLASS2")
-        self.polyp2_size_field = self.page.locator("#UI_POLYP_SIZE2")
-        self.polyp2_access_option = self.page.locator("#UI_POLYP_ACCESS2")
         self.polyp2_add_intervention_button = self.page.locator(
             "#spanPolypInterventionLink2"
         ).get_by_role("link", name="Add Intervention")
-        self.polyp2_intervention_modality_option = self.page.locator(
-            "#UI_POLYP_THERAPY_MODALITY2_1"
-        )
-        self.polyp2_intervention_device_option = self.page.locator("#UI_DEVICE2_1")
-        self.polyp2_intervention_excised_option = self.page.locator(
-            "#UI_POLYP_RESECTED2_1"
-        )
-        self.polyp2_intervention_retrieved_option = self.page.locator(
-            "#UI_POLYP_RETRIEVED2_1"
-        )
-        self.polyp2_intervention_excision_technique_option = self.page.locator(
-            "#UI_POLYP_REMOVAL_TYPE2_1"
-        )
         self.dataset_complete_checkbox = self.page.locator("#radDatasetCompleteYes")
         self.save_dataset_button = self.page.locator(
             "#UI_DIV_BUTTON_SAVE1"
@@ -220,140 +157,6 @@ class InvestigationDatasetsPage(BasePage):
         """
         self.diagnostic_procedure_type.check()
 
-    def select_bowel_preparation_quality_option(self, option: str) -> None:
-        """
-        This method is designed to select a bowel preparation quality option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the bowel preparation quality options.
-        """
-        self.bowel_preparation_quality_option.select_option(option)
-
-    def select_comfort_during_examination_option(self, option: str) -> None:
-        """
-        This method is designed to select a comfort during examination option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the comfort during examination options.
-        """
-        self.comfort_during_examination_option.select_option(option)
-
-    def select_comfort_during_recovery_option(self, option: str) -> None:
-        """
-        This method is designed to select a comfort during recovery option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the comfort during recovery options.
-        """
-        self.comfort_during_recovery_option.select_option(option)
-
-    def select_endoscopist_defined_extent_option(self, option: str) -> None:
-        """
-        This method is designed to select an endoscopist defined extent option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the endoscopist defined extent options.
-        """
-        self.endoscopist_defined_extent_option.select_option(option)
-
-    def select_scope_imager_used_option(self, option: str) -> None:
-        """
-        This method is designed to select a scope imager used option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the scope imager used options.
-        """
-        self.scope_imager_used_option.select_option(option)
-
-    def select_retorted_view_option(self, option: str) -> None:
-        """
-        This method is designed to select a retorted view option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the retorted view options.
-        """
-        self.retorted_view_option.select_option(option)
-
-    def fill_start_of_intubation_time(self, time: str) -> None:
-        """
-        This method is designed to fill in the start of intubation time.
-        It fills in the given time.
-
-        Args:
-            time (str): The time to fill in for the start of intubation.
-        """
-        self.click(self.start_of_intubation_time_field)
-        self.start_of_intubation_time_field.fill(time)
-
-    def fill_start_of_extubation_time(self, time: str) -> None:
-        """
-        This method is designed to fill in the start of extubation time.
-        It fills in the given time.
-
-        Args:
-            time (str): The time to fill in for the start of extubation.
-        """
-        self.click(self.start_of_extubation_time_field)
-        self.start_of_extubation_time_field.fill(time)
-
-    def fill_end_time_of_procedure(self, time: str) -> None:
-        """
-        This method is designed to fill in the end time of procedure.
-        It fills in the given time.
-
-        Args:
-            time (str): The time to fill in for the end time of procedure.
-        """
-        self.click(self.end_time_of_procedure_field)
-        self.end_time_of_procedure_field.fill(time)
-
-    def fill_scope_id(self, scope_id: str) -> None:
-        """
-        This method is designed to fill in the scope ID.
-        It fills in the given scope ID.
-
-        Args:
-            scope_id (str): The scope ID to fill in.
-        """
-        self.click(self.scope_id_field)
-        self.scope_id_field.fill(scope_id)
-
-    def select_insufflation_option(self, option: str) -> None:
-        """
-        This method is designed to select an insufflation option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the insufflation options.
-        """
-        self.insufflation_option.select_option(option)
-
-    def select_outcome_at_time_of_procedure_option(self, option: str) -> None:
-        """
-        This method is designed to select an outcome at time of procedure option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the outcome at time of procedure options.
-        """
-        self.outcome_at_time_of_procedure_option.select_option(option)
-
-    def select_late_outcome_option(self, option: str) -> None:
-        """
-        This method is designed to select a late outcome option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the late outcome options.
-        """
-        self.late_outcome_option.select_option(option)
-
     def click_show_completion_proof_information(self) -> None:
         """
         This method is designed to click on the show completion proof information link.
@@ -361,32 +164,12 @@ class InvestigationDatasetsPage(BasePage):
         """
         self.click(self.show_completion_proof_information_details)
 
-    def select_completion_proof_option(self, option: str) -> None:
-        """
-        This method is designed to select a completion proof option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the completion proof options.
-        """
-        self.completion_proof_option.select_option(option)
-
     def click_show_failure_information(self) -> None:
         """
         This method is designed to click on the show failure information link.
         It clicks on the show failure information link.
         """
         self.click(self.show_failure_information_details)
-
-    def select_failure_reasons_option(self, option: str) -> None:
-        """
-        This method is designed to select a failure reasons option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the failure reasons options.
-        """
-        self.failure_reasons_option.select_option(option)
 
     def click_add_polyp_button(self) -> None:
         """
@@ -396,47 +179,6 @@ class InvestigationDatasetsPage(BasePage):
         self.click(self.add_polyp_button)
         self.page.wait_for_timeout(1000)
 
-    def select_polyp1_location_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp location option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp location options.
-        """
-        self.polyp1_location_option.select_option(option)
-
-    def select_polyp1_classification_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp classification option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp classification options.
-        """
-        self.polyp1_classification_option.select_option(option)
-
-    def fill_polyp1_size(self, size: str) -> None:
-        """
-        This method is designed to fill in the polyp size.
-        It fills in the given size.
-
-        Args:
-            size (str): The size to fill in for the polyp.
-        """
-        self.click(self.polyp1_size_field)
-        self.polyp1_size_field.fill(size)
-
-    def select_polyp1_access_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp access option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp access options.
-        """
-        self.polyp1_access_option.select_option(option)
-
     def click_polyp1_add_intervention_button(self) -> None:
         """
         This method is designed to click on the add intervention button for polyp 1.
@@ -444,153 +186,12 @@ class InvestigationDatasetsPage(BasePage):
         """
         self.click(self.polyp1_add_intervention_button)
 
-    def select_polyp1_intervention_modality_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention modality option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention modality options.
-        """
-        self.polyp1_intervention_modality_option.select_option(option)
-
-    def select_polyp1_intervention_device_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention device option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention device options.
-        """
-        self.polyp1_intervention_device_option.select_option(option)
-
-    def select_polyp1_intervention_excised_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention excised option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention excised options.
-        """
-        self.polyp1_intervention_excised_option.select_option(option)
-
-    def select_polyp1_intervention_retrieved_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention retrieved option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention retrieved options.
-        """
-        self.polyp1_intervention_retrieved_option.select_option(option)
-
-    def select_polyp1_intervention_excision_technique_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention excision technique option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention excision technique options.
-        """
-        self.polyp1_intervention_excision_technique_option.select_option(option)
-
-    def select_polyp2_location_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp location option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp location options.
-        """
-        self.polyp2_location_option.select_option(option)
-
-    def select_polyp2_classification_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp classification option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp classification options.
-        """
-        self.polyp2_classification_option.select_option(option)
-
-    def fill_polyp2_size(self, size: str) -> None:
-        """
-        This method is designed to fill in the polyp size.
-        It fills in the given size.
-
-        Args:
-            size (str): The size to fill in for the polyp.
-        """
-        self.click(self.polyp2_size_field)
-        self.polyp2_size_field.fill(size)
-
-    def select_polyp2_access_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp access option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp access options.
-        """
-        self.polyp2_access_option.select_option(option)
-
     def click_polyp2_add_intervention_button(self) -> None:
         """
         This method is designed to click on the add intervention button for polyp 2.
         It clicks on the add intervention button for polyp 2.
         """
         self.click(self.polyp2_add_intervention_button)
-
-    def select_polyp2_intervention_modality_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention modality option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention modality options.
-        """
-        self.polyp2_intervention_modality_option.select_option(option)
-
-    def select_polyp2_intervention_device_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention device option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention device options.
-        """
-        self.polyp2_intervention_device_option.select_option(option)
-
-    def select_polyp2_intervention_excised_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention excised option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention excised options.
-        """
-        self.polyp2_intervention_excised_option.select_option(option)
-
-    def select_polyp2_intervention_retrieved_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention retrieved option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention retrieved options.
-        """
-        self.polyp2_intervention_retrieved_option.select_option(option)
-
-    def select_polyp2_intervention_excision_technique_option(self, option: str) -> None:
-        """
-        This method is designed to select a polyp intervention excision technique option.
-        It selects the given option.
-
-        Args:
-            option (str): The option to select from the polyp intervention excision technique options.
-        """
-        self.polyp2_intervention_excision_technique_option.select_option(option)
 
     def check_dataset_complete_checkbox(self) -> None:
         """
