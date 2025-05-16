@@ -12,6 +12,7 @@ class SqlQueryValues(IntEnum):
     OPEN_EPISODE_STATUS_ID = 11352
     A8_EVENT_STATUS = 11132
     POSITIVE_APPOINTMENT_BOOKED = 11119
+    POST_INVESTIGATION_APPOINTMENT_NOT_REQUIRED = 160182
 
 
 def get_kit_id_from_db(
@@ -359,6 +360,63 @@ def get_subjects_with_booked_appointments(subjects_to_retrieve: int) -> pd.DataF
         "positive_appointment_booked": SqlQueryValues.POSITIVE_APPOINTMENT_BOOKED,
         "open_episode_status_id": SqlQueryValues.OPEN_EPISODE_STATUS_ID,
         "subjects_to_retrieve": subjects_to_retrieve,
+    }
+
+    subjects_df = OracleDB().execute_query(query, params)
+
+    return subjects_df
+
+
+def get_subjects_for_investigation_dataset_updates(
+    number_of_subjects: int, hub_id: str
+) -> pd.DataFrame:
+    """
+    This is used to get subjects for compartment 6
+    It finds subjects with latest envent status of A323 - Post-investigation Appointment
+
+    Args:
+        number_of_subjects (int): The number of subjects to retrieve
+        hub_id (str): hub id to use
+
+    Returns:
+        subjects_df (pd.DataFrame): A pandas DataFrame containing the result of the query
+    """
+
+    query = """SELECT distinct(ss.subject_nhs_number)
+    from
+    (
+    select count(*), eset.screening_subject_id
+    from ep_subject_episode_t eset
+    inner join screening_subject_t sst on (eset.screening_subject_id = sst.screening_subject_id)
+    inner join external_tests_t ext on (eset.subject_epis_id = ext.subject_epis_id)
+    inner join ds_colonoscopy_t dct on (ext.ext_test_id = dct.ext_test_id)
+    where dct.dataset_completed_date is null
+    and dct.deleted_flag ='N'
+    and ext.void = 'N'
+    group by eset.screening_subject_id
+    having
+    count(*)= 1 ) sst
+    inner join ep_subject_episode_t eset on ( sst.screening_subject_id = eset.screening_subject_id )
+    inner join screening_subject_t ss on (eset.screening_subject_id = ss.screening_subject_id)
+    inner join sd_contact_t c ON ss.subject_nhs_number = c.nhs_number
+    inner join EXTERNAL_TESTS_T ext on (eset.subject_epis_id = ext.subject_epis_id)
+    inner join DS_COLONOSCOPY_T dct on (ext.ext_test_id = dct.ext_test_id)
+    inner join sd_contact_t sd on (ss.subject_nhs_number = sd.nhs_number)
+    inner join sd_address_t sda on (sd.contact_id = sda.address_id)
+    inner join org on (sd.gp_practice_id = org.org_id)
+    where eset.latest_event_status_id = :latest_event_status_id -- A323 - Post-investigation Appointment NOT Required
+    and ext.void = 'N'
+    and dct.dataset_new_flag = 'Y'
+    and dct.deleted_flag = 'N'
+    and sd.GP_PRACTICE_ID is not null
+    and eset.start_hub_id = :start_hub_id
+    fetch first :subjects_to_retrieve rows only
+    """
+
+    params = {
+        "latest_event_status_id": SqlQueryValues.POST_INVESTIGATION_APPOINTMENT_NOT_REQUIRED,
+        "start_hub_id": hub_id,
+        "subjects_to_retrieve": number_of_subjects,
     }
 
     subjects_df = OracleDB().execute_query(query, params)
