@@ -7,6 +7,8 @@ class BasePage:
 
     def __init__(self, page: Page):
         self.page = page
+        # Homepage - vars
+        self.main_menu_string = "Main Menu"
         # Homepage/Navigation Bar links
         self.sub_menu_link = self.page.get_by_role("link", name="Show Sub-menu")
         self.hide_sub_menu_link = self.page.get_by_role("link", name="Hide Sub-menu")
@@ -16,7 +18,7 @@ class BasePage:
         self.refresh_alerts_link = self.page.get_by_role("link", name="Refresh alerts")
         self.user_guide_link = self.page.get_by_role("link", name="User guide")
         self.help_link = self.page.get_by_role("link", name="Help")
-        self.main_menu_link = self.page.get_by_role("link", name="Main Menu")
+        self.main_menu_link = self.page.get_by_role("link", name=self.main_menu_string)
         self.log_out_link = self.page.get_by_role("link", name="Log-out")
         # Main menu - page links
         self.contacts_list_page = self.page.get_by_role("link", name="Contacts List")
@@ -54,8 +56,33 @@ class BasePage:
 
     def click_main_menu_link(self) -> None:
         """Click the Base Page 'Main Menu' link if it is visible."""
-        if self.main_menu_link.is_visible():
-            self.click(self.main_menu_link)
+        loops = 0
+        text = None
+
+        while loops <= 3:
+            if self.main_menu_link.is_visible():
+                self.click(self.main_menu_link)
+            try:
+                if self.main_menu__header.is_visible():
+                    text = self.main_menu__header.text_content()
+                else:
+                    text = None
+            except Exception as e:
+                logging.warning(f"Could not read header text: {e}")
+                text = None
+
+            if text and self.main_menu_string in text:
+                return  # Success
+            else:
+                logging.warning("Main Menu click failed, retrying after 0.2 seconds")
+                # The timeout is in place here to allow the page ample time to load if it has not already been loaded
+                self.page.wait_for_timeout(200)
+
+            loops += 1
+        # All attempts failed
+        raise RuntimeError(
+            f"Failed to navigate to Main Menu after {loops} attempts. Last page title was: '{text or 'unknown'}'"
+        )
 
     def click_log_out_link(self) -> None:
         """Click the Base Page 'Log-out' link."""
@@ -100,8 +127,11 @@ class BasePage:
         )
 
     def main_menu_header_is_displayed(self) -> None:
-        """Asserts that the Main Menu header is displayed."""
-        expect(self.main_menu__header).to_contain_text("Main Menu")
+        """
+        Asserts that the Main Menu header is displayed.
+        self.main_menu_string contains the string 'Main Menu'
+        """
+        expect(self.main_menu__header).to_contain_text(self.main_menu_string)
 
     def bowel_cancer_screening_page_title_contains_text(self, text: str) -> None:
         """Asserts that the page title contains the specified text.
