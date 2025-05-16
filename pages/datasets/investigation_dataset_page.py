@@ -242,6 +242,7 @@ class PractitionerOptions(StrEnum):
 
 class TestingClinicianOptions(StrEnum):
     """Enum for testing clinician options"""
+    __test__ = False
 
     BORROWING_PROPERTY = "886"
     CLAUSE_CHARTING = "918"
