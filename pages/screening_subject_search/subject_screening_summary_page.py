@@ -118,7 +118,7 @@ class SubjectScreeningSummaryPage(BasePage):
             locator = self.page.get_by_role("cell", name=status, exact=True)
             if locator.is_visible():
                 return locator
-        logging.error("Unable to find any of the listed statuses")
+        raise ValueError("Unable to find any of the listed statuses")
 
     def click_subjects_events_notes(self) -> None:
         """Click on the 'Subject Events & Notes' link."""

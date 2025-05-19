@@ -31,9 +31,10 @@ class UserTools:
         # Retrieve username from users.json
         user_details = UserTools.retrieve_user(username)
         # Login to bcss using retrieved username and a password stored in the .env file
-        CognitoLoginPage(page).login_as_user(
-            user_details["username"], os.getenv("BCSS_PASS")
-        )
+        password = os.getenv("BCSS_PASS")
+        if password is None:
+            raise ValueError("Environment variable 'BCSS_PASS' is not set")
+        CognitoLoginPage(page).login_as_user(user_details["username"], password)
 
     @staticmethod
     def retrieve_user(user: str) -> dict:

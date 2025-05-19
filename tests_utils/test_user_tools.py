@@ -6,7 +6,7 @@ from pathlib import Path
 pytestmark = [pytest.mark.utils]
 
 
-def test_retrieve_user(monkeypatch: object) -> None:
+def test_retrieve_user(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         utils.user_tools,
         "USERS_FILE",

@@ -151,7 +151,11 @@ def search_subject_by_latest_event_status(page: Page, status: str) -> None:
 
 
 def search_subject_by_search_area(
-    page: Page, status: str, search_area: str, code: str=None, gp_practice_code: str=None
+    page: Page,
+    status: str,
+    search_area: str,
+    code: str | None = None,
+    gp_practice_code: str | None = None,
 ) -> None:
     """
     This searches for a subject by the search area, populating necessary fields were needed, and checks that the page has redirected accordingly

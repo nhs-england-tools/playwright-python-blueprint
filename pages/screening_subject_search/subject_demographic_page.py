@@ -74,7 +74,9 @@ class SubjectDemographicPage(BasePage):
         Args:
             date (datetime): The date you want to enter
         """
-        date = CalendarPicker(self.page).calendar_picker_ddmmyyyy(date, self.dob_field)
+        if date is None:
+            raise ValueError("The 'date' argument cannot be None")
+        CalendarPicker(self.page).calendar_picker_ddmmyyyy(date, self.dob_field)
 
     def fill_postcode_input(self, postcode: str) -> None:
         """

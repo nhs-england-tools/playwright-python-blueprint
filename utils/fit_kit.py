@@ -141,7 +141,7 @@ class FitKitLogged:
 
     def split_fit_kits(
         self, kit_id_df: pd.DataFrame, smokescreen_properties: dict
-    ) -> pd.DataFrame:
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         """
         This method splits the dataframe into two, 1 normal and 1 abnormal
         """

@@ -3,6 +3,7 @@ from playwright.sync_api import Page, expect
 from utils.user_tools import UserTools
 from pages.base_page import BasePage
 from utils.date_time_utils import DateTimeUtils
+import logging
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -64,6 +65,7 @@ def test_home_page_links_navigation(page: Page) -> None:
         page.get_by_role("link", name="User guide").click()
     # Check that the user guide page can be accessed
     page1 = page1_info.value
+    logging.info(f"User Guide Page: {page1}")
 
     # Click 'help' link
     with page.expect_popup() as page2_info:
@@ -71,3 +73,4 @@ def test_home_page_links_navigation(page: Page) -> None:
         page.get_by_role("link", name="Help").click()
     # Check that the help page can be accessed
     page2 = page2_info.value
+    logging.info(f"Help Page: {page2}")

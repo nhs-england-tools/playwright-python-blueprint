@@ -65,6 +65,9 @@ class GenerateInvitationsPage(BasePage):
             elapsed < timeout
         ):  # there may be a stored procedure to speed this process up
             table_text = self.display_rs.text_content()
+            if table_text is None:
+                pytest.fail("Failed to retrieve table text content")
+
             if "Failed" in table_text:
                 pytest.fail("Invitation has failed to generate")
             elif "Queued" in table_text or "In Progress" in table_text:
@@ -83,15 +86,19 @@ class GenerateInvitationsPage(BasePage):
         except Exception as e:
             pytest.fail(f"Invitations not generated successfully: {str(e)}")
 
-        value = (
-            self.planned_invitations_total.text_content().strip()
-        )  # Get text and remove extra spaces
+        value = self.planned_invitations_total.text_content()
+        if value is None:
+            pytest.fail("Failed to retrieve planned invitations total")
+        value = value.strip()  # Get text and remove extra spaces
         if int(value) < number_of_invitations:
             pytest.fail(
                 f"There are less than {number_of_invitations} invitations generated"
             )
 
-        self_referrals_total = int(self.self_referrals_total.text_content().strip())
+        self_referrals_total_text = self.self_referrals_total.text_content()
+        if self_referrals_total_text is None:
+            pytest.fail("Failed to retrieve self-referrals total")
+        self_referrals_total = int(self_referrals_total_text.strip())
         if self_referrals_total >= 1:
             return True
         else:

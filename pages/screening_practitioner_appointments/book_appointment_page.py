@@ -10,12 +10,12 @@ class BookAppointmentPage(BasePage):
         super().__init__(page)
         self.page = page
         # Book Appointment - page locators
-        self.screening_center_dropdown = page.locator("#UI_NEW_SCREENING_CENTRE")
-        self.site_dropdown = page.locator("#UI_NEW_SITE")
-        self.appointment_time_radio_button = page.locator(
-            page.get_by_role("radio", name="UI_NEW_SLOT_SELECTION_ID")
+        self.screening_center_dropdown = self.page.locator("#UI_NEW_SCREENING_CENTRE")
+        self.site_dropdown = self.page.locator("#UI_NEW_SITE")
+        self.appointment_time_radio_button = self.page.get_by_role(
+            "radio", name="UI_NEW_SLOT_SELECTION_ID"
         )
-        self.save_button = page.get_by_role("button", name="Save")
+        self.save_button = self.page.get_by_role("button", name="Save")
         self.appointments_table = TableUtils(self.page, "#displayRS")
         self.current_month_displayed = self.page.locator("#MONTH_AND_YEAR")
 
@@ -46,4 +46,7 @@ class BookAppointmentPage(BasePage):
 
     def get_current_month_displayed(self) -> str:
         """Returns the current month displayed in the calendar."""
-        return self.current_month_displayed.text_content()
+        current_month_displayed_content = self.current_month_displayed.text_content()
+        if current_month_displayed_content is None:
+            raise ValueError("Current month displayed is 'None'")
+        return current_month_displayed_content

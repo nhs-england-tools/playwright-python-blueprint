@@ -28,9 +28,7 @@ class OracleDB:
             logging.info("DB connection successful!")
             return conn
         except Exception as queryExecutionError:
-            logging.error(
-                f"Failed to extract subject ID with error: {queryExecutionError}"
-            )
+            raise RuntimeError(f"Database connection failed: {queryExecutionError}")
 
     def disconnect_from_db(self, conn: oracledb.Connection) -> None:
         """
@@ -203,7 +201,7 @@ class OracleDB:
                 self.disconnect_from_db(conn)
 
     def update_or_insert_data_to_table(
-        self, statement: str, params: list
+        self, statement: str, params: dict
     ) -> None:  # To update or insert data into a table
         """
         This is used to update or insert data into a table.

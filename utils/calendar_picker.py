@@ -345,9 +345,9 @@ class CalendarPicker(BasePage):
             click_year,
             click_decade,
             click_century,
-            century,
-            decade,
-            year,
+            str(century),
+            str(decade),
+            str(year),
             month_short,
         )
 
@@ -444,6 +444,7 @@ class CalendarPicker(BasePage):
 
             if background_colour in bg_colours:
                 value = locator_element.get_attribute("name")
-                if len(value) < 5:
+                if value is not None and len(value) < 5:
                     self.click(locator.nth(i))
                     return True
+        return False

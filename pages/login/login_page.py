@@ -27,6 +27,8 @@ class BcssLoginPage(BasePage):
         self.username.fill(user_details["username"])
         # Retrieve and enter password from .env file
         password = os.getenv("BCSS_PASS")
+        if password is None:
+            raise ValueError("Environment variable 'BCSS_PASS' is not set")
         self.password.fill(password)
         # Click Submit
         self.click(self.submit_button)
