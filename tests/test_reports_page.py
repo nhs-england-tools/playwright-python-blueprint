@@ -19,6 +19,7 @@ def before_each(page: Page):
     BasePage(page).go_to_reports_page()
 
 
+@pytest.mark.smoke
 def test_reports_page_navigation(page: Page) -> None:
     """
     Confirms all menu items are displayed on the reports page, and that the relevant pages
@@ -65,6 +66,7 @@ def test_reports_page_navigation(page: Page) -> None:
     BasePage(page).bowel_cancer_screening_page_title_contains_text("Main Menu")
 
 
+@pytest.mark.smoke
 # Failsafe Reports
 def test_failsafe_reports_date_report_last_requested(page: Page) -> None:
     """
@@ -101,6 +103,7 @@ def test_failsafe_reports_date_report_last_requested(page: Page) -> None:
     )
 
 
+@pytest.mark.smoke
 def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     page: Page,
 ) -> None:
@@ -134,6 +137,7 @@ def test_failsafe_reports_screening_subjects_with_inactive_open_episode(
     )
 
 
+@pytest.mark.smoke
 def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     page: Page,
 ) -> None:
@@ -174,6 +178,7 @@ def test_failsafe_reports_subjects_ceased_due_to_date_of_birth_changes(
     )
 
 
+@pytest.mark.smoke
 def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundaries(
     page: Page, general_properties: dict
 ) -> None:
@@ -229,6 +234,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_within_hub_boundarie
     )
 
 
+@pytest.mark.smoke
 def test_failsafe_reports_allocate_sc_for_patient_movements_into_your_hub(
     page: Page,
 ) -> None:
@@ -268,6 +274,7 @@ def test_failsafe_reports_allocate_sc_for_patient_movements_into_your_hub(
     )
 
 
+@pytest.mark.smoke
 def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     """
     Confirms 'identify_and_link_new_gp' page loads,
@@ -315,6 +322,7 @@ def test_failsafe_reports_identify_and_link_new_gp(page: Page) -> None:
     )
 
 
+@pytest.mark.smoke
 # Operational Reports
 
 
@@ -363,6 +371,7 @@ def test_operational_reports_appointment_attendance_not_updated(
     BasePage(page).bowel_cancer_screening_page_title_contains_text("Appointment Detail")
 
 
+@pytest.mark.smoke
 def test_operational_reports_fobt_kits_logged_but_not_read(page: Page) -> None:
     """
     Confirms 'fobt_kits_logged_but_not_read' page loads,
@@ -393,6 +402,7 @@ def test_operational_reports_fobt_kits_logged_but_not_read(page: Page) -> None:
     ).to_contain_text(f"Report generated on {report_timestamp}.")
 
 
+@pytest.mark.smoke
 def test_operational_reports_demographic_update_inconsistent_with_manual_update(
     page: Page,
 ) -> None:
@@ -413,6 +423,7 @@ def test_operational_reports_demographic_update_inconsistent_with_manual_update(
     )
 
 
+@pytest.mark.smoke
 def test_operational_reports_screening_practitioner_6_weeks_availability_not_set_up(
     page: Page, general_properties: dict
 ) -> None:
@@ -462,6 +473,7 @@ def test_operational_reports_screening_practitioner_6_weeks_availability_not_set
     ).to_contain_text(report_timestamp)
 
 
+@pytest.mark.smoke
 def test_operational_reports_screening_practitioner_appointments(
     page: Page, general_properties: dict
 ) -> None:

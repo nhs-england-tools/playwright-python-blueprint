@@ -55,6 +55,7 @@ def test_search_screening_subject_by_nhs_number(
     ).verify_subject_search_results_title_subject_screening_summary()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_surname(
     page: Page, general_properties: dict
 ) -> None:
@@ -72,6 +73,7 @@ def test_search_screening_subject_by_surname(
     ).verify_subject_search_results_title_subject_screening_summary()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_forename(
     page: Page, general_properties: dict
 ) -> None:
@@ -89,6 +91,7 @@ def test_search_screening_subject_by_forename(
     ).verify_subject_search_results_title_subject_screening_summary()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_dob(page: Page, general_properties: dict) -> None:
     """
     Confirms a screening subject can be searched for, using their date of birth by doing the following:
@@ -104,6 +107,7 @@ def test_search_screening_subject_by_dob(page: Page, general_properties: dict) -
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_postcode(page: Page) -> None:
     """
     Confirms a screening subject can be searched for, using their postcode by doing the following:
@@ -119,6 +123,7 @@ def test_search_screening_subject_by_postcode(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_episode_closed_date(
     page: Page, general_properties: dict
 ) -> None:
@@ -142,6 +147,7 @@ def test_search_screening_subject_by_episode_closed_date(
     )
 
 
+@pytest.mark.smoke
 def test_search_criteria_clear_filters_button(
     page: Page, general_properties: dict
 ) -> None:
@@ -153,6 +159,7 @@ def test_search_criteria_clear_filters_button(
     check_clear_filters_button_works(page, general_properties["nhs_number"])
 
 
+@pytest.mark.smoke
 # Tests searching via the "Screening Status" drop down list
 def test_search_screening_subject_by_status_call(page: Page) -> None:
     """
@@ -169,6 +176,7 @@ def test_search_screening_subject_by_status_call(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_inactive(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -184,6 +192,7 @@ def test_search_screening_subject_by_status_inactive(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_opt_in(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -199,6 +208,7 @@ def test_search_screening_subject_by_status_opt_in(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_recall(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -214,6 +224,7 @@ def test_search_screening_subject_by_status_recall(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_self_referral(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -231,6 +242,7 @@ def test_search_screening_subject_by_status_self_referral(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_surveillance(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -248,6 +260,7 @@ def test_search_screening_subject_by_status_surveillance(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_seeking_further_data(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -265,6 +278,7 @@ def test_search_screening_subject_by_status_seeking_further_data(page: Page) -> 
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_ceased(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -280,6 +294,7 @@ def test_search_screening_subject_by_status_ceased(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -297,6 +312,7 @@ def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -314,6 +330,7 @@ def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> No
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_status_lynch_self_referral(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -331,6 +348,7 @@ def test_search_screening_subject_by_status_lynch_self_referral(page: Page) -> N
     ).verify_subject_search_results_title_subject_screening_summary()
 
 
+@pytest.mark.smoke
 # search_subject_by_latest_event_status
 def test_search_screening_subject_by_latest_episode_status_open_paused(
     page: Page,
@@ -351,6 +369,7 @@ def test_search_screening_subject_by_latest_episode_status_open_paused(
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_latest_episode_status_closed(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
@@ -368,6 +387,7 @@ def test_search_screening_subject_by_latest_episode_status_closed(page: Page) ->
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_latest_episode_status_no_episode(
     page: Page,
 ) -> None:
@@ -387,6 +407,7 @@ def test_search_screening_subject_by_latest_episode_status_no_episode(
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 # Tests searching via the "Search Area" drop down list
 def test_search_screening_subject_by_home_hub(page: Page) -> None:
     """
@@ -407,6 +428,7 @@ def test_search_screening_subject_by_home_hub(page: Page) -> None:
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_gp_practice(
     page: Page, general_properties: dict
 ) -> None:
@@ -434,6 +456,7 @@ def test_search_screening_subject_by_gp_practice(
     )
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_ccg(page: Page, general_properties: dict) -> None:
     """
     Confirms screening subjects can be searched for, using the search area (ccg) by doing the following:
@@ -457,6 +480,7 @@ def test_search_screening_subject_by_ccg(page: Page, general_properties: dict) -
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.smoke
 def test_search_screening_subject_by_screening_centre(
     page: Page, general_properties: dict
 ) -> None:
@@ -480,6 +504,8 @@ def test_search_screening_subject_by_screening_centre(
     ).verify_subject_search_results_title_subject_search_results()
 
 
+@pytest.mark.vpn_required
+@pytest.mark.smoke
 def test_search_screening_subject_by_whole_database(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the search area (whole database) by doing the following:

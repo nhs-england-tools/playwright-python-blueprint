@@ -59,6 +59,7 @@ def test_gfobt_test_kit_page_navigation(page: Page) -> None:
     BasePage(page).main_menu_header_is_displayed()
 
 
+@pytest.mark.smoke
 def test_create_a_qc_kit(page: Page) -> None:
     """
     Confirms that a qc test kit can be created and that each of the dropdowns has an option set available for selection

@@ -12,7 +12,7 @@ from playwright.sync_api import Page
 from utils.batch_processing import batch_processing
 
 
-@pytest.mark.smoke
+@pytest.mark.smokescreen
 @pytest.mark.compartment1
 @pytest.mark.compartment1_plan_creation
 def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> None:
@@ -43,7 +43,6 @@ def test_create_invitations_plan(page: Page, smokescreen_properties: dict) -> No
 
 
 @pytest.mark.vpn_required
-@pytest.mark.smoke
 @pytest.mark.smokescreen
 @pytest.mark.compartment1
 def test_compartment_1(page: Page, smokescreen_properties: dict) -> None:

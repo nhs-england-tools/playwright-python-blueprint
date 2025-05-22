@@ -60,6 +60,7 @@ def test_call_and_recall_page_navigation(page: Page) -> None:
     BasePage(page).main_menu_header_is_displayed()
 
 
+@pytest.mark.smoke
 def test_view_an_invitation_plan(page: Page, general_properties: dict) -> None:
     """
     Confirms that an invitation plan can be viewed via a screening centre from the planning ad monitoring page

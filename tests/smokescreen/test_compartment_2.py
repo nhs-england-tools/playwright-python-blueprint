@@ -13,7 +13,6 @@ from utils.user_tools import UserTools
 
 
 @pytest.mark.vpn_required
-@pytest.mark.smoke
 @pytest.mark.smokescreen
 @pytest.mark.compartment2
 def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:

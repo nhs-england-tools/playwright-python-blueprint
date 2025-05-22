@@ -62,6 +62,7 @@ def test_organisations_page_navigation(page: Page) -> None:
     BasePage(page).bowel_cancer_screening_page_title_contains_text("Main Menu")
 
 
+@pytest.mark.smoke
 def test_view_an_organisations_system_parameters(
     page: Page, general_properties: dict
 ) -> None:
