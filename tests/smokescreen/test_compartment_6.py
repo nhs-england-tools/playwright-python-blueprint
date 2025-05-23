@@ -41,58 +41,97 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
         smokescreen_properties["c6_eng_number_of_subjects_to_record"],
         smokescreen_properties["c6_eng_org_id"],
     )
+    logging.info("Fetched subjects for investigation dataset updates.")
     nhs_no = subjects_df["subject_nhs_number"].iloc[0]
+    logging.info(f"Selected NHS number for older subject: {nhs_no}")
     SubjectDemographicUtil(page).update_subject_dob(nhs_no, False)
+    logging.info(
+        f"Updated date of birth for NHS number {nhs_no} to indicate an older subject."
+    )
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no, InvestigationDatasetResults.HIGH_RISK
     )
+    logging.info(
+        f"Completed investigation dataset for NHS number {nhs_no} with result: HIGH_RISK."
+    )
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.HIGH_RISK, False
+    )
+    logging.info(
+        f"Progressed episode for NHS number {nhs_no} based on result: HIGH_RISK."
     )
 
     # Younger patient - High Risk Result
     logging.info("High-risk result for a younger subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[1]
+    logging.info(f"Selected NHS number for younger subject: {nhs_no}")
     SubjectDemographicUtil(page).update_subject_dob(nhs_no, True)
+    logging.info(
+        f"Updated date of birth for NHS number {nhs_no} to indicate a younger subject."
+    )
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no, InvestigationDatasetResults.HIGH_RISK
     )
+    logging.info(
+        f"Completed investigation dataset for NHS number {nhs_no} with result: HIGH_RISK."
+    )
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.HIGH_RISK, True
+    )
+    logging.info(
+        f"Progressed episode for NHS number {nhs_no} based on result: HIGH_RISK."
     )
 
     # Older patient - LNPCP Result
     logging.info("LNPCP result for an older subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[2]
+    logging.info(f"Selected NHS number for older subject: {nhs_no}")
     SubjectDemographicUtil(page).update_subject_dob(nhs_no, False)
+    logging.info(
+        f"Updated date of birth for NHS number {nhs_no} to indicate an older subject."
+    )
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no, InvestigationDatasetResults.LNPCP
+    )
+    logging.info(
+        f"Completed investigation dataset for NHS number {nhs_no} with result: LNPCP."
     )
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.LNPCP, False
     )
+    logging.info(f"Progressed episode for NHS number {nhs_no} based on result: LNPCP.")
 
     # Younger patient - LNPCP Result
     logging.info("LNPCP result for a younger subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[3]
+    logging.info(f"Selected NHS number for younger subject: {nhs_no}")
     SubjectDemographicUtil(page).update_subject_dob(nhs_no, True)
+    logging.info(f"Updated date of birth for NHS number {nhs_no} to indicate a younger subject.")
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no, InvestigationDatasetResults.LNPCP
     )
+    logging.info(f"Completed investigation dataset for NHS number {nhs_no} with result: LNPCP.")
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.LNPCP, True
     )
+    logging.info(f"Progressed episode for NHS number {nhs_no} based on result: LNPCP.")
 
     # Any patient -  Normal Result
     logging.info("Normal result for any age subject")
     nhs_no_normal = subjects_df["subject_nhs_number"].iloc[4]
+    logging.info(f"Selected NHS number for normal result: {nhs_no_normal}")
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no_normal, InvestigationDatasetResults.NORMAL
+    )
+    logging.info(
+        f"Completed investigation dataset for NHS number {nhs_no_normal} with result: NORMAL."
     )
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.NORMAL, True
     )
-
+    logging.info(f"Progressed episode for NHS number {nhs_no_normal} based on result: NORMAL.")
+    # Batch processing for result letters
+    logging.info("Starting batch processing for result letters.")
     batch_processing(
         page,
         "A318",
