@@ -8,11 +8,8 @@ class EditMyContactDetailsPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Edit My Contact Details - page locators
-        self.edit_my_contact_details_title = self.page.locator("#ntshPageTitle")
+        # Edit My Contact Details - page locators, methods
 
     def verify_edit_my_contact_details_title(self) -> None:
         """Verify the Edit My Contact Details page title is displayed correctly"""
-        expect(self.edit_my_contact_details_title).to_contain_text(
-            "Edit My Contact Details"
-        )
+        self.bowel_cancer_screening_page_title_contains_text("Edit My Contact Details")

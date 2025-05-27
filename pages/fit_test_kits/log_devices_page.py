@@ -33,7 +33,9 @@ class LogDevicesPage(BasePage):
 
     def verify_log_devices_title(self) -> None:
         """Verifies that the Log Devices page title is displayed correctly."""
-        expect(self.log_devices_title).to_contain_text("Scan Device")
+        self.bowel_cancer_screening_page_title_contains_text(
+            "Scan Device"
+        )
 
     def fill_fit_device_id_field(self, value) -> None:
         """Fills the FIT Device ID field with the provided value and presses Enter."""

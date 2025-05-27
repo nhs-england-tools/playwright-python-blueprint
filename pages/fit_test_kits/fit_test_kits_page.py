@@ -36,15 +36,13 @@ class FITTestKitsPage(BasePage):
             "link", name="Maintain Analysers"
         )
         self.fit_device_id = self.page.get_by_role("textbox", name="FIT Device ID")
-        self.fit_test_kits_title = self.page.locator("#ntshPageTitle")
-
         self.sc_fit_configuration_page_screening_centre_dropdown = page.locator(
             "#screeningCentres"
         )
 
     def verify_fit_test_kits_title(self) -> None:
         """Verifies that the FIT Test Kits page title is displayed correctly."""
-        expect(self.fit_test_kits_title).to_contain_text("FIT Test Kits")
+        self.bowel_cancer_screening_page_title_contains_text("FIT Test Kits")
 
     def go_to_fit_rollout_summary_page(self) -> None:
         """Navigates to the FIT Rollout Summary page."""

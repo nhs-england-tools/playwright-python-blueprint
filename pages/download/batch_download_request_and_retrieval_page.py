@@ -9,9 +9,6 @@ class BatchDownloadRequestAndRetrievalPage(BasePage):
         super().__init__(page)
         self.page = page
         # Batch Download Request And Retrieval - page locators
-        self.batch_download_request_and_retrieval_title = self.page.locator(
-            "#ntshPageTitle"
-        )
         self.page_form = self.page.locator('form[name="frm"]')
 
     def expect_form_to_have_warning(self) -> None:
@@ -22,6 +19,6 @@ class BatchDownloadRequestAndRetrievalPage(BasePage):
 
     def verify_batch_download_request_and_retrieval_title(self) -> None:
         """Verifies that the Batch Download Request and Retrieval page title is displayed correctly."""
-        expect(self.batch_download_request_and_retrieval_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Batch Download Request and Retrieval"
         )

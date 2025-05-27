@@ -8,13 +8,10 @@ class ElectronicCommunicationManagementPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Electronic Communication Management - page locators
-        self.electronic_communication_management_title = self.page.locator(
-            "#page-title"
-        )
+        # Electronic Communication Management - page locators, methods
 
     def verify_electronic_communication_management_title(self) -> None:
         """Verify the Electronic Communication Management page title is displayed as expected"""
-        expect(self.electronic_communication_management_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Electronic Communication Management"
         )

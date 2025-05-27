@@ -46,7 +46,6 @@ class SubjectScreeningSummaryPage(BasePage):
         self.a_page_to_close_the_episode = self.page.get_by_text(
             "go to a page to Close the"
         )
-        self.subject_search_results_title = self.page.locator("#ntshPageTitle")
         self.display_rs = self.page.locator("#displayRS")
         self.first_fobt_episode_link = page.get_by_role(
             "link", name="FOBT Screening"
@@ -66,13 +65,13 @@ class SubjectScreeningSummaryPage(BasePage):
 
     def verify_subject_search_results_title_subject_screening_summary(self) -> None:
         """Verify that the subject search results title contains 'Subject Screening Summary'."""
-        expect(self.subject_search_results_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Subject Screening Summary"
         )
 
     def verify_subject_search_results_title_subject_search_results(self) -> None:
         """Verify that the subject search results title contains 'Subject Search Results'."""
-        expect(self.subject_search_results_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Subject Search Results"
         )
 

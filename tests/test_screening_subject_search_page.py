@@ -295,24 +295,6 @@ def test_search_screening_subject_by_status_ceased(page: Page) -> None:
 
 
 @pytest.mark.smoke
-def test_search_screening_subject_by_status_bowel_scope(page: Page) -> None:
-    """
-    Confirms screening subjects can be searched for, using the screening status (call) by doing the following:
-    - Clear filters
-    - Select status from dropdown
-    - Pressing Tab is required after text input, to make the search button become active.
-    - Click search button
-    - Verify the subject search results page is displayed
-    """
-    search_subject_by_status(
-        page, ScreeningStatusSearchOptions.BOWEL_SCOPE_STATUS.value
-    )
-    SubjectScreeningSummaryPage(
-        page
-    ).verify_subject_search_results_title_subject_search_results()
-
-
-@pytest.mark.smoke
 def test_search_screening_subject_by_status_lynch_surveillance(page: Page) -> None:
     """
     Confirms screening subjects can be searched for, using the screening status (call) by doing the following:

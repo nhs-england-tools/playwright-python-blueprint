@@ -8,11 +8,10 @@ class MyPreferenceSettingsPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # My Preference Settings - page locators
-        self.my_preference_settings_title = self.page.locator("#ntshPageTitle")
+        # My Preference Settings - page locators, methods
 
     def verify_my_preference_settings_title(self) -> None:
         """Verify the My Preference Settings page title is displayed correctly"""
-        expect(self.my_preference_settings_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "My Preference Settings"
         )

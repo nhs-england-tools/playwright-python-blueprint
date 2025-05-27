@@ -8,11 +8,8 @@ class KitServiceManagementPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # KIT Service Management - page locators
-        self.kit_service_management_title = self.page.locator("#page-title")
+        # KIT Service Management - page locators, methods
 
     def verify_kit_service_management_title(self) -> None:
         """Verifies that the Kit Service Management page title is displayed correctly."""
-        expect(self.kit_service_management_title).to_contain_text(
-            "Kit Service Management"
-        )
+        self.bowel_cancer_screening_page_title_contains_text("Kit Service Management")

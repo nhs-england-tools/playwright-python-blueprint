@@ -18,7 +18,6 @@ class GenerateInvitationsPage(BasePage):
         self.refresh_button = self.page.get_by_role("button", name="Refresh")
         self.planned_invitations_total = self.page.locator("#col8_total")
         self.self_referrals_total = self.page.locator("#col9_total")
-        self.generate_invitations_title = self.page.locator("#ntshPageTitle")
 
     def click_generate_invitations_button(self) -> None:
         """This function is used to click the Generate Invitations button."""
@@ -30,11 +29,11 @@ class GenerateInvitationsPage(BasePage):
 
     def verify_generate_invitations_title(self) -> None:
         """This function is used to verify the Generate Invitations page title."""
-        expect(self.generate_invitations_title).to_contain_text("Generate Invitations")
+        self.bowel_cancer_screening_page_title_contains_text("Generate Invitations")
 
     def verify_invitation_generation_progress_title(self) -> None:
         """This function is used to verify the Invitation Generation Progress page title."""
-        expect(self.generate_invitations_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Invitation Generation Progress"
         )
 

@@ -23,7 +23,6 @@ class BatchListPage(BasePage):
         self.batch_successfully_archived_msg = self.page.locator(
             'text="Batch Successfully Archived and Printed"'
         )
-        self.batch_list_page_title = self.page.locator("#page-title")
         self.deadline_calendar_picker = self.page.locator("i")
         self.deadline_date_filter = self.page.get_by_role("cell", name="").get_by_role(
             "textbox"
@@ -35,7 +34,7 @@ class BatchListPage(BasePage):
 
     def verify_batch_list_page_title(self, text) -> None:
         """Verify the Batch List page title is displayed as expected"""
-        expect(self.batch_list_page_title).to_contain_text(text)
+        self.bowel_cancer_screening_page_title_contains_text(text)
 
     def verify_table_data(self, value) -> None:
         """Verify the table data is displayed as expected"""

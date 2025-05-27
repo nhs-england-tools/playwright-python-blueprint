@@ -9,7 +9,6 @@ class ColonoscopyAssessmentAppointmentsPage(BasePage):
         super().__init__(page)
         self.page = page
         # Colonoscopy Assessment Appointments - page locators
-        self.page_header = self.page.locator("#page-title")
         self.page_header_with_title = self.page.locator(
             "#page-title",
             has_text="Patients that Require Colonoscopy Assessment Appointments",
@@ -18,7 +17,7 @@ class ColonoscopyAssessmentAppointmentsPage(BasePage):
 
     def verify_page_header(self) -> None:
         """Verifies the Colonoscopy Assessment Appointments page header is displayed correctly."""
-        expect(self.page_header).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Patients that Require Colonoscopy Assessment Appointments"
         )
 

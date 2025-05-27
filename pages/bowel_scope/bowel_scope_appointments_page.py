@@ -8,9 +8,10 @@ class BowelScopeAppointmentsPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Bowel Scope Appointments - page locators
-        self.page_title = self.page.locator("#ntshPageTitle")
+        # Bowel Scope Appointments - page locators, methods
 
     def verify_page_title(self) -> None:
         """Verifies the page title of the Bowel Scope Appointments page"""
-        expect(self.page_title).to_contain_text("Appointment Calendar")
+        self.bowel_cancer_screening_page_title_contains_text(
+            "Appointment Calendar"
+        )

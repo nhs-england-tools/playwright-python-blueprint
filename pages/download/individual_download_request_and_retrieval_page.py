@@ -9,14 +9,11 @@ class IndividualDownloadRequestAndRetrievalPage(BasePage):
         super().__init__(page)
         self.page = page
         # Individual Download Request And Retrieval - page locators
-        self.individual_download_request_and_retrieval_title = self.page.locator(
-            "#ntshPageTitle"
-        )
         self.page_form = self.page.locator('form[name="frm"]')
 
     def verify_individual_download_request_and_retrieval_title(self) -> None:
         """Verifies that the Individual Download Request and Retrieval page title is displayed correctly."""
-        expect(self.individual_download_request_and_retrieval_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Individual Download Request and Retrieval"
         )
 

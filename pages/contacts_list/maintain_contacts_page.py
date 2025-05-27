@@ -8,9 +8,8 @@ class MaintainContactsPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Maintain Contacts - page locators
-        self.maintain_contacts_title = self.page.locator("#ntshPageTitle")
+        # Maintain Contacts - page locators, methods
 
     def verify_maintain_contacts_title(self) -> None:
         """Verify the Maintain Contacts page title is displayed correctly"""
-        expect(self.maintain_contacts_title).to_contain_text("Maintain Contacts")
+        self.bowel_cancer_screening_page_title_contains_text("Maintain Contacts")

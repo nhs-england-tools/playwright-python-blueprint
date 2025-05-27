@@ -23,7 +23,9 @@ class CreateQCKitPage(BasePage):
 
     def verify_create_qc_kit_title(self) -> None:
         """Verify the Create QC Kit page title contains text "Create QC Kit"."""
-        expect(self.create_qc_kit_title).to_contain_text("Create QC Kit")
+        self.bowel_cancer_screening_page_title_contains_text(
+            "Create QC Kit"
+        )
 
     def go_to_reading1dropdown(self, option: str) -> None:
         """Selects a given option from the reading 1 dropdown."""

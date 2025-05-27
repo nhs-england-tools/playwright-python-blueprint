@@ -8,11 +8,10 @@ class ScreeningIncidentsListPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Screening Incidents List - page locators
-        self.screening_incidents_list_title = self.page.locator("#page-title")
+        # Screening Incidents List - page locators, methods
 
     def verify_screening_incidents_list_title(self) -> None:
         """Verify the Screening Incidents List page title is displayed correctly."""
-        expect(self.screening_incidents_list_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Screening Incidents List"
         )

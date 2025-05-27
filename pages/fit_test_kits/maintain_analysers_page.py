@@ -8,9 +8,8 @@ class MaintainAnalysersPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Maintain Analysers - page locators
-        self.maintain_analysers_title = self.page.locator("#ntshPageTitle")
+        # Maintain Analysers - page locators, methods
 
     def verify_maintain_analysers_title(self) -> None:
         """Verify the Maintain Analysers page title is displayed correctly."""
-        expect(self.maintain_analysers_title).to_contain_text("Maintain Analysers")
+        self.bowel_cancer_screening_page_title_contains_text("Maintain Analysers")

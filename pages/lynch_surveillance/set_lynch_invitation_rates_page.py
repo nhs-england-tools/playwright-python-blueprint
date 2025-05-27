@@ -8,11 +8,10 @@ class SetLynchInvitationRatesPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Lynch Invitation Page - Links
-        self.set_lynch_invitation_rates_title = self.page.locator("#page-title")
+        # Lynch Invitation Page - Links, methods
 
     def verify_set_lynch_invitation_rates_title(self) -> None:
         """Verifies that the Set Lynch Invitation Rates title is displayed."""
-        expect(self.set_lynch_invitation_rates_title).to_contain_text(
+        self.bowel_cancer_screening_page_title_contains_text(
             "Set Lynch Surveillance Invitation Rates"
         )

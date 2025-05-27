@@ -8,9 +8,10 @@ class KitResultAuditPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-        # Kit Result Audit - page locators
-        self.kit_result_audit_title = self.page.locator("#page-title")
+        # Kit Result Audit - page locators, methods
 
     def verify_kit_result_audit_title(self) -> None:
         """Verifies that the Kit Result Audit page title is displayed correctly."""
-        expect(self.kit_result_audit_title).to_contain_text("Kit Result Audit")
+        self.bowel_cancer_screening_page_title_contains_text(
+            "Kit Result Audit"
+        )
