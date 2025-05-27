@@ -1,11 +1,12 @@
 # Utility Guide: Batch Processing
 
-The Batch Processing utility allows for the processing of batches on the active batch list page to be completed in one method
+The Batch Processing utility provides a one-stop function for processing batches on the active batch list page, streamlining all necessary steps into a single call. **To process a batch, call the `batch_processing` function as described below.**
 
 ## Table of Contents
 
 - [Utility Guide: Batch Processing](#utility-guide-batch-processing)
   - [Table of Contents](#table-of-contents)
+  - [Example Usage](#example-usage)
   - [Functions Overview](#functions-overview)
     - [Batch Processing](#batch-processing)
       - [Required Arguments](#required-arguments)
@@ -13,10 +14,26 @@ The Batch Processing utility allows for the processing of batches on the active 
       - [How This Function Works](#how-this-function-works)
     - [Prepare And Print Batch](#prepare-and-print-batch)
       - [Arguments](#arguments)
+      - [Optional Arguments](#optional-arguments-1)
       - [How This Function Works](#how-this-function-works-1)
     - [Check Batch In Archived Batch List](#check-batch-in-archived-batch-list)
       - [Arguments](#arguments-1)
       - [How This Function Works](#how-this-function-works-2)
+
+## Example Usage
+
+```python
+from utils.batch_processing import batch_processing
+
+batch_processing(
+    page=page,
+    batch_type="S1",
+    batch_description="Pre-invitation (FIT)",
+    latest_event_status=["Status1", "Status2"],  # Can be str or  list[str]
+    run_timed_events=True,
+    get_subjects_from_pdf=False
+)
+```
 
 ## Functions Overview
 
@@ -28,8 +45,7 @@ For this utility we have the following functions:
 
 ### Batch Processing
 
-This is the main function that is called in order to process a batch.
-This will call the other two functions in order to successfully process a batch.
+This is the **main entry point function** that should be called to process a batch. It manages and coordinates all the required steps by internally calling the other two functions and auxiliary utilities as needed.
 
 #### Required Arguments
 
@@ -43,14 +59,15 @@ This will call the other two functions in order to successfully process a batch.
   - Type: `str`
   - This is the description of the batch. For example: **Pre-invitation (FIT)** or **Post-investigation Appointment NOT Required**
 - `latest_event_status`:
-  - Type: `str | None`
-  - This is the status the subject will get updated to after the batch has been processed. It is used to check that the subject has been updated to the correct status after a batch has been printed. If there are multiple different status in the same batch, provide them all in a list.
+  - Type: `str | list[str] |`
+  - This is the status or list of statuses the subject(s) will get updated to after the batch has been processed. It is used to check that the subject(s) have been updated to the correct status after a batch has been printed.
 
 #### Optional Arguments
 
 - `run_timed_events`:
   - Type: `bool`
   - If this is set to **True**, then bcss_timed_events will be executed against all the subjects found in the batch
+  - These timed events simulate the passage of time-dependent processing steps.
 - `get_subjects_from_pdf`:
   - Type: `bool`
   - If this is set to **True**, then the subjects will be retrieved from the downloaded PDF file instead of from the DB
@@ -65,8 +82,7 @@ This will call the other two functions in order to successfully process a batch.
 5. Now it extracts the ID of the batch and stores it in the local variable `link_text`, this is used later on to extracts the subjects in the batch from the DB
 6. After the ID is stored, it clicks on the ID to get to the Manage Active Batch page
 7. From Here it calls the `prepare_and_print_batch` function.
-   1. If `get_subjects_from_pdf` was set to False it calls `get_nhs_no_from_batch_id`, which is imported from *utils.oracle.oracle_specific_functions*, to get the subjects from the batch and stores them as a pandas DataFrame - **nhs_no_df**
-   2. For more Info on `get_nhs_no_from_batch_id` please look at: [`PDFReader`](PDFReader.md)
+   1. If `get_subjects_from_pdf` was set to False it calls `get_nhs_no_from_batch_id`, which is imported from *utils.oracle.oracle_specific_functions*, to get the subjects from the DB and stores them as a pandas DataFrame - **nhs_no_df**
 8. Once this is complete it calls the `check_batch_in_archived_batch_list` function
 9. Finally, once that function is complete it calls `verify_subject_event_status_by_nhs_no` which is imported from *utils/screening_subject_page_searcher*
 
@@ -83,17 +99,21 @@ It is in charge of pressing on the following button: **Prepare Batch**, **Retrie
 - `link_text`:
   - Type: `str`
   - This is the batch ID of the batch currently being processed
+
+#### Optional Arguments
+
 - `get_subjects_from_pdf`:
   - Type: `bool`
-  - This is an optional argument and if this is set to **True**, then the subjects will be retrieved from the downloaded PDF file instead of from the DB
+  - If this is set to **True**, then the subjects will be retrieved from the downloaded PDF file instead of from the DB
 
 #### How This Function Works
 
 1. It starts off by clicking on the **Prepare Batch** button.
 2. After this it waits for the button to turn into **Re-Prepare Batch**. Once this happens it means that the batch is ready to be printed.
 3. Now It clicks on each **Retrieve** button visible.
-   1. If `get_subjects_from_pdf` was set to True and the file is a **.pdf**, then it calls `extract_nhs_no_from_pdf`, which is imported from *utils/pdf_reader*, to get the subjects from the batch and stores them as a pandas DataFrame - **nhs_no_df**
-   2. After a file is downloaded, it gets deleted.
+   1. If `get_subjects_from_pdf` was set to True and the file is a **.pdf**, then it calls `extract_nhs_no_from_pdf`, which is imported from *utils/pdf_reader*, to get the subjects from the PDF and stores them as a pandas DataFrame - **nhs_no_df**
+   2. For more Info on `extract_nhs_no_from_pdf` please look at: [`PDFReader`](PDFReader.md)
+   3. After a file is downloaded, it gets deleted.
 4. Then it clicks on each **Confirm Printed** button ensuring to handle the dialog that appears.
 5. Finally it checks for the message: *Batch Successfully Archived and Printed*
 
