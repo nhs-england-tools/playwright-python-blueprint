@@ -44,7 +44,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     logging.info("Fetched subjects for investigation dataset updates.")
     nhs_no = subjects_df["subject_nhs_number"].iloc[0]
     logging.info(f"Selected NHS number for older subject: {nhs_no}")
-    SubjectDemographicUtil(page).update_subject_dob(nhs_no, False)
+    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True, False)
     logging.info(
         f"Updated date of birth for NHS number {nhs_no} to indicate an older subject."
     )
@@ -65,7 +65,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     logging.info("High-risk result for a younger subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[1]
     logging.info(f"Selected NHS number for younger subject: {nhs_no}")
-    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True)
+    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True, True)
     logging.info(
         f"Updated date of birth for NHS number {nhs_no} to indicate a younger subject."
     )
@@ -86,7 +86,7 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     logging.info("LNPCP result for an older subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[2]
     logging.info(f"Selected NHS number for older subject: {nhs_no}")
-    SubjectDemographicUtil(page).update_subject_dob(nhs_no, False)
+    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True, False)
     logging.info(
         f"Updated date of birth for NHS number {nhs_no} to indicate an older subject."
     )
@@ -105,12 +105,16 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     logging.info("LNPCP result for a younger subject")
     nhs_no = subjects_df["subject_nhs_number"].iloc[3]
     logging.info(f"Selected NHS number for younger subject: {nhs_no}")
-    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True)
-    logging.info(f"Updated date of birth for NHS number {nhs_no} to indicate a younger subject.")
+    SubjectDemographicUtil(page).update_subject_dob(nhs_no, True, True)
+    logging.info(
+        f"Updated date of birth for NHS number {nhs_no} to indicate a younger subject."
+    )
     InvestigationDatasetCompletion(page).complete_with_result(
         nhs_no, InvestigationDatasetResults.LNPCP
     )
-    logging.info(f"Completed investigation dataset for NHS number {nhs_no} with result: LNPCP.")
+    logging.info(
+        f"Completed investigation dataset for NHS number {nhs_no} with result: LNPCP."
+    )
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.LNPCP, True
     )
@@ -129,7 +133,9 @@ def test_compartment_6(page: Page, smokescreen_properties: dict) -> None:
     AfterInvestigationDatasetComplete(page).progress_episode_based_on_result(
         InvestigationDatasetResults.NORMAL, True
     )
-    logging.info(f"Progressed episode for NHS number {nhs_no_normal} based on result: NORMAL.")
+    logging.info(
+        f"Progressed episode for NHS number {nhs_no_normal} based on result: NORMAL."
+    )
     # Batch processing for result letters
     logging.info("Starting batch processing for result letters.")
     batch_processing(
