@@ -11,10 +11,16 @@ class NHSNumberTools:
     @staticmethod
     def _nhs_number_checks(nhs_number: str) -> None:
         """
-        This does basic checks on NHS number values provided and raises an exception if the number is not valid.
+        This will validate that the provided NHS number is numeric and exactly 10 digits long.
 
         Args:
-            nhs_number (str): The NHS number to check.
+            nhs_number (str): The NHS number to validate.
+
+        Raises:
+            NHSNumberToolsException: If the NHS number is not numeric or not 10 digits long.
+
+        Returns:
+            None
         """
         if not nhs_number.isnumeric():
             raise NHSNumberToolsException(
