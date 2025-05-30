@@ -1,5 +1,7 @@
-from oracle.oracle_specific_functions import get_kit_id_logged_from_db
-from utils.oracle.oracle_specific_functions import get_kit_id_from_db
+from utils.oracle.oracle_specific_functions import (
+    get_kit_id_from_db,
+    get_kit_id_logged_from_db,
+)
 from pages.base_page import BasePage
 from datetime import datetime
 import logging
