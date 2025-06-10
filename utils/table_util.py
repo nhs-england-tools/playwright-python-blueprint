@@ -46,8 +46,20 @@ class TableUtils:
             )
 
         headers = header_row.locator("th")
-        header_texts = headers.evaluate_all("ths => ths.map(th => th.innerText.trim())")
 
+        # Extract first-row headers (general headers)
+        header_texts = headers.evaluate_all("ths => ths.map(th => th.innerText.trim())")
+        logging.info(f"First Row Headers Found: {header_texts}")
+
+        # Extract detailed second-row headers if first-row headers seem generic
+        second_row_headers = self.table.locator(
+            "thead tr:nth-child(2) th"
+        ).evaluate_all("ths => ths.map(th => th.innerText.trim())")
+        # Merge both lists: Prioritize second-row headers if available
+        if second_row_headers:
+            header_texts = second_row_headers
+
+        logging.info(f"Second Row Headers Found: {header_texts}")
         for index, header in enumerate(header_texts):
             if column_name.lower() in header.lower():
                 return index + 1  # Convert to 1-based index
@@ -197,3 +209,28 @@ class TableUtils:
         for row in range(self.get_row_count()):
             full_results[row + 1] = self.get_row_data_with_headers(row)
         return full_results
+
+    def get_cell_value(self, column_name: str, row_index: int) -> str:
+        """
+        Retrieves the text value of a cell at the specified column(name) and row(index).
+
+        Args:
+            column_name (str): The name of the column containing the cell.
+            row_index (int): The index of the row containing the cell.
+
+        Returns:
+            str: The text value of the cell.
+        """
+        column_index = self.get_column_index(column_name)
+        if column_index == -1:
+            raise ValueError(f"Column '{column_name}' not found in table")
+
+        cell_locator = f"{self.table_id} tbody tr:nth-child({row_index}) td:nth-child({column_index})"
+        cell = self.page.locator(cell_locator).first
+
+        if cell:
+            return cell.inner_text()
+        else:
+            raise ValueError(
+                f"No cell found at column '{column_name}' and row index {row_index}"
+            )
