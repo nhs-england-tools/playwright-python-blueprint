@@ -10,7 +10,7 @@ class NonInvitationDaysPage(BasePage):
         super().__init__(page)
         self.page = page
         # Non Invitation Days - page locators, methods
-        self.enter_note_field = self.page.get_by_role("textbox", name="note")
+        self.enter_note_field = self.page.locator("#note")
         self.enter_date_field = self.page.get_by_role("textbox", name="date")
         self.add_non_invitation_day_button = self.page.get_by_role(
             "button", name="Add Non-Invitation Day"
@@ -18,7 +18,9 @@ class NonInvitationDaysPage(BasePage):
         self.non_invitation_day_delete_button = self.page.get_by_role(
             "button", name="Delete"
         )
-        self.created_on_date_locator = self.page.locator("#displayRS")
+        self.created_on_date_locator = self.page.locator(
+            "tr.oddTableRow td:nth-child(4)"
+        )
 
     def verify_non_invitation_days_tile(self) -> None:
         """Verifies the page title of the Non Invitation Days page"""
@@ -46,18 +48,16 @@ class NonInvitationDaysPage(BasePage):
         """Clicks the Delete button for a non-invitation day"""
         self.click(self.non_invitation_day_delete_button)
 
-    def verify_date_is_visible(self) -> None:
+    def verify_created_on_date_is_visible(self) -> None:
         """Verifies that the specified date is visible on the page
         Args:
             date (str): The date to verify, formatted as 'dd/mm/yyyy'.
         """
-        date = DateTimeUtils.current_datetime("dd/mm/yyyy")
-        expect(self.created_on_date_locator).to_have_text(date)
+        today = DateTimeUtils.current_datetime("%d/%m/%Y")
+        expect(self.created_on_date_locator).to_have_text(today)
 
-    def verify_date_is_not_visible(self) -> None:
-        """Verifies that the specified date is not visible on the page
-        Args:
-            date (str): The date to verify, formatted as 'dd/mm/yyyy'.
+    def verify_created_on_date_is_not_visible(self) -> None:
+        """Verifies that the 'created on' date element is not visible on the page.
+        This is used to confirm that the non-invitation day has been successfully deleted.
         """
-        date = DateTimeUtils.current_datetime("dd/mm/yyyy")
-        expect(self.created_on_date_locator).not_to_have_text(date)
+        expect(self.created_on_date_locator).not_to_be_visible

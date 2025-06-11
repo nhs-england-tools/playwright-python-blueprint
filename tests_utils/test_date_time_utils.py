@@ -32,31 +32,26 @@ def test_add_days():
     assert new_date == date + timedelta(days=5)
 
 
-def test_get_day_of_week_for_today():
-    dtu = utils.date_time_utils.DateTimeUtils()
-    date = datetime.now()
-    day_of_week = dtu.get_a_day_of_week(date)
-    assert day_of_week in [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]
+# Valid weekdays for testing get_day_of_week
+VALID_WEEKDAYS = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+]
 
 
-def test_get_a_day_of_week():
+def test_get_day_of_week_with_specific_date():
     dtu = utils.date_time_utils.DateTimeUtils()
-    date = datetime(2023, 11, 8)
-    day_of_week = dtu.get_a_day_of_week(date)
-    assert day_of_week in [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]
+    date = datetime(2023, 11, 8)  # Known Wednesday
+    day_of_week = dtu.get_day_of_week(date)
+    assert day_of_week in VALID_WEEKDAYS
+
+
+def test_get_day_of_week_with_default_today():
+    dtu = utils.date_time_utils.DateTimeUtils()
+    day_of_week = dtu.get_day_of_week()
+    assert day_of_week in VALID_WEEKDAYS
