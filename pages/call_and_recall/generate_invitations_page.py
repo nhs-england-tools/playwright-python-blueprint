@@ -91,7 +91,7 @@ class GenerateInvitationsPage(BasePage):
         value = value.strip()  # Get text and remove extra spaces
         if int(value) < number_of_invitations:
             pytest.fail(
-                f"There are less than {number_of_invitations} invitations generated"
+                f"Expected {number_of_invitations} invitations generated but got {value}"
             )
 
         self_referrals_total_text = self.self_referrals_total.text_content()
