@@ -3,3 +3,6 @@ pytest-html>=4.1.1
 pytest-json-report>=1.5.0
 pytest-playwright-axe>=4.10.3
 python-dotenv>=1.1.0
+pandas==2.2.*
+psycopg==3.2.*
+boto3==1.37.*

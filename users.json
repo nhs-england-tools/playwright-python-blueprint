@@ -1,11 +1,49 @@
 {
-    "_comment": "This file can be used to store data on users for your application, and then pulled through using the utils.user_tools UserTools utility. The documentation for this utility explains how this file is read.",
-    "Example User 1": {
-        "username": "EXAMPLE_USER1",
-        "roles": ["Example Role A"]
+    "BSO User - BS1": {
+        "username": "BSS_USER1",
+        "role_to_select": "BSS_SO1",
+        "role_type": "BSO User",
+        "hub": "BS1",
+        "uuid":"555033739104"
     },
-    "Example User 2": {
-        "username": "EXAMPLE_USER2",
-        "roles": ["Example Role B", "Example Role C"]
+    "BSO User - BS2": {
+        "username": "BSS_USER1",
+        "role_to_select": "BSS_SO2",
+        "role_type": "BSO User",
+        "hub": "BS2",
+        "uuid":"555033739104"
+    },
+    "Read Only BSO User - BS2": {
+        "username": "BSS_USER2",
+        "role_to_select": "BSS_SO2",
+        "role_type": "Read Only BSO User",
+        "hub": "BS2",
+        "uuid":"555033740107"
+    },
+    "National User": {
+        "username": "BSS_USER1",
+        "role_to_select": "BSS_NAT",
+        "role_type": "National User",
+        "uuid":"555033739104"
+    },
+    "Helpdesk User": {
+        "username": "BSS_USER2",
+        "role_to_select": "BSS_NAT",
+        "role_type": "Helpdesk User",
+        "uuid":"555033740107"
+    },
+    "BSO User1 - BS1": {
+        "username": "BSS_USER2",
+        "role_to_select": "BSS_SO1",
+        "role_type": "BSO User",
+        "hub": "BS1",
+        "uuid":"555033740107"
+    },
+    "Ni Only BSO User - BS3": {
+        "username": "BSS_USER3",
+        "role_to_select": "BSS_SO3",
+        "role_type": "BSO User",
+        "hub": "BS3",
+        "uuid":"555033741108"
     }
 }

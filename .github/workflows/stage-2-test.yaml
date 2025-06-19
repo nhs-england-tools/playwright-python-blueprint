@@ -30,11 +30,11 @@ on:
 
 jobs:
   run-tests:
-    name: "Run Util & Example Tests"
+    name: "Run Util Tests"
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
-      - name: "Run Playwright Tests"
-        uses: ./.github/actions/run-playwright-tests
+      - name: "Run Util Tests"
+        uses: ./.github/actions/run-unit-tests

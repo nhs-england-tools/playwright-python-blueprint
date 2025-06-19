@@ -19,3 +19,12 @@ axe-reports/
 local.env
 
 # Please, add your custom content below!
+
+__pycache__/
+.pytest_cache/
+.venv/
+screenshot/
+tmp/
+*.dump
+.env
+.pgpass
