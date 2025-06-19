@@ -10,6 +10,8 @@ class SubjectScreeningPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
+        self.results_table_locator = "table#subject-search-results"
+
         # Subject Search Criteria - page filters
         self.episodes_filter = self.page.get_by_role("radio", name="Episodes")
         self.demographics_filter = self.page.get_by_role("radio", name="Demographics")
@@ -149,6 +151,7 @@ class SubjectScreeningPage(BasePage):
         CalendarPicker(self.page).v1_calender_picker(date)
 
     def verify_date_of_birth_filter_input(self, expected_text: str) -> None:
+        """Verifies that the Date of Birth filter input field has the expected value."""
         expect(self.date_of_birth_filter).to_have_value(expected_text)
 
 

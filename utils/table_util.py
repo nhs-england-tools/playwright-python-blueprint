@@ -234,3 +234,26 @@ class TableUtils:
             raise ValueError(
                 f"No cell found at column '{column_name}' and row index {row_index}"
             )
+
+    def assert_surname_in_table(self, surname_pattern):
+        """
+        Asserts that a surname matching the given pattern exists in the table.
+        Args:
+            surname_pattern (str): The surname or pattern to search for (supports '*' as a wildcard at the end).
+        """
+        # Locate all surname cells (adjust selector as needed)
+        surname_criteria = self.page.locator(
+            "//table//tr[position()>1]/td[3]"
+        )  # Use the correct column index
+        if surname_pattern.endswith("*"):
+            prefix = surname_pattern[:-1]
+            found = any(
+                cell.inner_text().startswith(prefix)
+                for cell in surname_criteria.element_handles()
+            )
+        else:
+            found = any(
+                surname_pattern == cell.inner_text()
+                for cell in surname_criteria.element_handles()
+            )
+        assert found, f"No surname matching '{surname_pattern}' found in table."
