@@ -10,7 +10,7 @@ class ScreeningLocationListPage:
 
         self.page = page
         self.add_screening_location_btn = page.locator("button#addLocationButton")
-        self.screening_location_name_txtbox = page.locator("input#locationNameText")
+        self.screening_location_name_textbox = page.locator("input#locationNameText")
         self.add_screening_location_btn_on_popup = page.locator(
             "#addButtonInAddLocationPopupText"
         )
@@ -31,7 +31,7 @@ class ScreeningLocationListPage:
         self.create_screening_cohort_by_gp_practice_btn = page.locator(
             "#addCohortByPracticeButtonText"
         )
-        self.screening_cohort_name_txtbox = page.locator("//input[@id='description']")
+        self.screening_cohort_name_textbox = page.locator("//input[@id='description']")
         self.default_screening_location_dropdown = page.locator(
             "//select[@id='defaultLocation']"
         )
@@ -53,7 +53,7 @@ class ScreeningLocationListPage:
     def enter_screening_location_name(
         self, location_name: str
     ) -> ScreeningLocationListPage:
-        self.screening_location_name_txtbox.fill(location_name)
+        self.screening_location_name_textbox.fill(location_name)
         return self
 
     def click_add_screening_location_btn_on_popup(self) -> ScreeningLocationListPage:
@@ -65,7 +65,7 @@ class ScreeningLocationListPage:
         self.cancel_add_screening_location_btn.click()
         return self
 
-    def enter_screening_location_filter_txtbox(
+    def enter_screening_location_filter_textbox(
         self, location_name: str
     ) -> ScreeningLocationListPage:
         self.location_name_filter.fill(location_name)
@@ -110,10 +110,10 @@ class ScreeningLocationListPage:
     def click_cancel_amend_location_btn(self) -> None:
         self.cancel_amend_location_btn.click()
 
-    def value_of_filterd_location_name(self):
-        filterd_value = self.filtered_location.text_content()
+    def value_of_filtered_location_name(self):
+        filtered_value = self.filtered_location.text_content()
         self.page.wait_for_timeout(4000)
-        return filterd_value
+        return filtered_value
 
     def click_log_out_btn(self) -> None:
         self.log_out_btn.click()
@@ -124,10 +124,10 @@ class ScreeningLocationListPage:
         self.create_screening_cohort_by_gp_practice_btn.click()
         return self
 
-    def enter_screening_cohort_name_txtbox(
+    def enter_screening_cohort_name_textbox(
         self, cohort_name: str
     ) -> ScreeningLocationListPage:
-        self.screening_cohort_name_txtbox.fill(cohort_name)
+        self.screening_cohort_name_textbox.fill(cohort_name)
         return self
 
     def select_default_screening_location_dropdown(

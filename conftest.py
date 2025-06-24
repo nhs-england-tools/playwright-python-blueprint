@@ -54,7 +54,7 @@ def main_menu(page: Page) -> MainMenuPage:
 
 
 @pytest.fixture
-def rlp_screening_location_list_page(page: Page) -> ScreeningLocationListPage:
+def rlp_location_list_page(page: Page) -> ScreeningLocationListPage:
     return ScreeningLocationListPage(page)
 
 
@@ -64,7 +64,7 @@ def rlp_cohort_list_page(page: Page) -> CohortListPage:
 
 
 @pytest.fixture
-def rlp_screening_unit_list_page(page: Page) -> ScreeningUnitListPage:
+def rlp_unit_list_page(page: Page) -> ScreeningUnitListPage:
     return ScreeningUnitListPage(page)
 
 
