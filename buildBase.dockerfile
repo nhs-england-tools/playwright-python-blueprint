@@ -1,5 +1,10 @@
 FROM python:3.13-slim
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
 WORKDIR /test
 
 # Install dependencies
