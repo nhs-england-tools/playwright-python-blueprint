@@ -38,10 +38,5 @@ jobs:
           BRANCH_NAME: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
         run: |
           IMAGE_TAG="${BRANCH_NAME#*/}"
-          echo "Image tag: $IMAGE_TAG"
-
           docker build -f buildBase.dockerfile -t ${{env.ECR_REPOSITORY}}/${{env.IMAGE_NAME}}:$IMAGE_TAG .
-
-          echo "ECR Repository: $ECR_REPOSITORY"
-
           docker push ${{env.ECR_REPOSITORY}}/${{env.IMAGE_NAME}}:$IMAGE_TAG
