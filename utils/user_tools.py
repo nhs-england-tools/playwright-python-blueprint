@@ -15,7 +15,7 @@ class UserTools:
     A utility class for retrieving and doing common actions with users.
     """
 
-    def user_login(self, page: Page, user: str) -> None:
+    def user_login(self, page: Page, username: str) -> None:
         """
         Logs into the BS-Select application and selects the applicable org (if required).
 
@@ -24,7 +24,7 @@ class UserTools:
             user (str): The user details required, in the format "Role Type" or "Role Type - Organisation".
         """
         page.goto("/bss")
-        user = self.retrieve_user(user)
+        user = self.retrieve_user(username)
 
         if "cognito" in page.url:
             CognitoAuthenticationPage(page).cognito_login(

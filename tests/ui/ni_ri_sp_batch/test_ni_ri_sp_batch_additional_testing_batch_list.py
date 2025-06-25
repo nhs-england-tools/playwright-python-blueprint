@@ -31,11 +31,11 @@ def test_count_display_for_ri_sp_batch_with_blank_selected_date_selected_and_rej
     ni_ri_sp_batch_page.assert_page_header("Amend RI/SP Batch by Year of Birth")
     MainMenuPage(page).select_menu_option("Batch Management", "Batch List")
     ni_ri_sp_batch_page.assert_page_header("Batch List")
-    ni_ri_sp_batch_page.assert_entered_bso_batch_id_and_filterd_row_value(check_digit)
+    ni_ri_sp_batch_page.assert_entered_bso_batch_id_and_filtered_row_value(check_digit)
     ni_ri_sp_batch_page.assert_select_date_cell_value("")
     ni_ri_sp_batch_page.assert_selected_cell_value("")
     ni_ri_sp_batch_page.assert_rejected_cell_value("")
-    ScreenshotTool(page).take_screenshot("additional_testing_TC_1.1")
+    ScreenshotTool(page).take_screenshot("additional_testing_TC_1_1")
 
 
 # TC-2, TC-3
@@ -62,9 +62,9 @@ def test_count_display_for_ri_sp_batch_with_selected_date_selected_and_rejected_
     ni_ri_sp_batch_page.assert_page_header("Batch List")
     ni_ri_sp_batch_page.select_ri_sp_yob_from_drop_down()
     ni_ri_sp_batch_page.select_no_from_failsafe_flag_drop_down()
-    ScreenshotTool(page).take_screenshot("additional_testing_TC_2.1")
-    ni_ri_sp_batch_page.assert_entered_bso_batch_id_and_filterd_row_value(check_digit)
-    ScreenshotTool(page).take_screenshot("additional_testing_TC_2.2")
+    ScreenshotTool(page).take_screenshot("additional_testing_TC_2_1")
+    ni_ri_sp_batch_page.assert_entered_bso_batch_id_and_filtered_row_value(check_digit)
+    ScreenshotTool(page).take_screenshot("additional_testing_TC_2_2")
     ni_ri_sp_batch_page.assert_select_date_cell_value_is_not_null("")
     ni_ri_sp_batch_page.assert_selected_cell_value_is_not_null("")
     ni_ri_sp_batch_page.assert_rejected_cell_value_is_not_null("")
@@ -95,4 +95,4 @@ def test_count_display_for_ri_sp_batch_with_selected_date_selected_and_rejected_
     MainMenuPage(page).select_menu_option("Batch Management", "Batch List")
     ni_ri_sp_batch_page.assert_page_header("Batch List")
     ni_ri_sp_batch_page.search_by_bso_batch_id_and_batch_title(check_digit, batch_title)
-    ScreenshotTool(page).take_screenshot("additional_testing_TC_4.1")
+    ScreenshotTool(page).take_screenshot("additional_testing_TC_4_1")

@@ -8,7 +8,6 @@ from utils.screenshot_tool import ScreenshotTool
 
 
 # TC-1
-@pytest.mark.ni
 def test_ni_bso_user_cannot_create_ri_sp_batch_when_yob_parameter_not_set(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
@@ -16,7 +15,7 @@ def test_ni_bso_user_cannot_create_ri_sp_batch_when_yob_parameter_not_set(
     when the corresponding BSO parameter 'RI/SP Batch by Year of Birth' is not set.
     """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_bso_batch_id("PMA106376K")
@@ -33,7 +32,6 @@ def test_ni_bso_user_cannot_create_ri_sp_batch_when_yob_parameter_not_set(
 
 
 # TC-2.1
-@pytest.mark.ni
 def test_eng_bso_user_cannot_create_ri_sp_batch_by_year_of_birth(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
@@ -53,12 +51,11 @@ def test_eng_bso_user_cannot_create_ri_sp_batch_by_year_of_birth(
 
 
 # TC-2.2
-@pytest.mark.ni
 def test_ni_bso_user_is_able_to_create_ri_sp_batch_by_year_of_birth(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify ni bso user is able to create ri/sp batch by YOB."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_bso_batch_id("PMA106376K")
@@ -74,7 +71,6 @@ def test_ni_bso_user_is_able_to_create_ri_sp_batch_by_year_of_birth(
 
 
 # TC-3.1
-@pytest.mark.ni
 def test_ni_bso_batch_id_not_unique_warning(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
@@ -82,7 +78,7 @@ def test_ni_bso_batch_id_not_unique_warning(
     when entering an invalid BSO Batch ID that is not unique.
     """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.validate_batch_id_error(
@@ -93,7 +89,6 @@ def test_ni_bso_batch_id_not_unique_warning(
 
 
 # TC-3.2
-@pytest.mark.ni
 def test_ni_bso_batch_id_invalid_format_warning(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
@@ -101,7 +96,7 @@ def test_ni_bso_batch_id_invalid_format_warning(
     when entering an invalid BSO Batch ID that is incorrect format.
     """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.validate_batch_id_error(
@@ -111,7 +106,6 @@ def test_ni_bso_batch_id_invalid_format_warning(
 
 
 # TC-3.3
-@pytest.mark.ni
 def test_ni_bso_batch_id_check_digit_warning(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
@@ -119,7 +113,7 @@ def test_ni_bso_batch_id_check_digit_warning(
     when entering an invalid BSO Batch ID that is Check digit is incorrect.
     """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.validate_batch_id_error(
@@ -129,13 +123,12 @@ def test_ni_bso_batch_id_check_digit_warning(
 
 
 # TC-4.1
-@pytest.mark.ni
 def test_ni_date_for_selection_today_shows_warning(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verifies that a warning is shown when 'Date for Selection' is set to today's date."""
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_bso_batch_id("PMA916865R")
@@ -146,13 +139,12 @@ def test_ni_date_for_selection_today_shows_warning(
 
 
 # TC-4.2
-@pytest.mark.ni
 def test_ni_date_for_selection_in_past_shows_warning(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verifies that a warning is shown when 'Date for Selection' is set to past date."""
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_bso_batch_id("PMA916865R")
@@ -165,12 +157,11 @@ def test_ni_date_for_selection_in_past_shows_warning(
 
 
 # TC-5.1
-@pytest.mark.ni
 def test_ni_bso_user_receives_warning_for_invalid_yob_range_1954_1975(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when YOB From = 1954 and To = 1975 (71 to 50 years ago)."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_year_range_and_count("1954", "1975")
@@ -183,12 +174,11 @@ def test_ni_bso_user_receives_warning_for_invalid_yob_range_1954_1975(
 
 
 # TC-5.2
-@pytest.mark.ni
 def test_ni_bso_user_receives_warning_for_invalid_yob_range_1954_1974(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when YOB From = 1954 and To = 1974 (71 to 51 years ago)."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_year_range_and_count("1954", "1974")
@@ -201,12 +191,11 @@ def test_ni_bso_user_receives_warning_for_invalid_yob_range_1954_1974(
 
 
 # TC-6.1
-@pytest.mark.ni
 def test_ni_bso_user_receives_warning_for_invalid_yob_range_1955_1976(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when YOB From = 1955 and To = 1976 (70 to 49 years ago)."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_year_range_and_count("1955", "1976")
@@ -219,12 +208,11 @@ def test_ni_bso_user_receives_warning_for_invalid_yob_range_1955_1976(
 
 
 # TC-6.2
-@pytest.mark.ni
 def test_ni_bso_user_receives_warning_for_invalid_yob_range_1956_1976(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when YOB From = 1956 and To = 1976 (69 to 49 years ago)."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_year_range_and_count("1956", "1976")
@@ -237,13 +225,11 @@ def test_ni_bso_user_receives_warning_for_invalid_yob_range_1956_1976(
 
 
 # TC-7
-@pytest.mark.ni
-@pytest.mark.nitest
 def test_ni_bso_user_receives_warning_for_invalid_yob_range_1955_1954(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when YOB From = 1955 and To = 1954 (70 to 69 years ago)."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_year_range_and_count("1955", "1954")
@@ -257,12 +243,11 @@ def test_ni_bso_user_receives_warning_for_invalid_yob_range_1955_1954(
 
 
 # TC-8
-@pytest.mark.ni
 def test_ni_bso_user_receives_warning_for_invalid_month_of_birth_range(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Verify that a warning is shown when 'Include Month Of Birth' value is set to 13."""
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     ni_ri_sp_batch_page.enter_bso_batch_id("PMA916865R")

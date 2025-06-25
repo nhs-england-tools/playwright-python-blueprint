@@ -1,8 +1,5 @@
 from itertools import count
-import playwright
 import pytest
-
-# from conftest import ni_ri_sp_batch_page
 from pages.main_menu import MainMenuPage
 from playwright.sync_api import expect, Page, Playwright
 from pages.ni_ri_sp_batch_page import NiRiSpBatchPage
@@ -13,13 +10,12 @@ from utils.screenshot_tool import ScreenshotTool
 
 
 # TC-1
-@pytest.mark.ni2
 def test_create_ri_sp_batch_using_selected_gp_practice_codes_and_all_outcodes(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Test to create ri/sp batch using "specify by gp practice" and "all outcodes" """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     batch_title = test_helpers.generate_random_string(10)
@@ -43,13 +39,12 @@ def test_create_ri_sp_batch_using_selected_gp_practice_codes_and_all_outcodes(
 
 
 # TC-2
-@pytest.mark.ni2
 def test_create_ri_sp_batch_using_selected_gp_practice_groups_and_all_outcodes(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Test to create ri/sp batch using "selected gp practice groups" and "all outcodes" """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     batch_title = test_helpers.generate_random_string(10)
@@ -70,13 +65,12 @@ def test_create_ri_sp_batch_using_selected_gp_practice_groups_and_all_outcodes(
 
 
 # TC-3
-@pytest.mark.ni2
 def test_create_ri_sp_batch_using_all_gp_practices_and_selected_outcodes(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Test to create ri/sp batch using "include all gp practices" and "specify by outcode" """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     batch_title = test_helpers.generate_random_string(10)
@@ -100,13 +94,12 @@ def test_create_ri_sp_batch_using_all_gp_practices_and_selected_outcodes(
 
 
 # TC-4
-@pytest.mark.ni2
 def test_create_ri_sp_batch_using_include_all_gp_practices_and_selected_outcode_groups(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Test to create ri/sp batch using "include all gp practices" and "selected outcode groups" """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     batch_title = test_helpers.generate_random_string(10)
@@ -127,13 +120,12 @@ def test_create_ri_sp_batch_using_include_all_gp_practices_and_selected_outcode_
 
 
 # TC-5
-@pytest.mark.ni2
 def test_create_ri_sp_batch_using_selected_out_codes_and_selected_gp_practices(
     page: Page, ni_ri_sp_batch_page: NiRiSpBatchPage
 ) -> None:
     """Test to create ri/sp batch using "specify by gp practices" and "specify by outcode" """
     # Logged into BSO3 as user3(PMA) and select 'Create RI/SP Batch' from the 'batch management' dropdown
-    UserTools().user_login(page, "Ni Only BSO User3 - BS3")
+    UserTools().user_login(page, "Ni Only BSO User - BS3")
     MainMenuPage(page).select_menu_option("Batch Management", "Create RI/SP Batch")
     ni_ri_sp_batch_page.assert_page_header("Create RI/SP Batch by Year of Birth")
     batch_title = test_helpers.generate_random_string(10)

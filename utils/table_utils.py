@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from secrets import randbelow
 from playwright.sync_api import Page, expect, Locator
 
@@ -141,3 +142,78 @@ class TableUtils:
         expect(self.page.locator(self.table_id)).not_to_contain_text(
             "Searching...", timeout=10000
         )
+
+    def get_all_table_data(self, column_index: int) -> list[str]:
+        """Get all data from a column across all pages"""
+        all_data = []
+
+        while True:
+            # Get data from current page
+            page_data = self.page.locator(f'tbody tr td:nth-child({column_index})').all_text_contents()
+            all_data.extend(page_data)
+
+            # Check if there's a next page
+            next_button = self.page.locator(f'{self.table_id} li.paginate_button.next')
+            is_disabled = "disabled" in next_button.get_attribute("class").split()
+            if next_button.count() > 0 and not is_disabled:
+                next_button.locator('a').click()
+                self.page.wait_for_timeout(1500)  # Wait for page load
+            else:
+                break
+
+        return all_data
+
+    def get_current_page_data(self, column_index) -> list[str]:
+        """Get data from current page only"""
+        return self.page.locator(f'tbody tr td:nth-child({column_index})').all_text_contents()
+
+    def get_column_index(self, header_text) -> list[str]:
+        """Get column index by header text"""
+        self.page.locator('table.dataTable').first.wait_for()
+        headers = self.page.locator('thead th').all_text_contents()
+        return headers.index(header_text) + 1
+
+    def go_to_first_page(self) -> None:
+        """Navigate to first page"""
+        # Click on page 1 or Previous until we reach first page
+        first_page = self.page.locator(f'{self.table_id} li.paginate_button a[data-dt-idx="1"]').first
+        first_page.wait_for()
+        if first_page.count() > 0:
+            first_page.click()
+            self.page.wait_for_timeout(1000)
+        else:
+            # Keep clicking Previous until disabled
+            while True:
+                prev_button = self.page.locator(f'{self.table_id} li.paginate_button.previous').first
+                is_disabled = "disabled" in prev_button.get_attribute("class").split()
+                if prev_button.count() > 0 and not is_disabled:
+                    prev_button.wait_for()
+                    prev_button.click()
+                    self.page.wait_for_timeout(1000)
+                else:
+                    break
+
+    def set_entries_per_page(self, entries=100) -> None:
+        """Set number of entries per page"""
+        dropdown = self.page.locator(f'{self.table_id} .dataTables_length select').first
+        dropdown.wait_for()
+        if dropdown.count() > 0:
+            dropdown.select_option(str(entries))
+            self.page.wait_for_timeout(1500)
+
+    def is_sorted(self, data, column_type, ascending=True, **kwargs) -> bool:
+        """Check if data is sorted"""
+        if column_type == "numeric":
+            clean_data = [int(val.replace(',', '').strip()) for val in data if val.strip() != ""]
+        elif column_type == "text":
+            clean_data = [str(val).strip().upper() for val in data]
+        elif column_type == "date":
+            date_format = kwargs.get('date_format', '%d-%b-%Y')
+            clean_data = [datetime.strptime(val, date_format) for val in data if val != ""]
+        else:
+            clean_data = data
+
+        if ascending:
+            return clean_data == sorted(clean_data)
+        else:
+            return clean_data == sorted(clean_data, reverse=True)
