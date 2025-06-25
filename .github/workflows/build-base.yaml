@@ -21,7 +21,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{secrets.TEXAS_MANAGEMENT_ACCOUNT_ID}}:role/${{secrets.TEXAS_MANAGEMENT_ACCOUNT_ROLE}}
+          role-to-assume: arn:aws:iam::${{secrets.TEXAS_MANAGEMENT_ACCOUNT_ID}}:role/${{secrets.BS_SELECT_GITHUB_ROLE}}
           aws-region: eu-west-2
 
       - name: Login to Amazon ECR
