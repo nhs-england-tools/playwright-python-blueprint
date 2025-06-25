@@ -38,10 +38,11 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{secrets.ECR_REPOSITORY}}
           BRANCH_NAME: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
-          IMAGE_TAG: ${BRANCH_NAME#*/} # Remove everything before the first '/'
         run: |
           ls
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          IMAGE_TAG="${BRANCH_NAME#*/}"Add commentMore actions
+          echo "Image tag: $IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG buildBase.dockerfile
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
