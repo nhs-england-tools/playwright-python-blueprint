@@ -41,7 +41,7 @@ def test_run_fobt_invitations_and_process_s1_batch(
     logging.info("Generating invitations based on the invitation plan")
     GenerateInvitationsPage(page).click_generate_invitations_button()
     GenerateInvitationsPage(page).wait_for_invitation_generation_complete(
-        int(general_properties["daily_invitation_rate"])
+        int(general_properties["fobt_daily_invitation_rate"])
     )
     logging.info("Invitations generated successfully")
 

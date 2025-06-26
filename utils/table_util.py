@@ -235,7 +235,7 @@ class TableUtils:
                 f"No cell found at column '{column_name}' and row index {row_index}"
             )
 
-    def assert_surname_in_table(self, surname_pattern):
+    def assert_surname_in_table(self, surname_pattern: str) -> None:
         """
         Asserts that a surname matching the given pattern exists in the table.
         Args:
