@@ -30,6 +30,7 @@ def test_subject_search(page: Page) -> None:
     # Wait for the JSON database request to complete and search on letter A
     with page.expect_response("**/bss/subjects/search**") as response:
         # Await initial API load, but don't need to do anything with response at this stage
+        # Patience is key
         pass
     page.locator("#familyNameFilter").get_by_role("textbox").fill("A")
 
