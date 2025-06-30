@@ -18,6 +18,41 @@ class SubjectDemographicPage(BasePage):
         self.update_subject_data_button = self.page.get_by_role(
             "button", name="Update Subject Data"
         )
+        self.temporary_address_show_link = (
+            self.page.locator("font")
+            .filter(has_text="Temporary Address show")
+            .get_by_role("link")
+        )
+        self.temporary_address_valid_from_calendar_button = self.page.locator(
+            "#UI_SUBJECT_ALT_FROM_0_LinkOrButton"
+        )
+        self.temporary_address_valid_to_calendar_button = self.page.locator(
+            "#UI_SUBJECT_ALT_TO_0_LinkOrButton"
+        )
+        self.temporary_address_valid_from_text_box = self.page.get_by_role(
+            "textbox", name="Valid from"
+        )
+        self.temporary_address_valid_to_text_box = self.page.get_by_role(
+            "textbox", name="Valid to"
+        )
+        self.temporary_address_address_line_1 = self.page.locator(
+            "#UI_SUBJECT_ALT_ADDR1_0"
+        )
+        self.temporary_address_address_line_2 = self.page.locator(
+            "#UI_SUBJECT_ALT_ADDR2_0"
+        )
+        self.temporary_address_address_line_3 = self.page.locator(
+            "#UI_SUBJECT_ALT_ADDR3_0"
+        )
+        self.temporary_address_address_line_4 = self.page.locator(
+            "#UI_SUBJECT_ALT_ADDR4_0"
+        )
+        self.temporary_address_address_line_5 = self.page.locator(
+            "#UI_SUBJECT_ALT_ADDR5_0"
+        )
+        self.temporary_address_postcode = self.page.locator(
+            "#UI_SUBJECT_ALT_POSTCODE_0"
+        )
 
     def is_forename_filled(self) -> bool:
         """
@@ -99,3 +134,53 @@ class SubjectDemographicPage(BasePage):
             str: The subject's date of birth as a string
         """
         return self.dob_field.input_value()
+
+    def update_temporary_address(self, dict: dict) -> None:
+        """
+        Updates the temporary address fields with the provided dictionary values.
+        Args:
+            dict (dict): A dictionary containing the temporary address details.
+                Expected keys: 'valid_from', 'valid_to', 'address_line_1',
+                'address_line_2', 'address_line_3', 'address_line_4', 'address_line_5'.
+        """
+        # Click the link to show the temporary address fields
+        if self.temporary_address_show_link.is_visible():
+            # If the link is visible, click it to show the temporary address fields
+            self.click(self.temporary_address_show_link)
+
+        # Update the valid from date
+        if "valid_from" in dict:
+            if dict["valid_from"] is None:
+                self.temporary_address_valid_from_text_box.fill("")
+            else:
+                CalendarPicker(self.page).calendar_picker_ddmmyyyy(
+                    dict["valid_from"], self.temporary_address_valid_from_text_box
+                )
+
+        # Update the valid to date
+        if "valid_to" in dict:
+            if dict["valid_to"] is None:
+                self.temporary_address_valid_to_text_box.fill("")
+            else:
+                CalendarPicker(self.page).calendar_picker_ddmmyyyy(
+                    dict["valid_to"], self.temporary_address_valid_to_text_box
+                )
+
+        # Fill in the address lines
+        if "address_line_1" in dict:
+            self.temporary_address_address_line_1.fill(dict["address_line_1"])
+        if "address_line_2" in dict:
+            self.temporary_address_address_line_2.fill(dict["address_line_2"])
+        if "address_line_3" in dict:
+            self.temporary_address_address_line_3.fill(dict["address_line_3"])
+        if "address_line_4" in dict:
+            self.temporary_address_address_line_4.fill(dict["address_line_4"])
+        if "address_line_5" in dict:
+            self.temporary_address_address_line_5.fill(dict["address_line_5"])
+
+        # Fill in the postcode
+        if "postcode" in dict:
+            self.temporary_address_postcode.fill(dict["postcode"])
+
+        # Click the update subject data button to save changes
+        self.update_subject_data_button.click()

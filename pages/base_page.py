@@ -249,7 +249,6 @@ class BasePage:
         except Exception as e:
             logging.error(f"Click failed: {e}")
 
-
     def assert_dialog_text(self, expected_text: str) -> None:
         """
         Asserts that a dialog appears and contains the expected text.
@@ -257,12 +256,17 @@ class BasePage:
         Args:
             expected_text (str): The text that should be present in the dialog.
         """
+        self._dialog_assertion_error = None
 
-        def handle_dialog(dialog):
+        def handle_dialog(dialog: Dialog):
+            logging.info(f"Dialog appeared with message: {dialog.message}")
             actual_text = dialog.message
-            assert (
-                actual_text == expected_text
-            ), f"Expected '{expected_text}', but got '{actual_text}'"
+            try:
+                assert (
+                    actual_text == expected_text
+                ), f"Expected '{expected_text}', but got '{actual_text}'"
+            except AssertionError as e:
+                self._dialog_assertion_error = e
             dialog.dismiss()  # Dismiss dialog
 
         self.page.once("dialog", handle_dialog)

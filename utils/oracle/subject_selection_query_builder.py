@@ -2355,7 +2355,8 @@ class SubjectSelectionQueryBuilder:
                     " SELECT 1 "
                     " FROM sd_address_t x "
                     " WHERE x.contact_id  = c.contact_id "
-                    " AND x.address_type = 13043) "
+                    " AND x.address_type = 13043"
+                    " AND x.effective_from is not null) "
                 )
             else:
                 raise ValueError()

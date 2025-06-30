@@ -54,6 +54,11 @@ class SubjectScreeningSummaryPage(BasePage):
         self.advance_fobt_screening_episode_button = self.page.get_by_role(
             "button", name="Advance FOBT Screening Episode"
         )
+        self.temporary_address_icon = self.page.get_by_role(
+            "link", name="The person has a current"
+        )
+        self.temporary_address_popup = self.page.locator("#idTempAddress")
+        self.close_button = self.page.get_by_role("img", name="close")
 
     def wait_for_page_title(self) -> None:
         """Waits for the page to be the Subject Screening Summary"""
@@ -71,9 +76,7 @@ class SubjectScreeningSummaryPage(BasePage):
 
     def verify_subject_search_results_title_subject_search_results(self) -> None:
         """Verify that the subject search results title contains 'Subject Search Results'."""
-        self.bowel_cancer_screening_page_title_contains_text(
-            "Subject Search Results"
-        )
+        self.bowel_cancer_screening_page_title_contains_text("Subject Search Results")
 
     def get_latest_event_status_cell(self, latest_event_status: str) -> Locator:
         """Get the latest event status cell by its name."""
@@ -191,6 +194,38 @@ class SubjectScreeningSummaryPage(BasePage):
             logging.info("Episode successfully advanced")
         except Exception as e:
             pytest.fail(f"Unable to advance the episode: {e}")
+
+    def verify_temporary_address_popup_visible(self) -> None:
+        """Verify that the temporary address popup is visible."""
+        try:
+            expect(self.temporary_address_popup).to_be_visible()
+            logging.info("Temporary address popup is visible")
+        except Exception as e:
+            pytest.fail(f"Temporary address popup is not visible: {e}")
+
+    def click_temporary_address_icon(self) -> None:
+        """Click on the temporary address icon."""
+        self.click(self.temporary_address_icon)
+
+    def verify_temporary_address_icon_visible(self) -> None:
+        """Verify that the temporary address icon is visible."""
+        try:
+            expect(self.temporary_address_icon).to_be_visible()
+            logging.info("Temporary address icon is visible")
+        except Exception as e:
+            pytest.fail(f"Temporary address icon is not visible when it should be: {e}")
+
+    def verify_temporary_address_icon_not_visible(self) -> None:
+        """Verify that the temporary address icon is not visible."""
+        try:
+            expect(self.temporary_address_icon).not_to_be_visible()
+            logging.info("Temporary address icon is not visible as expected")
+        except Exception as e:
+            pytest.fail(f"Temporary address icon is visible when it should not be: {e}")
+
+    def click_close_button(self) -> None:
+        """Click on the close button in the temporary address popup."""
+        self.click(self.close_button)
 
 
 class ChangeScreeningStatusOptions(Enum):

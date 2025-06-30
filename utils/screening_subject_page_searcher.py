@@ -193,3 +193,40 @@ def check_clear_filters_button_works(page: Page, nhs_number: str) -> None:
     expect(SubjectScreeningPage(page).nhs_number_filter).to_have_value(nhs_number)
     SubjectScreeningPage(page).click_clear_filters_button()
     expect(SubjectScreeningPage(page).nhs_number_filter).to_be_empty()
+
+
+def search_subject_demographics_by_nhs_number(page: Page, nhs_number: str) -> None:
+    """
+    This searches for a subject by their NHS Number and checks the page has redirected accordingly
+
+    Args:
+        page (Page): This is the playwright page object
+        nhs_number (str): The screening subject's nhs number
+    """
+    SubjectScreeningPage(page).click_clear_filters_button()
+    SubjectScreeningPage(page).click_demographics_filter()
+    SubjectScreeningPage(page).click_nhs_number_filter()
+    SubjectScreeningPage(page).nhs_number_filter.fill(nhs_number)
+    SubjectScreeningPage(page).nhs_number_filter.press("Tab")
+    SubjectScreeningPage(page).select_search_area_option(
+        SearchAreaSearchOptions.SEARCH_AREA_WHOLE_DATABASE.value
+    )
+    SubjectScreeningPage(page).click_search_button()
+
+
+def search_subject_episode_by_nhs_number(page: Page, nhs_number: str) -> None:
+    """
+    This searches for a subject by their NHS Number and checks the page has redirected accordingly
+
+    Args:
+        page (Page): This is the playwright page object
+        nhs_no (str): The screening subject's nhs number
+    """
+    SubjectScreeningPage(page).click_clear_filters_button()
+    SubjectScreeningPage(page).click_episodes_filter()
+    SubjectScreeningPage(page).nhs_number_filter.fill(nhs_number)
+    SubjectScreeningPage(page).nhs_number_filter.press("Tab")
+    SubjectScreeningPage(page).select_search_area_option(
+        SearchAreaSearchOptions.SEARCH_AREA_WHOLE_DATABASE.value
+    )
+    SubjectScreeningPage(page).click_search_button()
