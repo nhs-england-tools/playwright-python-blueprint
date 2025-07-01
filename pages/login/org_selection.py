@@ -24,9 +24,11 @@ class OrgSelectionPage(BasePage):
                         self.page.locator("#chosenOrgCode").select_option(role)
                         break
                 else:
-                    raise AssertionError(f"Role '{role}' not found on /orgChoice screen.")
+                    raise AssertionError(
+                        f"Role '{role}' not found on /orgChoice screen."
+                    )
 
             self.page.get_by_role("button", name="Select Organisation").click()
 
-    def verify_header(self) -> None:
-        return super().verify_header(PAGE_HEADER)
+    def verify_header(self, header: str = PAGE_HEADER) -> None:
+        return super().verify_header(header)

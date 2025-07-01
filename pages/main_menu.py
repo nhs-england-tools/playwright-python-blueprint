@@ -9,7 +9,7 @@ HEADER = "Welcome to Breast Screening Select"
 class MainMenuPage(BasePage):
 
     def __init__(self, page: Page) -> None:
-        self.page = page
+        BasePage.__init__(self, page)
 
-    def verify_header(self) -> None:
-        return super().verify_header(HEADER)
+    def verify_header(self, header: str = HEADER) -> None:
+        return super().verify_header(header)
