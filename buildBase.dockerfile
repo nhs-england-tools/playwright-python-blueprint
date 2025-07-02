@@ -4,6 +4,7 @@ RUN addgroup --system nonroot \
     && adduser --system --home /home/nonroot nonroot --ingroup nonroot
 
 WORKDIR /test
+#change me
 
 # Install dependencies
 # Try posgres client install
