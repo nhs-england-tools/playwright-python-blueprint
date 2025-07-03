@@ -30,5 +30,12 @@
     "roles": [
       "Hub Manager, Southern Bowel Cancer Screening Programme Hub"
     ]
+  },
+  "Specialist Screening Practitioner at BCS009 & BCS001": {
+    "username": "BCSS120",
+    "roles": [
+      "Coventry and Warwickshire Bowel Cancer Screening Centre, MultiOrgUser",
+      "Wolverhampton Bowel Cancer Screening Centre, MultiOrgUser"
+    ]
   }
 }

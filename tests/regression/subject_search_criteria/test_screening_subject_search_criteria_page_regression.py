@@ -9,7 +9,6 @@ from pages.screening_subject_search.subject_screening_search_page import (
 )
 
 @pytest.mark.regression
-@pytest.mark.subject_search
 def test_user_can_search_for_subject_and_results_are_returned(page: Page):
     """
     Verify that User can log in to BCSS "England" as user role "Hub Manager - State Registered"
