@@ -6,8 +6,8 @@ RUN addgroup --system nonroot \
 WORKDIR /test
 
 # Install dependencies
-# Try posgres client install
-RUN apt-get update && apt-get --no-install-recommends install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+# Try aws, posgres client install
+RUN apt-get update && apt-get --no-install-recommends install -y awscli bash libpq-dev && rm -rf /var/lib/apt/lists/*
 
 ENV HOME=/home/nonroot
 ENV PATH="$HOME/.local/bin:$PATH"
