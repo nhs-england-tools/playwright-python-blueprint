@@ -54,6 +54,7 @@ class SubjectScreeningSummaryPage(BasePage):
         self.advance_fobt_screening_episode_button = self.page.get_by_role(
             "button", name="Advance FOBT Screening Episode"
         )
+        self.additional_care_note_link = self.page.get_by_role("link", name="(AN)")
         self.temporary_address_icon = self.page.get_by_role(
             "link", name="The person has a current"
         )
@@ -195,6 +196,47 @@ class SubjectScreeningSummaryPage(BasePage):
         except Exception as e:
             pytest.fail(f"Unable to advance the episode: {e}")
 
+    def verify_additional_care_note_visible(self) -> None:
+        """Verifies that the '(AN)' link is visible."""
+        expect(self.additional_care_note_link).to_be_visible()
+
+    def verify_note_link_present(self, note_type_name: str) -> None:
+        """
+        Verifies that the link for the specified note type is visible on the page.
+
+        Args:
+            note_type_name (str): The name of the note type to check (e.g., 'Additional Care Note', 'Episode Note').
+
+        Raises:
+            AssertionError: If the link is not visible on the page.
+        """
+        logging.info(f"Checking if the '{note_type_name}' link is visible.")
+        note_link_locator = self.page.get_by_role(
+            "link", name=f"({note_type_name})"
+        )  # Dynamic locator for the note type link
+        assert (
+            note_link_locator.is_visible()
+        ), f"'{note_type_name}' link is not visible, but it should be."
+        logging.info(f"Verified: '{note_type_name}' link is visible.")
+
+    def verify_note_link_not_present(self, note_type_name: str) -> None:
+        """
+        Verifies that the link for the specified note type is not visible on the page.
+
+        Args:
+            note_type_name (str): The name of the note type to check (e.g., 'Additional Care Note', 'Episode Note').
+
+        Raises:
+            AssertionError: If the link is visible on the page.
+        """
+        logging.info(f"Checking if the '{note_type_name}' link is not visible.")
+        note_link_locator = self.page.get_by_role(
+            "link", name=f"({note_type_name})"
+        )  # Dynamic locator for the note type link
+        assert (
+            not note_link_locator.is_visible()
+        ), f"'{note_type_name}' link is visible, but it should not be."
+        logging.info(f"Verified: '{note_type_name}' link is not visible.")
     def verify_temporary_address_popup_visible(self) -> None:
         """Verify that the temporary address popup is visible."""
         try:

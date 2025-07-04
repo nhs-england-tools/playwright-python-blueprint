@@ -17,6 +17,7 @@ class SubjectScreeningPage(BasePage):
         self.demographics_filter = self.page.get_by_role("radio", name="Demographics")
         self.datasets_filter = self.page.get_by_role("radio", name="Datasets")
         self.nhs_number_filter = self.page.get_by_role("textbox", name="NHS Number")
+        self.nhs_number_input = self.page.get_by_label("NHS Number")
         self.surname_filter = self.page.locator("#A_C_Surname")
         self.soundex_filter = self.page.get_by_role("checkbox", name="Use soundex")
         self.forename_filter = self.page.get_by_role("textbox", name="Forename")
