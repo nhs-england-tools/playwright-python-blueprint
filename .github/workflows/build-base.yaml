@@ -1,13 +1,13 @@
 name: Build Docker Image on Feature Branch
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - 'main'
-
+  workflow_run:
+    workflows: [ "Commit stage" ]
+    types:
+      - completed
 jobs:
-  build:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     env:
