@@ -2,7 +2,7 @@ name: Build Docker Image on Feature Branch
 
 on:
   workflow_run:
-    workflows: [ "Commit stage" ]
+    workflows: ["CI/CD pull request"]
     types:
       - completed
 jobs:
