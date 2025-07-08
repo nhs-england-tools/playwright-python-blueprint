@@ -168,7 +168,7 @@ def pytest_json_modifyreport(json_report: object) -> None:
 
 
 def pytest_html_report_title(report: ReportData) -> None:
-    report.title = "Test Automation Report"
+    report.title = "BS-Select Test Automation Report"
 
 
 def pytest_html_results_table_header(cells: list) -> None:
