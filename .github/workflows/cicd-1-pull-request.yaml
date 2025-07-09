@@ -3,11 +3,7 @@ name: "CI/CD pull request"
 # The total recommended execution time for the "CI/CD Pull Request" workflow is around 20 minutes.
 
 on:
-  push:
-    branches:
-      - "**"
-  pull_request:
-    types: [opened, reopened]
+  workflow_call:
 
 jobs:
   metadata:
