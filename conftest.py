@@ -6,9 +6,14 @@ It is also used to define hooks that can be used to modify the behavior of pytes
 
 import pytest
 import os
+import typing
 from dotenv import load_dotenv
 from pathlib import Path
+from _pytest.python import Function
+from pytest_html.report_data import ReportData
 from utils.load_properties_file import PropertiesFile
+
+# Environment Variable Handling
 
 LOCAL_ENV_PATH = Path(os.getcwd()) / "local.env"
 
@@ -35,3 +40,27 @@ def smokescreen_properties() -> dict:
 @pytest.fixture
 def general_properties() -> dict:
     return PropertiesFile().get_general_properties()
+
+
+# HTML Report Customization
+
+
+def pytest_html_report_title(report: ReportData) -> None:
+    report.title = "BCSS Test Automation Report"
+
+
+def pytest_html_results_table_header(cells: list) -> None:
+    cells.insert(2, "<th>Description</th>")
+
+
+def pytest_html_results_table_row(report: object, cells: list) -> None:
+    description = getattr(report, "description", "N/A")
+    cells.insert(2, f"<td>{description}</td>")
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item: Function) -> typing.Generator[None, None, None]:
+    outcome = yield
+    if outcome is not None:
+        report = outcome.get_result()
+        report.description = str(item.function.__doc__)
