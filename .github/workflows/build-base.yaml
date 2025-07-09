@@ -7,17 +7,19 @@ on:
       - completed
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     env:
       ECR_REPOSITORY: ${{secrets.TEXAS_MANAGEMENT_ACCOUNT_ID}}.dkr.ecr.eu-west-2.amazonaws.com
       IMAGE_NAME: bs-select-playwright-test
     permissions:
-      contents: read
+      contents: readfiref
       id-token: write  # Required for OIDC authentication
 
     steps:
+      - name: Dump workflow_run payload
+        run: echo "${{ toJSON(github.event.workflow_run) }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
