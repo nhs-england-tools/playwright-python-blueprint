@@ -6,8 +6,11 @@ It is also used to define hooks that can be used to modify the behavior of pytes
 
 import pytest
 import os
+import typing
 from dotenv import load_dotenv
 from pathlib import Path
+from _pytest.python import Function
+from pytest_html.report_data import ReportData
 
 from pages.ni_ri_sp_batch_page import NiRiSpBatchPage
 
@@ -164,7 +167,7 @@ def pytest_json_modifyreport(json_report: object) -> None:
 # --- HTML Report Generation ---
 
 
-def pytest_html_report_title(report: object) -> None:
+def pytest_html_report_title(report: ReportData) -> None:
     report.title = "BS-Select Test Automation Report"
 
 
@@ -178,7 +181,8 @@ def pytest_html_results_table_row(report: object, cells: list) -> None:
 
 
 @pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_makereport(item: object) -> object:
+def pytest_runtest_makereport(item: Function) -> typing.Generator[None, None, None]:
     outcome = yield
-    report = outcome.get_result()
-    report.description = str(item.function.__doc__)
+    if outcome is not None:
+        report = outcome.get_result()
+        report.description = str(item.function.__doc__)
