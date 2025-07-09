@@ -9,12 +9,12 @@ on:
 
 jobs:
   ci_cd:
-    uses: ./.github/workflows/ci-cd-pull-request.yaml
+    uses: ./.github/workflows/cicd-1-pull-request.yaml
     secrets: inherit
 
   build_docker:
     name: Build Docker Image
     needs: ci_cd
     if: ${{ success() }}
-    uses: ./.github/workflows/build-docker-image.yaml
+    uses: ./.github/workflows/build-base.yaml
     secrets: inherit
