@@ -11,7 +11,7 @@ jobs:
       ECR_REPOSITORY: ${{secrets.TEXAS_MANAGEMENT_ACCOUNT_ID}}.dkr.ecr.eu-west-2.amazonaws.com
       IMAGE_NAME: bs-select-playwright-test
     permissions:
-      contents: readfiref
+      contents: read
       id-token: write  # Required for OIDC authentication
 
     steps:
