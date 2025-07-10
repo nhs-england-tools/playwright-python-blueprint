@@ -10,11 +10,11 @@ on:
 jobs:
   ci_cd:
     name: CI / CD
-    uses: ci-cd.yaml
+    uses: ./.github/workflows/ci-cd.yaml
     secrets: inherit
 
   build_docker:
     name: Build Docker Image
     needs: ci_cd
-    uses: build-docker-image.yaml
+    uses: ./.github/workflows/build-docker-image.yaml
     secrets: inherit
