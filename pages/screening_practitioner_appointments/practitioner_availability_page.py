@@ -27,6 +27,10 @@ class PractitionerAvailabilityPage(BasePage):
         """Selects the practitioner from the dropdown list."""
         self.screening_practitioner_dropdown.select_option(label=practitioner)
 
+    def select_practitioner_dropdown_option_from_index(self, index: int) -> None:
+        """Selects the practitioner from the dropdown list."""
+        self.screening_practitioner_dropdown.select_option(index=index)
+
     def click_calendar_button(self) -> None:
         """Clicks the calendar button to open the calendar picker."""
         self.click(self.calendar_button)

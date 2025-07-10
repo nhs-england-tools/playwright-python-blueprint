@@ -33,3 +33,12 @@ class AppointmentDetailPage(BasePage):
     def verify_text_visible(self, text: str) -> None:
         """Verifies that the specified text is visible on the page."""
         expect(self.page.get_by_text(text)).to_be_visible()
+
+    def wait_for_attendance_radio(self, timeout_duration: float = 30000) -> None:
+        """
+        Waits for the attendance radio to be visible. Default timeout is 30 seconds but this can be changed
+
+        Args:
+            timeout_duration (float): This is how long you want to wait for in milliseconds
+        """
+        self.attendance_radio.wait_for(timeout=timeout_duration)

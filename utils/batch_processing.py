@@ -18,6 +18,7 @@ import pytest
 from playwright.sync_api import Page
 import logging
 import pandas as pd
+from typing import Optional, Tuple
 
 
 def batch_processing(
@@ -27,7 +28,8 @@ def batch_processing(
     latest_event_status: str | list,
     run_timed_events: bool = False,
     get_subjects_from_pdf: bool = False,
-) -> None:
+    save_csv_as_df: bool = False,
+) -> Optional[pd.DataFrame]:
     """
     This is used to process batches.
 
@@ -38,6 +40,7 @@ def batch_processing(
         latest_event_status (str | list): The status the subject will get updated to after the batch has been processed.
         run_timed_events (bool): An optional input that executes bcss_timed_events if set to True
         get_subjects_from_pdf (bool): An optional input to change the method of retrieving subjects from the batch from the DB to the PDF file.
+        save_csv_as_df (bool): An optional input to save the CSV from batches as a pandas DF
     """
     logging.info(f"Processing {batch_type} - {batch_description} batch")
     BasePage(page).click_main_menu_link()
@@ -71,10 +74,14 @@ def batch_processing(
 
     if get_subjects_from_pdf:
         logging.info(f"Getting NHS Numbers for batch {link_text} from the PDF File")
-        nhs_no_df = prepare_and_print_batch(page, link_text, get_subjects_from_pdf)
+        nhs_no_df, csv_df = prepare_and_print_batch(
+            page, link_text, get_subjects_from_pdf, save_csv_as_df
+        )
     else:
         logging.info(f"Getting NHS Numbers for batch {link_text} from the DB")
-        prepare_and_print_batch(page, link_text, get_subjects_from_pdf)
+        nhs_no_df, csv_df = prepare_and_print_batch(
+            page, link_text, get_subjects_from_pdf, save_csv_as_df
+        )
         nhs_no_df = get_nhs_no_from_batch_id(link_text)
 
     check_batch_in_archived_batch_list(page, link_text)
@@ -90,10 +97,16 @@ def batch_processing(
     if run_timed_events:
         OracleDB().exec_bcss_timed_events(nhs_no_df)
 
+    if save_csv_as_df:
+        return csv_df
+
 
 def prepare_and_print_batch(
-    page: Page, link_text: str, get_subjects_from_pdf: bool = False
-) -> pd.DataFrame | None:
+    page: Page,
+    link_text: str,
+    get_subjects_from_pdf: bool = False,
+    save_csv_as_df: bool = False,
+) -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]:
     """
     This prepares the batch, retrieves the files and confirms them as printed
     Once those buttons have been pressed it waits for the message 'Batch Successfully Archived'
@@ -102,10 +115,12 @@ def prepare_and_print_batch(
         page (Page): This is the playwright page object
         link_text (str): The batch ID
         get_subjects_from_pdf (bool): An optional input to change the method of retrieving subjects from the batch from the DB to the PDF file.
+        save_csv_as_df (bool): An optional input to save the csv as a dataframe
 
     Returns:
         nhs_no_df (pd.DataFrame | None): if get_subjects_from_pdf is True, this is a DataFrame with the column 'subject_nhs_number' and each NHS number being a record, otherwise it is None
     """
+    csv_df = None
     ManageActiveBatchPage(page).click_prepare_button()
     page.wait_for_timeout(
         1000
@@ -128,11 +143,12 @@ def prepare_and_print_batch(
             file = download_file.suggested_filename
             # Wait for the download process to complete and save the downloaded file in a temp folder
             download_file.save_as(file)
-            nhs_no_df = (
-                extract_nhs_no_from_pdf(file)
-                if file.endswith(".pdf") and get_subjects_from_pdf
-                else None
-            )
+            if file.endswith(".pdf") and get_subjects_from_pdf:
+                nhs_no_df = extract_nhs_no_from_pdf(file)
+            elif file.endswith(".csv") and save_csv_as_df:
+                csv_df = pd.read_csv(file)
+            else:
+                nhs_no_df = None
             os.remove(file)  # Deletes the file after extracting the necessary data
     except Exception as e:
         pytest.fail(f"No retrieve button available to click: {str(e)}")
@@ -155,8 +171,7 @@ def prepare_and_print_batch(
         logging.info(f"Batch {link_text} successfully archived")
     except Exception as e:
         pytest.fail(f"Batch successfully archived message is not shown: {str(e)}")
-
-    return nhs_no_df
+    return nhs_no_df, csv_df
 
 
 def check_batch_in_archived_batch_list(page: Page, link_text) -> None:

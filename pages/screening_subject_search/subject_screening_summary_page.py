@@ -60,6 +60,9 @@ class SubjectScreeningSummaryPage(BasePage):
         )
         self.temporary_address_popup = self.page.locator("#idTempAddress")
         self.close_button = self.page.get_by_role("img", name="close")
+        self.book_practitioner_clinic_button = self.page.get_by_role(
+            "button", name="Book Practitioner Clinic"
+        )
 
     def wait_for_page_title(self) -> None:
         """Waits for the page to be the Subject Screening Summary"""
@@ -268,6 +271,10 @@ class SubjectScreeningSummaryPage(BasePage):
     def click_close_button(self) -> None:
         """Click on the close button in the temporary address popup."""
         self.click(self.close_button)
+
+    def click_book_practitioner_clinic_button(self) -> None:
+        """Click on the 'Book Practitioner Clinic' button"""
+        self.click(self.book_practitioner_clinic_button)
 
 
 class ChangeScreeningStatusOptions(Enum):

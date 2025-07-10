@@ -569,3 +569,70 @@ def check_if_subject_has_temporary_address(nhs_no: str) -> pd.DataFrame:
     bind_vars = {"nhs_no": nhs_no}
     df = OracleDB().execute_query(query, bind_vars)
     return df
+
+
+def set_org_parameter_value(param_id: int, param_value: str, org_id: str) -> None:
+    """
+    Updates the value of an organisation parameter in the database.
+
+    This function first ends any existing values for the given parameter and organisation by updating their effective dates and audit information.
+    It then inserts a new value for the parameter with the provided value and sets the audit fields accordingly.
+
+    Args:
+        param_id (int): The ID of the parameter to update.
+        param_value (str): The new value to set for the parameter.
+        org_id (str): The organisation ID for which the parameter should be set.
+    """
+    # End any old values
+    sql_update = (
+        "UPDATE org_parameters op "
+        "SET op.effective_from = op.effective_from - 1, "
+        "op.effective_to = CASE WHEN op.effective_to IS NULL THEN TRUNC(SYSDATE)-1 ELSE op.effective_to - 1 END, "
+        "op.audit_reason = 'AUTOMATED TESTING - END', "
+        "op.datestamp = SYSTIMESTAMP "
+        "WHERE op.org_id = :org_id "
+        "AND param_id = :param_id"
+    )
+    params = {"org_id": org_id, "param_id": param_id}
+    logging.info(f"executing query to end any old values: {sql_update}")
+    OracleDB().update_or_insert_data_to_table(sql_update, params)
+
+    # Insert new value
+    sql_insert = (
+        "INSERT INTO org_parameters (org_param_id, org_code, org_id, param_id, val, effective_from, pio_id, audit_reason, datestamp) "
+        "VALUES ("
+        "seq_org_param.NEXTVAL, "
+        f"(SELECT org_code FROM org WHERE org_id = :org_id), "
+        f"{org_id}, "
+        f"{param_id}, "
+        f"'{param_value}', "
+        "TRUNC(SYSDATE), "
+        "1, "
+        "'AUTOMATED TESTING - ADD', "
+        "SYSTIMESTAMP)"
+    )
+    params = {"org_id": org_id}
+    logging.info(f"executing query to set new value: {sql_insert}")
+    OracleDB().update_or_insert_data_to_table(sql_insert, params)
+
+
+def get_org_parameter_value(param_id: int, org_id: str) -> pd.DataFrame:
+    """
+    Retrieves the value of an organisation parameter from the database.
+
+    Args:
+        param_id (int): The ID of the parameter to retrieve.
+        org_id (str): The organisation ID for which the parameter value should be retrieved.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the parameter value and its effective date.
+    """
+    query = """
+        SELECT val, effective_from, audit_reason
+        FROM org_parameters
+        WHERE param_id = :param_id
+        AND org_id = :org_id
+    """
+    bind_vars = {"param_id": param_id, "org_id": org_id}
+    df = OracleDB().execute_query(query, bind_vars)
+    return df

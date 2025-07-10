@@ -739,30 +739,18 @@ class SubjectSelectionQueryBuilder:
         Translates a human-readable episode type string into an internal numeric ID.
         """
         try:
-            value = self.criteria_value.lower()
-            comparator = self.criteria_comparator
-
-            # Simulate EpisodeType enum mapping
-            episode_type_map = {
-                "referral": 1,
-                "invitation": 2,
-                "test_kit_sent": 3,
-                "reminder": 4,
-                "episode_end": 5,
-                # Add more mappings as needed
-            }
-
-            if value not in episode_type_map:
-                raise ValueError(f"Unknown episode type: {value}")
-
-            episode_type_id = episode_type_map[value]
-
-            # Simulate the required join (docs only—no real SQL execution here)
-            # In real builder this would ensure join to 'latest_episode' alias (ep)
-            self.sql_where.append(
-                f"AND ep.episode_type_id {comparator} {episode_type_id}"
+            episode_type = EpisodeType.by_description_case_insensitive(
+                self.criteria_value
             )
+            if episode_type is None:
+                raise SelectionBuilderException(
+                    self.criteria_key_name, self.criteria_value
+                )
 
+            self._add_join_to_latest_episode()
+            self.sql_where.append(
+                f" AND ep.episode_type_id {self.criteria_comparator}{episode_type.valid_value_id}"
+            )
         except Exception:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
 
@@ -816,6 +804,9 @@ class SubjectSelectionQueryBuilder:
                 "pending": 102,
                 "cancelled": 103,
                 "invalid": 104,
+                "open": 11352,
+                "closed": 11353,
+                "paused": 11354,
                 # Add actual mappings as needed
             }
 
@@ -971,25 +962,17 @@ class SubjectSelectionQueryBuilder:
         and injects its corresponding event_status_id into SQL.
         """
         try:
-            # Extract the code (e.g. "ES01") from the first word
-            code = self.criteria_value.strip().split()[0].upper()
-            comparator = self.criteria_comparator
+            self._add_join_to_latest_episode()
+            criteria_words = self.criteria_value.split(" ")
+            event_status = EventStatusType.get_by_code(criteria_words[0].upper())
+            if event_status is None:
+                raise SelectionBuilderException(
+                    self.criteria_key_name, self.criteria_value
+                )
 
-            # Simulated EventStatusType registry
-            event_status_code_map = {
-                "ES01": 600,
-                "ES02": 601,
-                "ES03": 602,
-                "ES99": 699,
-                # ...update with real mappings
-            }
-
-            if code not in event_status_code_map:
-                raise ValueError(f"Unknown event status code: {code}")
-
-            event_status_id = event_status_code_map[code]
-            self.sql_where.append(f"AND {column_name} {comparator} {event_status_id}")
-
+            self.sql_where.append(
+                f" AND {column_name} {self.criteria_comparator} {int(event_status.id) }"
+            )
         except Exception:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
 

@@ -197,7 +197,7 @@ def check_clear_filters_button_works(page: Page, nhs_number: str) -> None:
 
 def search_subject_demographics_by_nhs_number(page: Page, nhs_number: str) -> None:
     """
-    This searches for a subject by their NHS Number and checks the page has redirected accordingly
+    This searches for a subject demographic by their NHS Number
 
     Args:
         page (Page): This is the playwright page object
@@ -216,7 +216,7 @@ def search_subject_demographics_by_nhs_number(page: Page, nhs_number: str) -> No
 
 def search_subject_episode_by_nhs_number(page: Page, nhs_number: str) -> None:
     """
-    This searches for a subject by their NHS Number and checks the page has redirected accordingly
+    This searches for a subject episode by their NHS Number
 
     Args:
         page (Page): This is the playwright page object

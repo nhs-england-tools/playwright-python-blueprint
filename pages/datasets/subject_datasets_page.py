@@ -23,6 +23,11 @@ class SubjectDatasetsPage(BasePage):
                 "link"
             )
         )
+        self.cancer_audit_show_dataset_button = (
+            self.page.locator("div")
+            .filter(has_text="Cancer Audit (1 Dataset) Show")
+            .get_by_role("link")
+        )
 
     def click_colonoscopy_show_datasets(self) -> None:
         """Clicks on the 'Show Dataset' button for the Colonoscopy Assessment row on the Subject Datasets Page."""
@@ -43,3 +48,7 @@ class SubjectDatasetsPage(BasePage):
                 has_text="** Completed **",
             )
         ).to_be_visible()
+
+    def click_cancer_audit_show_datasets(self) -> None:
+        """Clicks on the 'Show Dataset' button for the Cancer Audit row on the Subject Datasets Page."""
+        self.click(self.cancer_audit_show_dataset_button)
