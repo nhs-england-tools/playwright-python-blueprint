@@ -1,0 +1,11 @@
+name: Pull request
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  ci_cd:
+    name: CI / CD
+    uses: ci-cd.yaml
+    secrets: inherit

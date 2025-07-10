@@ -1,4 +1,4 @@
-name: Full CI/CD + Docker
+name: Push to any branch
 
 on:
   push:
@@ -9,12 +9,12 @@ on:
 
 jobs:
   ci_cd:
-    uses: ./.github/workflows/cicd-1-pull-request.yaml
+    name: CI / CD
+    uses: ci-cd.yaml
     secrets: inherit
 
   build_docker:
     name: Build Docker Image
     needs: ci_cd
-    if: ${{ success() }}
-    uses: ./.github/workflows/build-base.yaml
+    uses: build-docker-image.yaml
     secrets: inherit

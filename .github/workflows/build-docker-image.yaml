@@ -1,7 +1,8 @@
-name: Build Docker Image on Feature Branch
+name: Build Docker Image
 
 on:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   build:
