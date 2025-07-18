@@ -1,6 +1,11 @@
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from enum import StrEnum
+from utils.oracle.oracle_specific_functions import (
+    get_investigation_dataset_polyp_category,
+    get_investigation_dataset_polyp_algorithm_size,
+)
+from typing import Optional
 
 
 class InvestigationDatasetsPage(BasePage):
@@ -19,6 +24,9 @@ class InvestigationDatasetsPage(BasePage):
         self.aspirant_endoscopist_link = self.page.locator(
             "#UI_ASPIRANT_ENDOSCOPIST_PIO_SELECT_LINK"
         )
+        self.aspirant_endoscopist_not_present = self.page.locator(
+            "#UI_ASPIRANT_ENDOSCOPIST_NR"
+        )
         self.show_drug_information_detail = self.page.locator("#anchorDrug")
         self.drug_type_option1 = self.page.locator("#UI_BOWEL_PREP_DRUG1")
         self.drug_type_dose1 = self.page.locator("#UI_BOWEL_PREP_DRUG_DOSE1")
@@ -26,6 +34,7 @@ class InvestigationDatasetsPage(BasePage):
             "#anchorColonoscopy"
         )
         self.endoscope_inserted_yes = self.page.locator("#radScopeInsertedYes")
+        self.endoscope_inserted_no = self.page.locator("#radScopeInsertedNo")
         self.therapeutic_procedure_type = self.page.get_by_role(
             "radio", name="Therapeutic"
         )
@@ -44,9 +53,27 @@ class InvestigationDatasetsPage(BasePage):
             "#spanPolypInterventionLink2"
         ).get_by_role("link", name="Add Intervention")
         self.dataset_complete_checkbox = self.page.locator("#radDatasetCompleteYes")
+        self.dataset_incomplete_checkbox = self.page.locator("#radDatasetCompleteNo")
         self.save_dataset_button = self.page.locator(
             "#UI_DIV_BUTTON_SAVE1"
         ).get_by_role("button", name="Save Dataset")
+        self.polyp1_pathology_provider = self.page.locator(
+            "#UI_POLYP_PATHOLOGY_ORG_SITE_SELECT_LINK1_1"
+        )
+        self.polyp1_pathologist = self.page.locator(
+            "#UI_POLYP_PATHOLOGIST_PIO_SELECT_LINK1_1"
+        )
+        self.polyp_information_show_details = self.page.locator("#anchorPolyp")
+        self.polyp_1_intervention_show_information = self.page.locator(
+            "#anchorPolypTherapy1_1"
+        )
+        self.polyp_1_histology_show_information = self.page.locator(
+            "#anchorPolypHistology1_1"
+        )
+        self.edit_dataset_button = self.page.locator(
+            "#UI_DIV_BUTTON_EDIT1"
+        ).get_by_role("button", name="Edit Dataset")
+        self.visible_ui_results_string = 'select[id^="UI_RESULTS_"]:visible'
 
     def select_site_lookup_option(self, option: str) -> None:
         """
@@ -61,6 +88,22 @@ class InvestigationDatasetsPage(BasePage):
         option_locator.wait_for(state="visible")
         self.click(option_locator)
 
+    def select_site_lookup_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a site from the site lookup options.
+        It clicks on the site lookup link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the site lookup options.
+        """
+        self.click(self.site_lookup_link)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
     def select_practitioner_option(self, option: str) -> None:
         """
         This method is designed to select a practitioner from the practitioner options.
@@ -73,6 +116,22 @@ class InvestigationDatasetsPage(BasePage):
         option_locator = self.page.locator(f'[value="{option}"]:visible')
         option_locator.wait_for(state="visible")
         self.click(option_locator)
+
+    def select_practitioner_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a practitioner from the practitioner options.
+        It clicks on the practitioner link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the practitioner options.
+        """
+        self.click(self.practitioner_link)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
 
     def select_testing_clinician_option(self, option: str) -> None:
         """
@@ -87,6 +146,22 @@ class InvestigationDatasetsPage(BasePage):
         option_locator.wait_for(state="visible")
         self.click(option_locator)
 
+    def select_testing_clinician_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a testing clinician from the testing clinician options.
+        It clicks on the testing clinician link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the testing clinician options.
+        """
+        self.click(self.testing_clinician_link)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
     def select_aspirant_endoscopist_option(self, option: str) -> None:
         """
         This method is designed to select an aspirant endoscopist from the aspirant endoscopist options.
@@ -99,6 +174,29 @@ class InvestigationDatasetsPage(BasePage):
         option_locator = self.page.locator(f'[value="{option}"]:visible')
         option_locator.wait_for(state="visible")
         self.click(option_locator)
+
+    def select_aspirant_endoscopist_option_index(self, option: int) -> None:
+        """
+        This method is designed to select an aspirant endoscopist from the aspirant endoscopist options.
+        It clicks on the aspirant endoscopist link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the aspirant endoscopist options.
+        """
+        self.click(self.aspirant_endoscopist_link)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
+    def check_aspirant_endoscopist_not_present(self) -> None:
+        """
+        This method is designed to check the aspirant endoscopist not present option.
+        It checks the aspirant endoscopist not present option.
+        """
+        self.aspirant_endoscopist_not_present.check()
 
     def click_show_drug_information(self) -> None:
         """
@@ -142,6 +240,13 @@ class InvestigationDatasetsPage(BasePage):
         It checks the endoscope inserted yes option.
         """
         self.endoscope_inserted_yes.check()
+
+    def check_endoscope_inserted_no(self) -> None:
+        """
+        This method is designed to check the endoscope inserted no option.
+        It checks the endoscope inserted no option.
+        """
+        self.endoscope_inserted_no.check()
 
     def select_therapeutic_procedure_type(self) -> None:
         """
@@ -200,6 +305,13 @@ class InvestigationDatasetsPage(BasePage):
         """
         self.dataset_complete_checkbox.check()
 
+    def check_dataset_incomplete_checkbox(self) -> None:
+        """
+        This method is designed to check the dataset incomplete checkbox.
+        It checks the dataset incomplete checkbox.
+        """
+        self.dataset_incomplete_checkbox.check()
+
     def click_save_dataset_button(self) -> None:
         """
         This method is designed to click on the save dataset button.
@@ -216,6 +328,120 @@ class InvestigationDatasetsPage(BasePage):
             text (str): The text to check for visibility.
         """
         expect(self.page.get_by_text(text)).to_contain_text(text)
+
+    def select_polyp1_pathology_provider_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a pathology provider from the pathology provider options.
+        It clicks on the pathology provider link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the pathology provider options.
+        """
+        self.click(self.polyp1_pathology_provider)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
+    def select_polyp1_pathologist_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a pathologist from the pathologist options.
+        It clicks on the pathologist link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the pathologist options.
+        """
+        self.click(self.polyp1_pathologist)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
+    def click_edit_dataset_button(self) -> None:
+        """
+        This method is designed to click on the edit dataset button.
+        It clicks on the edit dataset button.
+        """
+        self.click(self.edit_dataset_button)
+
+    def assert_polyp_alogrithm_size(
+        self, polyp_number: int, expected_value: Optional[str]
+    ) -> None:
+        """
+        This method asserts that the polyp size is as expected.
+        It retrieves the polyp size from the page and compares it with the expected value.
+
+        Args:
+            polyp_number (int): The number of the polyp to check (1 or 2).
+            expected_value (int): The expected value of the polyp size.
+        """
+        dataset_id = self.get_dataset_id()
+        if dataset_id == -1:
+            raise ValueError("Dataset ID not found in the URL.")
+        actual_value = get_investigation_dataset_polyp_algorithm_size(
+            dataset_id, polyp_number
+        )
+
+        # Assert that the actual value matches the expected value
+        if actual_value is None or expected_value is None:
+            assert (
+                actual_value == expected_value
+            ), f"Expected '{expected_value}', but got '{actual_value}'"
+        else:
+            assert (
+                str(actual_value).strip() == str(expected_value).strip()
+            ), f"Expected '{expected_value}', but got '{actual_value}'"
+
+    def assert_polyp_categrory(
+        self, polyp_number: int, expected_value: Optional[str]
+    ) -> None:
+        """
+        This method asserts that the polyp category is as expected.
+        It retrieves the polyp category from the page and compares it with the expected value.
+
+        Args:
+            polyp_number (int): The number of the polyp to check (1 or 2).
+            expected_value (str): The expected value of the polyp category.
+        """
+        dataset_id = self.get_dataset_id()
+        if dataset_id == -1:
+            raise ValueError("Dataset ID not found in the URL.")
+        actual_value = get_investigation_dataset_polyp_category(
+            dataset_id, polyp_number
+        )
+
+        # Assert that the actual value matches the expected value
+        if actual_value is None or expected_value is None:
+            assert (
+                actual_value == expected_value
+            ), f"Expected '{expected_value}', but got '{actual_value}'"
+        else:
+            assert (
+                str(actual_value).strip() == str(expected_value).strip()
+            ), f"Expected '{expected_value}', but got '{actual_value}'"
+
+    def get_dataset_id(self) -> int:
+        """
+        Extracts the dataset id from the current URL using Playwright.
+        Returns -1 if not found.
+        """
+        url = self.page.url  # Playwright's current page URL
+        if "?" not in url:
+            return -1
+        query_string = url.split("?", 1)[1]
+        params = query_string.split("&")
+        dataset_id = -1
+        for param in params:
+            if param.startswith("id="):
+                try:
+                    dataset_id = int(param.split("=", 1)[1])
+                except ValueError:
+                    dataset_id = -1
+        return dataset_id
 
 
 class SiteLookupOptions(StrEnum):
@@ -394,12 +620,12 @@ class FailureReasonsOptions(StrEnum):
 class PolypClassificationOptions(StrEnum):
     """Enum for polyp classification options"""
 
-    LP = "17296"
-    LSP = "200596"
-    LS = "17295"
-    LLA = "200595"
-    LLB = "200591"
-    LLC = "200592"
+    IP = "17296"
+    ISP = "200596"
+    IS = "17295"
+    IIA = "200595"
+    IIB = "200591"
+    IIC = "200592"
     LST_G = "200593"
     LST_NG = "200594"
     LLA_C = "200683"
@@ -428,6 +654,7 @@ class PolypInterventionDeviceOptions(StrEnum):
     HOT_BIOPSY = "17071~En-bloc"
     COLD_SNARE = "17072"
     COLD_BIOPSY = "17073~En-bloc"
+    ENDOSCOPIC_KNIFE = "17531"
 
 
 class PolypInterventionExcisionTechniqueOptions(StrEnum):
@@ -435,3 +662,69 @@ class PolypInterventionExcisionTechniqueOptions(StrEnum):
 
     EN_BLOC = "17751"
     PIECE_MEAL = "17750~~305578"
+
+
+class PolypTypeOptions(StrEnum):
+    """Enum for polyp type options"""
+
+    ADENOMA = "17299~Sub Type Applicable~204351,306411,306420"
+    SERRATED_LESION = "17061~Sub Type Applicable"
+    INFLAMATORY_POLYP = "17300~Sub Type Not Applicable"
+    PEUTZ_JEGHERS_POLYP = "17301~Sub Type Not Applicable"
+    JUVENILE_POLYP = "17302~Sub Type Not Applicable"
+    OTHER_POLYP = "17062~Sub Type Applicable"
+    NORMAL_MUCOSA = "17518~Sub Type Not Applicable"
+
+
+class AdenomaSubTypeOptions(StrEnum):
+    """Enum for adenoma sub type options"""
+
+    TUBULAR_ADENOMA = "17292"
+    TUBULOVILLOUS_ADENOMA = "17293"
+    VILLOUS_ADENOMA = "17294"
+    NOT_REPORTED = "203004"
+
+
+class SerratedLesionSubTypeOptions(StrEnum):
+    """Enum for serrated lesion sub type options"""
+
+    HYPERPLASTIC_POLYP = "17090~~306420"
+    MIXED_POLYP = "204347~~204351,305572,306411"
+    SESSILE_SERRATED_LESION = "204348~~306411,306420"
+    SESSILE_SERRATED_LESION_WITH_DYSPLASIA = "204349~~204351,306411"
+    TRADITIONAL_SERRATED_ADENOMA = "204350~~204351,306411"
+
+
+class OtherPolypSubTypeOptions(StrEnum):
+    """Enum for other polyp sub type options"""
+
+    NEURO_ENDOCRINE_TUMOUR = "17092"
+    LYMPHOID = "17093"
+    LIPOMA = "17094"
+    STROMAL = "17095"
+    OTHER_POLYP = "17096"
+
+
+class PolypExcisionCompleteOptions(StrEnum):
+    """Enum for polyp excision complete options"""
+
+    R0 = "305574"
+    R1 = "305575"
+    NOT_ASSESSABLE = "17522"
+
+
+class PolypDysplasiaOptions(StrEnum):
+    """Enum for polyp dysplasia options"""
+
+    NO_DYSPLASIA = "20300"
+    LOW_GRADE_DYSPLASIA = "17970"
+    HIGH_GRADE_DYSPLASIA = "17971"
+    NOT_REPORTED = "204336"
+
+
+class YesNoUncertainOptions(StrEnum):
+    """Enum for polyp carcinoma options"""
+
+    YES = "17058"
+    NO = "17059"
+    UNCERTAIN = "17105"

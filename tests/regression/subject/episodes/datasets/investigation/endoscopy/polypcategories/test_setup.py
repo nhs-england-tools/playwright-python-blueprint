@@ -87,6 +87,7 @@ def before_each(page: Page, request: FixtureRequest) -> None:
         setup_appointments(page)
 
 
+@pytest.mark.vpn_required
 def test_setup_subjects_as_a99(page: Page, subjects_to_run_for: int) -> None:
     """
     Scenario Outline: Set up 10 subjects to be at status A99
@@ -116,6 +117,7 @@ def test_setup_subjects_as_a99(page: Page, subjects_to_run_for: int) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.vpn_required
 def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
     """
     Set up 10 subjects to have new Colonoscopy datasets in episodes started within in the last 4 years

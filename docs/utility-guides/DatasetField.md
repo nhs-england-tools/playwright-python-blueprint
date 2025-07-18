@@ -83,5 +83,5 @@ The example below is using options that can be imported from `pages.datasets.inv
 
     # populate_select_locator_for_field_inside_div
     DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
-        "Classification", "divPolypNumber1Section", PolypClassificationOptions.LS
+        "Classification", "divPolypNumber1Section", PolypClassificationOptions.IS
     )

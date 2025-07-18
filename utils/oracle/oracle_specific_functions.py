@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 from datetime import datetime
 from enum import IntEnum
+from typing import Optional
 
 
 class SqlQueryValues(IntEnum):
@@ -636,3 +637,73 @@ def get_org_parameter_value(param_id: int, org_id: str) -> pd.DataFrame:
     bind_vars = {"param_id": param_id, "org_id": org_id}
     df = OracleDB().execute_query(query, bind_vars)
     return df
+
+
+def get_investigation_dataset_polyp_category(
+    dataset_id: int, polyp_number: int
+) -> Optional[str]:
+    """
+    Retrieves the polyp category for a given dataset ID and polyp number.
+
+    Args:
+        dataset_id (int): The ID of the dataset.
+        polyp_number (int): The number of the polyp.
+
+    Returns:
+        Optional[str]: The polyp category description if found, otherwise None.
+    """
+    query = """
+    select polyp_category
+    from (
+    select
+    rank () over (order by p.polyp_id) as polyp_number,
+    pc.description as polyp_category
+    from ds_polyp_t p
+    left outer join valid_values pc
+    on pc.valid_value_id = p.polyp_category_id
+    where ext_test_id = :ext_test_id
+    and p.deleted_flag = 'N'
+    )
+    where polyp_number = :polyp_number
+    """
+    bind_vars = {
+        "ext_test_id": dataset_id,
+        "polyp_number": polyp_number,
+    }
+    df = OracleDB().execute_query(query, bind_vars)
+    polyp_category = df["polyp_category"].iloc[0] if not df.empty else None
+    return polyp_category
+
+
+def get_investigation_dataset_polyp_algorithm_size(
+    dataset_id: int, polyp_number: int
+) -> Optional[str]:
+    """
+    Retrieves the polyp algorithm size for a given dataset ID and polyp number.
+
+    Args:
+        dataset_id (int): The ID of the dataset.
+        polyp_number (int): The number of the polyp.
+
+    Returns:
+        Optional[int]: The polyp algorithm size if found, otherwise None.
+    """
+    query = """
+    select polyp_algorithm_size
+    from (
+    select
+    rank () over (order by p.polyp_id) as polyp_number,
+    p.polyp_algorithm_size
+    from ds_polyp_t p
+    where ext_test_id = :ext_test_id
+    and p.deleted_flag = 'N'
+    )
+    where polyp_number = :polyp_number
+    """
+    bind_vars = {
+        "ext_test_id": dataset_id,
+        "polyp_number": polyp_number,
+    }
+    df = OracleDB().execute_query(query, bind_vars)
+    polyp_algorithm_size = df["polyp_algorithm_size"].iloc[0] if not df.empty else None
+    return polyp_algorithm_size

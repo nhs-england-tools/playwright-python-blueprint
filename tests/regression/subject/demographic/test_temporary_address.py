@@ -36,6 +36,7 @@ def before_each(page: Page) -> str:
     return nhs_no
 
 
+@pytest.mark.vpn_required
 @pytest.mark.regression
 @pytest.mark.subject_tests
 def test_not_amending_temporary_address(page: Page, before_each) -> None:
@@ -57,6 +58,7 @@ def test_not_amending_temporary_address(page: Page, before_each) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.vpn_required
 @pytest.mark.regression
 @pytest.mark.subject_tests
 def test_add_temporary_address_then_delete(page: Page, before_each) -> None:
@@ -97,6 +99,7 @@ def test_add_temporary_address_then_delete(page: Page, before_each) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.vpn_required
 @pytest.mark.regression
 @pytest.mark.subject_tests
 def test_validation_regarding_dates(page: Page) -> None:
@@ -168,6 +171,7 @@ def test_validation_regarding_dates(page: Page) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.vpn_required
 @pytest.mark.regression
 @pytest.mark.subject_tests
 def test_ammending_temporary_address(page: Page, before_each) -> None:
@@ -222,6 +226,7 @@ def test_ammending_temporary_address(page: Page, before_each) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.vpn_required
 @pytest.mark.regression
 @pytest.mark.subject_tests
 def test_validating_minimum_information(page: Page, before_each) -> None:

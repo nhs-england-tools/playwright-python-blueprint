@@ -36,9 +36,27 @@ class AppointmentDetailPage(BasePage):
 
     def wait_for_attendance_radio(self, timeout_duration: float = 30000) -> None:
         """
-        Waits for the attendance radio to be visible. Default timeout is 30 seconds but this can be changed
+        Waits for the attendance radio to be visible. Refreshes the page every minute if not visible.
+        Default timeout is 30 seconds but this can be changed.
 
         Args:
-            timeout_duration (float): This is how long you want to wait for in milliseconds
+            timeout_duration (float): How long to wait in milliseconds.
         """
-        self.attendance_radio.wait_for(timeout=timeout_duration)
+        elapsed = 0
+        refresh_interval = 60000  # 1 minute in milliseconds
+        while elapsed < timeout_duration:
+            try:
+                self.attendance_radio.wait_for(
+                    timeout=min(refresh_interval, timeout_duration - elapsed)
+                )
+                return
+            except Exception:
+                elapsed += refresh_interval
+                if elapsed < timeout_duration:
+                    self.page.reload()
+        # Final attempt, will raise if not found
+        self.attendance_radio.wait_for(
+            timeout=(
+                timeout_duration - elapsed if timeout_duration - elapsed > 0 else 1000
+            )
+        )
