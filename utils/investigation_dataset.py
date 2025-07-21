@@ -326,9 +326,9 @@ class InvestigationDatasetCompletion:
         endoscopy_information: dict,
         failure_information: dict,
         completion_information: Optional[dict] = None,
-        polyp_1_information: Optional[dict] = None,
-        polyp_1_intervention: Optional[dict] = None,
-        polyp_1_histology: Optional[dict] = None,
+        polyp_information: Optional[list] = None,
+        polyp_intervention: Optional[list] = None,
+        polyp_histology: Optional[list] = None,
     ) -> None:
         """This method completes the investigation dataset with the provided dictionaries.
         Args:
@@ -337,9 +337,9 @@ class InvestigationDatasetCompletion:
             endoscopy_information (dict): A dictionary containing the endoscopy information to be filled in the form.
             failure_information (dict): A dictionary containing the failure information to be filled in the form.
             completion_information (Optional[dict]): An optional  dictionary containing the completion information to be filled in the form.
-            polyp_1_information (Optional[dict]): An optional dictionary containing the polyp 1 information to be filled in the form.
-            polyp_1_intervention (Optional[dict]): An optional dictionary containing the polyp 1 intervention to be filled in the form.
-            polyp_1_histology (Optional[dict]): An optional dictionary containing the polyp 1 histology to be filled in the form.
+            polyp_information (Optional[list]): An optional list containing the polyp information to be filled in the form.
+            polyp_intervention (Optional[list]): An optional list containing the polyp intervention to be filled in the form.
+            polyp_histology (Optional[list]): An optional list containing the polyp histology to be filled in the form.
         """
         logging.info("Completing investigation dataset with the provided dictionaries")
         # Investigation Dataset
@@ -397,17 +397,24 @@ class InvestigationDatasetCompletion:
             failure_information["failure reasons"],
         )
 
-        if polyp_1_information:
-            logging.info("Filling out polyp 1 information")
-            self.fill_polyp_1_information(polyp_1_information)
+        if polyp_information:
+            for polyp_number, polyp_info in enumerate(polyp_information, start=1):
+                logging.info(f"Filling out polyp {polyp_number} information")
+                self.fill_polyp_x_information(polyp_info, polyp_number)
 
-        if polyp_1_intervention:
-            logging.info("Filling out polyp 1 intervention")
-            self.fill_polyp_1_intervention(polyp_1_intervention)
+        if polyp_intervention:
+            for polyp_number, polyp_intervention_info in enumerate(
+                polyp_intervention, start=1
+            ):
+                logging.info(f"Filling out polyp {polyp_number} intervention")
+                self.fill_polyp_x_intervention(polyp_intervention_info, polyp_number)
 
-        if polyp_1_histology:
-            logging.info("Filling out polyp 1 histology")
-            self.fill_polyp_1_histology(polyp_1_histology)
+        if polyp_histology:
+            for polyp_number, polyp_histology_info in enumerate(
+                polyp_histology, start=1
+            ):
+                logging.info(f"Filling out polyp {polyp_number} histology")
+                self.fill_polyp_x_histology(polyp_histology_info, polyp_number)
 
         logging.info("Saving the investigation dataset")
         InvestigationDatasetsPage(self.page).check_dataset_complete_checkbox()
@@ -497,35 +504,37 @@ class InvestigationDatasetCompletion:
                         "Late outcome", value
                     )
 
-    def fill_polyp_1_information(self, polyp_1_information: dict) -> None:
+    def fill_polyp_x_information(
+        self, polyp_information: dict, polyp_number: int
+    ) -> None:
         """
-        Fills out the polyp 1 information section of the investigation dataset.
+        Fills out the polyp information section of the investigation dataset for any polyp.
 
         Args:
             polyp_1_information (dict): A dictionary containing the polyp 1 information to be filled in the form.
         """
         # Polyp Information
         InvestigationDatasetsPage(self.page).click_add_polyp_button()
-        for key, value in polyp_1_information.items():
+        for key, value in polyp_information.items():
             match key:
                 case "location":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
-                        "Location", "divPolypNumber1Section", value
+                        "Location", f"divPolypNumber{polyp_number}Section", value
                     )
                 case "classification":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
-                        "Classification", "divPolypNumber1Section", value
+                        "Classification", f"divPolypNumber{polyp_number}Section", value
                     )
                 case "estimate of whole polyp size":
                     DatasetFieldUtil(
                         self.page
                     ).populate_input_locator_for_field_inside_div(
                         self.estimate_whole_polyp_size_string,
-                        "divPolypNumber1Section",
+                        f"divPolypNumber{polyp_number}Section",
                         value,
                     )
                 case "polyp access":
@@ -533,7 +542,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         self.polyp_access_string,
-                        "divPolypNumber1Section",
+                        f"divPolypNumber{polyp_number}Section",
                         value,
                     )
                 case "secondary piece":
@@ -542,7 +551,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Secondary Piece",
-                        "divPolypSecondaryPiece1",
+                        f"divPolypSecondaryPiece{polyp_number}",
                         value,
                     )
                 case "left in situ":
@@ -550,26 +559,30 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Left in Situ",
-                        "divLeftInSitu1",
+                        f"divLeftInSitu{polyp_number}",
                         value,
                     )
 
-    def fill_polyp_1_intervention(self, polyp_1_intervention: dict) -> None:
+    def fill_polyp_x_intervention(
+        self, polyp_intervention: dict, polyp_number: int
+    ) -> None:
         """
         Fills out the polyp 1 intervention section of the investigation dataset.
 
         Args:
             polyp_1_intervention (dict): A dictionary containing the polyp 1 intervention to be filled in the form.
         """
-        InvestigationDatasetsPage(self.page).click_polyp1_add_intervention_button()
-        for key, value in polyp_1_intervention.items():
+        InvestigationDatasetsPage(self.page).click_polyp_add_intervention_button(
+            polyp_number
+        )
+        for key, value in polyp_intervention.items():
             match key:
                 case "modality":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Modality",
-                        "divPolypTherapy1_1Section",
+                        f"divPolypTherapy{polyp_number}_1Section",
                         value,
                     )
                 case "device":
@@ -577,21 +590,21 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Device",
-                        "divPolypTherapy1_1Section",
+                        f"divPolypTherapy{polyp_number}_1Section",
                         value,
                     )
                 case "excised":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
-                        "Excised", "divPolypResected1_1", value
+                        "Excised", f"divPolypResected{polyp_number}_1", value
                     )
                 case "retrieved":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Retrieved",
-                        "divPolypTherapy1_1Section",
+                        f"divPolypTherapy{polyp_number}_1Section",
                         value,
                     )
                 case "excision technique":
@@ -599,7 +612,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         self.excision_technique_string,
-                        "divPolypTherapy1_1Section",
+                        f"divPolypTherapy{polyp_number}_1Section",
                         value,
                     )
                 case "polyp appears fully resected endoscopically":
@@ -607,25 +620,25 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp appears fully resected endoscopically",
-                        "divPolypAppearsFullyResected1_1",
+                        f"divPolypAppearsFullyResected{polyp_number}_1",
                         value,
                     )
 
-    def fill_polyp_1_histology(self, polyp_1_histology: dict) -> None:
+    def fill_polyp_x_histology(self, polyp_histology: dict, polyp_number: int) -> None:
         """
-        Fills out the polyp 1 histology section of the investigation dataset.
+        Fills out the polyp histology section of the investigation dataset.
 
         Args:
-            polyp_1_histology (dict): A dictionary containing the polyp 1 histology to be filled in the form.
+            polyp_histology (dict): A dictionary containing the polyp 1 histology to be filled in the form.
         """
-        for key, value in polyp_1_histology.items():
+        for key, value in polyp_histology.items():
             match key:
                 case "date of receipt":
                     DatasetFieldUtil(
                         self.page
                     ).populate_input_locator_for_field_inside_div(
                         "Date of Receipt",
-                        "divPolypHistology1_1Details",
+                        f"divPolypHistology{polyp_number}_1Details",
                         value.strftime("%d/%m/%Y"),
                     )
                 case "date of reporting":
@@ -633,23 +646,31 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_input_locator_for_field_inside_div(
                         "Date of Reporting",
-                        "divPolypHistology1_1Details",
+                        f"divPolypHistology{polyp_number}_1Details",
                         value.strftime("%d/%m/%Y"),
                     )
                 case "pathology provider":
-                    InvestigationDatasetsPage(
-                        self.page
-                    ).select_polyp1_pathology_provider_option_index(value)
+                    DatasetFieldUtil(self.page).click_lookup_link_inside_div(
+                        "Pathology Provider",
+                        f"divPolypHistology{polyp_number}_1Details",
+                    )
+                    InvestigationDatasetsPage(self.page).select_loopup_option_index(
+                        value
+                    )
                 case "pathologist":
-                    InvestigationDatasetsPage(
-                        self.page
-                    ).select_polyp1_pathologist_option_index(value)
+                    DatasetFieldUtil(self.page).click_lookup_link_inside_div(
+                        "Pathologist",
+                        f"divPolypHistology{polyp_number}_1Details",
+                    )
+                    InvestigationDatasetsPage(self.page).select_loopup_option_index(
+                        value
+                    )
                 case "polyp type":
                     DatasetFieldUtil(
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Type",
-                        "divPolypHistology1_1Details",
+                        f"divPolypHistology{polyp_number}_1Details",
                         value,
                     )
                 case "serrated lesion sub type":
@@ -657,7 +678,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Sub Type",
-                        "divSubTypeSerratedLesion1_1",
+                        f"divSubTypeSerratedLesion{polyp_number}_1",
                         value,
                     )
                 case "adenoma sub type":
@@ -665,7 +686,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Sub Type",
-                        "divSubTypeAdenoma1_1",
+                        f"divSubTypeAdenoma{polyp_number}_1",
                         value,
                     )
                 case "polyp excision complete":
@@ -673,7 +694,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Excision Complete",
-                        "divExcisionComplete1_1",
+                        f"divExcisionComplete{polyp_number}_1",
                         value,
                     )
                 case "polyp size":
@@ -681,7 +702,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_input_locator_for_field_inside_div(
                         "Polyp Size",
-                        "divPolypHistology1_1Details",
+                        f"divPolypHistology{polyp_number}_1Details",
                         value,
                     )
                 case "polyp dysplasia":
@@ -689,7 +710,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Dysplasia",
-                        "divTumourFindings1_1",
+                        f"divTumourFindings{polyp_number}_1",
                         value,
                     )
                 case "polyp carcinoma":
@@ -697,7 +718,7 @@ class InvestigationDatasetCompletion:
                         self.page
                     ).populate_select_locator_for_field_inside_div(
                         "Polyp Carcinoma",
-                        "divTumourFindings1_1",
+                        f"divTumourFindings{polyp_number}_1",
                         value,
                     )
 

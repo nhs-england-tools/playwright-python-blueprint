@@ -1,11 +1,8 @@
 import logging
 import pytest
-import pandas as pd
 from pytest import FixtureRequest
 from datetime import datetime
 from playwright.sync_api import Page
-from classes.subject import Subject
-from classes.user import User
 from pages.base_page import BasePage
 from pages.datasets.investigation_dataset_page import (
     InvestigationDatasetsPage,
@@ -33,31 +30,20 @@ from pages.datasets.investigation_dataset_page import (
 )
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
 from pages.logout.log_out_page import LogoutPage
-from pages.screening_subject_search.attend_diagnostic_test_page import (
-    AttendDiagnosticTestPage,
-)
-from pages.screening_subject_search.contact_with_patient_page import (
-    ContactWithPatientPage,
-)
-from pages.screening_subject_search.diagnostic_test_outcome_page import (
-    DiagnosticTestOutcomePage,
-    OutcomeOfDiagnosticTest,
-)
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.screening_subject_search.advance_fobt_screening_episode_page import (
-    AdvanceFOBTScreeningEpisodePage,
-)
-from utils.batch_processing import batch_processing
-from utils.calendar_picker import CalendarPicker
 from utils.investigation_dataset import (
     InvestigationDatasetCompletion,
 )
-from utils.oracle.oracle import OracleDB
-from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.screening_subject_page_searcher import (
     search_subject_episode_by_nhs_number,
+)
+from utils.datasets.investigation_datasets import (
+    get_subject_with_investigation_dataset_ready,
+    go_from_investigation_dataset_complete_to_a259_status,
+    get_subject_with_a99_status,
+    go_from_a99_status_to_a259_status,
 )
 from utils.user_tools import UserTools
 
@@ -108,7 +94,7 @@ def before_test(page: Page, request: FixtureRequest) -> None:
     """
     if request.node.get_closest_marker("skip_before_test"):
         return
-    df = obtain_test_data()
+    df = get_subject_with_investigation_dataset_ready()
     nhs_no = df.iloc[0]["subject_nhs_number"]
     logging.info(f"NHS Number: {nhs_no}")
 
@@ -151,14 +137,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_a(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "9")
@@ -192,15 +182,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_b(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "8")
@@ -230,15 +223,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_c(page: Page) -> None
     polyp_1_histology = make_polyp_1_histology()
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "10")
@@ -272,15 +268,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_d(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "11")
@@ -319,15 +318,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_e(page: Page) -> None
     del polyp_1_histology["polyp carcinoma"]
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "11")
@@ -363,15 +365,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_f(page: Page) -> None
     del polyp_1_histology["polyp dysplasia"]
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "10")
@@ -405,15 +410,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_g(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "10")
@@ -449,15 +457,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_h(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "12")
@@ -496,15 +507,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_i(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "11")
@@ -537,15 +551,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_j(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "13")
@@ -580,15 +597,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_k(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "7")
@@ -624,15 +644,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_l(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "6")
@@ -668,15 +691,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_m(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "5")
@@ -714,15 +740,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_n(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "4")
@@ -761,15 +790,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_o(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "3")
@@ -806,15 +838,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_p(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "2")
@@ -850,15 +885,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_q(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "20")
@@ -872,59 +910,13 @@ def test_identify_advanced_colorectal_polyp_from_histology_r(page: Page) -> None
     """
     This test identifies an advanced colorectal polyp from histology results (BCSS-5567 - R).
     """
-    criteria = {
-        "latest episode has colonoscopy assessment dataset": "yes_complete",
-        "latest episode has diagnostic test": "no",
-        "latest event status": "A99",
-        "latest episode type": "FOBT",
-        "latest episode started": "less than 4 years ago",
-    }
-    user = User()
-    subject = Subject()
-
-    builder = SubjectSelectionQueryBuilder()
-
-    query, bind_vars = builder.build_subject_selection_query(
-        criteria=criteria,
-        user=user,
-        subject=subject,
-        subjects_to_retrieve=1,
-    )
-
-    df = OracleDB().execute_query(query, bind_vars)
+    df = get_subject_with_a99_status()
 
     nhs_no = df.iloc[0]["subject_nhs_number"]
     logging.info(f"NHS Number: {nhs_no}")
 
     UserTools.user_login(page, "Screening Centre Manager at BCS001")
-    BasePage(page).click_main_menu_link()
-    BasePage(page).go_to_screening_subject_search_page()
-    search_subject_episode_by_nhs_number(page, nhs_no)
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-
-    AdvanceFOBTScreeningEpisodePage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-
-    AdvanceFOBTScreeningEpisodePage(page).select_test_type_dropdown_option(
-        "Colonoscopy"
-    )
-
-    AdvanceFOBTScreeningEpisodePage(page).click_invite_for_diagnostic_test_button()
-    AdvanceFOBTScreeningEpisodePage(page).verify_latest_event_status_value(
-        "A59 - Invited for Diagnostic Test"
-    )
-
-    AdvanceFOBTScreeningEpisodePage(page).click_attend_diagnostic_test_button()
-
-    AttendDiagnosticTestPage(page).select_actual_type_of_test_dropdown_option(
-        "Colonoscopy"
-    )
-    AttendDiagnosticTestPage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    AttendDiagnosticTestPage(page).click_save_button()
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A259 - Attended Diagnostic Test"
-    )
+    go_from_a99_status_to_a259_status(page, nhs_no)
 
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
@@ -954,99 +946,21 @@ def test_identify_advanced_colorectal_polyp_from_histology_r(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
-    # Enter the test outcome > A315
-    BasePage(page).click_back_button()
-    BasePage(page).click_back_button()
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-    AdvanceFOBTScreeningEpisodePage(page).click_enter_diagnostic_test_outcome_button()
-    DiagnosticTestOutcomePage(page).select_test_outcome_option(
-        OutcomeOfDiagnosticTest.FAILED_TEST_REFER_ANOTHER
-    )
-    DiagnosticTestOutcomePage(page).click_save_button()
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A315 - Diagnostic Test Outcome Entered"
-    )
-
-    # Make post investigation contact > A361
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-    AdvanceFOBTScreeningEpisodePage(page).click_other_post_investigation_button()
-    AdvanceFOBTScreeningEpisodePage(page).verify_latest_event_status_value(
-        "A361 - Other Post-investigation Contact Required"
-    )
-
-    AdvanceFOBTScreeningEpisodePage(
-        page
-    ).click_record_other_post_investigation_contact_button()
-    ContactWithPatientPage(page).select_direction_dropdown_option("To patient")
-    ContactWithPatientPage(page).select_caller_id_dropdown_index_option(1)
-    ContactWithPatientPage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    ContactWithPatientPage(page).enter_start_time("11:00")
-    ContactWithPatientPage(page).enter_end_time("12:00")
-    ContactWithPatientPage(page).enter_discussion_record_text("Test Automation")
-    ContactWithPatientPage(page).select_outcome_dropdown_option(
-        "Post-investigation Appointment Not Required"
-    )
-    ContactWithPatientPage(page).click_save_button()
-    BasePage(page).click_back_button()
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A318 - Post-investigation Appointment NOT Required - Result Letter Created"
-    )
-
-    # Process the A318 letters > A380
-    batch_processing(
-        page,
-        "A318",
-        "Result Letters - No Post-investigation Appointment",
-        "A380 - Failed Diagnostic Test - Refer Another",
-    )
-
-    # Another contact to bring the subject back to A99
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-    AdvanceFOBTScreeningEpisodePage(page).click_record_contact_with_patient_button()
-    ContactWithPatientPage(page).select_direction_dropdown_option("To patient")
-    ContactWithPatientPage(page).select_caller_id_dropdown_index_option(1)
-    ContactWithPatientPage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    ContactWithPatientPage(page).enter_start_time("11:00")
-    ContactWithPatientPage(page).enter_end_time("12:00")
-    ContactWithPatientPage(page).enter_discussion_record_text("Test Automation")
-    ContactWithPatientPage(page).select_outcome_dropdown_option(
-        "Suitable for Endoscopic Test"
-    )
-    ContactWithPatientPage(page).click_save_button()
-    AdvanceFOBTScreeningEpisodePage(page).verify_latest_event_status_value(
-        "A99 - Suitable for Endoscopic Test"
-    )
-
-    # Invite for 2nd diagnostic test > A59 - check options
-    AdvanceFOBTScreeningEpisodePage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    AdvanceFOBTScreeningEpisodePage(page).select_test_type_dropdown_option_2(
-        "Colonoscopy"
-    )
-    AdvanceFOBTScreeningEpisodePage(page).click_invite_for_diagnostic_test_button()
-    AdvanceFOBTScreeningEpisodePage(page).click_attend_diagnostic_test_button()
-    AttendDiagnosticTestPage(page).select_actual_type_of_test_dropdown_option(
-        "Colonoscopy"
-    )
-    AttendDiagnosticTestPage(page).click_calendar_button()
-    CalendarPicker(page).v1_calender_picker(datetime.today())
-    AttendDiagnosticTestPage(page).click_save_button()
-    SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-        "A259 - Attended Diagnostic Test"
-    )
+    go_from_investigation_dataset_complete_to_a259_status(page)
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
@@ -1055,10 +969,9 @@ def test_identify_advanced_colorectal_polyp_from_histology_r(page: Page) -> None
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "6")
@@ -1092,44 +1005,21 @@ def test_identify_advanced_colorectal_polyp_from_histology_s(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
         endoscopy_information=endoscopy_information,
         failure_information=failure_information,
-        completion_information=completion_information,
-        polyp_1_information=polyp_1_information,
-        polyp_1_intervention=polyp_1_intervention,
-        polyp_1_histology=polyp_1_histology,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
     )
 
     assert_test_results(page, "32")
-
-
-def obtain_test_data() -> pd.DataFrame:
-    """
-    This function builds a query to retrieve subjects based on specific criteria
-    and returns a DataFrame containing the results.
-    """
-    criteria = {
-        "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
-        "latest episode started": "less than 4 years ago",
-    }
-    user = User()
-    subject = Subject()
-
-    builder = SubjectSelectionQueryBuilder()
-
-    query, bind_vars = builder.build_subject_selection_query(
-        criteria=criteria,
-        user=user,
-        subject=subject,
-        subjects_to_retrieve=1,
-    )
-
-    df = OracleDB().execute_query(query, bind_vars)
-    return df
 
 
 def make_polyp_1_information(**overrides):

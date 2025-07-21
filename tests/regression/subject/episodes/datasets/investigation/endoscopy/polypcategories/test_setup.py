@@ -35,9 +35,6 @@ from pages.screening_practitioner_appointments.set_availability_page import (
 from pages.screening_subject_search.advance_fobt_screening_episode_page import (
     AdvanceFOBTScreeningEpisodePage,
 )
-from pages.screening_subject_search.attend_diagnostic_test_page import (
-    AttendDiagnosticTestPage,
-)
 from pages.screening_subject_search.episode_events_and_notes_page import (
     EpisodeEventsAndNotesPage,
 )
@@ -61,6 +58,7 @@ from utils.screening_subject_page_searcher import (
     verify_subject_event_status_by_nhs_no,
 )
 from utils.user_tools import UserTools
+from utils.datasets.investigation_datasets import go_from_a99_status_to_a259_status
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -169,36 +167,8 @@ def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
 
     for _, row in df.iterrows():
         nhs_no = row["nhs_number"]
-
-        verify_subject_event_status_by_nhs_no(
-            page, nhs_no, "A99 - Suitable for Endoscopic Test"
-        )
-
-        SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-
-        AdvanceFOBTScreeningEpisodePage(page).click_calendar_button()
-        CalendarPicker(page).v1_calender_picker(datetime.today())
-
-        AdvanceFOBTScreeningEpisodePage(page).select_test_type_dropdown_option(
-            "Colonoscopy"
-        )
-
-        AdvanceFOBTScreeningEpisodePage(page).click_invite_for_diagnostic_test_button()
-        AdvanceFOBTScreeningEpisodePage(page).verify_latest_event_status_value(
-            "A59 - Invited for Diagnostic Test"
-        )
-
-        AdvanceFOBTScreeningEpisodePage(page).click_attend_diagnostic_test_button()
-
-        AttendDiagnosticTestPage(page).select_actual_type_of_test_dropdown_option(
-            "Colonoscopy"
-        )
-        AttendDiagnosticTestPage(page).click_calendar_button()
-        CalendarPicker(page).v1_calender_picker(datetime.today())
-        AttendDiagnosticTestPage(page).click_save_button()
-        SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
-            "A259 - Attended Diagnostic Test"
-        )
+        BasePage(page).click_main_menu_link()
+        go_from_a99_status_to_a259_status(page, nhs_no)
 
     LogoutPage(page).log_out()
 

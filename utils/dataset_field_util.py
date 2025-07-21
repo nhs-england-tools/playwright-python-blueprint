@@ -16,11 +16,9 @@ class DatasetFieldUtil:
         Returns:
             Locator: the locator of the input
         """
-        return self.page.locator(f'input:right-of(:text(\"{text}\"))').first
+        return self.page.locator(f'input:right-of(:text("{text}"))').first
 
-    def populate_input_locator_for_field(
-        self, text: str, value: str
-    ) -> None:
+    def populate_input_locator_for_field(self, text: str, value: str) -> None:
         """
         Inputs a value into an input to the right of any element matching the inner selector, at any vertical position.
 
@@ -41,11 +39,9 @@ class DatasetFieldUtil:
         Returns:
             Locator: the locator of the input
         """
-        return self.page.locator(f'select:right-of(:text(\"{text}\"))').first
+        return self.page.locator(f'select:right-of(:text("{text}"))').first
 
-    def populate_select_locator_for_field(
-        self, text: str, option: str
-    ) -> None:
+    def populate_select_locator_for_field(self, text: str, option: str) -> None:
         """
         Matches select elements that are to the right of any element matching the inner selector, at any vertical position.
 
@@ -68,7 +64,7 @@ class DatasetFieldUtil:
             Locator: the locator of the input
         """
         container = self.page.locator(f"div#{div}")
-        return container.locator(f'input:right-of(:text(\"{text}\"))').first
+        return container.locator(f'input:right-of(:text("{text}"))').first
 
     def populate_input_locator_for_field_inside_div(
         self, text: str, div: str, value: str
@@ -96,7 +92,7 @@ class DatasetFieldUtil:
             Locator: the locator of the input
         """
         container = self.page.locator(f"div#{div}")
-        return container.locator(f'select:right-of(:text(\"{text}\"))').first
+        return container.locator(f'select:right-of(:text("{text}"))').first
 
     def populate_select_locator_for_field_inside_div(
         self, text: str, div: str, option: str
@@ -111,3 +107,19 @@ class DatasetFieldUtil:
         """
         locator = self.get_select_locator_for_field_inside_div(text, div)
         locator.select_option(option)
+
+    def click_lookup_link_inside_div(self, text: str, div: str) -> None:
+        """
+        Finds and clicks the 'lookup' link (anchor tag) that is in the same row/section
+        as the provided label text within a given div container.
+
+        Args:
+            text (str): The label text that appears before the 'lookup' link (e.g., "Pathology Provider")
+            div (str): The ID of the outer div container to scope the search within
+        """
+        container = self.page.locator(f"div#{div}")
+        row = container.locator(
+            f"xpath=//span[contains(@class,'label') and contains(normalize-space(), '{text}')]/ancestor::div[contains(@class,'noTableRow')]"
+        )
+        lookup_link = row.locator("a:text('lookup')").first
+        lookup_link.click()

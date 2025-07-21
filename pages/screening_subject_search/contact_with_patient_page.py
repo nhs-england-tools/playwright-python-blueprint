@@ -1,5 +1,7 @@
 from playwright.sync_api import Page
 from pages.base_page import BasePage
+from utils.calendar_picker import CalendarPicker
+from datetime import datetime
 
 
 class ContactWithPatientPage(BasePage):
@@ -84,3 +86,19 @@ class ContactWithPatientPage(BasePage):
     def click_save_button(self) -> None:
         """Click the 'Save' button to save the contact with patient form."""
         self.click(self.save_button)
+
+    def record_post_investigation_appointment_not_required(self) -> None:
+        """
+        Record a post-investigation appointment not required contact.
+        """
+        self.select_direction_dropdown_option("To patient")
+        self.select_caller_id_dropdown_index_option(1)
+        self.click_calendar_button()
+        CalendarPicker(self.page).v1_calender_picker(datetime.today())
+        self.enter_start_time("11:00")
+        self.enter_end_time("12:00")
+        self.enter_discussion_record_text("Test Automation")
+        self.select_outcome_dropdown_option(
+            "Post-investigation Appointment Not Required"
+        )
+        self.click_save_button()

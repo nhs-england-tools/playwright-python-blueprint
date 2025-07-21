@@ -162,33 +162,33 @@ after_investigation.progress_episode_based_on_result(result, younger)
 You can initialise the class and use its method as follows:
 
 ```python
-from utils.investigation_dataset_completion import InvestigationDatasetCompletion
+from utils.investigation_dataset import InvestigationDatasetCompletion
 
 completion_utility = InvestigationDatasetCompletion(page)
 completion_utility.complete_dataset_with_args(
-    general_information=...,
-    drug_information=...,
-    endoscopy_information=...,
-    failure_information=...,
-    completion_information=...,
-    polyp_1_information=...,
-    polyp_1_intervention=...,
-    polyp_1_histology=...
+    general_information=general_information,
+    drug_information=drug_information,
+    endoscopy_information=endoscopy_information,
+    failure_information=failure_information,
+    polyp_information=polyp_information,         # List of dicts, one per polyp
+    polyp_intervention=polyp_intervention,       # List of dicts, one per polyp
+    polyp_histology=polyp_histology              # List of dicts, one per polyp
 )
 ```
 
 ### Required Args
 
 All fields are `dict` objects containing key-value pairs that match the expected form inputs.
+For polyps, you now pass **lists of dictionaries** (one per polyp) for `polyp_information`, `polyp_intervention`, and `polyp_histology`.
 
 - `general_information` (required): Information about site, practitioner, and endoscopist.
 - `drug_information` (required): Drugs used during the procedure.
 - `endoscopy_information` (required): Field-value pairs describing procedure details.
 - `failure_information` (required): Reasons for dataset failure.
 - `completion_information` (optional): Completion proof values.
-- `polyp_1_information` (optional): Data for a polyp entry.
-- `polyp_1_intervention` (optional): Data for a polyp intervention.
-- `polyp_1_histology` (optional): Histology data for the polyp.
+- `polyp_information` (optional): **List** of dicts, each for a polyp entry.
+- `polyp_intervention` (optional): **List** of dicts, each for a polyp intervention.
+- `polyp_histology` (optional): **List** of dicts, each for a polyp's histology.
 
 ### How to use this method
 
@@ -196,7 +196,7 @@ Call the `complete_dataset_with_args()` method to populate and submit the invest
 
 - Navigates to relevant form sections.
 - Inputs field values using select/input locators.
-- Handles optional sub-sections (e.g., polyps, interventions).
+- Handles optional sub-sections (e.g., polyps, interventions, histology) for **multiple polyps**.
 - Handles conditional logic for field population.
 - Submits the form once complete.
 
@@ -204,68 +204,166 @@ Call the `complete_dataset_with_args()` method to populate and submit the invest
 
 ### Example Usage
 
-```python
-completion_utility = InvestigationDatasetCompletion(page)
+Below is a real-world example based on the `test_identify_diminutive_rectal_hyperplastic_polyp_from_histology_a` test:
 
-completion_utility.complete_dataset_with_args(
-    general_information={
-        "site": -1,
-        "practitioner": -1,
-        "testing clinician": -1,
-        "aspirant endoscopist": None
-    },
-    drug_information = {
-        "drug_type1": DrugTypeOptions.MANNITOL,
-        "drug_dose1": "3",
-    },
-    endoscopy_information = {
-        "endoscope inserted": "yes",
-        "procedure type": "therapeutic",
-        "bowel preparation quality": BowelPreparationQualityOptions.GOOD,
-        "comfort during examination": ComfortOptions.NO_DISCOMFORT,
-        "comfort during recovery": ComfortOptions.NO_DISCOMFORT,
-        "endoscopist defined extent": EndoscopyLocationOptions.APPENDIX,
-        "scope imager used": YesNoOptions.YES,
-        "retroverted view": YesNoOptions.NO,
-        "start of intubation time": "09:00",
-        "start of extubation time": "09:30",
-        "end time of procedure": "10:00",
-        "scope id": "Autotest",
-        "insufflation": InsufflationOptions.AIR,
-        "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
-        "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
-    },
-    failure_information={
-        "failure reasons": FailureReasonsOptions.ADHESION
-    },
-    completion_information={
-        "completion proof": CompletionProofOptions.VIDEO_APPENDIX
-    },
-    polyp_1_information={
-        "location": EndoscopyLocationOptions.APPENDIX,
-        "classification": PolypClassificationOptions.IS,
-        "estimate of whole polyp size": "8",
+```python
+from datetime import datetime
+from utils.investigation_dataset import InvestigationDatasetCompletion
+from pages.datasets.investigation_dataset_page import (
+    DrugTypeOptions, BowelPreparationQualityOptions, ComfortOptions,
+    EndoscopyLocationOptions, YesNoOptions, InsufflationOptions,
+    OutcomeAtTimeOfProcedureOptions, LateOutcomeOptions, FailureReasonsOptions,
+    PolypClassificationOptions, PolypAccessOptions, PolypInterventionModalityOptions,
+    PolypInterventionDeviceOptions, PolypInterventionExcisionTechniqueOptions,
+    PolypTypeOptions, SerratedLesionSubTypeOptions, PolypExcisionCompleteOptions
+)
+
+general_information = {
+    "site": -1,
+    "practitioner": -1,
+    "testing clinician": -1,
+    "aspirant endoscopist": None,
+}
+
+drug_information = {
+    "drug_type1": DrugTypeOptions.MANNITOL,
+    "drug_dose1": "3",
+}
+
+endoscopy_information = {
+    "endoscope inserted": "yes",
+    "procedure type": "therapeutic",
+    "bowel preparation quality": BowelPreparationQualityOptions.GOOD,
+    "comfort during examination": ComfortOptions.NO_DISCOMFORT,
+    "comfort during recovery": ComfortOptions.NO_DISCOMFORT,
+    "endoscopist defined extent": EndoscopyLocationOptions.DESCENDING_COLON,
+    "scope imager used": YesNoOptions.YES,
+    "retroverted view": YesNoOptions.NO,
+    "start of intubation time": "09:00",
+    "start of extubation time": "09:30",
+    "end time of procedure": "10:00",
+    "scope id": "Autotest",
+    "insufflation": InsufflationOptions.AIR,
+    "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
+    "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
+}
+
+failure_information = {
+    "failure reasons": FailureReasonsOptions.ADHESION,
+}
+
+# Example for 4 polyps
+polyp_information = [
+    {
+        "location": EndoscopyLocationOptions.RECTUM,
+        "classification": PolypClassificationOptions.IP,
+        "estimate of whole polyp size": "6",
         "polyp access": PolypAccessOptions.EASY,
         "left in situ": YesNoOptions.NO,
     },
-    polyp_1_intervention={
+    {
+        "location": EndoscopyLocationOptions.RECTUM,
+        "classification": PolypClassificationOptions.ISP,
+        "estimate of whole polyp size": "1",
+        "polyp access": PolypAccessOptions.EASY,
+        "left in situ": YesNoOptions.NO,
+    },
+    {
+        "location": EndoscopyLocationOptions.RECTUM,
+        "classification": PolypClassificationOptions.IS,
+        "estimate of whole polyp size": "2",
+        "polyp access": PolypAccessOptions.EASY,
+        "left in situ": YesNoOptions.NO,
+    },
+    {
+        "location": EndoscopyLocationOptions.RECTUM,
+        "classification": PolypClassificationOptions.IIC,
+        "estimate of whole polyp size": "5",
+        "polyp access": PolypAccessOptions.EASY,
+        "left in situ": YesNoOptions.NO,
+    },
+]
+
+polyp_intervention = [
+    {
         "modality": PolypInterventionModalityOptions.POLYPECTOMY,
-        "device": PolypInterventionDeviceOptions.COLD_SNARE,
+        "device": PolypInterventionDeviceOptions.HOT_SNARE,
         "excised": YesNoOptions.YES,
         "retrieved": YesNoOptions.YES,
     },
-    polyp_1_histology={
+    {
+        "modality": PolypInterventionModalityOptions.EMR,
+        "device": PolypInterventionDeviceOptions.HOT_SNARE,
+        "excised": YesNoOptions.YES,
+        "retrieved": YesNoOptions.YES,
+    },
+    {
+        "modality": PolypInterventionModalityOptions.ESD,
+        "device": PolypInterventionDeviceOptions.ENDOSCOPIC_KNIFE,
+        "excised": YesNoOptions.YES,
+        "retrieved": YesNoOptions.YES,
+    },
+    {
+        "modality": PolypInterventionModalityOptions.POLYPECTOMY,
+        "device": PolypInterventionDeviceOptions.HOT_SNARE,
+        "excised": YesNoOptions.YES,
+        "retrieved": YesNoOptions.YES,
+        "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
+    },
+]
+
+polyp_histology = [
+    {
         "date of receipt": datetime.today(),
         "date of reporting": datetime.today(),
         "pathology provider": -1,
         "pathologist": -1,
         "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.MIXED_POLYP,
+        "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
         "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "10",
-        "polyp dysplasia": PolypDysplasiaOptions.NOT_REPORTED,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+        "polyp size": "5",
+    },
+    {
+        "date of receipt": datetime.today(),
+        "date of reporting": datetime.today(),
+        "pathology provider": -1,
+        "pathologist": -1,
+        "polyp type": PolypTypeOptions.SERRATED_LESION,
+        "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
+        "polyp excision complete": PolypExcisionCompleteOptions.R1,
+        "polyp size": "1",
+    },
+    {
+        "date of receipt": datetime.today(),
+        "date of reporting": datetime.today(),
+        "pathology provider": -1,
+        "pathologist": -1,
+        "polyp type": PolypTypeOptions.SERRATED_LESION,
+        "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
+        "polyp excision complete": PolypExcisionCompleteOptions.R1,
+        "polyp size": "3",
+    },
+    {
+        "date of receipt": datetime.today(),
+        "date of reporting": datetime.today(),
+        "pathology provider": -1,
+        "pathologist": -1,
+        "polyp type": PolypTypeOptions.SERRATED_LESION,
+        "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
+        "polyp excision complete": PolypExcisionCompleteOptions.R1,
+        "polyp size": "4",
+    },
+]
+
+completion_utility = InvestigationDatasetCompletion(page)
+completion_utility.complete_dataset_with_args(
+    general_information=general_information,
+    drug_information=drug_information,
+    endoscopy_information=endoscopy_information,
+    failure_information=failure_information,
+    polyp_information=polyp_information,
+    polyp_intervention=polyp_intervention,
+    polyp_histology=polyp_histology,
 )
 ```
 
@@ -275,79 +373,89 @@ completion_utility.complete_dataset_with_args(
 
 #### General Information
 
-| Field                   | Type    | Description                          |
-|------------------------|---------|--------------------------------------|
-| site                   | `int`   | Index in the site dropdown           |
-| practitioner           | `int`   | Index in the practitioner dropdown   |
-| testing clinician      | `int`   | Index in the clinician dropdown      |
-| aspirant endoscopist   | `int or None` | Index or skip check if None   |
+| Field                 | Type    | Example Value                                 | Description                          |
+|-----------------------|---------|-----------------------------------------------|--------------------------------------|
+| site                  | `int`   | -1                                            | Index in the site dropdown           |
+| practitioner          | `int`   | -1                                            | Index in the practitioner dropdown   |
+| testing clinician     | `int`   | -1                                            | Index in the clinician dropdown      |
+| aspirant endoscopist  | `int or None` | None                                   | Index or skip check if None          |
 
 #### Drug Information
 
-| Field        | Type  | Description                        |
-|--------------|-------|------------------------------------|
-| drug_type1   | str   | Drug name                          |
-| drug_dose1   | str   | Dose                               |
+| Field        | Type  | Example Value                | Description                        |
+|--------------|-------|-----------------------------|------------------------------------|
+| drug_type1   | str   | DrugTypeOptions.MANNITOL    | Drug name                          |
+| drug_dose1   | str   | "3"                         | Dose                               |
 
 #### Endoscopy Information
-
-Supports dynamic keys like:
-
-- `"endoscope inserted"`: `"yes"` or `"no"`
-- `"procedure type"`: `"diagnostic"` or `"therapeutic"`
-- `"bowel preparation quality"`: Option from dropdown
-- `"start of intubation time"`: `"09:00"`
-- `"scope id"`: Free text
-
+<!--vale off-->
+| Field                        | Type    | Example Value                                         | Description                          |
+|------------------------------|---------|-------------------------------------------------------|--------------------------------------|
+| endoscope inserted           | str     | "yes"                                                | "yes" or "no"                        |
+| procedure type               | str     | "therapeutic"                                        | "diagnostic" or "therapeutic"        |
+| bowel preparation quality    | enum    | BowelPreparationQualityOptions.GOOD                   | Option from dropdown                 |
+| comfort during examination   | enum    | ComfortOptions.NO_DISCOMFORT                          | Option from dropdown                 |
+| comfort during recovery      | enum    | ComfortOptions.NO_DISCOMFORT                          | Option from dropdown                 |
+| endoscopist defined extent   | enum    | EndoscopyLocationOptions.DESCENDING_COLON             | Option from dropdown                 |
+| scope imager used            | enum    | YesNoOptions.YES                                      | Option from dropdown                 |
+| retroverted view             | enum    | YesNoOptions.NO                                       | Option from dropdown                 |
+| start of intubation time     | str     | "09:00"                                               | Time string                          |
+| start of extubation time     | str     | "09:30"                                               | Time string                          |
+| end time of procedure        | str     | "10:00"                                               | Time string                          |
+| scope id                     | str     | "Autotest"                                            | Free text                            |
+| insufflation                 | enum    | InsufflationOptions.AIR                               | Option from dropdown                 |
+| outcome at time of procedure | enum    | OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT      | Option from dropdown                 |
+| late outcome                 | enum    | LateOutcomeOptions.NO_COMPLICATIONS                   | Option from dropdown                 |
+<!--vale on-->
 #### Failure Information
-
-| Field              | Type  | Description                              |
-|-------------------|-------|------------------------------------------|
-| failure reasons    | str   | Reason text for dataset failure          |
-
+<!--vale off-->
+| Field              | Type  | Example Value                       | Description                              |
+|--------------------|-------|-------------------------------------|------------------------------------------|
+| failure reasons    | enum  | FailureReasonsOptions.ADHESION       | Reason text for dataset failure          |
+<!--vale on-->
 #### Completion Proof Information
-
-| Field              | Type  | Description                              |
-|-------------------|-------|------------------------------------------|
-| completion proof   | str   | Value for the "Proof Parameters" field   |
-
+<!--vale off-->
+| Field              | Type  | Example Value                       | Description                              |
+|--------------------|-------|-------------------------------------|------------------------------------------|
+| completion proof   | enum  | CompletionProofOptions.VIDEO_APPENDIX| Value for the "Proof Parameters" field   |
+<!--vale on-->
 #### Polyp Information (Optional)
 <!--vale off-->
-| Field                        | Type  | Description                          |
-|-----------------------------|-------|--------------------------------------|
-| location                    | str   | Polyp location                       |
-| classification              | str   | Polyp classification                 |
-| estimate of whole polyp size| str   | Size in mm                           |
-| polyp access                | str   | Access difficulty                    |
-| left in situ                | str   | `"Yes"` or `"No"`                    |
+| Field                        | Type  | Example Value                                 | Description                          |
+|------------------------------|-------|-----------------------------------------------|--------------------------------------|
+| location                     | enum  | EndoscopyLocationOptions.RECTUM               | Polyp location                       |
+| classification               | enum  | PolypClassificationOptions.IP                 | Polyp classification                 |
+| estimate of whole polyp size | str   | "6"                                           | Size in mm                           |
+| polyp access                 | enum  | PolypAccessOptions.EASY                       | Access difficulty                    |
+| left in situ                 | enum  | YesNoOptions.NO                               | "Yes" or "No"                        |
 <!--vale on-->
 #### Polyp Intervention (Optional)
-
-| Field                                   | Type  | Description                     |
-|----------------------------------------|-------|---------------------------------|
-| modality                               | str   | E.g., `"Polypectomy"`           |
-| device                                 | str   | E.g., `"Cold snare"`            |
-| excised                                | str   | `"Yes"` or `"No"`               |
-| retrieved                              | str   | `"Yes"` or `"No"`               |
-| excision technique                     | str   | Optional technique detail       |
-| polyp appears fully resected endoscopically | str | Option from dropdown        |
-
+<!--vale off-->
+| Field                                   | Type  | Example Value                                         | Description                     |
+|------------------------------------------|-------|-------------------------------------------------------|---------------------------------|
+| modality                                | enum  | PolypInterventionModalityOptions.POLYPECTOMY          | E.g., "Polypectomy"             |
+| device                                  | enum  | PolypInterventionDeviceOptions.HOT_SNARE              | E.g., "Hot snare"               |
+| excised                                 | enum  | YesNoOptions.YES                                      | "Yes" or "No"                   |
+| retrieved                               | enum  | YesNoOptions.YES                                      | "Yes" or "No"                   |
+| excision technique                      | enum  | PolypInterventionExcisionTechniqueOptions.PIECE_MEAL  | Optional technique detail       |
+| polyp appears fully resected endoscopically | enum | YesNoOptions.YES                                  | Option from dropdown            |
+<!--vale on-->
 #### Polyp Histology (Optional)
-
-| Field                     | Type        | Description                         |
-|--------------------------|-------------|-------------------------------------|
-| date of receipt          | `datetime`  | Date of receipt                     |
-| date of reporting        | `datetime`  | Date of reporting                   |
-| pathology provider       | `int`       | Index for provider                  |
-| pathologist              | `int`       | Index for pathologist               |
-| polyp type               | `str`       | E.g., `"Serrated Lesion"`           |
-| serrated lesion sub type | `str`       | Subtype of serrated lesion          |
-| adenoma sub type         | `str`       | Subtype of adenoma                  |
-| polyp excision complete  | `str`       | Completion status                   |
-| polyp size               | `str`       | Size in mm                          |
-| polyp dysplasia          | `str`       | Dysplasia report                    |
-| polyp carcinoma          | `str`       | `"Yes"`, `"No"`, or `"Uncertain"`   |
-
+<!--vale off-->
+| Field                     | Type        | Example Value                                         | Description                         |
+|---------------------------|-------------|-------------------------------------------------------|-------------------------------------|
+| date of receipt           | `datetime`  | datetime.today()                                      | Date of receipt                     |
+| date of reporting         | `datetime`  | datetime.today()                                      | Date of reporting                   |
+| pathology provider        | `int`       | -1                                                    | Index for provider                  |
+| pathologist               | `int`       | -1                                                    | Index for pathologist               |
+| polyp type                | enum        | PolypTypeOptions.SERRATED_LESION                      | E.g., "Serrated Lesion"             |
+| serrated lesion sub type  | enum        | SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP       | Subtype of serrated lesion          |
+| adenoma sub type          | enum        | AdenomaSubTypeOptions.TUBULAR_ADENOMA                 | Subtype of adenoma                  |
+| polyp excision complete   | enum        | PolypExcisionCompleteOptions.R1                       | Completion status                   |
+| polyp size                | str         | "5"                                                   | Size in mm                          |
+| polyp dysplasia           | enum        | PolypDysplasiaOptions.NOT_REPORTED                    | Dysplasia report                    |
+| polyp carcinoma           | enum        | YesNoUncertainOptions.NO                              | "Yes", "No", or "Uncertain"         |
+<!--vale on-->
 ---
 
 For more details on each function's implementation, refer to the source code in `utils/investigation_dataset.py`.

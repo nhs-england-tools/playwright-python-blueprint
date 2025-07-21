@@ -190,17 +190,9 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
             page
         ).click_record_other_post_investigation_contact_button()
 
-        ContactWithPatientPage(page).select_direction_dropdown_option("To patient")
-        ContactWithPatientPage(page).select_caller_id_dropdown_index_option(1)
-        ContactWithPatientPage(page).click_calendar_button()
-        CalendarPicker(page).v1_calender_picker(datetime.today())
-        ContactWithPatientPage(page).enter_start_time("11:00")
-        ContactWithPatientPage(page).enter_end_time("12:00")
-        ContactWithPatientPage(page).enter_discussion_record_text("Test Automation")
-        ContactWithPatientPage(page).select_outcome_dropdown_option(
-            "Post-investigation Appointment Not Required"
-        )
-        ContactWithPatientPage(page).click_save_button()
+        ContactWithPatientPage(
+            page
+        ).record_post_investigation_appointment_not_required()
 
         verify_subject_event_status_by_nhs_no(
             page, nhs_no, "A323 - Post-investigation Appointment NOT Required"
