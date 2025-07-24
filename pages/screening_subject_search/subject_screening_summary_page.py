@@ -60,6 +60,9 @@ class SubjectScreeningSummaryPage(BasePage):
         )
         self.temporary_address_popup = self.page.locator("#idTempAddress")
         self.close_button = self.page.get_by_role("img", name="close")
+
+        # List of Subject Episodes - page filters
+        self.view_events_link = self.page.get_by_role("link", name="events")
         self.book_practitioner_clinic_button = self.page.get_by_role(
             "button", name="Book Practitioner Clinic"
         )
@@ -240,6 +243,7 @@ class SubjectScreeningSummaryPage(BasePage):
             not note_link_locator.is_visible()
         ), f"'{note_type_name}' link is visible, but it should not be."
         logging.info(f"Verified: '{note_type_name}' link is not visible.")
+
     def verify_temporary_address_popup_visible(self) -> None:
         """Verify that the temporary address popup is visible."""
         try:
@@ -271,6 +275,36 @@ class SubjectScreeningSummaryPage(BasePage):
     def click_close_button(self) -> None:
         """Click on the close button in the temporary address popup."""
         self.click(self.close_button)
+
+    def click_view_events_link(self) -> None:
+        """Click on the 'View Events' link."""
+        self.click(self.view_events_link)
+
+    def assert_view_letter_links_for_event(
+        self, event_name: str, expected_count: int
+    ) -> None:
+        # Locate the row where the 3rd <td> contains the target event status
+        event_row = (
+            self.page.locator("table#displayRS tbody tr")
+            .filter(has=self.page.locator("td:nth-child(3)", has_text=event_name))
+            .first
+        )
+
+        event_row.wait_for(timeout=10000)
+
+        if event_row.count() == 0:
+            raise RuntimeError(f"[ERROR] Event row for '{event_name}' not found")
+
+        # Count the number of 'View Letter' links inside the 5th column (Item)
+        letter_links = event_row.locator("td:nth-child(5) a", has_text="View Letter")
+        actual_count = letter_links.count()
+
+        logging.info(
+            f"[DEBUG] Found {actual_count} 'View Letter' links for event: {event_name}"
+        )
+        assert (
+            actual_count == expected_count
+        ), f"[ASSERTION FAILED] Expected {expected_count} 'View Letter' links for '{event_name}', but found {actual_count}"
 
     def click_book_practitioner_clinic_button(self) -> None:
         """Click on the 'Book Practitioner Clinic' button"""

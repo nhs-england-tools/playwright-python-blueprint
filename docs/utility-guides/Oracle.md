@@ -1,13 +1,18 @@
 # Utility Guide: Oracle
 
-The Oracle Utility provides an easy way to interact with an Oracle database directly from your Playwright test suite.It can be used to run SQL queries or stored procedures on the Oracle database.
+The Oracle Utility provides an easy way to interact with an Oracle database directly from your Playwright test suite. It can be used to run SQL queries or stored procedures on the Oracle database.
 
 ## When and Why to Use the Oracle Utility
 
-You might need to use this utility in scenarios such as:
+You might use this utility for:
 
-- To run SQL queries or stored procedures on the Oracle database.
-- Verifying that data is correctly written to or updated in the database after a workflow is completed in your application.
+- Running SQL queries or stored procedures on the Oracle database
+
+- Validating application workflows against live database records
+
+- Creating test data dynamically via helper functions
+
+- Verifying data integrity after system events
 
 ## Table of Contents
 
@@ -26,6 +31,10 @@ You might need to use this utility in scenarios such as:
 
 To use the Oracle Utility, import the 'OracleDB' class into your test file and then call the OracleDB methods from within your tests, as required.
 
+```python
+from utils.oracle.oracle import OracleDB
+```
+
 ## Required arguments
 
 The functions in this class require different arguments.<br>
@@ -42,6 +51,7 @@ The docstrings also specify when arguments are optional, and what the default va
 - **execute_stored_procedure(self, `procedure_name`, params=None)**: Executes a named stored procedure with optional parameters.
 - **exec_bcss_timed_events(self, nhs_number_df)**: Runs the `bcss_timed_events` stored procedure for each NHS number provided in a DataFrame.
 - **get_subject_id_from_nhs_number(self, nhs_number)**: Retrieves the `subject_screening_id` for a given NHS number.
+- **create_subjects_via_sspi(...)**: Creates synthetic subjects using stored procedure `PKG_SSPI.p_process_pi_subject`
 
 For full implementation details, see utils/oracle/oracle.py.
 
@@ -68,6 +78,16 @@ def test_oracle_query() -> None:
 
 def run_stored_procedure() -> None:
     OracleDB().execute_stored_procedure("bcss_timed_events")
+
+def create_subjects_dynamically() -> None:
+OracleDB().create_subjects_via_sspi(
+    count=5,
+    screening_centre="BCS01",
+    base_age=60,
+    start_offset=-2,
+    end_offset=4,
+    nhs_start=9200000000
+)
 ```
 
 ---

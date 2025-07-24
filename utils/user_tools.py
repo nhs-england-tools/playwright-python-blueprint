@@ -6,6 +6,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from playwright.sync_api import Page
 from pages.login.cognito_login_page import CognitoLoginPage
+from classes.user import User
+from classes.organisation import Organisation
 
 logger = logging.getLogger(__name__)
 USERS_FILE = Path(os.getcwd()) / "users.json"
@@ -55,6 +57,27 @@ class UserTools:
 
         logger.debug(f"Returning user: {user_data[user]}")
         return user_data[user]
+
+    @staticmethod
+    def get_user_object(user_details: dict) -> User:
+        """
+        Converts a user_details dictionary into a User object.
+
+        Args:
+            user_details (dict): Dictionary containing user attributes.
+
+        Returns:
+            User: A User object with populated fields.
+        """
+        raw_org_id = user_details.get("organisation_id") or user_details.get("hub_code")
+        org_id = str(raw_org_id) if raw_org_id is not None else "UNKNOWN_ORG"
+
+        organisation = Organisation(organisation_id=org_id)
+
+        user_id = user_details.get("user_id", 9999)
+        user = User(user_id=user_id, organisation=organisation)
+
+        return user
 
 
 class UserToolsException(Exception):

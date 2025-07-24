@@ -39,6 +39,7 @@
   },
   "Hub Manager at BCS02": {
     "username": "BCSS409",
+    "hub_code": "BCS02",
     "roles": [
       "Hub Manager, Southern Bowel Cancer Screening Programme Hub"
     ]
