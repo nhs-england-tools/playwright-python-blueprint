@@ -27,6 +27,23 @@ from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBu
 from utils.screening_subject_page_searcher import (
     search_subject_episode_by_nhs_number,
 )
+from pages.datasets.investigation_dataset_page import (
+    DrugTypeOptions,
+    BowelPreparationQualityOptions,
+    ComfortOptions,
+    EndoscopyLocationOptions,
+    YesNoOptions,
+    InsufflationOptions,
+    OutcomeAtTimeOfProcedureOptions,
+    LateOutcomeOptions,
+    InvestigationDatasetsPage,
+)
+from typing import Optional
+from utils.investigation_dataset import (
+    InvestigationDatasetCompletion,
+)
+import logging
+from pages.logout.log_out_page import LogoutPage
 
 
 def get_subject_with_investigation_dataset_ready() -> pd.DataFrame:
@@ -193,3 +210,92 @@ def go_from_investigation_dataset_complete_to_a259_status(page: Page) -> None:
     SubjectScreeningSummaryPage(page).verify_latest_event_status_value(
         "A259 - Attended Diagnostic Test"
     )
+
+
+def get_default_general_information() -> dict:
+    """Return default general information for investigation dataset tests."""
+    return {
+        "site": -1,
+        "practitioner": -1,
+        "testing clinician": -1,
+        "aspirant endoscopist": None,
+    }
+
+
+def get_default_drug_information() -> dict:
+    """Return default drug information for investigation dataset tests."""
+    return {
+        "drug_type1": DrugTypeOptions.MANNITOL,
+        "drug_dose1": "3",
+    }
+
+
+def get_default_endoscopy_information() -> dict:
+    """Return default endoscopy information for investigation dataset tests."""
+    return {
+        "endoscope inserted": "yes",
+        "procedure type": "therapeutic",
+        "bowel preparation quality": BowelPreparationQualityOptions.GOOD,
+        "comfort during examination": ComfortOptions.NO_DISCOMFORT,
+        "comfort during recovery": ComfortOptions.NO_DISCOMFORT,
+        "endoscopist defined extent": EndoscopyLocationOptions.DESCENDING_COLON,
+        "scope imager used": YesNoOptions.YES,
+        "retroverted view": YesNoOptions.NO,
+        "start of intubation time": "09:00",
+        "start of extubation time": "09:30",
+        "end time of procedure": "10:00",
+        "scope id": "Autotest",
+        "insufflation": InsufflationOptions.AIR,
+        "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
+        "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
+    }
+
+
+def complete_and_assert_investigation(
+    page: Page,
+    general_information: dict,
+    drug_information: dict,
+    endoscopy_information: dict,
+    failure_information: dict,
+    polyp_1_information: dict,
+    polyp_1_intervention: dict,
+    polyp_1_histology: dict,
+    expected_category: str,
+    expected_size: str,
+    completion_information: Optional[dict] = None,
+) -> None:
+    """
+    Fills the investigation dataset, asserts results, and marks dataset not complete.
+    """
+    polyp_information = [polyp_1_information]
+    polyp_intervention = [polyp_1_intervention]
+    polyp_histology = [polyp_1_histology]
+
+    InvestigationDatasetCompletion(page).complete_dataset_with_args(
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        polyp_information=polyp_information,
+        polyp_intervention=polyp_intervention,
+        polyp_histology=polyp_histology,
+        completion_information=completion_information,
+    )
+
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, expected_size)
+    InvestigationDatasetsPage(page).assert_polyp_category(1, expected_category)
+
+    mark_dataset_not_complete_and_assert(page)
+
+
+def mark_dataset_not_complete_and_assert(page: Page) -> None:
+    """
+    Marks the investigation dataset as not complete and asserts that the polyp size and category are None.
+    """
+    logging.info("Marking investigation dataset not complete")
+    InvestigationDatasetsPage(page).click_edit_dataset_button()
+    InvestigationDatasetsPage(page).check_dataset_incomplete_checkbox()
+    InvestigationDatasetsPage(page).click_save_dataset_button()
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, None)
+    InvestigationDatasetsPage(page).assert_polyp_category(1, None)
+    LogoutPage(page).log_out()

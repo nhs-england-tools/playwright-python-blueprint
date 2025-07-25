@@ -5,14 +5,8 @@ from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.datasets.investigation_dataset_page import (
     InvestigationDatasetsPage,
-    DrugTypeOptions,
-    BowelPreparationQualityOptions,
-    ComfortOptions,
     EndoscopyLocationOptions,
     YesNoOptions,
-    InsufflationOptions,
-    OutcomeAtTimeOfProcedureOptions,
-    LateOutcomeOptions,
     FailureReasonsOptions,
     PolypClassificationOptions,
     PolypAccessOptions,
@@ -40,37 +34,16 @@ from utils.datasets.investigation_datasets import (
     go_from_investigation_dataset_complete_to_a259_status,
     get_subject_with_a99_status,
     go_from_a99_status_to_a259_status,
+    get_default_general_information,
+    get_default_drug_information,
+    get_default_endoscopy_information,
 )
 
-general_information = {
-    "site": -1,
-    "practitioner": -1,
-    "testing clinician": -1,
-    "aspirant endoscopist": None,
-}
+general_information = get_default_general_information()
 
-drug_information = {
-    "drug_type1": DrugTypeOptions.MANNITOL,
-    "drug_dose1": "3",
-}
+drug_information = get_default_drug_information()
 
-endoscopy_information = {
-    "endoscope inserted": "yes",
-    "procedure type": "therapeutic",
-    "bowel preparation quality": BowelPreparationQualityOptions.GOOD,
-    "comfort during examination": ComfortOptions.NO_DISCOMFORT,
-    "comfort during recovery": ComfortOptions.NO_DISCOMFORT,
-    "endoscopist defined extent": EndoscopyLocationOptions.DESCENDING_COLON,
-    "scope imager used": YesNoOptions.YES,
-    "retroverted view": YesNoOptions.NO,
-    "start of intubation time": "09:00",
-    "start of extubation time": "09:30",
-    "end time of procedure": "10:00",
-    "scope id": "Autotest",
-    "insufflation": InsufflationOptions.AIR,
-    "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
-    "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
-}
+endoscopy_information = get_default_endoscopy_information()
 
 failure_information = {
     "failure reasons": FailureReasonsOptions.ADHESION,
@@ -234,22 +207,22 @@ def test_identify_diminutive_rectal_hyperplastic_polyp_from_histology_a(
 
     polyp_category_string = "Diminutive rectal hyperplastic polyp"
     InvestigationDatasetsPage(page).expect_text_to_be_visible("Abnormal")
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(1, "5")
-    InvestigationDatasetsPage(page).assert_polyp_categrory(1, polyp_category_string)
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(2, "1")
-    InvestigationDatasetsPage(page).assert_polyp_categrory(2, polyp_category_string)
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(3, "3")
-    InvestigationDatasetsPage(page).assert_polyp_categrory(3, polyp_category_string)
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(4, "5")
-    InvestigationDatasetsPage(page).assert_polyp_categrory(4, polyp_category_string)
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, "5")
+    InvestigationDatasetsPage(page).assert_polyp_category(1, polyp_category_string)
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(2, "1")
+    InvestigationDatasetsPage(page).assert_polyp_category(2, polyp_category_string)
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(3, "3")
+    InvestigationDatasetsPage(page).assert_polyp_category(3, polyp_category_string)
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(4, "5")
+    InvestigationDatasetsPage(page).assert_polyp_category(4, polyp_category_string)
 
     logging.info("Marking investigation dataset not complete")
     InvestigationDatasetsPage(page).click_edit_dataset_button()
     InvestigationDatasetsPage(page).check_dataset_incomplete_checkbox()
     InvestigationDatasetsPage(page).click_save_dataset_button()
     for polyp_number in range(1, 5):
-        InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(polyp_number, None)
-        InvestigationDatasetsPage(page).assert_polyp_categrory(polyp_number, None)
+        InvestigationDatasetsPage(page).assert_polyp_algorithm_size(polyp_number, None)
+        InvestigationDatasetsPage(page).assert_polyp_category(polyp_number, None)
 
     LogoutPage(page).log_out()
 
@@ -331,8 +304,8 @@ def test_identify_diminutive_rectal_hyperplastic_polyp_from_histology_b(
     )
 
     InvestigationDatasetsPage(page).expect_text_to_be_visible("Abnormal")
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(1, "2")
-    InvestigationDatasetsPage(page).assert_polyp_categrory(
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, "2")
+    InvestigationDatasetsPage(page).assert_polyp_category(
         1, "Diminutive rectal hyperplastic polyp"
     )
 
@@ -340,6 +313,6 @@ def test_identify_diminutive_rectal_hyperplastic_polyp_from_histology_b(
     InvestigationDatasetsPage(page).click_edit_dataset_button()
     InvestigationDatasetsPage(page).check_dataset_incomplete_checkbox()
     InvestigationDatasetsPage(page).click_save_dataset_button()
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(1, None)
-    InvestigationDatasetsPage(page).assert_polyp_categrory(1, None)
+    InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, None)
+    InvestigationDatasetsPage(page).assert_polyp_category(1, None)
     LogoutPage(page).log_out()

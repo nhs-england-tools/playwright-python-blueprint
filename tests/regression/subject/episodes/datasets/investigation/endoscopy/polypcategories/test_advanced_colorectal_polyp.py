@@ -5,15 +5,8 @@ from datetime import datetime
 from playwright.sync_api import Page
 from pages.base_page import BasePage
 from pages.datasets.investigation_dataset_page import (
-    InvestigationDatasetsPage,
-    DrugTypeOptions,
-    BowelPreparationQualityOptions,
-    ComfortOptions,
     EndoscopyLocationOptions,
     YesNoOptions,
-    InsufflationOptions,
-    OutcomeAtTimeOfProcedureOptions,
-    LateOutcomeOptions,
     CompletionProofOptions,
     FailureReasonsOptions,
     PolypClassificationOptions,
@@ -29,7 +22,6 @@ from pages.datasets.investigation_dataset_page import (
     YesNoUncertainOptions,
 )
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
-from pages.logout.log_out_page import LogoutPage
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
@@ -44,39 +36,20 @@ from utils.datasets.investigation_datasets import (
     go_from_investigation_dataset_complete_to_a259_status,
     get_subject_with_a99_status,
     go_from_a99_status_to_a259_status,
+    get_default_endoscopy_information,
+    get_default_drug_information,
+    get_default_general_information,
+    complete_and_assert_investigation,
 )
 from utils.user_tools import UserTools
 
 # Defining dictionaries used in tests
-general_information = {
-    "site": -1,
-    "practitioner": -1,
-    "testing clinician": -1,
-    "aspirant endoscopist": None,
-}
+general_information = get_default_general_information()
 
-drug_information = {
-    "drug_type1": DrugTypeOptions.MANNITOL,
-    "drug_dose1": "3",
-}
+drug_information = get_default_drug_information()
 
-endoscopy_information = {
-    "endoscope inserted": "yes",
-    "procedure type": "therapeutic",
-    "bowel preparation quality": BowelPreparationQualityOptions.GOOD,
-    "comfort during examination": ComfortOptions.NO_DISCOMFORT,
-    "comfort during recovery": ComfortOptions.NO_DISCOMFORT,
-    "endoscopist defined extent": EndoscopyLocationOptions.APPENDIX,
-    "scope imager used": YesNoOptions.YES,
-    "retroverted view": YesNoOptions.NO,
-    "start of intubation time": "09:00",
-    "start of extubation time": "09:30",
-    "end time of procedure": "10:00",
-    "scope id": "Autotest",
-    "insufflation": InsufflationOptions.AIR,
-    "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
-    "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
-}
+endoscopy_information = get_default_endoscopy_information()
+endoscopy_information["endoscopist defined extent"] = EndoscopyLocationOptions.APPENDIX
 
 failure_information = {
     "failure reasons": FailureReasonsOptions.ADHESION,
@@ -85,6 +58,8 @@ failure_information = {
 completion_information = {
     "completion proof": CompletionProofOptions.VIDEO_APPENDIX,
 }
+
+category_as_string = "Advanced colorectal polyp"
 
 
 @pytest.fixture(autouse=True)
@@ -137,21 +112,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_a(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="9",
     )
-
-    assert_test_results(page, "9")
 
 
 @pytest.mark.vpn_required
@@ -182,21 +154,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_b(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="8",
     )
-
-    assert_test_results(page, "8")
 
 
 @pytest.mark.vpn_required
@@ -223,21 +192,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_c(page: Page) -> None
     polyp_1_histology = make_polyp_1_histology()
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="10",
     )
-
-    assert_test_results(page, "10")
 
 
 @pytest.mark.vpn_required
@@ -268,21 +234,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_d(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="11",
     )
-
-    assert_test_results(page, "11")
 
 
 @pytest.mark.vpn_required
@@ -318,21 +281,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_e(page: Page) -> None
     del polyp_1_histology["polyp carcinoma"]
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="11",
     )
-
-    assert_test_results(page, "11")
 
 
 @pytest.mark.vpn_required
@@ -365,21 +325,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_f(page: Page) -> None
     del polyp_1_histology["polyp dysplasia"]
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="10",
     )
-
-    assert_test_results(page, "10")
 
 
 @pytest.mark.vpn_required
@@ -410,21 +367,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_g(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="10",
     )
-
-    assert_test_results(page, "10")
 
 
 @pytest.mark.vpn_required
@@ -457,21 +411,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_h(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="12",
     )
-
-    assert_test_results(page, "12")
 
 
 @pytest.mark.vpn_required
@@ -507,21 +458,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_i(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="11",
     )
-
-    assert_test_results(page, "11")
 
 
 @pytest.mark.vpn_required
@@ -551,21 +499,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_j(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="13",
     )
-
-    assert_test_results(page, "13")
 
 
 @pytest.mark.vpn_required
@@ -597,21 +542,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_k(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="7",
     )
-
-    assert_test_results(page, "7")
 
 
 @pytest.mark.vpn_required
@@ -644,21 +586,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_l(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="6",
     )
-
-    assert_test_results(page, "6")
 
 
 @pytest.mark.vpn_required
@@ -691,21 +630,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_m(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="5",
     )
-
-    assert_test_results(page, "5")
 
 
 @pytest.mark.vpn_required
@@ -740,21 +676,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_n(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="4",
     )
-
-    assert_test_results(page, "4")
 
 
 @pytest.mark.vpn_required
@@ -790,21 +723,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_o(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="3",
     )
-
-    assert_test_results(page, "3")
 
 
 @pytest.mark.vpn_required
@@ -838,21 +768,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_p(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="2",
     )
-
-    assert_test_results(page, "2")
 
 
 @pytest.mark.vpn_required
@@ -885,21 +812,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_q(page: Page) -> None
     )
     del polyp_1_histology["serrated lesion sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="20",
     )
-
-    assert_test_results(page, "20")
 
 
 @pytest.mark.vpn_required
@@ -964,17 +888,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_r(page: Page) -> None
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="6",
     )
-
-    assert_test_results(page, "6")
 
 
 @pytest.mark.vpn_required
@@ -1005,21 +930,18 @@ def test_identify_advanced_colorectal_polyp_from_histology_s(page: Page) -> None
     )
     del polyp_1_histology["adenoma sub type"]
 
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
-    InvestigationDatasetCompletion(page).complete_dataset_with_args(
-        general_information=general_information,
-        drug_information=drug_information,
-        endoscopy_information=endoscopy_information,
-        failure_information=failure_information,
-        polyp_information=polyp_information,
-        polyp_intervention=polyp_intervention,
-        polyp_histology=polyp_histology,
+    complete_and_assert_investigation(
+        page,
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        polyp_1_information,
+        polyp_1_intervention,
+        polyp_1_histology,
+        expected_category=category_as_string,
+        expected_size="32",
     )
-
-    assert_test_results(page, "32")
 
 
 def make_polyp_1_information(**overrides):
@@ -1098,25 +1020,3 @@ def make_polyp_1_histology(**overrides):
     }
     data.update(overrides)
     return data
-
-
-def assert_test_results(page: Page, expected_size: str) -> None:
-    """
-    This function asserts that the polyp algorithm size and category match the expected values.
-    """
-    logging.info(
-        f"Asserting test results\nExpected result: Abnormal\nExpected size: {expected_size}\nExpected category: Advanced colorectal polyp"
-    )
-    InvestigationDatasetsPage(page).expect_text_to_be_visible("Abnormal")
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(1, expected_size)
-    InvestigationDatasetsPage(page).assert_polyp_categrory(
-        1, "Advanced colorectal polyp"
-    )
-    InvestigationDatasetsPage(page).click_edit_dataset_button()
-    InvestigationDatasetsPage(page).check_dataset_incomplete_checkbox()
-    InvestigationDatasetsPage(page).click_save_dataset_button()
-    InvestigationDatasetsPage(page).assert_polyp_alogrithm_size(1, None)
-    InvestigationDatasetsPage(page).assert_polyp_categrory(1, None)
-    logging.info("Test results asserted successfully.")
-
-    LogoutPage(page).log_out()

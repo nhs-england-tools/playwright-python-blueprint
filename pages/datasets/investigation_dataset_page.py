@@ -386,7 +386,7 @@ class InvestigationDatasetsPage(BasePage):
         """
         self.click(self.edit_dataset_button)
 
-    def assert_polyp_alogrithm_size(
+    def assert_polyp_algorithm_size(
         self, polyp_number: int, expected_value: Optional[str]
     ) -> None:
         """
@@ -418,7 +418,7 @@ class InvestigationDatasetsPage(BasePage):
                 str(actual_value).strip() == str(expected_value).strip()
             ), f"Expected '{expected_value}', but got '{actual_value}'"
 
-    def assert_polyp_categrory(
+    def assert_polyp_category(
         self, polyp_number: int, expected_value: Optional[str]
     ) -> None:
         """
