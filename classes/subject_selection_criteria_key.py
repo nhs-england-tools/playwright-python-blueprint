@@ -93,6 +93,7 @@ class SubjectSelectionCriteriaKey(Enum):
     DEMOGRAPHICS_TEMPORARY_ADDRESS = ("subject has temporary address", False, False)
     DIAGNOSTIC_TEST_CONFIRMED_DATE = ("diagnostic test confirmed date", False, False)
     DIAGNOSTIC_TEST_CONFIRMED_TYPE = ("diagnostic test confirmed type", True, True)
+    DIAGNOSTIC_TEST_FAILED = ("diagnostic test failed", False, True)
     DIAGNOSTIC_TEST_HAS_OUTCOME = ("diagnostic test has outcome", False, True)
     DIAGNOSTIC_TEST_HAS_RESULT = ("diagnostic test has result", False, True)
     DIAGNOSTIC_TEST_INTENDED_EXTENT = ("diagnostic test intended extent", True, False)
@@ -241,6 +242,15 @@ class SubjectSelectionCriteriaKey(Enum):
     )
     PREVIOUS_SCREENING_STATUS = ("previous screening status", True, True)
     PREVIOUS_SURVEILLANCE_DUE_DATE = ("previous surveillance due date", False, False)
+    REASON_FOR_ONWARD_REFERRAL = ("reason for onward referral", False, False)
+    REASON_FOR_SYMPTOMATIC_REFERRAL = ("reason for symptomatic referral", False, False)
+    REFER_ANOTHER_DIAGNOSTIC_TEST_TYPE = (
+        "refer another diagnostic test type",
+        False,
+        False,
+    )
+    REFER_FROM_SYMPTOMATIC_TYPE = ("refer from symptomatic type", False, False)
+    REFER_FROM_SYMPTOMATIC_REASON = ("refer from symptomatic reason", False, False)
     RESPONSIBLE_SCREENING_CENTRE_CODE = (
         "responsible screening centre code",
         True,
