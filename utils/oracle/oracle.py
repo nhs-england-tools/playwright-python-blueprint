@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import pandas as pd
 import logging
+from typing import Optional
 
 
 class OracleDB:
@@ -145,9 +146,7 @@ class OracleDB:
             if conn is not None:
                 self.disconnect_from_db(conn)
 
-    def execute_query(
-        self, query: str, parameters: dict | None = None
-    ) -> pd.DataFrame:  # To use when "select xxxx" (stored procedures)
+    def execute_query(self, query: str, parameters: dict | None = None) -> pd.DataFrame:
         """
         This is used to execute any sql queries.
         A query is provided and then the result is returned as a pandas dataframe
@@ -179,8 +178,8 @@ class OracleDB:
         return df
 
     def execute_stored_procedure(
-        self, procedure: str, params: list = [None]
-    ) -> None:  # To use when "exec xxxx" (stored procedures)
+        self, procedure: str, params: Optional[list] = None
+    ) -> None:
         """
         This is to be used whenever we need to execute a stored procedure.
         It is provided with the stored procedure name and then executes it

@@ -257,20 +257,17 @@ def complete_and_assert_investigation(
     drug_information: dict,
     endoscopy_information: dict,
     failure_information: dict,
-    polyp_1_information: dict,
-    polyp_1_intervention: dict,
-    polyp_1_histology: dict,
-    expected_category: str,
+    expected_dataset_result: str,
+    expected_category: str | None,
     expected_size: str,
+    polyp_information: Optional[list] = None,
+    polyp_intervention: Optional[list] = None,
+    polyp_histology: Optional[list] = None,
     completion_information: Optional[dict] = None,
 ) -> None:
     """
     Fills the investigation dataset, asserts results, and marks dataset not complete.
     """
-    polyp_information = [polyp_1_information]
-    polyp_intervention = [polyp_1_intervention]
-    polyp_histology = [polyp_1_histology]
-
     InvestigationDatasetCompletion(page).complete_dataset_with_args(
         general_information=general_information,
         drug_information=drug_information,
@@ -282,6 +279,13 @@ def complete_and_assert_investigation(
         completion_information=completion_information,
     )
 
+    try:
+        InvestigationDatasetsPage(page).expect_text_to_be_visible(
+            expected_dataset_result
+        )
+        logging.info(f"Found '{expected_dataset_result}' result.")
+    except Exception as e:
+        logging.error(f"Result was not '{expected_dataset_result}': {e}")
     InvestigationDatasetsPage(page).assert_polyp_algorithm_size(1, expected_size)
     InvestigationDatasetsPage(page).assert_polyp_category(1, expected_category)
 

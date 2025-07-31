@@ -81,46 +81,53 @@ def test_identify_lnpcp_from_histology_a(
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.ANUS,
-        "classification": PolypClassificationOptions.ISP,
-        "estimate of whole polyp size": "20",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.ANUS,
+            "classification": PolypClassificationOptions.ISP,
+            "estimate of whole polyp size": "20",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.POLYPECTOMY,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.POLYPECTOMY,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.MIXED_POLYP,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "20",
-        "polyp dysplasia": PolypDysplasiaOptions.NO_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.MIXED_POLYP,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "20",
+            "polyp dysplasia": PolypDysplasiaOptions.NO_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
     )
 
 
@@ -145,46 +152,53 @@ def test_identify_lnpcp_from_histology_b(
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.RECTUM,
-        "classification": PolypClassificationOptions.IS,
-        "estimate of whole polyp size": "20",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.RECTUM,
+            "classification": PolypClassificationOptions.IS,
+            "estimate of whole polyp size": "20",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.EMR,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.EMR,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.ADENOMA,
-        "adenoma sub type": AdenomaSubTypeOptions.TUBULOVILLOUS_ADENOMA,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "21",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.ADENOMA,
+            "adenoma sub type": AdenomaSubTypeOptions.TUBULOVILLOUS_ADENOMA,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "21",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="21",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
     )
 
 
@@ -209,46 +223,53 @@ def test_identify_lnpcp_from_histology_c(
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.SIGMOID_COLON,
-        "classification": PolypClassificationOptions.IIA,
-        "estimate of whole polyp size": "22",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.SIGMOID_COLON,
+            "classification": PolypClassificationOptions.IIA,
+            "estimate of whole polyp size": "22",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.ESD,
-        "device": PolypInterventionDeviceOptions.ENDOSCOPIC_KNIFE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.ESD,
+            "device": PolypInterventionDeviceOptions.ENDOSCOPIC_KNIFE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.ADENOMA,
-        "adenoma sub type": AdenomaSubTypeOptions.VILLOUS_ADENOMA,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "22",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.UNCERTAIN,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.ADENOMA,
+            "adenoma sub type": AdenomaSubTypeOptions.VILLOUS_ADENOMA,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "22",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.UNCERTAIN,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="22",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
     )
 
 
@@ -273,47 +294,54 @@ def test_identify_lnpcp_from_histology_d(
     SubjectScreeningSummaryPage(page).click_datasets_link()
     SubjectDatasetsPage(page).click_investigation_show_datasets()
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.DESCENDING_COLON,
-        "classification": PolypClassificationOptions.IIB,
-        "estimate of whole polyp size": "20",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.DESCENDING_COLON,
+            "classification": PolypClassificationOptions.IIB,
+            "estimate of whole polyp size": "20",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.POLYPECTOMY,
-        "device": PolypInterventionDeviceOptions.COLD_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
-        "polyp appears fully resected endoscopically": YesNoOptions.YES,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.POLYPECTOMY,
+            "device": PolypInterventionDeviceOptions.COLD_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
+            "polyp appears fully resected endoscopically": YesNoOptions.YES,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.ADENOMA,
-        "adenoma sub type": AdenomaSubTypeOptions.NOT_REPORTED,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "19",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.UNCERTAIN,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.ADENOMA,
+            "adenoma sub type": AdenomaSubTypeOptions.NOT_REPORTED,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "19",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.UNCERTAIN,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
     )
 
 
@@ -342,45 +370,52 @@ def test_identify_lnpcp_from_histology_e(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.SPLENIC_FLEXURE,
-        "classification": PolypClassificationOptions.IIC,
-        "estimate of whole polyp size": "19",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.SPLENIC_FLEXURE,
+            "classification": PolypClassificationOptions.IIC,
+            "estimate of whole polyp size": "19",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.EMR,
-        "device": PolypInterventionDeviceOptions.COLD_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
-        "polyp appears fully resected endoscopically": YesNoOptions.YES,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.EMR,
+            "device": PolypInterventionDeviceOptions.COLD_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
+            "polyp appears fully resected endoscopically": YesNoOptions.YES,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "20",
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.HYPERPLASTIC_POLYP,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "20",
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -410,47 +445,54 @@ def test_identify_lnpcp_from_histology_f(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.TRANSVERSE_COLON,
-        "classification": PolypClassificationOptions.LST_G,
-        "estimate of whole polyp size": "21",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.TRANSVERSE_COLON,
+            "classification": PolypClassificationOptions.LST_G,
+            "estimate of whole polyp size": "21",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.ESD,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
-        "polyp appears fully resected endoscopically": YesNoOptions.YES,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.ESD,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
+            "polyp appears fully resected endoscopically": YesNoOptions.YES,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.MIXED_POLYP,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "21",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.MIXED_POLYP,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "21",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="21",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -480,45 +522,52 @@ def test_identify_lnpcp_from_histology_g(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.HEPATIC_FLEXURE,
-        "classification": PolypClassificationOptions.LST_NG,
-        "estimate of whole polyp size": "18",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.HEPATIC_FLEXURE,
+            "classification": PolypClassificationOptions.LST_NG,
+            "estimate of whole polyp size": "18",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.POLYPECTOMY,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.POLYPECTOMY,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.SESSILE_SERRATED_LESION,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "20",
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.SESSILE_SERRATED_LESION,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "20",
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -548,46 +597,53 @@ def test_identify_lnpcp_from_histology_h(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.ASCENDING_COLON,
-        "classification": PolypClassificationOptions.IIA,
-        "estimate of whole polyp size": "20",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.ASCENDING_COLON,
+            "classification": PolypClassificationOptions.IIA,
+            "estimate of whole polyp size": "20",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.EMR,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.EMR,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.SESSILE_SERRATED_LESION_WITH_DYSPLASIA,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "22",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.SESSILE_SERRATED_LESION_WITH_DYSPLASIA,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "22",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="22",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -617,46 +673,53 @@ def test_identify_lnpcp_from_histology_i(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.CAECUM,
-        "classification": PolypClassificationOptions.ISP,
-        "estimate of whole polyp size": "21",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.CAECUM,
+            "classification": PolypClassificationOptions.ISP,
+            "estimate of whole polyp size": "21",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.ESD,
-        "device": PolypInterventionDeviceOptions.ENDOSCOPIC_KNIFE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.ESD,
+            "device": PolypInterventionDeviceOptions.ENDOSCOPIC_KNIFE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.EN_BLOC,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.SERRATED_LESION,
-        "serrated lesion sub type": SerratedLesionSubTypeOptions.TRADITIONAL_SERRATED_ADENOMA,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "21",
-        "polyp dysplasia": PolypDysplasiaOptions.LOW_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.SERRATED_LESION,
+            "serrated lesion sub type": SerratedLesionSubTypeOptions.TRADITIONAL_SERRATED_ADENOMA,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "21",
+            "polyp dysplasia": PolypDysplasiaOptions.LOW_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="21",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -686,47 +749,54 @@ def test_identify_lnpcp_from_histology_r(
         EndoscopyLocationOptions.APPENDIX
     )
 
-    polyp_1_information = {
-        "location": EndoscopyLocationOptions.TRANSVERSE_COLON,
-        "classification": PolypClassificationOptions.IS,
-        "estimate of whole polyp size": "19",
-        "polyp access": PolypAccessOptions.EASY,
-        "left in situ": YesNoOptions.NO,
-    }
+    polyp_1_information = [
+        {
+            "location": EndoscopyLocationOptions.TRANSVERSE_COLON,
+            "classification": PolypClassificationOptions.IS,
+            "estimate of whole polyp size": "19",
+            "polyp access": PolypAccessOptions.EASY,
+            "left in situ": YesNoOptions.NO,
+        }
+    ]
 
-    polyp_1_intervention = {
-        "modality": PolypInterventionModalityOptions.ESD,
-        "device": PolypInterventionDeviceOptions.HOT_SNARE,
-        "excised": YesNoOptions.YES,
-        "retrieved": YesNoOptions.YES,
-        "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
-        "polyp appears fully resected endoscopically": YesNoOptions.YES,
-    }
+    polyp_1_intervention = [
+        {
+            "modality": PolypInterventionModalityOptions.ESD,
+            "device": PolypInterventionDeviceOptions.HOT_SNARE,
+            "excised": YesNoOptions.YES,
+            "retrieved": YesNoOptions.YES,
+            "excision technique": PolypInterventionExcisionTechniqueOptions.PIECE_MEAL,
+            "polyp appears fully resected endoscopically": YesNoOptions.YES,
+        }
+    ]
 
-    polyp_1_histology = {
-        "date of receipt": datetime.today(),
-        "date of reporting": datetime.today(),
-        "pathology provider": -1,
-        "pathologist": -1,
-        "polyp type": PolypTypeOptions.ADENOMA,
-        "adenoma sub type": AdenomaSubTypeOptions.TUBULAR_ADENOMA,
-        "polyp excision complete": PolypExcisionCompleteOptions.R1,
-        "polyp size": "20",
-        "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
-        "polyp carcinoma": YesNoUncertainOptions.NO,
-    }
+    polyp_1_histology = [
+        {
+            "date of receipt": datetime.today(),
+            "date of reporting": datetime.today(),
+            "pathology provider": -1,
+            "pathologist": -1,
+            "polyp type": PolypTypeOptions.ADENOMA,
+            "adenoma sub type": AdenomaSubTypeOptions.TUBULAR_ADENOMA,
+            "polyp excision complete": PolypExcisionCompleteOptions.R1,
+            "polyp size": "20",
+            "polyp dysplasia": PolypDysplasiaOptions.HIGH_GRADE_DYSPLASIA,
+            "polyp carcinoma": YesNoUncertainOptions.NO,
+        }
+    ]
 
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result=lnpcp_string,
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )
 
@@ -811,16 +881,20 @@ def test_identify_lnpcp_from_histology_s(
     polyp_1_information["estimate of whole polyp size"] = "20"
     polyp_1_histology["polyp size"] = "20"
 
+    polyp_1_information = [polyp_1_information]
+    polyp_1_intervention = [polyp_1_intervention]
+    polyp_1_histology = [polyp_1_histology]
     complete_and_assert_investigation(
-        page,
-        general_information,
-        drug_information,
-        endoscopy_information,
-        failure_information,
-        polyp_1_information,
-        polyp_1_intervention,
-        polyp_1_histology,
+        page=page,
+        general_information=general_information,
+        drug_information=drug_information,
+        endoscopy_information=endoscopy_information,
+        failure_information=failure_information,
+        expected_dataset_result="Abnormal",
         expected_category=lnpcp_string,
         expected_size="20",
+        polyp_information=polyp_1_information,
+        polyp_intervention=polyp_1_intervention,
+        polyp_histology=polyp_1_histology,
         completion_information=completion_information,
     )

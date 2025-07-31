@@ -250,16 +250,23 @@ class BasePage:
         except Exception as e:
             logging.error(f"Click failed: {e}")
 
-    def assert_dialog_text(self, expected_text: str) -> None:
+    def assert_dialog_text(self, expected_text: str, accept: bool = False) -> None:
         """
         Asserts that a dialog appears and contains the expected text.
         If no dialog appears, logs an error.
         Args:
             expected_text (str): The text that should be present in the dialog.
+            accept (bool): Set to True if you want to accept the dialog, by deafult is is set to False.
         """
         self._dialog_assertion_error = None
 
-        def handle_dialog(dialog: Dialog):
+        def handle_dialog(dialog: Dialog, accept: bool = False):
+            """
+            Handles the dialog and asserts that the dialog contains the expected text.
+            Args:
+                dialog (Dialog): the playwright dialog object
+                accept (bool): Set to True if you want to accept the dialog, by deafult is is set to False.
+            """
             logging.info(f"Dialog appeared with message: {dialog.message}")
             actual_text = dialog.message
             try:
@@ -268,9 +275,12 @@ class BasePage:
                 ), f"Expected '{expected_text}', but got '{actual_text}'"
             except AssertionError as e:
                 self._dialog_assertion_error = e
-            dialog.dismiss()  # Dismiss dialog
+            if accept:
+                dialog.accept()
+            else:
+                dialog.dismiss()  # Dismiss dialog
 
-        self.page.once("dialog", handle_dialog)
+        self.page.once("dialog", lambda dialog: handle_dialog(dialog, accept))
 
     def go_to_log_in_page(self) -> None:
         """Click on the Log in button to navigate to the login page."""

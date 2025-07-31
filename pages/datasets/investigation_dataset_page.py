@@ -483,6 +483,29 @@ class InvestigationDatasetsPage(BasePage):
             )
         )
 
+    def populate_select_by_id(
+        self, field_base: str, polyp_number: int, option: str
+    ) -> None:
+        """
+        Populates a <select> element using a predictable ID pattern based on field name and polyp number.
+
+        This method is useful when label-based selectors (e.g., using `right-of(:text(...))`) are unreliable
+        due to ambiguous or repeated text labels on the page.
+
+        Args:
+            field_base (str): The base name of the field (e.g., "POLYP_PATHOLOGY_LOST").
+            polyp_number (int): The polyp index (e.g., 1 for the first polyp).
+            option (str): The value to be selected from the dropdown.
+
+        Example:
+            populate_select_by_id("POLYP_PATHOLOGY_LOST", 1, YesNoOptions.YES)
+            # Selects 'Yes' in <select id="UI_POLYP_PATHOLOGY_LOST1_1">
+        """
+        field_id = f"UI_{field_base.upper()}{polyp_number}_1"
+        locator = self.page.locator(f"select#{field_id}")
+        locator.wait_for(state="visible")
+        locator.select_option(option)
+
 
 class SiteLookupOptions(StrEnum):
     """Enum for site lookup options"""
@@ -685,6 +708,12 @@ class PolypInterventionModalityOptions(StrEnum):
     POLYPECTOMY = "17189~Resection"
     EMR = "17193~Resection"
     ESD = "17520~Resection"
+    BIOPSY = "17190~Suspicion of cancer"
+    CHROMOSCOPY = "17198"
+    HAEMOSTATIC_TECHNIQUE = "17194"
+    SUBMUCOSAL_LIFT = "203005"
+    TATTOOING = "17192"
+    TISSUE_DESTRUCTION = "17191"
 
 
 class PolypInterventionDeviceOptions(StrEnum):
@@ -695,6 +724,9 @@ class PolypInterventionDeviceOptions(StrEnum):
     COLD_SNARE = "17072"
     COLD_BIOPSY = "17073~En-bloc"
     ENDOSCOPIC_KNIFE = "17531"
+    HOT_BIOPSY_FORCEPS = "17071~En-bloc"
+    ARGON_BEAM = "17077"
+    LASER = "17078"
 
 
 class PolypInterventionExcisionTechniqueOptions(StrEnum):
@@ -768,3 +800,27 @@ class YesNoUncertainOptions(StrEnum):
     YES = "17058"
     NO = "17059"
     UNCERTAIN = "17105"
+
+
+class ReasonPathologyLostOptions(StrEnum):
+    """Enum for reason pathology lost options"""
+
+    LOST_IN_TRANSIT = "200561~~204337"
+    DESTROYED_DURING_PROCESSING = "200562~~204337"
+
+
+class PolypInterventionSuccessOptions(StrEnum):
+    """Enum for polyp intervention success options"""
+
+    SUCCESSFUL = "17200"
+    UNSUCCESSFUL = "17201"
+
+
+class PolypReasonLeftInSituOptions(StrEnum):
+    """Enum for reasons a polyp was left in situ"""
+
+    POLYP_TYPE = "200556"
+    REQUIRES_ANOTHER_PROCEDURE = "200557"
+    REQUIRES_SURGICAL_RESECTION = "200558"
+    CANNOT_FIND_POLYP_ON_WITHDRAWAL = "200559"
+    CLINICAL_DECISION_NOT_TO_EXCISE = "203082"
