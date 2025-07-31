@@ -21,15 +21,14 @@ from utils.screening_subject_page_searcher import search_subject_episode_by_nhs_
 from datetime import datetime, timedelta
 
 
-@pytest.mark.wip
 @pytest.mark.regression
 @pytest.mark.reports_operational
 def test_subject_not_on_report_if_not_due(page: Page) -> None:
     """
-    Test to check if a subject is not due for invite they are not in the report.
+    Test to check that a subject who is not due for invite is not in the report.
     """
     logging.info(
-        "Starting test: Test to check if a subject is not due for invite they are not in the report."
+        "Starting test: Test to check that a subject who is not due for invite is not in the report."
     )
 
     criteria1 = {
@@ -52,10 +51,10 @@ def test_subject_not_on_report_if_not_due(page: Page) -> None:
 @pytest.mark.reports_operational
 def test_subject_to_be_invited_without_temporary_address_at_this_hub_not_on_report(page: Page) -> None:
     """
-    Test to check if a subject that is due to be invited, that does not have a temporary address, at this hub, does not appear in the report.
+    Test to check that a subject who is due to be invited, but does not have a temporary address, and is at this hub, does not appear in the report.
     """
     logging.info(
-        "Starting test: Verify a subject that is due to be invited, that does not have a temporary address, at this hub, does not appear in the report."
+        "Starting test: Check that a subject who is due to be invited, but does not have a temporary address, and is at this hub, does not appear in the report."
     )
 
     criteria = {
@@ -87,15 +86,14 @@ def test_subject_to_be_invited_without_temporary_address_at_this_hub_not_on_repo
     report.assertRecordsVisible(nhs_no, True)
 
 
-@pytest.mark.wip
 @pytest.mark.regression
 @pytest.mark.reports_operational
-def test_subject_to_be_invited_without_temporary_address_at_another_hub_not_on_report(page: Page) -> None:
+def test_subject_to_be_invited_with_temporary_address_at_another_hub_not_on_report(page: Page) -> None:
     """
-    Test to check if a subject that is due to be invited, that does have a temporary address but at another hub, does not appear in the report.
+    Test to check that a subject who is due to be invited, and does have a temporary address but is at another hub, does not appear in the report.
     """
     logging.info(
-        "Starting test: Verify a subject that is due to be invited, that does have a temporary address but at another hub, does not appear in the report."
+        "Starting test: Check that a subject who is due to be invited, and does have a temporary address but is at another hub, does not appear in the report."
     )
 
     criteria = {
@@ -115,15 +113,15 @@ def test_subject_to_be_invited_without_temporary_address_at_another_hub_not_on_r
     report.filter_by_nhs_number(nhs_no)
     report.assertRecordsVisible(nhs_no, False)
 
-@pytest.mark.wip
+
 @pytest.mark.regression
 @pytest.mark.reports_operational
 def test_subject_on_report_is_hidden_after_review(page: Page) -> None:
     """
-    Test to check if a subject is reviewed they are hidden from the default view in the report.
+    Test to check that a subject who becomes reviewed is then hidden from the default view in the report.
     """
     logging.info(
-        "Starting test: Test to check if a subject is reviewed they are hidden from the default view in the report."
+        "Starting test: Check that a subject who becomes reviewed is then hidden from the default view in the report."
     )
 
     criteria = {
@@ -166,15 +164,15 @@ def test_subject_on_report_is_hidden_after_review(page: Page) -> None:
     report.filterByReviewed("No")
     report.assertRecordsVisible(nhs_no, True)
 
-@pytest.mark.wip
+
 @pytest.mark.regression
 @pytest.mark.reports_operational
 def test_subject_to_be_invited_with_temporary_address_at_this_hub_is_on_report(page: Page) -> None:
     """
-    Test to check if a subject that is due to be invited, that does have a temporary address, at this hub, does appear in the report.
+    Test to check that a subject who is due to be invited, and does have a temporary address, and is at this hub, does appear in the report.
     """
     logging.info(
-        "Starting test: Verify a subject that is due to be invited, that does have a temporary address, at this hub, does appear in the report."
+        "Starting test: Check that a subject who is due to be invited, and does have a temporary address, and is at this hub, does appear in the report."
     )
 
     criteria = {
@@ -274,4 +272,7 @@ def _remove_a_temp_address(page: Page) -> None:
 def _update_temp_address(page: Page, temp_address) -> None:
     logging.info(f"Updating Temporary address : {temp_address}.")
     demographic_page = SubjectDemographicPage(page)
+
+    logging.info("Updating postcode as sometimes the existing address has a bad or blank value which might break the save")
+    demographic_page.fill_postcode_input("EX11AA")
     demographic_page.update_temporary_address(temp_address)

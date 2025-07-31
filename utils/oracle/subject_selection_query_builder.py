@@ -3204,7 +3204,7 @@ class SubjectSelectionQueryBuilder:
 
     def _add_criteria_subject_is_due_for_invite(self) -> None:
         try:
-            answer = YesNoType.from_description(self.criteria_value)
+            answer = YesNoType.by_description_case_insensitive(self.criteria_value)
 
             if answer == YesNoType.YES:
                 self.sql_from.append(" INNER JOIN next_invitation_subject nis ")
