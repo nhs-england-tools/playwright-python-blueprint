@@ -98,6 +98,6 @@ class DiagnosisDateReasonType(Enum):
 
     def get_description(self) -> str:
         """
-        Returns the description for the diagnosis date reason.
+        Returns the description for the diagnosis date reason
         """
         return self._description

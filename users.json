@@ -50,5 +50,11 @@
       "Coventry and Warwickshire Bowel Cancer Screening Centre, MultiOrgUser",
       "Wolverhampton Bowel Cancer Screening Centre, MultiOrgUser"
     ]
+  },
+  "BCSS Support - SC at BCS001": {
+    "username": "BCSS307",
+    "roles": [
+      "Wolverhampton SC"
+    ]
   }
 }
