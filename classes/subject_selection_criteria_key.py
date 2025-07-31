@@ -276,6 +276,7 @@ class SubjectSelectionCriteriaKey(Enum):
     SUBJECT_HAS_DIAGNOSTIC_TESTS = ("subject has diagnostic tests", False, False)
     SUBJECT_HAS_EPISODES = ("subject has episodes", False, False)
     SUBJECT_HAS_EVENT_STATUS = ("subject has event status", False, False)
+    SUBJECT_IS_DUE_FOR_INVITE = ("subject is due for invite", False, False)
     SUBJECT_DOES_NOT_HAVE_EVENT_STATUS = (
         "subject does not have event status",
         False,

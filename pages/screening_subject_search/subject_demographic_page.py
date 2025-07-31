@@ -2,7 +2,7 @@ from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from datetime import datetime
 from utils.calendar_picker import CalendarPicker
-
+import logging
 
 class SubjectDemographicPage(BasePage):
     """Subject Demographic Page locators, and methods for interacting with the page."""
@@ -10,6 +10,9 @@ class SubjectDemographicPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
+
+        self.title = "Subject Demographic";
+
         # Subject Demographic - page filters
         self.forename_field = self.page.get_by_role("textbox", name="Forename")
         self.surname_field = self.page.get_by_role("textbox", name="Surname")
@@ -53,6 +56,11 @@ class SubjectDemographicPage(BasePage):
         self.temporary_address_postcode = self.page.locator(
             "#UI_SUBJECT_ALT_POSTCODE_0"
         )
+
+    def verify_page_title(self) -> None:
+        logging.info(f"Verify title as '{self.title}'")
+        ""f"Verifies that the {self.title} page title is displayed correctly."""
+        self.page_title_contains_text(self.title)
 
     def is_forename_filled(self) -> bool:
         """

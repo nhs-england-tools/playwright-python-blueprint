@@ -57,6 +57,7 @@ from classes.lynch_incident_episode_type import (
 from classes.prevalent_incident_status_type import PrevalentIncidentStatusType
 from classes.notify_event_status import NotifyEventStatus
 from classes.yes_no_type import YesNoType
+from classes.temporary_address_type import TemporaryAddressType
 from classes.episode_sub_type import EpisodeSubType
 from classes.episode_status_type import EpisodeStatusType
 from classes.episode_status_reason_type import EpisodeStatusReasonType
@@ -392,6 +393,8 @@ class SubjectSelectionQueryBuilder:
                 )
             case SubjectSelectionCriteriaKey.BOWEL_SCOPE_DUE_DATE_REASON:
                 self._add_criteria_bowel_scope_due_date_reason()
+            case SubjectSelectionCriteriaKey.SUBJECT_IS_DUE_FOR_INVITE:
+                self._add_criteria_subject_is_due_for_invite()
             # ------------------------------------------------------------------------
             # ⛔ Cease & Manual Override Criteria
             # ------------------------------------------------------------------------
@@ -2382,27 +2385,39 @@ class SubjectSelectionQueryBuilder:
         """
         Filters subjects based on whether they have a temporary address on record.
         """
-        try:
-            answer = YesNoType.by_description_case_insensitive(self.criteria_value)
 
-            if answer == YesNoType.YES:
-                self.sql_from.append(
-                    " INNER JOIN sd_address_t adds ON adds.contact_id = c.contact_id "
-                    " AND adds.ADDRESS_TYPE = 13043 "
-                    " AND adds.EFFECTIVE_FROM IS NOT NULL "
-                )
-            elif answer == YesNoType.NO:
-                self.sql_from.append(
-                    " LEFT JOIN sd_address_t  adds ON adds.contact_id = c.contact_id "
-                )
-                self.sql_where.append(
-                    " AND NOT EXISTS ("
-                    " SELECT 1 "
-                    " FROM sd_address_t x "
-                    " WHERE x.contact_id  = c.contact_id "
-                    " AND x.address_type = 13043"
-                    " AND x.effective_from is not null) "
-                )
+        try:
+            answer = TemporaryAddressType.from_description(self.criteria_value)
+
+            NEVER_HAS_HAD_TEMP_ADDRESS = (" LEFT OUTER JOIN sd_address_t adds "
+                " ON adds.contact_id = c.contact_id "
+                " AND adds.address_type = 13043 "
+                " AND adds.effective_from IS NOT NULL ")
+
+            HAS_HAD_TEMP_ADDRESS = (" INNER JOIN sd_address_t adds "
+                " ON adds.contact_id = c.contact_id "
+                " AND adds.address_type = 13043 "
+                " AND adds.effective_from IS NOT NULL ")
+
+            if answer == TemporaryAddressType.YES:
+                self.sql_from.append(HAS_HAD_TEMP_ADDRESS)
+
+            elif answer == TemporaryAddressType.NO:
+                self.sql_from.append(NEVER_HAS_HAD_TEMP_ADDRESS)
+                self.sql_where.append(" AND adds.address_id IS NULL ")
+
+            elif answer == TemporaryAddressType.EXPIRED:
+                self.sql_from.append(HAS_HAD_TEMP_ADDRESS)
+                self.sql_where.append(" AND adds.effective_to < TRUNC(SYSDATE) ")
+
+            elif answer == TemporaryAddressType.CURRENT:
+                self.sql_from.append(HAS_HAD_TEMP_ADDRESS)
+                self.sql_where.append(" AND TRUNC(SYSDATE) BETWEEN adds.effective_from AND adds.effective_to ")
+
+            elif answer == TemporaryAddressType.FUTURE:
+                self.sql_from.append(HAS_HAD_TEMP_ADDRESS)
+                self.sql_where.append(" AND adds.effective_from > TRUNC(SYSDATE) ")
+
             else:
                 raise ValueError()
         except Exception:
@@ -3183,6 +3198,23 @@ class SubjectSelectionQueryBuilder:
             self.sql_where.append(
                 f"{self.criteria_comparator}{bowel_scope_due_date_change_reason_type.valid_value_id}"
             )
+
+        except Exception:
+            raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
+
+    def _add_criteria_subject_is_due_for_invite(self) -> None:
+        try:
+            answer = YesNoType.from_description(self.criteria_value)
+
+            if answer == YesNoType.YES:
+                self.sql_from.append(" INNER JOIN next_invitation_subject nis ")
+                self.sql_from.append(" ON nis.subject_id = ss.screening_subject_id ")
+
+            if answer == YesNoType.NO:
+                self.sql_from.append(" LEFT OUTER JOIN next_invitation_subject nis ")
+                self.sql_from.append(" ON nis.subject_id = ss.screening_subject_id ")
+
+                self.sql_where.append(" AND nis.subject_id IS NULL ")
 
         except Exception:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)

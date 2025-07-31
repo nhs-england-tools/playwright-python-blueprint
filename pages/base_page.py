@@ -134,6 +134,9 @@ class BasePage:
         """
         expect(self.main_menu__header).to_contain_text(self.main_menu_string)
 
+    def page_title_contains_text(self, text: str) -> None:
+        self.bowel_cancer_screening_page_title_contains_text(text)
+
     def bowel_cancer_screening_page_title_contains_text(self, text: str) -> None:
         """Asserts that the page title contains the specified text.
 

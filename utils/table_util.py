@@ -286,25 +286,28 @@ class TableUtils:
             )
 
     def assert_surname_in_table(self, surname_pattern: str) -> None:
+        assert self.assert_value_in_table(surname_pattern, 3), f"No surname matching '{surname_pattern}' found in table."
+
+    def assert_value_in_table(self, value_pattern: str, col_id: int) -> bool:
         """
-        Asserts that a surname matching the given pattern exists in the table.
+        Asserts that a value matching the given pattern exists in the table.
         Args:
-            surname_pattern (str): The surname or pattern to search for (supports '*' as a wildcard at the end).
+            value_pattern (str): The value or pattern to search for (supports '*' as a wildcard at the end).
         """
-        # Locate all surname cells (adjust selector as needed)
-        surname_criteria = self.page.locator(
-            "//table//tr[position()>1]/td[3]"
+        # Locate all cells for given column
+        value_criteria = self.page.locator(
+            f"//table//tr[position()>1]/td[{col_id}]"
         )  # Use the correct column index
-        if surname_pattern.endswith("*"):
-            prefix = surname_pattern[:-1]
+        if value_pattern.endswith("*"):
+            prefix = value_pattern[:-1]
             found = any(
                 cell.inner_text().startswith(prefix)
-                for cell in surname_criteria.element_handles()
+                for cell in value_criteria.element_handles()
             )
         else:
             found = any(
-                surname_pattern == cell.inner_text()
-                for cell in surname_criteria.element_handles()
+                value_pattern == cell.inner_text()
+                for cell in value_criteria.element_handles()
             )
         assert found, f"No surname matching '{surname_pattern}' found in table."
 
