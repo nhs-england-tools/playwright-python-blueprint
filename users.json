@@ -51,6 +51,60 @@
       "Wolverhampton Bowel Cancer Screening Centre, MultiOrgUser"
     ]
   },
+  "Hub Director State Registered at BCS03": {
+    "username": "BCSS414",
+    "roles": [
+      "Hub Director State Registered, England"
+    ]
+  },
+  "Senior Screening Assistant at BCS01": {
+    "username": "BCSS404",
+    "roles": [
+      "Senior Screening Assistant, England"
+    ]
+  },
+  "Screening Assistant at BCS02": {
+    "username": "BCSS412",
+    "roles": [
+      "Senior Screening Assistant, England"
+    ]
+  },
+  "Assistant Screening Practitioner at BCS001": {
+    "username": "BCSS324",
+    "roles": [
+      "Assistant Screening Practitioner, England"
+    ]
+  },
+  "Screening Coordinator at BCS001": {
+    "username": "BCSS121",
+    "roles": [
+      "Screening Coordinator at BCS001, England"
+    ]
+  },
+  "Screening Practitioner at BCS001": {
+    "username": "BCSS121",
+    "roles": [
+      "Screening Practioner at BCS001, England"
+    ]
+  },
+  "Screening Centre Clerk at BCS001": {
+    "username": "BCSS119",
+    "roles": [
+      "Screening Centre Clerk, England"
+    ]
+  },
+  "National Data Analyst at BCS0": {
+    "username": "BCSS212",
+    "roles": [
+      "National Data Analyst, England"
+    ]
+  },
+  "National QA User at BCS0": {
+    "username": "BCSS263",
+    "roles": [
+      "National QA User, England"
+    ]
+  },
   "BCSS Support - SC at BCS001": {
     "username": "BCSS307",
     "roles": [

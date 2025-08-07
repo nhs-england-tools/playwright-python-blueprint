@@ -1,4 +1,5 @@
-from playwright.sync_api import Page, expect
+import re
+from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 from enum import StrEnum
 from utils.oracle.oracle_specific_functions import (
@@ -77,6 +78,7 @@ class InvestigationDatasetsPage(BasePage):
             "#UI_DIV_BUTTON_EDIT1"
         ).get_by_role("button", name="Edit Dataset")
         self.visible_ui_results_string = 'select[id^="UI_RESULTS_"]:visible'
+        self.sections = self.page.locator(".DatasetSection")
 
     def select_site_lookup_option(self, option: str) -> None:
         """
@@ -352,7 +354,6 @@ class InvestigationDatasetsPage(BasePage):
         """
         This method is designed to select a pathologist from the pathologist options.
         It clicks on the pathologist link and selects the given option by index.
-
         Args:
             option (int): The index of the option to select from the pathologist options.
         """
@@ -364,11 +365,10 @@ class InvestigationDatasetsPage(BasePage):
         option_elements.nth(option).wait_for(state="visible")
         self.click(option_elements.nth(option))
 
-    def select_loopup_option_index(self, option: int) -> None:
+    def select_lookup_option_index(self, option: int) -> None:
         """
         This method is designed to select a lookup option by index.
         It clicks on the lookup link and selects the given option by index.
-
         Args:
             option (int): The index of the option to select from the lookup options.
         """
@@ -392,7 +392,6 @@ class InvestigationDatasetsPage(BasePage):
         """
         This method asserts that the polyp size is as expected.
         It retrieves the polyp size from the page and compares it with the expected value.
-
         Args:
             polyp_number (int): The number of the polyp to check (1 or 2).
             expected_value (int): The expected value of the polyp size.
@@ -424,7 +423,6 @@ class InvestigationDatasetsPage(BasePage):
         """
         This method asserts that the polyp category is as expected.
         It retrieves the polyp category from the page and compares it with the expected value.
-
         Args:
             polyp_number (int): The number of the polyp to check (1 or 2).
             expected_value (str): The expected value of the polyp category.
@@ -472,7 +470,6 @@ class InvestigationDatasetsPage(BasePage):
     def click_polyp_add_intervention_button(self, polyp_number: int) -> None:
         """
         Clicks the add intervention button for the specified polyp number.
-
         Args:
             polyp_number (int): The number of the polyp.
         """
@@ -488,15 +485,12 @@ class InvestigationDatasetsPage(BasePage):
     ) -> None:
         """
         Populates a <select> element using a predictable ID pattern based on field name and polyp number.
-
         This method is useful when label-based selectors (e.g., using `right-of(:text(...))`) are unreliable
         due to ambiguous or repeated text labels on the page.
-
         Args:
             field_base (str): The base name of the field (e.g., "POLYP_PATHOLOGY_LOST").
             polyp_number (int): The polyp index (e.g., 1 for the first polyp).
             option (str): The value to be selected from the dropdown.
-
         Example:
             populate_select_by_id("POLYP_PATHOLOGY_LOST", 1, YesNoOptions.YES)
             # Selects 'Yes' in <select id="UI_POLYP_PATHOLOGY_LOST1_1">
@@ -505,6 +499,457 @@ class InvestigationDatasetsPage(BasePage):
         locator = self.page.locator(f"select#{field_id}")
         locator.wait_for(state="visible")
         locator.select_option(option)
+
+    def is_edit_dataset_button_visible(self) -> bool:
+        """
+        Checks if the Edit Dataset button is visible
+        Returns:
+            bool: True if the button is visible, False if it is not
+        """
+        return self.edit_dataset_button.is_visible()
+
+    def is_dataset_section_present(self, dataset_section_name: str) -> bool | None:
+        """
+        Checks if a section of the investigation dataset is present
+        Args:
+            dataset_section_name (str): The name of the section you want to check
+                - Investigation Dataset
+                - Drug Information
+                - Endoscopy Information
+                - etc...
+        Returns:
+            bool: True if it is present, False if it is not
+        """
+        logging.info(f"Start: Searching for dataset section '{dataset_section_name}'")
+
+        count = self.sections.count()
+
+        for i in range(count):
+            section = self.sections.nth(i)
+            heading = section.locator("h4")
+            if (
+                heading.inner_text().strip().lower()
+                == dataset_section_name.strip().lower()
+            ):
+                logging.info(f"Dataset section '{dataset_section_name}' found.")
+                return True
+
+        logging.info(f"Dataset section '{dataset_section_name}' not found.")
+        return False
+
+    def get_dataset_section(self, dataset_section_name: str) -> Locator | None:
+        """
+        Retrieves a dataset section by matching its header text.
+        Searches through all elements representing dataset sections, looking for one whose
+        first <h4> header text matches the provided section name (case-insensitive).
+        Args:
+            dataset_section_name (str): The name of the dataset section to locate.
+        Returns:
+            Locator | None: A Playwright Locator for the matching section, or None if not found.
+        """
+        logging.info(f"START: Looking for section '{dataset_section_name}'")
+
+        list_of_sections = self.sections.all()
+        section_found = None
+
+        for section in list_of_sections:
+            header = section.locator("h4")
+            if header.count() > 0:
+                header_text = header.first.inner_text().strip().lower()
+                if header_text == dataset_section_name.strip().lower():
+                    section_found = section
+                    break
+
+        logging.info(
+            f"Dataset section '{dataset_section_name}' found: {section_found is not None}"
+        )
+        return section_found
+
+    def get_dataset_subsection(
+        self, dataset_section_name: str, dataset_subsection_name: str
+    ) -> Locator | None:
+        """
+        Retrieves a specific subsection within a dataset section by matching the subsection's header text.
+        The method first searches through elements with the `.DatasetSubSection` class.
+        If the subsection is not found, it continues searching within `.DatasetSubSectionGroup` elements.
+        Args:
+            dataset_section_name (str): The name of the dataset section that contains the subsection.
+            dataset_subsection_name (str): The name of the subsection to locate.
+        Returns:
+            Locator | None: A Playwright Locator for the found subsection, or None if not found.
+        Raises:
+            ValueError: If the specified dataset section cannot be found.
+        """
+        logging.info(
+            f"START: Looking for subsection '{dataset_subsection_name}' in section '{dataset_section_name}'"
+        )
+
+        dataset_section = self.get_dataset_section(dataset_section_name)
+
+        sub_section_found = None
+
+        if dataset_section is None:
+            raise ValueError(f"Dataset section '{dataset_section_name}' was not found.")
+
+        # First, search through .DatasetSubSection
+        list_of_sections = dataset_section.locator(".DatasetSubSection").all()
+        for section in list_of_sections:
+            header = section.locator("h5")
+            if (
+                header
+                and header.inner_text().strip().lower()
+                == dataset_subsection_name.strip().lower()
+            ):
+                sub_section_found = section
+                break
+
+        # If not found, search through .DatasetSubSectionGroup
+        if sub_section_found is None:
+            list_of_sections = dataset_section.locator(".DatasetSubSectionGroup").all()
+            for section in list_of_sections:
+                header = section.locator("h5")
+                if (
+                    header
+                    and header.inner_text().strip().lower()
+                    == dataset_subsection_name.strip().lower()
+                ):
+                    sub_section_found = section
+                    break
+
+        logging.info(
+            f"Dataset subsection '{dataset_section_name}', '{dataset_subsection_name}' found: {sub_section_found is not None}"
+        )
+        return sub_section_found
+
+    def are_fields_on_page(
+        self,
+        section_name: str,
+        subsection_name: str | None,
+        field_names: list[str],
+        visible: bool | None = None,
+    ) -> bool:
+        """
+        Checks if the given fields are present in a section or subsection, with optional visibility checks.
+        Args:
+            section_name (str): The name of the dataset section.
+            subsection_name (str | None): The name of the subsection, if any.
+            field_names (list[str]): List of field labels to check.
+            visible (bool | None):
+                - True → fields must be visible
+                - False → fields must be not visible
+                - None → visibility doesn't matter (just check presence)
+        Returns:
+            bool: True if all conditions are met; False otherwise.
+        """
+        logging.info(
+            f"START: Checking fields in section '{section_name}' and subsection '{subsection_name}'"
+        )
+
+        section = (
+            self.get_dataset_section(section_name)
+            if subsection_name is None
+            else self.get_dataset_subsection(section_name, subsection_name)
+        )
+
+        if section is None:
+            raise ValueError(f"Dataset section '{section_name}' was not found.")
+
+        label_elements = section.locator(".label").all()
+        label_texts = [label.inner_text() for label in label_elements]
+        normalized_labels = [
+            normalize_label(label) for label in label_texts if normalize_label(label)
+        ]
+
+        def label_matches(idx: int) -> bool:
+            """
+            Checks if the label at the given index matches the visibility condition.
+            Args:
+                idx (int): The index of the label to check.
+            Returns:
+                bool: True if the label matches the visibility condition, False otherwise.
+            """
+            if visible is True:
+                return label_elements[idx].is_visible()
+            if visible is False:
+                field_container = label_elements[idx].locator(
+                    "xpath=ancestor::*[contains(@class, 'row') or contains(@class, 'field')][1]"
+                )
+                is_container_visible = field_container.is_visible()
+                logging.info(
+                    f"Label visible: {label_elements[idx].is_visible()}, "
+                    f"Container visible: {is_container_visible} → Effective: {is_container_visible}"
+                )
+                return not is_container_visible
+            return True  # visibility doesn't matter
+
+        for field_name in field_names:
+            field_normalized = normalize_label(field_name)
+            match_found = False
+
+            for i, label in enumerate(normalized_labels):
+                if field_normalized in label and label_matches(i):
+                    match_found = True
+                    break
+
+            logging.info(
+                f"Checking for field '{field_name}' (visible={visible}) → Match found: {match_found}"
+            )
+
+            if not match_found:
+                logging.info(
+                    f"Field '{field_name}' not found or visibility check failed."
+                )
+                logging.info(f"Available labels: {normalized_labels}")
+                return False
+
+        logging.info("All fields matched.")
+        return True
+
+    def check_visibility_of_drug_type(
+        self, drug_type: str, drug_number: int, visible: bool
+    ) -> bool:
+        """
+        Checks the visibility of the drug type input cell.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug type cell to check.
+            expected_text (str): The expected text content of the cell.
+        Returns:
+            bool: True if the visibility matches the expectation, False otherwise.
+        """
+        locator = self.get_drug_type_locator(drug_type, drug_number)
+        return locator.is_visible() == visible
+
+    def check_visibility_of_drug_dose(
+        self, drug_type: str, drug_number: int, visible: bool
+    ) -> bool:
+        """
+        Checks the visibility of the drug dose input cell.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug dose cell to check.
+            visible (bool): True if the field should be visible, False if it should not.
+        Returns:
+            bool: True if the visibility matches the expectation, False otherwise.
+        """
+        locator = self.get_drug_dose_locator(drug_type, drug_number)
+        return locator.is_visible() == visible
+
+    def assert_drug_type_text(
+        self, drug_type: str, drug_number: int, expected_text: str
+    ) -> None:
+        """
+        Asserts that the drug type input cell contains the expected text.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug type cell to check.
+            expected_text (str): The expected text content of the cell.
+        Raises:
+            AssertionError: If the actual text does not match the expected text.
+        """
+        locator = self.get_drug_type_locator(drug_type, drug_number)
+        actual_text = locator.input_value().strip()
+        logging.info(
+            f"Drug type text for drug {drug_number}: '{actual_text}' (expected: '{expected_text}')"
+        )
+        assert (
+            actual_text == expected_text
+        ), f"Expected drug type text '{expected_text}' but found '{actual_text}'"
+
+    def assert_drug_dose_text(
+        self, drug_type: str, drug_number: int, expected_text: str
+    ) -> None:
+        """
+        Asserts that the drug dose input cell contains the expected text.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug dose cell to check.
+            expected_text (str): The expected text content of the cell.
+        Raises:
+            AssertionError: If the actual text does not match the expected text.
+        """
+        locator = self.get_drug_dose_locator(drug_type, drug_number)
+        actual_text = locator.input_value().strip()
+        logging.info(
+            f"Drug dose text for drug {drug_number}: '{actual_text}' (expected: '{expected_text}')"
+        )
+        assert (
+            actual_text == expected_text
+        ), f"Expected drug dose text '{expected_text}' but found '{actual_text}'"
+
+    def get_drug_type_locator(self, drug_type: str, drug_number: int) -> Locator:
+        """
+        Returns the locator for the matching drug type and number
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug to check
+        """
+        if drug_type == "Bowel Preparation Administered":
+            locator_prefix = "#UI_BOWEL_PREP_DRUG"
+        elif drug_type == "Antibiotics Administered":
+            locator_prefix = "#UI_ANTIBIOTIC"
+        elif drug_type == "Other Drugs Administered":
+            locator_prefix = "#UI_DRUG"
+        return self.page.locator(f"{locator_prefix}{drug_number}")
+
+    def get_drug_dose_locator(self, drug_type: str, drug_number: int) -> Locator:
+        """
+        Returns the locator for the matching drug type and number
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug to check
+        """
+        if drug_type.lower() == "bowel preparation administered":
+            locator_prefix = "#UI_BOWEL_PREP_DRUG_DOSE"
+        elif drug_type.lower() == "antibiotics administered":
+            locator_prefix = "#UI_ANTIBIOTIC_DOSE"
+        elif drug_type.lower() == "other drugs administered":
+            locator_prefix = "#UI_DOSE"
+        return self.page.locator(f"{locator_prefix}{drug_number}")
+
+    def assert_drug_type_options(
+        self, drug_type: str, drug_number: int, expected_values: list
+    ) -> None:
+        """
+        Asserts that the options in the drug type dropdown are as expected.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug to check
+            expected_values (list): A list containing all the options expected
+        """
+        locator = self.get_drug_type_locator(drug_type, drug_number)
+        actual_options = locator.locator("option").all_text_contents()
+        actual_options = [
+            opt.strip() for opt in actual_options
+        ]  # Strip whitespace for safety
+
+        missing = [val for val in expected_values if val not in actual_options]
+
+        assert not missing, (
+            f"Missing expected dropdown values for drug {drug_number} ({drug_type}): {missing}. "
+            f"Actual options: {actual_options}"
+        )
+
+        logging.info(
+            f"The dropdown for {drug_type} drug {drug_number} contains expected values: {expected_values}"
+        )
+
+    def assert_all_drug_information(
+        self, drug_information: dict, drug_type_label: str
+    ) -> None:
+        """
+        Loops through a dictionary of drug types/doses and calls the relevant assertion methods
+        Args:
+            drug_information (dict): A dictionary containing all drug types and dosages to assert
+            drug_type_label (str): The type of drug to do the assertion against. E.g. 'Bowel Preparation Administered'
+        """
+        # Extract all numbers from keys like 'drug_doseX' or 'drug_typeX'
+        drug_numbers = [
+            int(match.group(1))
+            for key in drug_information
+            if (match := re.match(r"drug_(?:dose|type)(\d+)", key))
+        ]
+
+        if not drug_numbers:
+            logging.warning("No drug_type or drug_dose entries found.")
+            return
+
+        max_drug_number = max(drug_numbers)
+
+        for drug_index in range(1, max_drug_number + 1):
+            drug_type = drug_information.get(f"drug_type{drug_index}")
+            drug_dose = drug_information.get(f"drug_dose{drug_index}")
+
+            if drug_type is not None:
+                self.assert_drug_type_text(drug_type_label, drug_index, drug_type)
+
+                # Match-case to assert drug dose unit
+                match drug_type:
+                    case (
+                        DrugTypeOptions.KLEAN_PREP
+                        | DrugTypeOptions.PICOLAX
+                        | DrugTypeOptions.MOVIPREP
+                        | DrugTypeOptions.CITRAMAG
+                        | DrugTypeOptions.PHOSPHATE_ENEMA
+                        | DrugTypeOptions.MICROLAX_ENEMA
+                        | DrugTypeOptions.CITRAFLEET
+                        | DrugTypeOptions.PLENVU
+                    ):
+                        expected_unit = "Sachet(s)"
+                    case DrugTypeOptions.SENNA_LIQUID:
+                        expected_unit = "5ml Bottle(s)"
+                    case (
+                        DrugTypeOptions.SENNA
+                        | DrugTypeOptions.BISACODYL
+                        | DrugTypeOptions.OSMOSPREP
+                    ):
+                        expected_unit = "Tablet(s)"
+                    case DrugTypeOptions.MANNITOL:
+                        expected_unit = "Litre(s)"
+                    case (
+                        DrugTypeOptions.GASTROGRAFIN
+                        | DrugTypeOptions.FLEET_PHOSPHO_SODA
+                    ):
+                        expected_unit = "Mls Solution"
+                    case DrugTypeOptions.OTHER:
+                        expected_unit = ""
+                    case _:
+                        expected_unit = None
+
+                if expected_unit is not None:
+                    self.assert_drug_dose_unit_text(
+                        drug_type_label, drug_index, expected_unit
+                    )
+
+            if drug_dose is not None:
+                self.assert_drug_dose_text(drug_type_label, drug_index, drug_dose)
+
+    def get_drug_dose_unit_locator(self, drug_type: str, drug_number: int) -> Locator:
+        """
+        Returns the locator for the matching drug type and number
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug to check
+        """
+        if drug_type.lower() == "bowel preparation administered":
+            locator_prefix = "#spanBowelPrepDrugDosageUnit"
+        elif drug_type.lower() == "antibiotics administered":
+            locator_prefix = "#spanAntibioticDosageUnit"
+        elif drug_type.lower() == "other drugs administered":
+            locator_prefix = "#spanDosageUnit"
+        return self.page.locator(f"{locator_prefix}{drug_number}")
+
+    def assert_drug_dose_unit_text(
+        self, drug_type: str, drug_number: int, expected_text: str
+    ) -> None:
+        """
+        Asserts that the drug dose unit contains the expected text.
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug dose cell to check.
+            expected_text (str): The expected text content of the cell.
+        Raises:
+            AssertionError: If the actual text does not match the expected text.
+        """
+        locator = self.get_drug_dose_unit_locator(drug_type, drug_number)
+        actual_text = locator.inner_text().strip()
+        logging.info(
+            f"Drug dose unit text for drug {drug_number}: '{actual_text}' (expected: '{expected_text}')"
+        )
+        assert (
+            actual_text == expected_text
+        ), f"Expected drug unit dose text '{expected_text}' but found '{actual_text}'"
+
+
+def normalize_label(text: str) -> str:
+    """
+    Normalizes a label by removing extra whitespace and converting to lowercase.
+    Args:
+        text (str): The label text to normalize.
+    Returns:
+        str: The normalized label text.
+    """
+    return re.sub(r"\s+", " ", text.replace("\xa0", " ")).strip().lower()
 
 
 class SiteLookupOptions(StrEnum):
@@ -605,10 +1050,17 @@ class EndoscopyLocationOptions(StrEnum):
 
 
 class YesNoOptions(StrEnum):
-    """Enum for scope imager used options"""
+    """Enum for Yes and No options"""
 
     YES = "17058"
     NO = "17059"
+
+
+class YesNoDrugOptions(StrEnum):
+    """Enum for Yes and No drug options"""
+
+    YES = "17058"
+    NO = "17059~~204341"
 
 
 class InsufflationOptions(StrEnum):
