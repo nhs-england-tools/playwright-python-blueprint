@@ -49,6 +49,9 @@ def search_subject_by_nhs_number(page: Page, nhs_number: str) -> None:
     SubjectScreeningPage(page).click_clear_filters_button()
     SubjectScreeningPage(page).nhs_number_filter.fill(nhs_number)
     SubjectScreeningPage(page).nhs_number_filter.press("Tab")
+    SubjectScreeningPage(page).select_search_area_option(
+        SearchAreaSearchOptions.SEARCH_AREA_WHOLE_DATABASE.value
+    )
     SubjectScreeningPage(page).click_search_button()
 
 
