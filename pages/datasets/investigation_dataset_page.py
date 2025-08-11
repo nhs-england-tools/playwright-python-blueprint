@@ -1,13 +1,14 @@
 import re
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
-from enum import StrEnum
+from enum import Enum, StrEnum
 from utils.oracle.oracle_specific_functions import (
     get_investigation_dataset_polyp_category,
     get_investigation_dataset_polyp_algorithm_size,
 )
-from typing import Optional
+from typing import Optional, Any, Union, List
 import logging
+import sys
 
 
 class InvestigationDatasetsPage(BasePage):
@@ -79,6 +80,11 @@ class InvestigationDatasetsPage(BasePage):
         ).get_by_role("button", name="Edit Dataset")
         self.visible_ui_results_string = 'select[id^="UI_RESULTS_"]:visible'
         self.sections = self.page.locator(".DatasetSection")
+
+        # Repeat strings:
+        self.bowel_preparation_administered_string = "Bowel Preparation Administered"
+        self.antibiotics_administered_string = "Antibiotics Administered"
+        self.other_drugs_administered_string = "Other Drugs Administered"
 
     def select_site_lookup_option(self, option: str) -> None:
         """
@@ -750,11 +756,13 @@ class InvestigationDatasetsPage(BasePage):
         locator = self.get_drug_type_locator(drug_type, drug_number)
         actual_text = locator.input_value().strip()
         logging.info(
-            f"Drug type text for drug {drug_number}: '{actual_text}' (expected: '{expected_text}')"
+            f"Drug type text for drug {drug_number}: "
+            f"'{to_enum_name_or_value(actual_text)}' "
+            f"(expected: '{to_enum_name_or_value(expected_text)}')"
         )
         assert (
             actual_text == expected_text
-        ), f"Expected drug type text '{expected_text}' but found '{actual_text}'"
+        ), f"Expected drug type text '{to_enum_name_or_value(expected_text)}' but found '{to_enum_name_or_value(actual_text)}'"
 
     def assert_drug_dose_text(
         self, drug_type: str, drug_number: int, expected_text: str
@@ -784,11 +792,11 @@ class InvestigationDatasetsPage(BasePage):
             drug_type (str): The drug type to check
             drug_number (int): The number of the drug to check
         """
-        if drug_type == "Bowel Preparation Administered":
+        if drug_type == self.bowel_preparation_administered_string:
             locator_prefix = "#UI_BOWEL_PREP_DRUG"
-        elif drug_type == "Antibiotics Administered":
+        elif drug_type == self.antibiotics_administered_string:
             locator_prefix = "#UI_ANTIBIOTIC"
-        elif drug_type == "Other Drugs Administered":
+        elif drug_type == self.other_drugs_administered_string:
             locator_prefix = "#UI_DRUG"
         return self.page.locator(f"{locator_prefix}{drug_number}")
 
@@ -799,11 +807,11 @@ class InvestigationDatasetsPage(BasePage):
             drug_type (str): The drug type to check
             drug_number (int): The number of the drug to check
         """
-        if drug_type.lower() == "bowel preparation administered":
+        if drug_type == self.bowel_preparation_administered_string:
             locator_prefix = "#UI_BOWEL_PREP_DRUG_DOSE"
-        elif drug_type.lower() == "antibiotics administered":
+        elif drug_type == self.antibiotics_administered_string:
             locator_prefix = "#UI_ANTIBIOTIC_DOSE"
-        elif drug_type.lower() == "other drugs administered":
+        elif drug_type == self.other_drugs_administered_string:
             locator_prefix = "#UI_DOSE"
         return self.page.locator(f"{locator_prefix}{drug_number}")
 
@@ -847,7 +855,11 @@ class InvestigationDatasetsPage(BasePage):
         drug_numbers = [
             int(match.group(1))
             for key in drug_information
-            if (match := re.match(r"drug_(?:dose|type)(\d+)", key))
+            if (
+                match := re.match(
+                    r"(?:drug|other_drug|antibiotic_drug)_(?:dose|type)(\d+)", key
+                )
+            )
         ]
 
         if not drug_numbers:
@@ -857,8 +869,16 @@ class InvestigationDatasetsPage(BasePage):
         max_drug_number = max(drug_numbers)
 
         for drug_index in range(1, max_drug_number + 1):
-            drug_type = drug_information.get(f"drug_type{drug_index}")
-            drug_dose = drug_information.get(f"drug_dose{drug_index}")
+            drug_type = (
+                drug_information.get(f"drug_type{drug_index}")
+                or drug_information.get(f"other_drug_type{drug_index}")
+                or drug_information.get(f"antibiotic_drug_type{drug_index}")
+            )
+            drug_dose = (
+                drug_information.get(f"drug_dose{drug_index}")
+                or drug_information.get(f"other_drug_dose{drug_index}")
+                or drug_information.get(f"antibiotic_drug_dose{drug_index}")
+            )
 
             if drug_type is not None:
                 self.assert_drug_type_text(drug_type_label, drug_index, drug_type)
@@ -891,8 +911,25 @@ class InvestigationDatasetsPage(BasePage):
                         | DrugTypeOptions.FLEET_PHOSPHO_SODA
                     ):
                         expected_unit = "Mls Solution"
-                    case DrugTypeOptions.OTHER:
+                    case (
+                        DrugTypeOptions.OTHER
+                        | AntibioticsAdministeredDrugTypeOptions.OTHER_ANTIBIOTIC
+                    ):
                         expected_unit = ""
+                    case (
+                        AntibioticsAdministeredDrugTypeOptions.AMOXYCILLIN
+                        | AntibioticsAdministeredDrugTypeOptions.CEFOTAXIME
+                        | AntibioticsAdministeredDrugTypeOptions.VANCOMYCIN
+                    ):
+                        expected_unit = "g"
+                    case (
+                        AntibioticsAdministeredDrugTypeOptions.CIPROFLAXACIN
+                        | AntibioticsAdministeredDrugTypeOptions.CO_AMOXICLAV
+                        | AntibioticsAdministeredDrugTypeOptions.GENTAMICIN
+                        | AntibioticsAdministeredDrugTypeOptions.METRONIDAZOLE
+                        | AntibioticsAdministeredDrugTypeOptions.TEICOPLANIN
+                    ):
+                        expected_unit = "mg"
                     case _:
                         expected_unit = None
 
@@ -911,11 +948,11 @@ class InvestigationDatasetsPage(BasePage):
             drug_type (str): The drug type to check
             drug_number (int): The number of the drug to check
         """
-        if drug_type.lower() == "bowel preparation administered":
+        if drug_type == self.bowel_preparation_administered_string:
             locator_prefix = "#spanBowelPrepDrugDosageUnit"
-        elif drug_type.lower() == "antibiotics administered":
+        elif drug_type == self.antibiotics_administered_string:
             locator_prefix = "#spanAntibioticDosageUnit"
-        elif drug_type.lower() == "other drugs administered":
+        elif drug_type == self.other_drugs_administered_string:
             locator_prefix = "#spanDosageUnit"
         return self.page.locator(f"{locator_prefix}{drug_number}")
 
@@ -939,6 +976,46 @@ class InvestigationDatasetsPage(BasePage):
         assert (
             actual_text == expected_text
         ), f"Expected drug unit dose text '{expected_text}' but found '{actual_text}'"
+
+    def assert_drug_dosage_unit_text(
+        self, drug_type: str, drug_number: int, expected_text: str
+    ) -> None:
+        """
+        Asserts that the drug dosage unit contains the expected text.
+
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug dosage unit cell to check.
+            expected_text (str): The expected text content of the cell.
+
+        Raises:
+            AssertionError: If the actual text does not match the expected text.
+        """
+        locator = self.get_drug_dosage_text_locator(drug_type, drug_number)
+        actual_text = locator.inner_text().strip()
+
+        logging.info(
+            f"Drug dosage unit text for drug {drug_number}: "
+            f"'{actual_text}' (expected: '{expected_text}')"
+        )
+
+        assert actual_text == expected_text, (
+            f"Expected drug dosage unit text '{expected_text}' "
+            f"but found '{actual_text}'"
+        )
+
+    def get_drug_dosage_text_locator(self, drug_type: str, drug_number: int) -> Locator:
+        """
+        Returns the drug dosage text locator for the matching drug type and number
+        Args:
+            drug_type (str): The drug type to check
+            drug_number (int): The number of the drug to check
+        """
+        if drug_type == self.bowel_preparation_administered_string:
+            locator_prefix = "#HILITE_spanBowelPrepDrugDosageUnit"
+        elif drug_type == self.antibiotics_administered_string:
+            locator_prefix = "#HILITE_spanAntibioticDosageUnit"
+        return self.page.locator(f"{locator_prefix}{drug_number}")
 
 
 def normalize_label(text: str) -> str:
@@ -1276,3 +1353,62 @@ class PolypReasonLeftInSituOptions(StrEnum):
     REQUIRES_SURGICAL_RESECTION = "200558"
     CANNOT_FIND_POLYP_ON_WITHDRAWAL = "200559"
     CLINICAL_DECISION_NOT_TO_EXCISE = "203082"
+
+
+class AntibioticsAdministeredDrugTypeOptions(StrEnum):
+    """Enum for antobiotics administered drug type options"""
+
+    AMOXYCILLIN = "17941~g"
+    CEFOTAXIME = "17950~g"
+    CIPROFLAXACIN = "17945~mg"
+    CO_AMOXICLAV = "17951~mg"
+    GENTAMICIN = "17942~mg"
+    METRONIDAZOLE = "17949~mg"
+    TEICOPLANIN = "17944~mg"
+    VANCOMYCIN = "17943~g"
+    OTHER_ANTIBIOTIC = "305493"
+
+
+# Registry of all known Enums to search when matching string values
+ALL_ENUMS: List[type[Enum]] = [
+    obj
+    for obj in globals().values()
+    if (
+        isinstance(obj, type)
+        and issubclass(obj, Enum)
+        and obj is not Enum
+        and obj is not StrEnum  # Exclude only the base classes, not subclasses
+    )
+]
+
+
+def to_enum_name_or_value(val: Any) -> Union[str, Any]:
+    """
+    Convert an Enum member or matching string value to its Enum name.
+
+    If the input is:
+    - An Enum member → returns the `.name` (e.g., "KLEAN_PREP")
+    - A string matching any Enum value in ALL_ENUMS → returns that member's `.name`
+    - Anything else → returns the value unchanged
+
+    Args:
+        val (Any): The value to convert. Can be an Enum member, a string,
+                or any other type.
+
+    Returns:
+        Union[str, Any]: The Enum name (string) if matched, otherwise the original value.
+    """
+    # Directly handle Enum instances
+    if isinstance(val, Enum):
+        return val.name
+
+    # Handle strings that match known Enum values
+    if isinstance(val, str):
+        for enum_cls in ALL_ENUMS:
+            try:
+                return enum_cls(val).name
+            except ValueError:
+                continue
+
+    # Fallback: return unchanged
+    return val

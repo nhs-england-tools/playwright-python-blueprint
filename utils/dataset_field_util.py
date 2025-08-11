@@ -1,6 +1,9 @@
 from playwright.sync_api import Page, Locator
 from typing import Optional, List
 import logging
+from pages.datasets.investigation_dataset_page import (
+    to_enum_name_or_value,
+)
 
 
 class DatasetFieldUtil:
@@ -25,6 +28,7 @@ class DatasetFieldUtil:
             text (str): The text of the element you want to get the input locator of
             value (str): The value you want to input
         """
+        logging.info(f"Filling input for field '{text}' with value '{value}'")
         locator = self.get_input_locator_for_field(text)
         locator.fill(value)
 
@@ -45,6 +49,9 @@ class DatasetFieldUtil:
             text (str): The text of the element you want to get the select locator of.
             option (str): The option you want to select
         """
+        logging.info(
+            f"Selecting option '{to_enum_name_or_value(option)}' for field '{text}'"
+        )
         locator = self.get_select_locator_for_field(text)
         locator.select_option(option)
 
@@ -70,6 +77,7 @@ class DatasetFieldUtil:
             div (str): The ID of the DIV the text belongs in
             value (str): The value you want to input
         """
+        logging.info(f"Filling input for field '{text}' with value '{value}'")
         locator = self.get_input_locator_for_field_inside_div(text, div)
         locator.fill(value)
 
@@ -95,6 +103,9 @@ class DatasetFieldUtil:
             div (str): The ID of the DIV the text belongs in
             option (str): The option you want to select
         """
+        logging.info(
+            f"Selecting option '{to_enum_name_or_value(option)}' for field '{text}'"
+        )
         locator = self.get_select_locator_for_field_inside_div(text, div)
         locator.select_option(option)
 

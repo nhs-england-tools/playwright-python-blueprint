@@ -39,6 +39,7 @@ from pages.datasets.investigation_dataset_page import (
     PolypInterventionModalityOptions,
     PolypInterventionDeviceOptions,
     PolypInterventionExcisionTechniqueOptions,
+    to_enum_name_or_value,
 )
 from pages.screening_subject_search.advance_fobt_screening_episode_page import (
     AdvanceFOBTScreeningEpisodePage,
@@ -405,17 +406,32 @@ class InvestigationDatasetCompletion:
             drug_information (dict): A dictionary containing the drug types and dosages.
         """
         logging.info("Filling out drug information")
+
+        # Define mapping for each drug type/dose prefix and their selectors
+        drug_map = {
+            "drug_type": ("#UI_BOWEL_PREP_DRUG{}", True),
+            "drug_dose": ("#UI_BOWEL_PREP_DRUG_DOSE{}", False),
+            "antibiotic_drug_type": ("#UI_ANTIBIOTIC{}", True),
+            "antibiotic_drug_dose": ("#UI_ANTIBIOTIC_DOSE{}", False),
+            "other_drug_type": ("#UI_DRUG{}", True),
+            "other_drug_dose": ("#UI_DOSE{}", False),
+        }
+
         for key, value in drug_information.items():
-            if key.startswith("drug_type"):
-                index = key[len("drug_type") :]
-                logging.info(f"Adding drug type {index}")
-                select_locator = f"#UI_BOWEL_PREP_DRUG{index}"
-                self.page.select_option(select_locator, value)
-            elif key.startswith("drug_dose"):
-                index = key[len("drug_dose") :]
-                logging.info(f"Adding drug dose {index}")
-                input_locator = f"#UI_BOWEL_PREP_DRUG_DOSE{index}"
-                self.page.fill(input_locator, value)
+            for prefix, (selector_template, is_select) in drug_map.items():
+                if key.startswith(prefix):
+                    index = key[len(prefix) :]
+                    if is_select:
+                        logging.info(
+                            f"Adding {prefix.replace('_', ' ')} {index}: {to_enum_name_or_value(value)}"
+                        )
+                        self.page.select_option(selector_template.format(index), value)
+                    else:
+                        logging.info(
+                            f"Adding {prefix.replace('_', ' ')} {index}: {value}"
+                        )
+                        self.page.fill(selector_template.format(index), value)
+                    break
 
     def process_polyps(
         self,

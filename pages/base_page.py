@@ -276,9 +276,15 @@ class BasePage:
             except AssertionError as e:
                 self._dialog_assertion_error = e
             if accept:
-                dialog.accept()
+                try:
+                    dialog.accept()
+                except Exception:
+                    logging.warning("Dialog already accepted or handled")
             else:
-                dialog.dismiss()  # Dismiss dialog
+                try:
+                    dialog.dismiss()  # Dismiss dialog
+                except Exception:
+                    logging.warning("Dialog already dismissed or handled")
 
         self.page.once("dialog", lambda dialog: handle_dialog(dialog, accept))
 
