@@ -713,33 +713,49 @@ class InvestigationDatasetsPage(BasePage):
 
     def check_visibility_of_drug_type(
         self, drug_type: str, drug_number: int, visible: bool
-    ) -> bool:
+    ) -> None:
         """
         Checks the visibility of the drug type input cell.
         Args:
             drug_type (str): The drug type to check
             drug_number (int): The number of the drug type cell to check.
             expected_text (str): The expected text content of the cell.
-        Returns:
-            bool: True if the visibility matches the expectation, False otherwise.
+        Raises:
+            AssertionError: If the visibility does not match the expectation.
         """
         locator = self.get_drug_type_locator(drug_type, drug_number)
-        return locator.is_visible() == visible
+        actual_visibility = locator.is_visible()
+        assert actual_visibility == visible, (
+            f"The {ordinal(drug_number)} {drug_type} drug type input cell visibility was {actual_visibility}, "
+            f"expected {visible}"
+        )
+        logging.info(
+            f"The {ordinal(drug_number)} {drug_type} drug type input cell is "
+            f"{'visible' if actual_visibility else 'not visible'} as expected"
+        )
 
     def check_visibility_of_drug_dose(
         self, drug_type: str, drug_number: int, visible: bool
-    ) -> bool:
+    ) -> None:
         """
-        Checks the visibility of the drug dose input cell.
+        Asserts the visibility of the drug dose input cell and logs the result.
         Args:
-            drug_type (str): The drug type to check
+            drug_type (str): The drug type to check.
             drug_number (int): The number of the drug dose cell to check.
             visible (bool): True if the field should be visible, False if it should not.
-        Returns:
-            bool: True if the visibility matches the expectation, False otherwise.
+        Raises:
+            AssertionError: If the visibility does not match the expectation.
         """
         locator = self.get_drug_dose_locator(drug_type, drug_number)
-        return locator.is_visible() == visible
+        actual_visibility = locator.is_visible()
+        assert actual_visibility == visible, (
+            f"The {ordinal(drug_number)} {drug_type} drug dose input cell visibility was {actual_visibility}, "
+            f"expected {visible}"
+        )
+        logging.info(
+            f"The {ordinal(drug_number)} {drug_type} drug dose input cell is "
+            f"{'visible' if actual_visibility else 'not visible'} as expected"
+        )
 
     def assert_drug_type_text(
         self, drug_type: str, drug_number: int, expected_text: str
@@ -928,8 +944,23 @@ class InvestigationDatasetsPage(BasePage):
                         | AntibioticsAdministeredDrugTypeOptions.GENTAMICIN
                         | AntibioticsAdministeredDrugTypeOptions.METRONIDAZOLE
                         | AntibioticsAdministeredDrugTypeOptions.TEICOPLANIN
+                        | OtherDrugsAdministeredDrugTypeOptions.BUSCOPAN
+                        | OtherDrugsAdministeredDrugTypeOptions.DIAZEMULS
+                        | OtherDrugsAdministeredDrugTypeOptions.GLUCAGON
+                        | OtherDrugsAdministeredDrugTypeOptions.HYDROCORTISONE
+                        | OtherDrugsAdministeredDrugTypeOptions.MEPTAZINOL
+                        | OtherDrugsAdministeredDrugTypeOptions.MIDAZOLAM
+                        | OtherDrugsAdministeredDrugTypeOptions.PETHIDINE
+                        | OtherDrugsAdministeredDrugTypeOptions.PROPOFOL
                     ):
                         expected_unit = "mg"
+                    case (
+                        OtherDrugsAdministeredDrugTypeOptions.ALFENTANYL
+                        | OtherDrugsAdministeredDrugTypeOptions.FENTANYL
+                        | OtherDrugsAdministeredDrugTypeOptions.FLUMAZENIL
+                        | OtherDrugsAdministeredDrugTypeOptions.NALOXONE
+                    ):
+                        expected_unit = "mcg"
                     case _:
                         expected_unit = None
 
@@ -1369,6 +1400,23 @@ class AntibioticsAdministeredDrugTypeOptions(StrEnum):
     OTHER_ANTIBIOTIC = "305493"
 
 
+class OtherDrugsAdministeredDrugTypeOptions(StrEnum):
+    """Enum for other drugs administered drug type options"""
+
+    ALFENTANYL = "200252~mcg"
+    BUSCOPAN = "17133~mg"
+    DIAZEMULS = "17959~mg"
+    FENTANYL = "17958~mcg"
+    FLUMAZENIL = "17134~mcg"
+    GLUCAGON = "17940~mg"
+    HYDROCORTISONE = "17527~mg"
+    MEPTAZINOL = "200251~mg"
+    MIDAZOLAM = "17135~mg"
+    NALOXONE = "17136~mcg~204333"
+    PETHIDINE = "17137~mg"
+    PROPOFOL = "17960~mg"
+
+
 # Registry of all known Enums to search when matching string values
 ALL_ENUMS: List[type[Enum]] = [
     obj
@@ -1412,3 +1460,14 @@ def to_enum_name_or_value(val: Any) -> Union[str, Any]:
 
     # Fallback: return unchanged
     return val
+
+
+def ordinal(n: int) -> str:
+    """
+    Converts an integer to its ordinal representation (e.g., 1 -> '1st', 2 -> '2nd').
+    """
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"

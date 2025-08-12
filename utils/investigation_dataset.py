@@ -883,6 +883,88 @@ class InvestigationDatasetCompletion:
             if text == "Show details":
                 locator.click()
 
+    def clear_drug_type_and_doses_inputs(self, drug_type: str, count: int = 1) -> None:
+        """
+        Clears all drug type and dose inputs on the page for the specified drug type.
+        Args:
+            drug_type (str): The drug type label (should be one of the class string constants).
+            count (int): The number of drug types and doses to clear. Default is 1.
+        """
+        if (
+            drug_type
+            == InvestigationDatasetsPage(
+                self.page
+            ).bowel_preparation_administered_string
+        ):
+            type_prefix = "drug_type"
+            dose_prefix = "drug_dose"
+        elif (
+            drug_type
+            == InvestigationDatasetsPage(self.page).antibiotics_administered_string
+        ):
+            type_prefix = "antibiotic_drug_type"
+            dose_prefix = "antibiotic_drug_dose"
+        elif (
+            drug_type
+            == InvestigationDatasetsPage(self.page).other_drugs_administered_string
+        ):
+            type_prefix = "other_drug_type"
+            dose_prefix = "other_drug_dose"
+        else:
+            raise ValueError(f"Unknown drug_type: {drug_type}")
+
+        drug_information = {}
+        for i in range(1, count + 1):
+            drug_information[f"{type_prefix}{i}"] = ""
+            drug_information[f"{dose_prefix}{i}"] = ""
+
+        self.fill_out_drug_information(drug_information)
+
+        for i in range(1, count + 1):
+            InvestigationDatasetsPage(self.page).assert_drug_type_text(drug_type, i, "")
+            InvestigationDatasetsPage(self.page).assert_drug_dose_text(drug_type, i, "")
+
+    def build_drug_information_dict(
+        self, drug_info_list: list[tuple], drug_type: str, skip_none: bool = True
+    ) -> dict:
+        """
+        Builds a drug information dictionary for use with InvestigationDatasetCompletion.fill_out_drug_information,
+        automatically selecting the correct key prefixes based on the drug_type.
+
+        Args:
+            drug_info_list (list[tuple[object, str]]):
+                A list of (drug_type_value, drug_dose_value) pairs.
+            drug_type (str):
+                The drug section label, e.g. "Bowel Preparation Administered",
+                "Antibiotics Administered", or "Other Drugs Administered".
+            skip_none (bool):
+                If True, skips adding keys with None or empty string values.
+
+        Returns:
+            dict[str, object]:
+                A dictionary with keys like "drug_type1", "drug_dose1", etc.,
+                suitable for passing to fill_out_drug_information.
+        """
+        prefix_map = {
+            "Bowel Preparation Administered": ("drug_type", "drug_dose"),
+            "Antibiotics Administered": (
+                "antibiotic_drug_type",
+                "antibiotic_drug_dose",
+            ),
+            "Other Drugs Administered": ("other_drug_type", "other_drug_dose"),
+        }
+        if drug_type not in prefix_map:
+            raise ValueError(f"Unknown drug_type: {drug_type}")
+
+        type_prefix, dose_prefix = prefix_map[drug_type]
+        drug_information = {}
+        for idx, (drug_type_val, drug_dose_val) in enumerate(drug_info_list, start=1):
+            if not skip_none or drug_type_val not in (None, ""):
+                drug_information[f"{type_prefix}{idx}"] = drug_type_val
+            if not skip_none or drug_dose_val not in (None, ""):
+                drug_information[f"{dose_prefix}{idx}"] = drug_dose_val
+        return drug_information
+
 
 class AfterInvestigationDatasetComplete:
     """
