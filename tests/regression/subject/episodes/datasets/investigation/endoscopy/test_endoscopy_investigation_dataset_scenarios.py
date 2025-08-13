@@ -2125,6 +2125,310 @@ def test_check_behaviour_of_other_drugs_administered_fields_in_incomplete_datase
     LogoutPage(page).log_out()
 
 
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_check_drug_validation_for_subject_older_than_70_in_incomplete_dataset(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check drug dose validation specific to a subject aged 70 or older in an incomplete endoscopy investigation dataset
+    This checks the drug dose validation for Midazolam, which has a different recommended range for subjects aged 70 or older.
+    """
+    nhs_no = get_subject_older_than_70_with_new_colonsocopy_dataset()
+
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+    InvestigationDatasetsPage(page).click_show_drug_information()
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string, div_drug_details_string, YesNoOptions.YES
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "Yes"
+    )
+
+    InvestigationDatasetsPage(page).check_visibility_of_drug_type(
+        other_drugs_administered_string, 1, True
+    )
+    InvestigationDatasetsPage(page).check_visibility_of_drug_dose(
+        other_drugs_administered_string, 1, True
+    )
+    InvestigationDatasetsPage(page).assert_drug_type_text(
+        other_drugs_administered_string, 1, ""
+    )
+    InvestigationDatasetsPage(page).assert_drug_dose_text(
+        other_drugs_administered_string, 1, ""
+    )
+
+    drug_info_list = [
+        (OtherDrugsAdministeredDrugTypeOptions.MIDAZOLAM, "0.99"),
+    ]
+    drug_information = InvestigationDatasetCompletion(page).build_drug_information_dict(
+        drug_info_list, other_drugs_administered_string
+    )
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "The recommended dose for Midazolam is 1 - 2.5 mg for patients aged 70 or over. Please check and re-enter as necessary.",
+        True,
+    )
+    InvestigationDatasetCompletion(page).fill_out_drug_information(drug_information)
+
+    InvestigationDatasetsPage(page).assert_drug_type_text(
+        other_drugs_administered_string,
+        1,
+        OtherDrugsAdministeredDrugTypeOptions.MIDAZOLAM,
+    )
+    InvestigationDatasetsPage(page).assert_drug_dose_text(
+        other_drugs_administered_string, 1, "0.99"
+    )
+
+    drug_info_list = [
+        (None, "1"),
+    ]
+    drug_information = InvestigationDatasetCompletion(page).build_drug_information_dict(
+        drug_info_list, other_drugs_administered_string
+    )
+    InvestigationDatasetCompletion(page).fill_out_drug_information(drug_information)
+    InvestigationDatasetsPage(page).assert_drug_dose_text(
+        other_drugs_administered_string, 1, "1"
+    )
+
+    drug_info_list = [
+        (None, "2.51"),
+    ]
+    drug_information = InvestigationDatasetCompletion(page).build_drug_information_dict(
+        drug_info_list, other_drugs_administered_string
+    )
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "The recommended dose for Midazolam is 1 - 2.5 mg for patients aged 70 or over. Please check and re-enter as necessary.",
+        True,
+    )
+    InvestigationDatasetCompletion(page).fill_out_drug_information(drug_information)
+
+    InvestigationDatasetsPage(page).assert_drug_dose_text(
+        other_drugs_administered_string, 1, "2.51"
+    )
+
+    drug_info_list = [
+        (None, "2.5"),
+    ]
+    drug_information = InvestigationDatasetCompletion(page).build_drug_information_dict(
+        drug_info_list, other_drugs_administered_string
+    )
+    InvestigationDatasetCompletion(page).fill_out_drug_information(drug_information)
+    InvestigationDatasetsPage(page).assert_drug_dose_text(
+        other_drugs_administered_string, 1, "2.5"
+    )
+
+    LogoutPage(page).log_out()
+
+
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_check_dropdown_lists_and_default_field_values_in_endoscopy_information_section(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check dropdown lists and default field values in the Endoscopy Information section of a new Colonoscopy investigation dataset
+    """
+    nhs_no = get_subject_with_new_colonoscopy_investigation_dataset()
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+    InvestigationDatasetsPage(page).click_show_endoscopy_information()
+    field_names = [
+        "Endoscope inserted",
+        "Procedure type",
+        "Bowel preparation quality",
+        "Comfort during examination",
+        "Comfort during recovery",
+        "Sedation during examination",
+        "Sedation during recovery",
+        "Endoscopist defined extent",
+        "Scope imager used",
+        "Retroverted view",
+        "Start of intubation time",
+        "Start of extubation time",
+        "End time of procedure",
+        "Scope ID",
+        "Detection assistant (AI) used?",
+        "Insufflation",
+        "Outcome at time of procedure",
+        "Late outcome",
+    ]
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, field_names
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Endoscope inserted", YesNoOptions.YES
+    )
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, ["Why Endoscope Not Inserted"], False
+    )
+    DatasetFieldUtil(page).assert_radio_to_right_is_selected(
+        "Procedure type", "Diagnostic", "divColonoscopeFields"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Bowel preparation quality", ""
+    )
+    dropdown_values = [
+        "Excellent",
+        "Good",
+        "Adequate/Fair",
+        "Poor",
+        "Inadequate",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Bowel preparation quality", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Comfort during examination", ""
+    )
+    dropdown_values = [
+        "No discomfort",
+        "Minimal discomfort",
+        "Mild discomfort",
+        "Moderate discomfort",
+        "Severe discomfort",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Comfort during examination", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Comfort during recovery", ""
+    )
+    dropdown_values = [
+        "No discomfort",
+        "Minimal discomfort",
+        "Mild discomfort",
+        "Moderate discomfort",
+        "Severe discomfort",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Comfort during recovery", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Sedation during examination", "Unsedated", "divSedationExamReadOnly"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Sedation during recovery", "Unsedated", "divSedationRecoveryReadOnly"
+    )
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, ["Intended extent of examination"], False
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Endoscopist defined extent", ""
+    )
+    dropdown_values = [
+        "Anus",
+        "Rectum",
+        "Sigmoid Colon",
+        "Descending Colon",
+        "Splenic Flexure",
+        "Transverse Colon",
+        "Hepatic Flexure",
+        "Ascending Colon",
+        "Caecum",
+        "Ileum",
+        "Anastomosis",
+        "Appendix",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Endoscopist defined extent", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Scope imager used", ""
+    )
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Scope imager used", ["Yes", "No"]
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Retroverted view", ""
+    )
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Retroverted view", ["Yes", "No"]
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Start of intubation time", ""
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Start of extubation time", ""
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "End time of procedure", ""
+    )
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, ["Withdrawal time"], False
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text("Scope ID", "")
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Detection Assistant (AI) used?", "No"
+    )
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Detection Assistant (AI) used?", ["Yes", "No"]
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text("Insufflation", "")
+    dropdown_values = [
+        "Air",
+        "Carbon Dioxide",
+        "Carbon Dioxide changed to Air mid procedure",
+        "Air changed to Carbon Dioxide mid procedure",
+        "Water",
+        "Water and Carbon Dioxide",
+        "Water and Air",
+        "Water and Carbon Dioxide and Air",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Insufflation", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Outcome at time of procedure", ""
+    )
+    dropdown_values = [
+        "Leave department",
+        "Planned hospital admission for observation/social reasons",
+        "Unplanned hospital admission",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Outcome at time of procedure", dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text("Late outcome", "")
+    dropdown_values = [
+        "No complications",
+        "Condition resolved",
+        "Telephone consultation",
+        "Outpatient consultation",
+        "Hospital admission",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Late outcome", dropdown_values
+    )
+
+    LogoutPage(page).log_out()
+
+
+# Helper Functions
+
+
 def check_role_access_to_edit_investigation_dataset(
     page: Page,
     nhs_no: str,
@@ -2258,6 +2562,38 @@ def get_subject_younger_than_70_with_new_colonsocopy_dataset() -> str:
         "latest episode status": "open",
         "latest episode latest investigation dataset": "colonoscopy_new",
         "subject age": "< 70",
+    }
+    user = User()
+    subject = Subject()
+
+    builder = SubjectSelectionQueryBuilder()
+
+    query, bind_vars = builder.build_subject_selection_query(
+        criteria=criteria,
+        user=user,
+        subject=subject,
+        subjects_to_retrieve=1,
+    )
+
+    df = OracleDB().execute_query(query, bind_vars)
+    nhs_no = df.iloc[0]["subject_nhs_number"]
+    logging.info(f"NHS Number: {nhs_no}")
+    return nhs_no
+
+
+def get_subject_older_than_70_with_new_colonsocopy_dataset() -> str:
+    """
+    Gets a subject with the following criteria:
+        "latest episode status": "open",
+        "latest episode latest investigation dataset": "colonoscopy_new",
+        "subject age": ">= 70"
+    Returns:
+        str: The nhs number of a subject matching the criteria
+    """
+    criteria = {
+        "latest episode status": "open",
+        "latest episode latest investigation dataset": "colonoscopy_new",
+        "subject age": ">= 70",
     }
     user = User()
     subject = Subject()
