@@ -302,7 +302,7 @@ class CalendarPicker(BasePage):
         if click_decade:
             self.click(self.page.get_by_text(str(decade), exact=True).first)
         if click_year:
-            self.click(self.page.get_by_text(str(year), exact=True))
+            self.click(self.page.locator("span.year", has_text=str(year)).first)
         if click_month:
             self.click(self.page.get_by_text(str(month_short)))
 

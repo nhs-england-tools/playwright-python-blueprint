@@ -11,6 +11,8 @@ class SubjectScreeningSummaryPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
+        self.spine_url = "https://bcss-bcss-18680-ddc-bcss.k8s-nonprod.texasplatform.uk/servlet/SpineSearchScreen"
+
         # Subject Screening Summary - page filters
         self.subject_screening_summary = self.page.get_by_role(
             "cell", name="Subject Screening Summary", exact=True
@@ -30,6 +32,7 @@ class SubjectScreeningSummaryPage(BasePage):
         self.individual_letters = self.page.get_by_role(
             "link", name="Individual Letters"
         )
+        self.retrieve_data_link = self.page.get_by_role("link", name="Retrieve Data from Spine")
         self.patient_contacts = self.page.get_by_role("link", name="Patient Contacts")
         self.more = self.page.get_by_role("link", name="more")
         self.change_screening_status = self.page.get_by_label("Change Screening Status")
@@ -310,6 +313,14 @@ class SubjectScreeningSummaryPage(BasePage):
         """Click on the 'Book Practitioner Clinic' button"""
         self.click(self.book_practitioner_clinic_button)
 
+    def navigate_to_spine_search(self) -> None:
+        """
+        Navigates to the Spine Search screen by clicking the appropriate link
+        and loading the target URL.
+        """
+        #self.retrieve_data_link.click()
+        self.click(self.retrieve_data_link)
+        self.page.goto(self.spine_url)
 
 class ChangeScreeningStatusOptions(Enum):
     """Enum for Change Screening Status options."""
