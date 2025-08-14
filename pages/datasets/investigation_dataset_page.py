@@ -1478,6 +1478,17 @@ class EndoscopeNotInsertedOptions(StrEnum):
     UNSCHEDULED_ATTENDANCE_TIME = "203001"
 
 
+class SedationOptions(StrEnum):
+    """Enum for sedation options"""
+
+    UNSEDATED = "18504~Read-only"
+    AWAKE = "17324"
+    DROWSY = "17325"
+    ASLEEP_BUT_RESPONDING_TO_NAME = "17326"
+    ASLEEP_BUT_RESPONDING_TO_TOUCH = "17327"
+    ASLEEP_AND_UNRESPONSIVE = "17328"
+
+
 # Registry of all known Enums to search when matching string values
 ALL_ENUMS: List[type[Enum]] = [
     obj

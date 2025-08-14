@@ -20,6 +20,8 @@ from pages.datasets.investigation_dataset_page import (
     AntibioticsAdministeredDrugTypeOptions,
     OtherDrugsAdministeredDrugTypeOptions,
     EndoscopeNotInsertedOptions,
+    BowelPreparationQualityOptions,
+    SedationOptions,
 )
 from classes.user import User
 from classes.subject import Subject
@@ -56,7 +58,12 @@ endoscopy_information = get_default_endoscopy_information()
 bowel_preparation_administered_string = "Bowel Preparation Administered"
 antibiotics_administered_string = "Antibiotics Administered"
 other_drugs_administered_string = "Other Drugs Administered"
+general_anaesthetic_string = "General Anaesthetic"
+sedation_during_recovery_string = "Sedation during recovery"
+sedation_during_examination_string = "Sedation during examination"
 div_drug_details_string = "divDrugDetails"
+div_sedation_exam_string = "divSedationExam"
+div_sedation_recovery_string = "divSedationRecovery"
 
 
 @pytest.mark.regression
@@ -743,7 +750,7 @@ def test_check_dropdown_lists_and_default_values_for_drug_information(
 
     InvestigationDatasetsPage(page).click_show_drug_information()
     field_names = [
-        "General Anaesthetic",
+        general_anaesthetic_string,
         "Entonox",
         bowel_preparation_administered_string,
         antibiotics_administered_string,
@@ -753,10 +760,10 @@ def test_check_dropdown_lists_and_default_values_for_drug_information(
         "Investigation Dataset", None, field_names
     )
     DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
-        "General Anaesthetic", "No"
+        general_anaesthetic_string, "No"
     )
     DatasetFieldUtil(page).assert_select_to_right_has_values(
-        "General Anaesthetic", ["Yes", "No"]
+        general_anaesthetic_string, ["Yes", "No"]
     )
 
     DatasetFieldUtil(page).assert_cell_to_right_has_expected_text("Entonox", "No")
@@ -2262,8 +2269,8 @@ def test_check_dropdown_lists_and_default_field_values_in_endoscopy_information_
         "Bowel preparation quality",
         "Comfort during examination",
         "Comfort during recovery",
-        "Sedation during examination",
-        "Sedation during recovery",
+        sedation_during_examination_string,
+        sedation_during_recovery_string,
         "Endoscopist defined extent",
         "Scope imager used",
         "Retroverted view",
@@ -2328,10 +2335,10 @@ def test_check_dropdown_lists_and_default_field_values_in_endoscopy_information_
         "Comfort during recovery", dropdown_values
     )
     DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
-        "Sedation during examination", "Unsedated", "divSedationExamReadOnly"
+        sedation_during_examination_string, "Unsedated", "divSedationExamReadOnly"
     )
     DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
-        "Sedation during recovery", "Unsedated", "divSedationRecoveryReadOnly"
+        sedation_during_recovery_string, "Unsedated", "divSedationRecoveryReadOnly"
     )
     InvestigationDatasetsPage(page).are_fields_on_page(
         "Endoscopy Information", None, ["Intended extent of examination"], False
@@ -2594,6 +2601,481 @@ def test_behaviour_of_edoscope_inserted_fields_in_endoscopy_information_section(
     InvestigationDatasetsPage(page).check_endoscope_inserted_yes()
     DatasetFieldUtil(page).assert_radio_to_right_is_selected(
         "Endoscope Inserted", "Yes"
+    )
+
+    LogoutPage(page).log_out()
+
+
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_cross_field_validation_between_bowel_prep_administered_and_quality_fields_in_investigation_dataset(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check cross-field validation between the Bowel Preparation Administered and Bowel Preparation Quality fields in an incomplete Colonoscopy investigation dataset
+    """
+    nhs_no = get_subject_with_new_colonoscopy_investigation_dataset()
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+
+    logging.info(
+        "STEP: The Bowel Preparation Quality field is not displayed if Bowel Preparation Administered = No"
+    )
+
+    InvestigationDatasetsPage(page).click_show_drug_information()
+    InvestigationDatasetsPage(page).click_show_endoscopy_information()
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        bowel_preparation_administered_string,
+        div_drug_details_string,
+        YesNoDrugOptions.NO,
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        bowel_preparation_administered_string, "No"
+    )
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, ["Bowel preparation quality"], False
+    )
+
+    logging.info(
+        "STEP: Bowel Preparation Administered cannot be changed to No if a Bowel Preparation Quality value has been selected"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        bowel_preparation_administered_string,
+        div_drug_details_string,
+        YesNoDrugOptions.YES,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Bowel preparation quality", BowelPreparationQualityOptions.EXCELLENT
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        bowel_preparation_administered_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Bowel preparation quality", "Excellent"
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set Bowel Preparation Administered to this value as a Bowel Preparation Quality value exists"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        bowel_preparation_administered_string,
+        div_drug_details_string,
+        YesNoDrugOptions.NO,
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        bowel_preparation_administered_string, "Yes"
+    )
+
+    logging.info(
+        "STEP: Bowel Preparation Administered cannot be removed if a Bowel Preparation Quality value has been selected"
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set Bowel Preparation Administered to this value as a Bowel Preparation Quality value exists"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        bowel_preparation_administered_string,
+        div_drug_details_string,
+        "",
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        bowel_preparation_administered_string, "Yes"
+    )
+
+    logging.info(
+        "STEP: Bowel Preparation Administered can be removed if a Bowel Preparation Quality value has been selected"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Bowel preparation quality", ""
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        bowel_preparation_administered_string, YesNoDrugOptions.NO
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        bowel_preparation_administered_string, "No"
+    )
+
+    LogoutPage(page).log_out()
+
+
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_cross_field_validation_between_general_anaesthetic_other_drugs_and_sedation_fields_in_investigation_dataset(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check cross-field validation between the General Anaesthetic/Other Drugs Administered and the Sedation fields in an incomplete Colonoscopy investigation dataset
+    If both of the General Anaesthetic and Other Drugs Administered fields are set to 'No', then the two Sedation fields are read only and set to 'Unsedated'.
+    If both the General Anaesthetic and Other Drugs Administered fields are set to 'Yes', and one or both of the Sedation fields holds a value other than 'Unsedated' then one of General Anaesthetic or Other Drugs Administered can be set to 'No' without a warning.  It is only when the only remaining 'Yes', in these two fields, is set to 'No' that the warning is displayed.
+    Unlike some of the other cross-validated fields, General Anaesthetic and Other Drugs Administered can be set to null even if the Sedation fields hold a value other than 'Unsedated'.
+    """
+    nhs_no = get_subject_with_new_colonoscopy_investigation_dataset()
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+
+    logging.info(
+        "STEP: If just General Anaesthetic was administered, the two Sedation felds are enabled"
+    )
+
+    InvestigationDatasetsPage(page).click_show_drug_information()
+    InvestigationDatasetsPage(page).click_show_endoscopy_information()
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.YES,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, ""
+    )
+
+    dropdown_values = [
+        "Unsedated",
+        "Awake",
+        "Drowsy",
+        "Asleep but responding to name",
+        "Asleep but responding to touch",
+        "Asleep and unresponsive",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        sedation_during_examination_string, dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, ""
+    )
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        sedation_during_recovery_string, dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_recovery_string, ""
+    )
+
+    logging.info(
+        "STEP: If Sedation During Examination indicates the subject WAS sedated, General Anaesthetic and Other Drugs Administered can be changed, as long as at least one of them is Yes"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.YES,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.ASLEEP_AND_UNRESPONSIVE,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, "Asleep and unresponsive"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.YES,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+
+    logging.info(
+        "STEP: If Sedation values indicate the subject WAS sedated, General Anaesthetic can't be set to No if Other Drugs Administered is already set to No"
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set General Anaesthetic to 'No' as Sedation during examination indicates that the patient was sedated"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+
+    logging.info(
+        "STEP: If Sedation values indicate the subject WAS sedated, General Anaesthetic can be null"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        "",
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, ""
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+
+    logging.info(
+        "STEP: If Sedation During Recovery indicates the subject WAS sedated, General Anaesthetic and Other Drugs Administered can be changed, as long as at least one of them is Yes"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_recovery_string,
+        div_sedation_recovery_string,
+        SedationOptions.AWAKE,
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set General Anaesthetic to 'No' as Sedation during recovery indicates that the patient was sedated"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, ""
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+
+    logging.info(
+        "STEP: If both Sedation values indicate the subject was Unsedated, and Other Drugs Administered is already No, General Anaesthetic can also be set to No - and the two Sedation fields then become read only"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_recovery_string,
+        div_sedation_recovery_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, "Unsedated", "divSedationExamReadOnly"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_recovery_string, "Unsedated", "divSedationRecoveryReadOnly"
+    )
+
+    logging.info(
+        "STEP: If one or both of General Anaesthetic or Other Drugs Administered are set to Yes, the two Sedation fields become editable, retaining a previously manually set value of 'Unsedated'"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        general_anaesthetic_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.YES,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "Yes"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, "Unsedated"
+    )
+    dropdown_values = [
+        "Unsedated",
+        "Awake",
+        "Drowsy",
+        "Asleep but responding to name",
+        "Asleep but responding to touch",
+        "Asleep and unresponsive",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        sedation_during_examination_string, dropdown_values
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_recovery_string, "Unsedated"
+    )
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        sedation_during_recovery_string, dropdown_values
+    )
+
+    logging.info(
+        "STEP: If just Other Drugs were administered, the two Sedation felds are enabled"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.ASLEEP_BUT_RESPONDING_TO_TOUCH,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        general_anaesthetic_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "Yes"
+    )
+
+    logging.info(
+        "STEP: If Sedation During Examination indicates the subject WAS sedated, Other Drugs Administered can't be set to No if General Anaesthetic is already set to No"
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set Drugs Administered to 'No' as Sedation during examination indicates that the patient was sedated"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "Yes"
+    )
+
+    logging.info(
+        "STEP: If Sedation values indicate the subject WAS sedated, Other Drugs Administered can be null"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        "",
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, ""
+    )
+
+    logging.info(
+        "STEP: If Sedation During Recovery indicates the subject WAS sedated, Other Drugs Administered can't be set to No if General Anaesthetic is already set to No"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_recovery_string,
+        div_sedation_recovery_string,
+        SedationOptions.AWAKE,
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot set Drugs Administered to 'No' as Sedation during recovery indicates that the patient was sedated"
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, ""
+    )
+
+    logging.info(
+        "STEP: If both Sedation values indicate the subject was Unsedated, and General Anaesthetic is already No, Other Drugs Administered can also be set to No - and the two Sedation fields then become read only"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_examination_string,
+        div_sedation_exam_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        sedation_during_recovery_string,
+        div_sedation_recovery_string,
+        SedationOptions.UNSEDATED,
+    )
+    DatasetFieldUtil(page).populate_select_locator_for_field_inside_div(
+        other_drugs_administered_string,
+        div_drug_details_string,
+        YesNoOptions.NO,
+    )
+
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        other_drugs_administered_string, "No"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_examination_string, "Unsedated", "divSedationExamReadOnly"
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        sedation_during_recovery_string, "Unsedated", "divSedationRecoveryReadOnly"
     )
 
     LogoutPage(page).log_out()
