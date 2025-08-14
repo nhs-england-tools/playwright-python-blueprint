@@ -19,6 +19,7 @@ from pages.datasets.investigation_dataset_page import (
     YesNoDrugOptions,
     AntibioticsAdministeredDrugTypeOptions,
     OtherDrugsAdministeredDrugTypeOptions,
+    EndoscopeNotInsertedOptions,
 )
 from classes.user import User
 from classes.subject import Subject
@@ -2421,6 +2422,178 @@ def test_check_dropdown_lists_and_default_field_values_in_endoscopy_information_
     ]
     DatasetFieldUtil(page).assert_select_to_right_has_values(
         "Late outcome", dropdown_values
+    )
+
+    LogoutPage(page).log_out()
+
+
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_validation_of_scope_id_field_in_endoscopy_information_section(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check the validation of the Scope ID field in the Endoscopy Information section in an incomplete Colonoscopy investigation dataset
+    Scope ID can't contain invalid characters.  This validation is both immediate and on save.
+    """
+    nhs_no = get_subject_with_new_colonoscopy_investigation_dataset()
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+    InvestigationDatasetsPage(page).click_show_endoscopy_information()
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        'Certain characters may not be used in the Scope ID field.  Please remove the following: <>,",&,¬,£'
+    )
+    DatasetFieldUtil(page).populate_input_locator_for_field("Scope ID", '<> " & ¬ £')
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        'Certain characters may not be used in the Scope ID field.  Please remove the following: <>,",&,¬,£'
+    )
+    InvestigationDatasetsPage(page).click_save_dataset_button()
+
+    LogoutPage(page).log_out()
+
+
+@pytest.mark.regression
+@pytest.mark.vpn_required
+@pytest.mark.investigation_dataset_tests
+@pytest.mark.bcss_additional_tests
+@pytest.mark.colonoscopy_dataset_tests
+def test_behaviour_of_edoscope_inserted_fields_in_endoscopy_information_section(
+    page: Page,
+) -> None:
+    """
+    Scenario: Check the behaviour of the Endoscope Inserted fields in the Endoscopy Information section in an incomplete Colonoscopy investigation dataset
+    """
+    nhs_no = get_subject_with_new_colonoscopy_investigation_dataset()
+    UserTools.user_login(page, "Screening Centre Manager at BCS001")
+    BasePage(page).go_to_screening_subject_search_page()
+    search_subject_episode_by_nhs_number(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_datasets_link()
+    SubjectDatasetsPage(page).click_investigation_show_datasets()
+
+    InvestigationDatasetsPage(page).bowel_cancer_screening_page_title_contains_text(
+        "Investigation Datasets"
+    )
+
+    logging.info("STEP: By default Endoscope Inserted = Yes")
+    InvestigationDatasetsPage(page).click_show_endoscopy_information()
+
+    DatasetFieldUtil(page).assert_radio_to_right_is_selected(
+        "Endoscope Inserted", "Yes"
+    )
+    sections_to_check = [
+        "Failure Information",
+        "Polyp Information",
+        "Colorectal Cancer Information",
+        "Complication Information",
+        "Other Findings",
+    ]
+    InvestigationDatasetsPage(page).is_dataset_section_on_page(sections_to_check)
+
+    logging.info(
+        "STEP: Changing Endoscope Inserted to No removes most fields and sections"
+    )
+
+    InvestigationDatasetsPage(page).check_endoscope_inserted_no()
+    DatasetFieldUtil(page).assert_radio_to_right_is_selected("Endoscope Inserted", "No")
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Why Endoscope Not Inserted", ""
+    )
+    dropdown_values = [
+        "Clinical reason on PR",
+        "Consent refused",
+        "Equipment failure",
+        "No bowel preparation",
+        "Patient unsuitable",
+        "Service interruption",
+        "Solid stool on PR",
+        "Unscheduled attendance time",
+    ]
+    DatasetFieldUtil(page).assert_select_to_right_has_values(
+        "Why Endoscope Not Inserted", dropdown_values
+    )
+    field_names = [
+        "Procedure type",
+        "Bowel preparation quality",
+        "Comfort during examination",
+        "Comfort during recovery",
+        "Intended extent of examination",
+        "Endoscopist defined extent",
+        "Scope imager used",
+        "Retroverted view",
+        "Start of intubation time",
+        "Start of extubation time",
+        "End time of procedure",
+        "Withdrawal time",
+        "Scope ID",
+        "Detection Assistant (AI) Used?",
+        "Insufflation",
+        "Outcome at time of procedure",
+        "Late outcome",
+    ]
+    InvestigationDatasetsPage(page).are_fields_on_page(
+        "Endoscopy Information", None, field_names, False
+    )
+    sections_to_check = [
+        "Failure Information",
+        "Complication Information",
+    ]
+    InvestigationDatasetsPage(page).is_dataset_section_on_page(sections_to_check, False)
+
+    logging.info(
+        "STEP: For most Why Endoscope Not Inserted values, polyps, cancers or other findings cannot be recorded"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Why Endoscope Not Inserted", EndoscopeNotInsertedOptions.EQUIPMENT_FAILURE
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Why Endoscope Not Inserted", "Equipment failure"
+    )
+    sections_to_check = [
+        "Polyp Information",
+        "Colorectal Cancer Information",
+        "Other Findings",
+    ]
+    InvestigationDatasetsPage(page).is_dataset_section_on_page(sections_to_check, False)
+
+    logging.info(
+        "STEP: Why Endoscope Not Inserted values 'Clinical reason on PR' does allow polyps, cancers or other findings to be recorded"
+    )
+
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Why Endoscope Not Inserted", EndoscopeNotInsertedOptions.CLINICAL_REASON_ON_PR
+    )
+    DatasetFieldUtil(page).assert_cell_to_right_has_expected_text(
+        "Why Endoscope Not Inserted", "Clinical reason on PR"
+    )
+    InvestigationDatasetsPage(page).is_dataset_section_on_page(sections_to_check)
+
+    logging.info(
+        "STEP: Endoscope Inserted can only be changed back to Yes if there is no Why Endoscope Not Inserted value"
+    )
+
+    InvestigationDatasetsPage(page).assert_dialog_text(
+        "You cannot change 'Endoscope inserted' to 'Yes' as details have been entered for Why Endoscope Not Inserted."
+    )
+    InvestigationDatasetsPage(page).check_endoscope_inserted_yes()
+
+    DatasetFieldUtil(page).populate_select_locator_for_field(
+        "Why Endoscope Not Inserted", ""
+    )
+    InvestigationDatasetsPage(page).check_endoscope_inserted_yes()
+    DatasetFieldUtil(page).assert_radio_to_right_is_selected(
+        "Endoscope Inserted", "Yes"
     )
 
     LogoutPage(page).log_out()

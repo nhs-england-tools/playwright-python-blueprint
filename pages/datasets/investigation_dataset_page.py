@@ -250,14 +250,14 @@ class InvestigationDatasetsPage(BasePage):
         This method is designed to check the endoscope inserted yes option.
         It checks the endoscope inserted yes option.
         """
-        self.endoscope_inserted_yes.check()
+        self.click(self.endoscope_inserted_yes)
 
     def check_endoscope_inserted_no(self) -> None:
         """
         This method is designed to check the endoscope inserted no option.
         It checks the endoscope inserted no option.
         """
-        self.endoscope_inserted_no.check()
+        self.click(self.endoscope_inserted_no)
 
     def select_therapeutic_procedure_type(self) -> None:
         """
@@ -546,12 +546,13 @@ class InvestigationDatasetsPage(BasePage):
     def get_dataset_section(self, dataset_section_name: str) -> Locator | None:
         """
         Retrieves a dataset section by matching its header text.
+        Only returns the locator if the section is visible.
         Searches through all elements representing dataset sections, looking for one whose
         first <h4> header text matches the provided section name (case-insensitive).
         Args:
             dataset_section_name (str): The name of the dataset section to locate.
         Returns:
-            Locator | None: A Playwright Locator for the matching section, or None if not found.
+            Locator | None: A Playwright Locator for the matching section if visible, or None if not found or not visible.
         """
         logging.info(f"START: Looking for section '{dataset_section_name}'")
 
@@ -562,14 +563,61 @@ class InvestigationDatasetsPage(BasePage):
             header = section.locator("h4")
             if header.count() > 0:
                 header_text = header.first.inner_text().strip().lower()
-                if header_text == dataset_section_name.strip().lower():
+                if (
+                    header_text == dataset_section_name.strip().lower()
+                    and section.is_visible()
+                ):
                     section_found = section
                     break
 
         logging.info(
-            f"Dataset section '{dataset_section_name}' found: {section_found is not None}"
+            f"Dataset section '{dataset_section_name}' found and visible: {section_found is not None}"
         )
         return section_found
+
+    def is_dataset_section_on_page(
+        self, dataset_section: str | List[str], should_be_present: bool = True
+    ) -> None:
+        """
+        Asserts whether the specified dataset section(s) are present or not on the page.
+        Args:
+            dataset_section (str or List[str]): The name of the dataset section to check for presence,
+                or a list of section names.
+                Examples:
+                    "Investigation Dataset"
+                    ["Investigation Dataset", "Drug Information", "Endoscopy Information"]
+            should_be_present (bool): If True, asserts the section(s) are present.
+                                    If False, asserts the section(s) are not present.
+        Raises:
+            AssertionError: If the actual presence does not match should_be_present.
+        """
+        if isinstance(dataset_section, str):
+            section_found = self.get_dataset_section(dataset_section) is not None
+            if should_be_present:
+                assert (
+                    section_found
+                ), f"Expected section '{dataset_section}' to be present, but it was not found."
+                logging.info(f"Section '{dataset_section}' is present as expected.")
+            else:
+                assert (
+                    not section_found
+                ), f"Expected section '{dataset_section}' to be absent, but it was found."
+                logging.info(f"Section '{dataset_section}' is absent as expected.")
+        elif isinstance(dataset_section, list):
+            for section_name in dataset_section:
+                section_found = self.get_dataset_section(section_name) is not None
+                if should_be_present:
+                    assert (
+                        section_found
+                    ), f"Expected section '{section_name}' to be present, but it was not found."
+                    logging.info(f"Section '{section_name}' is present as expected.")
+                else:
+                    assert (
+                        not section_found
+                    ), f"Expected section '{section_name}' to be absent, but it was found."
+                    logging.info(f"Section '{section_name}' is absent as expected.")
+        else:
+            raise TypeError("dataset_section must be a string or a list of strings.")
 
     def get_dataset_subsection(
         self, dataset_section_name: str, dataset_subsection_name: str
@@ -1415,6 +1463,19 @@ class OtherDrugsAdministeredDrugTypeOptions(StrEnum):
     NALOXONE = "17136~mcg~204333"
     PETHIDINE = "17137~mg"
     PROPOFOL = "17960~mg"
+
+
+class EndoscopeNotInsertedOptions(StrEnum):
+    """Enum for why endoscope not inserted options"""
+
+    CLINICAL_REASON_ON_PR = "200541~Abnormalities allowed"
+    CONSENT_REFUSED = "200542"
+    EQUIPMENT_FAILURE = "200544"
+    NO_BOWEL_PREPERATION = "200543"
+    PATIENT_UNSUITABLE = "200545"
+    SERVICE_INTERRUPTION = "203000"
+    SOLID_STOLL_ON_PR = "200546"
+    UNSCHEDULED_ATTENDANCE_TIME = "203001"
 
 
 # Registry of all known Enums to search when matching string values
