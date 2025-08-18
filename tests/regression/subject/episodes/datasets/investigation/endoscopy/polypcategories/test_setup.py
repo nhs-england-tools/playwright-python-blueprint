@@ -50,7 +50,7 @@ from utils.oracle.oracle_specific_functions import (
     update_kit_service_management_entity,
     execute_fit_kit_stored_procedures,
     set_org_parameter_value,
-    get_org_parameter_value,
+    check_parameter,
 )
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.screening_subject_page_searcher import (
@@ -171,30 +171,6 @@ def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
         go_from_a99_status_to_a259_status(page, nhs_no)
 
     LogoutPage(page).log_out()
-
-
-def check_parameter(param_id: int, org_id: str, expected_param_value: str) -> bool:
-    """
-    Check if the organization parameter is set correctly.
-    Args:
-        param_id (int): The ID of the parameter to check.
-        org_id (str): The ID of the organization.
-        expected_param_value (str): The expected value of the parameter.
-
-    Returns:
-        bool: True if the parameter is set correctly, False otherwise.
-    """
-    df = get_org_parameter_value(param_id, org_id)
-    for _, row in df.iterrows():
-        val_matches = str(row["val"]) == expected_param_value
-        audit_reason_matches = row["audit_reason"] == "AUTOMATED TESTING - ADD"
-
-        if val_matches and audit_reason_matches:
-            logging.info(f"Parameter {param_id} is set correctly: {row['val']}")
-            return True
-
-    logging.warning(f"Parameter {param_id} is not set correctly, updating parameter.")
-    return False
 
 
 def setup_appointments(page: Page) -> None:

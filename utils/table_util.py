@@ -25,6 +25,8 @@ class TableUtils:
             table_locator
         )  # Create a locator object for the table
 
+        self.tbody_tr_string = "tbody tr"
+
     def get_column_index(self, column_name: str) -> int:
         """
         Finds the column index dynamically based on column name.
@@ -41,7 +43,9 @@ class TableUtils:
         if not header_row.locator("th").count():
             # Fallback: look for header in <tbody> if <thead> is missing or empty
             header_row = (
-                self.table.locator("tbody tr").filter(has=self.page.locator("th")).first
+                self.table.locator(self.tbody_tr_string)
+                .filter(has=self.page.locator("th"))
+                .first
             )
 
         headers = header_row.locator("th")
@@ -163,7 +167,9 @@ class TableUtils:
 
         # Strategy 3: Last resort — try to find header from tbody row (some old tables use <tbody> only)
         fallback_row = (
-            self.table.locator("tbody tr").filter(has=self.page.locator("th")).first
+            self.table.locator(self.tbody_tr_string)
+            .filter(has=self.page.locator("th"))
+            .first
         )
         if fallback_row.locator("th").count():
             try:
@@ -272,9 +278,7 @@ class TableUtils:
             raise ValueError(f"Column '{column_name}' not found in table")
 
         # Locate all <td> elements in the specified row and column
-        cell_locator = (
-            f"{self.table_id} tbody tr:nth-child({row_index}) td:nth-child({column_index})"
-        )
+        cell_locator = f"{self.table_id} tbody tr:nth-child({row_index}) td:nth-child({column_index})"
 
         cell = self.page.locator(cell_locator).first
 
@@ -360,3 +364,34 @@ class TableUtils:
             ):
                 return self.pick_row(i)
         return None
+
+    def verify_value_for_label(self, label_text: str, expected_text: str) -> None:
+        """
+        Verifies that the value cell (2nd <td>) in the row where the first <td>
+        matches the given label contains the expected text.
+
+        Args:
+            label_text (str): The label text to look for in the first cell of a row.
+            expected_text (str): The text expected inside the adjacent cell.
+
+        Raises:
+            AssertionError: If the label is not found or the expected text is not present.
+        """
+        # Find the row with the matching label in its first cell
+        row = self.table.locator(f"tr:has(td:nth-child(1):has-text('{label_text}'))")
+
+        if row.count() == 0:
+            raise AssertionError(f"Label '{label_text}' not found in table")
+
+        # Select the value cell (2nd column in the same row)
+        value_cell = row.locator("td").nth(1)
+        actual_text = value_cell.inner_text().strip()
+
+        assert expected_text in actual_text, (
+            f"Expected '{expected_text}' for label '{label_text}', "
+            f"but got '{actual_text}'"
+        )
+
+        logging.info(
+            f"Verified: label '{label_text}' has expected text '{expected_text}'"
+        )
