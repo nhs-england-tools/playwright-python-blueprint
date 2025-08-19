@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import pandas as pd
 import pytest
-from _pytest.fixtures import FixtureRequest
 import logging
 from playwright.sync_api import Page
 from classes.subject import Subject
@@ -23,15 +22,6 @@ from pages.screening_practitioner_appointments.appointment_detail_page import (
 from pages.screening_practitioner_appointments.book_appointment_page import (
     BookAppointmentPage,
 )
-from pages.screening_practitioner_appointments.practitioner_availability_page import (
-    PractitionerAvailabilityPage,
-)
-from pages.screening_practitioner_appointments.screening_practitioner_appointments_page import (
-    ScreeningPractitionerAppointmentsPage,
-)
-from pages.screening_practitioner_appointments.set_availability_page import (
-    SetAvailabilityPage,
-)
 from pages.screening_subject_search.advance_fobt_screening_episode_page import (
     AdvanceFOBTScreeningEpisodePage,
 )
@@ -44,13 +34,10 @@ from pages.screening_subject_search.subject_screening_summary_page import (
 from utils.batch_processing import batch_processing
 from utils.calendar_picker import CalendarPicker
 from utils.fit_kit import FitKitGeneration
-from utils.last_test_run import has_test_run_today
 from utils.oracle.oracle import OracleDB
 from utils.oracle.oracle_specific_functions import (
     update_kit_service_management_entity,
     execute_fit_kit_stored_procedures,
-    set_org_parameter_value,
-    check_parameter,
 )
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.screening_subject_page_searcher import (
@@ -61,30 +48,7 @@ from utils.user_tools import UserTools
 from utils.datasets.investigation_datasets import go_from_a99_status_to_a259_status
 
 
-@pytest.fixture(scope="function", autouse=True)
-def before_each(page: Page, request: FixtureRequest) -> None:
-    """
-    Checks that the required organization parameters are set correctly before each test.
-    If not, it sets them to the expected values.
-    Also sets up appointments if the test has not been run today.
-    """
-    param_12_set_correctly = check_parameter(12, "23162", "10")
-    param_28_set_correctly = check_parameter(28, "23162", "07:00")
-    param_29_set_correctly = check_parameter(29, "23162", "20:00")
-    if not param_12_set_correctly:
-        set_org_parameter_value(12, "10", "23162")
-    if not param_28_set_correctly:
-        set_org_parameter_value(28, "07:00", "23162")
-    if not param_29_set_correctly:
-        set_org_parameter_value(29, "20:00", "23162")
-
-    base_url = request.config.getoption("--base-url")
-    if not has_test_run_today(
-        "subject/episodes/datasets/investigation/endoscopy/polypcategories/test_setup", base_url  # type: ignore
-    ):
-        setup_appointments(page)
-
-
+@pytest.mark.usefixtures("setup_org_and_appointments")
 @pytest.mark.vpn_required
 def test_setup_subjects_as_a99(page: Page, subjects_to_run_for: int) -> None:
     """
@@ -115,6 +79,7 @@ def test_setup_subjects_as_a99(page: Page, subjects_to_run_for: int) -> None:
     LogoutPage(page).log_out()
 
 
+@pytest.mark.usefixtures("setup_org_and_appointments")
 @pytest.mark.vpn_required
 def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
     """
@@ -170,35 +135,6 @@ def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
         BasePage(page).click_main_menu_link()
         go_from_a99_status_to_a259_status(page, nhs_no)
 
-    LogoutPage(page).log_out()
-
-
-def setup_appointments(page: Page) -> None:
-    """
-    Set up appointments for multiple practitioners at a screening centre.
-    This function logs in as a Screening Centre Manager, sets availability for
-    practitioners, and creates appointments for the next 10 practitioners.
-    """
-    UserTools.user_login(page, "Screening Centre Manager at BCS001")
-    for index in range(10):
-        BasePage(page).go_to_screening_practitioner_appointments_page()
-        ScreeningPractitionerAppointmentsPage(page).go_to_set_availability_page()
-        SetAvailabilityPage(page).go_to_practitioner_availability_page()
-        PractitionerAvailabilityPage(page).select_site_dropdown_option(
-            "THE ROYAL HOSPITAL (WOLVERHAMPTON)"
-        )
-        PractitionerAvailabilityPage(
-            page
-        ).select_practitioner_dropdown_option_from_index(index + 1)
-        PractitionerAvailabilityPage(page).click_calendar_button()
-        CalendarPicker(page).select_day(datetime.today())
-        PractitionerAvailabilityPage(page).click_show_button()
-        PractitionerAvailabilityPage(page).enter_start_time("07:00")
-        PractitionerAvailabilityPage(page).enter_end_time("20:00")
-        PractitionerAvailabilityPage(page).click_calculate_slots_button()
-        PractitionerAvailabilityPage(page).enter_number_of_weeks("1")
-        PractitionerAvailabilityPage(page).click_save_button()
-        BasePage(page).click_main_menu_link()
     LogoutPage(page).log_out()
 
 

@@ -14,6 +14,13 @@ from pytest_html.report_data import ReportData
 from utils.load_properties_file import PropertiesFile
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
+from playwright.sync_api import Page
+from utils.oracle.oracle_specific_functions import (
+    set_org_parameter_value,
+    check_parameter,
+)
+from utils.last_test_run import has_test_run_today
+from utils.appointments import setup_appointments
 
 # Environment Variable Handling
 
@@ -106,3 +113,39 @@ def subjects_to_run_for(request: FixtureRequest) -> int:
         int: The number of subjects specified via the CLI or default (10).
     """
     return int(request.config.getoption("--subjects-to-run-for"))  # type: ignore
+
+
+@pytest.fixture(scope="function")
+def setup_org_and_appointments(
+    page: Page, request: FixtureRequest, general_properties: dict
+) -> None:
+    """
+    Ensures required org parameters and appointments are set up.
+    Only runs once per day per environment, regardless of which test calls it.
+
+    This fixture is designed to be used in tests that require a specific setup of the organisation and appointments.
+
+    Example usage:
+
+    @pytest.mark.usefixtures("setup_org_and_appointments")
+    def test_my_function(page: Page):
+        # Your test code here
+
+    def test_my_function(page: Page, setup_org_and_appointments):
+        # Your test code here
+    """
+    org_id = general_properties["eng_screening_centre_id"]
+    param_12_set_correctly = check_parameter(12, org_id, "10")
+    param_28_set_correctly = check_parameter(28, org_id, "07:00")
+    param_29_set_correctly = check_parameter(29, org_id, "20:00")
+    if not param_12_set_correctly:
+        set_org_parameter_value(12, "10", org_id)
+    if not param_28_set_correctly:
+        set_org_parameter_value(28, "07:00", org_id)
+    if not param_29_set_correctly:
+        set_org_parameter_value(29, "20:00", org_id)
+
+    base_url = request.config.getoption("--base-url")
+    fixture_name = "setup_org_and_appointments"
+    if not has_test_run_today(fixture_name, base_url):  # type: ignore
+        setup_appointments(page, 0, max=True)
