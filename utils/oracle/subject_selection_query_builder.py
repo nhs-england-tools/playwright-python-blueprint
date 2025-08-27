@@ -685,6 +685,11 @@ class SubjectSelectionQueryBuilder:
             case SubjectSelectionCriteriaKey.REASON_FOR_SYMPTOMATIC_REFERRAL:
                 self._add_criteria_symptomatic_referral_reason()
             # ------------------------------------------------------------------------
+            # 🔘 Other non criteria
+            # ------------------------------------------------------------------------
+            case SubjectSelectionCriteriaKey.ADD_COLUMN_TO_SELECT_STATEMENT:
+                self._add_extra_column_to_select_statement()
+            # ------------------------------------------------------------------------
             # 🛑 Fallback: Unmatched Criteria Key
             # ------------------------------------------------------------------------
             case _:
@@ -753,6 +758,12 @@ class SubjectSelectionQueryBuilder:
             raise ValueError(
                 f"The 'NOT:' qualifier cannot be used with criteria key: {self.criteria_key_name}"
             )
+
+    def _add_extra_column_to_select_statement(self) -> None:
+        """
+        Adds an extra column to the SELECT statement.
+        """
+        self.sql_select.append(f", {self.criteria_value}")
 
     def _add_criteria_nhs_number(self) -> None:
         """

@@ -178,32 +178,96 @@ class OracleDB:
         return df
 
     def execute_stored_procedure(
-        self, procedure: str, params: Optional[list] = None
-    ) -> None:
+        self,
+        procedure: str,
+        in_params: Optional[list] = None,
+        out_params: Optional[list] = None,
+        conn: Optional[oracledb.Connection] = None,
+    ) -> dict:
         """
-        This is to be used whenever we need to execute a stored procedure.
-        It is provided with the stored procedure name and then executes it
+        Execute a stored procedure with optional input and output params (including cursors).
 
         Args:
-            procedure (str): The stored procedure you want to run
+            procedure (str): Stored procedure name
+            in_params (list): Input parameters
+            out_params (list): Output parameter types (e.g., oracledb.CURSOR, int, str, etc.)
+            conn (oracledb.Connection): The Oracle DB connection object
+        Returns:
+            dict: Dictionary of OUT parameter values keyed by position
         """
-        conn = self.connect_to_db()
+        if conn is None:
+            conn = self.connect_to_db()
         try:
-            logging.info(f"Attempting to execute stored procedure: {procedure}")
+            logging.info(f"Executing stored procedure: {procedure}")
             cursor = conn.cursor()
-            if params is not None:
-                cursor.callproc(procedure, params)
-            else:
-                cursor.callproc(procedure)
+            params = self._prepare_params(cursor, in_params, out_params)
+            cursor.callproc(procedure, params)
+            results = self._collect_outputs(params, out_params, in_params)
             conn.commit()
             logging.info("stored procedure execution successful!")
+            return results
         except Exception as executionError:
-            logging.error(
+            raise RuntimeError(
                 f"Failed to execute stored procedure with execution error: {executionError}"
             )
         finally:
             if conn is not None:
                 self.disconnect_from_db(conn)
+
+    def _prepare_params(
+        self,
+        cursor: oracledb.Cursor,
+        in_params: Optional[list],
+        out_params: Optional[list],
+    ) -> list:
+        """
+        Prepares parameters for the stored procedure call.
+
+        Args:
+            cursor (oracledb.Cursor): The cursor to use for variable binding.
+            in_params (list): List of input parameters.
+            out_params (list): List of output parameter types.
+
+        Returns:
+            list: List of parameters ready for the procedure call.
+        """
+        params = []
+        if in_params:
+            params.extend(in_params)
+        if out_params:
+            for parameter in out_params:
+                param_type = (
+                    oracledb.CURSOR if parameter == oracledb.CURSOR else parameter
+                )
+                params.append(cursor.var(param_type))
+        return params
+
+    def _collect_outputs(
+        self,
+        params: list,
+        out_params: Optional[list] = None,
+        in_params: Optional[list] = None,
+    ) -> dict:
+        """
+        Collects output values from the parameters after procedure execution.
+
+        Args:
+            params (list): List of parameters after procedure execution.
+            out_params (list): List of output parameter types.
+            in_params (list): List of input parameters.
+
+        Returns:
+            dict: Dictionary of output values keyed by their position in the parameter list.
+        """
+        results = {}
+        if out_params:
+            start_idx = len(in_params or [])
+            for index, _ in enumerate(out_params, start=start_idx):
+                val = params[index].getvalue()
+                results[index + 1] = (
+                    val.fetchall() if isinstance(val, oracledb.Cursor) else val
+                )
+        return results
 
     def update_or_insert_data_to_table(
         self, statement: str, params: dict

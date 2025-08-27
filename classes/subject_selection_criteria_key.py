@@ -23,6 +23,7 @@ class SubjectSelectionCriteriaKey(Enum):
             Returns the enum member matching the given description, or None if not found.
     """
 
+    ADD_COLUMN_TO_SELECT_STATEMENT = ("add column to select statement", False, False)
     APPOINTMENT_DATE = ("appointment date", False, True)
     APPOINTMENT_STATUS = ("appointment status", True, True)
     APPOINTMENT_TYPE = ("appointment type", False, True)
