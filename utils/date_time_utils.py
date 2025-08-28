@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
-from typing import Optional
+from datetime import datetime, timedelta, date
+from typing import Optional, Union
+import pandas as pd
 import random
 
 
@@ -152,3 +153,59 @@ class DateTimeUtils:
             base_date += timedelta(days=1)
 
         return base_date.strftime("%d/%m/%Y")
+
+    @staticmethod
+    def parse_date(
+        val: Optional[Union[pd.Timestamp, str, datetime, date]],
+    ) -> Optional[date]:
+        """
+        Converts a value to a Python date object if possible.
+
+        Args:
+            val: The value to convert (can be pandas.Timestamp, string, datetime, date, or None).
+
+        Returns:
+            Optional[date]: The converted date object, or None if conversion fails.
+        """
+        if pd.isnull(val):
+            return None
+        if isinstance(val, pd.Timestamp):
+            return val.to_pydatetime().date()
+        if isinstance(val, str):
+            try:
+                return datetime.strptime(val[:10], "%Y-%m-%d").date()
+            except Exception:
+                return None
+        if isinstance(val, datetime):
+            return val.date()
+        if isinstance(val, date):
+            return val
+        return None
+
+    @staticmethod
+    def parse_datetime(
+        val: Optional[Union[pd.Timestamp, str, datetime, date]],
+    ) -> Optional[datetime]:
+        """
+        Converts a value to a Python datetime object if possible.
+
+        Args:
+            val: The value to convert (can be pandas.Timestamp, string, datetime, or None).
+
+        Returns:
+            Optional[datetime]: The converted datetime object, or None if conversion fails.
+        """
+        if pd.isnull(val):
+            return None
+        if isinstance(val, pd.Timestamp):
+            return val.to_pydatetime()
+        if isinstance(val, str):
+            for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+                try:
+                    return datetime.strptime(val[:19], fmt)
+                except Exception:
+                    continue
+            return None
+        if isinstance(val, datetime):
+            return val
+        return None

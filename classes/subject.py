@@ -10,6 +10,8 @@ from classes.screening_status_type import ScreeningStatusType
 from classes.sdd_reason_for_change_type import SDDReasonForChangeType
 from classes.ss_reason_for_change_type import SSReasonForChangeType
 from classes.ssdd_reason_for_change_type import SSDDReasonForChangeType
+from utils.date_time_utils import DateTimeUtils
+import pandas as pd
 
 
 @dataclass
@@ -1241,3 +1243,62 @@ class Subject:
             f"datestamp={self.datestamp}"
             f"]"
         )
+
+    @staticmethod
+    def from_dataframe_row(row: pd.Series) -> "Subject":
+        """
+        Populates a Subject object from a pandas DataFrame row.
+        Handles type conversions for dates and datetimes.
+        Only fields present in the SQL query are populated.
+        """
+
+        field_map = {
+            "screening_subject_id": row.get("screening_subject_id"),
+            "nhs_number": row.get("subject_nhs_number"),
+            "surname": row.get("person_family_name"),
+            "forename": row.get("person_given_name"),
+            "datestamp": DateTimeUtils.parse_datetime(row.get("datestamp")),
+            "screening_status_id": row.get("screening_status_id"),
+            "screening_status_change_reason_id": row.get("ss_reason_for_change_id"),
+            "screening_status_change_date": DateTimeUtils.parse_date(
+                row.get("screening_status_change_date")
+            ),
+            "screening_due_date": DateTimeUtils.parse_date(
+                row.get("screening_due_date")
+            ),
+            "screening_due_date_change_reason_id": row.get("sdd_reason_for_change_id"),
+            "screening_due_date_change_date": DateTimeUtils.parse_date(
+                row.get("sdd_change_date")
+            ),
+            "calculated_screening_due_date": DateTimeUtils.parse_date(
+                row.get("calculated_sdd")
+            ),
+            "surveillance_screening_due_date": DateTimeUtils.parse_date(
+                row.get("surveillance_screen_due_date")
+            ),
+            "calculated_surveillance_due_date": DateTimeUtils.parse_date(
+                row.get("calculated_ssdd")
+            ),
+            "surveillance_due_date_change_reason_id": row.get(
+                "surveillance_sdd_rsn_change_id"
+            ),
+            "surveillance_due_date_change_date": DateTimeUtils.parse_date(
+                row.get("surveillance_sdd_change_date")
+            ),
+            "lynch_due_date": DateTimeUtils.parse_date(
+                row.get("lynch_screening_due_date")
+            ),
+            "lynch_due_date_change_reason_id": row.get(
+                "lynch_sdd_reason_for_change_id"
+            ),
+            "lynch_due_date_change_date": DateTimeUtils.parse_date(
+                row.get("lynch_sdd_change_date")
+            ),
+            "calculated_lynch_due_date": DateTimeUtils.parse_date(
+                row.get("lynch_calculated_sdd")
+            ),
+            "date_of_birth": DateTimeUtils.parse_date(row.get("date_of_birth")),
+            "date_of_death": DateTimeUtils.parse_date(row.get("date_of_death")),
+        }
+
+        return Subject(**field_map)
