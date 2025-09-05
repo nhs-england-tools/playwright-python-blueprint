@@ -31,7 +31,8 @@ def batch_processing(
     save_csv_as_df: bool = False,
 ) -> Optional[pd.DataFrame]:
     """
-    This is used to process batches.
+    Processes a batch in the BCSS UI by navigating to the batch, extracting subject NHS numbers (from the database or PDF),
+    verifying each subject's event status in the UI, and optionally running timed events or returning batch data as a DataFrame.
 
     Args:
         page (Page): This is the playwright page object

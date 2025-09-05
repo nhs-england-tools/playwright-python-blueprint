@@ -81,8 +81,8 @@ class SubjectScreeningSummaryPage(BasePage):
             "td.epihdr_label:text('Screening Status') + td.epihdr_data"
         )
         self.latest_event_status_cell = self.page.locator(
-            "table#subjectSummaryTable tr:has(td:text('Latest Event Status')) td.epihdr_data"
-        ).nth(0)
+            "td.epihdr_label:text('Latest Event Status') + td.epihdr_data"
+        )
 
     def wait_for_page_title(self) -> None:
         """Waits for the page to be the Subject Screening Summary"""

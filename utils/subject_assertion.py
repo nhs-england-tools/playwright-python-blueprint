@@ -7,7 +7,7 @@ import logging
 
 def subject_assertion(nhs_number: str, criteria: dict) -> None:
     """
-    Asserts that a subject with the given NHS number exists and matches the provided criteria.
+    Asserts that a subject with the given NHS number exists in the database and matches the provided criteria.
     Args:
         nhs_number (str): The NHS number of the subject to find.
         criteria (dict): A dictionary of criteria to match against the subject's attributes.

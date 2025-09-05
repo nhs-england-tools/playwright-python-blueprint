@@ -55,7 +55,7 @@ class CallAndRecallUtils:
         result_cursor.close()
         cur.close()
         conn.close()
-        logging.info(f"END: failsafe stored proc executed for {nhs_no}")
+        logging.info(f"[FAILSAFE TRAWL RUN] FOBT failsafe trawl run for subject {nhs_no}")
 
     def invite_subject_for_fobt_screening(
         self, nhs_no: str, user_role: UserRoleType

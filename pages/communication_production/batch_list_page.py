@@ -1,6 +1,9 @@
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 from datetime import datetime
+from pages.communication_production.communications_production_page import (
+    CommunicationsProductionPage,
+)
 from utils.calendar_picker import CalendarPicker
 from utils.table_util import TableUtils
 import logging
@@ -204,6 +207,14 @@ class BatchListPage(BasePage):
         ), f"No batch links found in table '{table_selector}'"
         first_link.click()
 
+    def navigate_to_active_batch_list_page(self) -> None:
+        """
+        Navigates to the active batch list page from anywhere in bcss (providing the main menu link is displayed).
+        """
+        self.click_main_menu_link()
+        self.go_to_communications_production_page()
+        CommunicationsProductionPage(self.page).go_to_active_batch_list_page()
+
 
 class ActiveBatchListPage(BatchListPage):
     """Active Batch List Page-specific methods."""
@@ -216,7 +227,10 @@ class ActiveBatchListPage(BatchListPage):
         self.select_first_batch_row(self.table_selector, timeout_ms=10000)
 
     def is_batch_present(self, batch_type: str) -> bool:
-        """Checks if a batch of the given type exists in the active batch list."""
+        """Checks if a batch of the given type exists in the active batch list.
+        Args:
+            batch_type (str): The type of the batch to check for e.g. "S1 - Pre-invitation (FIT)"
+        """
         locator = self.page.locator(
             f"{self.table_selector} tbody tr td", has_text=batch_type
         )
