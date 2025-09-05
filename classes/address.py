@@ -26,7 +26,7 @@ class Address:
         Raises:
             ValueError: If line_number is not between 1 and 5.
         """
-        logging.info(
+        logging.debug(
             f"start: set_address_line(line_number={line_number}, address_line={address_line})"
         )
         if line_number == 1:
@@ -43,7 +43,7 @@ class Address:
             raise ValueError(
                 f"Invalid line number {line_number}, must be between 1 and 5"
             )
-        logging.info(
+        logging.debug(
             f"end: set_address_line(line_number={line_number}, address_line={address_line})"
         )
 

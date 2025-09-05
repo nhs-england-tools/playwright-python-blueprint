@@ -3,30 +3,40 @@
 
   "Hub Manager State Registered at BCS01": {
     "username": "BCSS401",
+    "role_id": 309008,
+    "org_code": "BCS01",
     "roles": [
       "Hub Manager State Registered, Midlands and North West"
     ]
   },
   "Hub Manager at BCS01": {
     "username": "BCSS402",
+    "role_id": 309007,
+    "org_code": "BCS01",
     "roles": [
       "Hub Manager, Midlands and North West"
     ]
   },
   "Screening Centre Manager at BCS001": {
     "username": "BCSS118",
+    "role_id": 5039,
+    "org_code": "BCS001",
     "roles": [
       "Screening Centre Manager for Wolverhampton, Midlands and North West"
     ]
   },
   "ScreeningAssistant at BCS02": {
     "username": "BCSS412",
+    "role_id": 309003,
+    "org_code": "BCS02",
     "roles": [
       "Screening Assistant"
     ]
 },
   "Team Leader at BCS01": {
     "username": "BCSS403",
+    "role_id": 309005,
+    "org_code": "BCS01",
     "roles": [
       "Team Leader"
     ]
@@ -40,12 +50,16 @@
   "Hub Manager at BCS02": {
     "username": "BCSS409",
     "hub_code": "BCS02",
+    "role_id": 309007,
+    "org_code": "BCS02",
     "roles": [
       "Hub Manager, Southern Bowel Cancer Screening Programme Hub"
     ]
   },
   "Specialist Screening Practitioner at BCS009 & BCS001": {
     "username": "BCSS120",
+    "role_id": 5041,
+    "org_code": "BCS001",
     "roles": [
       "Coventry and Warwickshire Bowel Cancer Screening Centre, MultiOrgUser",
       "Wolverhampton Bowel Cancer Screening Centre, MultiOrgUser"
@@ -53,66 +67,88 @@
   },
   "Hub Director State Registered at BCS03": {
     "username": "BCSS414",
+    "role_id": 309009,
+    "org_code": "BCS03",
     "roles": [
       "Hub Director State Registered, England"
     ]
   },
   "Senior Screening Assistant at BCS01": {
     "username": "BCSS404",
+    "role_id": 309004,
+    "org_code": "BCS01",
     "roles": [
       "Senior Screening Assistant, England"
     ]
   },
   "Screening Assistant at BCS02": {
     "username": "BCSS412",
+    "role_id": 309003,
+    "org_code": "BCS02",
     "roles": [
       "Senior Screening Assistant, England"
     ]
   },
   "Assistant Screening Practitioner at BCS001": {
     "username": "BCSS324",
+    "role_id": 202254,
+    "org_code": "BCS001",
     "roles": [
       "Assistant Screening Practitioner, England"
     ]
   },
   "Screening Coordinator at BCS001": {
     "username": "BCSS121",
+    "role_id": 5073,
+    "org_code": "BCS001",
     "roles": [
       "Screening Coordinator at BCS001, England"
     ]
   },
   "Screening Practitioner at BCS001": {
     "username": "BCSS121",
+    "role_id": 5073,
+    "org_code": "BCS001",
     "roles": [
       "Screening Practioner at BCS001, England"
     ]
   },
   "Screening Centre Clerk at BCS001": {
     "username": "BCSS119",
+    "role_id": 5040,
+    "org_code": "BCS001",
     "roles": [
       "Screening Centre Clerk, England"
     ]
   },
   "National Data Analyst at BCS0": {
     "username": "BCSS212",
+    "role_id": 5064,
+    "org_code": "BCS0",
     "roles": [
       "National Data Analyst, England"
     ]
   },
   "National QA User at BCS0": {
     "username": "BCSS263",
+    "role_id": 202193,
+    "org_code": "BCS0",
     "roles": [
       "National QA User, England"
     ]
   },
   "BCSS Support - SC at BCS001": {
     "username": "BCSS307",
+    "role_id": 202246,
+    "org_code": "BCS001",
     "roles": [
       "Wolverhampton SC"
     ]
   },
   "BCSS Bureau Staff at X26": {
     "username": "BCSS33",
+    "role_id": 5042,
+    "org_code": "X26",
     "roles": [
       "BCSS Bureau Staff at X26"
     ]

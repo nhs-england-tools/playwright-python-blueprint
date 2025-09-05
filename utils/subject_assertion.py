@@ -5,15 +5,14 @@ from classes.user import User
 import logging
 
 
-def subject_assertion(nhs_number: str, criteria: dict) -> bool:
+def subject_assertion(nhs_number: str, criteria: dict) -> None:
     """
     Asserts that a subject with the given NHS number exists and matches the provided criteria.
     Args:
         nhs_number (str): The NHS number of the subject to find.
         criteria (dict): A dictionary of criteria to match against the subject's attributes.
-    Returns:
-        bool: True if the subject matches the provided criteria, False if it does not.
     """
+    logging.info("[DB ASSERTIONS] Starting subject_assertion method")
     nhs_number_string = "nhs number"
     subject_nhs_number_string = "subject_nhs_number"
     nhs_no_criteria = {nhs_number_string: nhs_number}
@@ -28,12 +27,19 @@ def subject_assertion(nhs_number: str, criteria: dict) -> bool:
         subjects_to_retrieve=1,
     )
 
+    logging.debug(
+        "[SUBJECT ASSERTIONS] Executing base query to populate subject object"
+    )
+
     subject_df = OracleDB().execute_query(query, bind_vars)
     subject = Subject.from_dataframe_row(subject_df.iloc[0])
 
     criteria[nhs_number_string] = nhs_number
 
     # Check all criteria together first
+    logging.info(
+        "[SUBJECT ASSERTIONS] Running query to check subject matches criteria:"
+    )
     query, bind_vars = builder.build_subject_selection_query(
         criteria=criteria,
         user=user,
@@ -42,7 +48,8 @@ def subject_assertion(nhs_number: str, criteria: dict) -> bool:
     )
     df = OracleDB().execute_query(query, bind_vars)
     if nhs_number in df[subject_nhs_number_string].values:
-        return True
+        logging.info("[DB ASSERTIONS COMPLETE] Subject matches the expected criteria")
+        return
 
     # Check each criterion independently
     failed_criteria = []
@@ -54,6 +61,7 @@ def subject_assertion(nhs_number: str, criteria: dict) -> bool:
             user=user,
             subject=subject,
             subjects_to_retrieve=1,
+            enable_logging=False,
         )
         df = OracleDB().execute_query(query, bind_vars)
         if (
@@ -63,13 +71,17 @@ def subject_assertion(nhs_number: str, criteria: dict) -> bool:
             failed_criteria.append((key, criteria[key]))
 
     if failed_criteria:
-        log_message = "Subject Assertion Failed\nFailed criteria:\n" + "\n".join(
-            [f"{key}, {value}" for key, value in failed_criteria]
+        log_message = (
+            "[DB ASSERTIONS FAILED] Subject Assertion Failed\nFailed criteria:\n"
+            + "\n".join(
+                [
+                    f"Criteria key: {key}, Criteria Value: {value}"
+                    for key, value in failed_criteria
+                ]
+            )
         )
-        logging.error(log_message)
+        raise AssertionError(log_message)
     else:
-        logging.error(
-            "Subject Assertion Failed: Criteria combination is invalid or conflicting."
+        raise AssertionError(
+            "[DB ASSERTIONS FAILED] Subject Assertion Failed: Criteria combination is invalid or conflicting."
         )
-
-    return False

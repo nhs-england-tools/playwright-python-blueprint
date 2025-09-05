@@ -30,7 +30,7 @@ class WordRepository:
         Returns:
             str: A string of random words.
         """
-        logging.info("START: get_random_words_by_weighting")
+        logging.debug("START: get_random_words_by_weighting")
         percentage = random.randint(0, 99)
         words = 0
         for i, weighting in enumerate(weightings):
@@ -44,10 +44,10 @@ class WordRepository:
             if sum(len(w) for w in sb) + len(new_word) + len(sb) < max_length:
                 sb.append(new_word)
         result = " ".join(sb)
-        logging.info(
+        logging.debug(
             f"RANDOM WORD(S): {result}. Actual length: {len(result)}. Specified Max length: {max_length}"
         )
-        logging.info("END: get_random_words_by_weighting")
+        logging.debug("END: get_random_words_by_weighting")
         return result
 
     def get_random_word(self) -> str:
@@ -56,14 +56,14 @@ class WordRepository:
         Returns:
             str: A random word or "TEST" if an error occurs.
         """
-        logging.info("START: get_random_word")
+        logging.debug("START: get_random_word")
         try:
             word = self.find_random_word()
-            logging.info("END: get_random_word")
+            logging.debug("END: get_random_word")
             return word if word else "TEST"
         except Exception as e:
-            logging.info(f"Caught Exception, returning TEST instead: {e}")
-            logging.info("END: get_random_word")
+            logging.debug(f"Caught Exception, returning TEST instead: {e}")
+            logging.debug("END: get_random_word")
             return "TEST"
 
     def find_random_word(self) -> str:
@@ -72,7 +72,7 @@ class WordRepository:
         Returns:
             str: A random word.
         """
-        logging.info("START: find_random_word")
+        logging.debug("START: find_random_word")
         seq_range_query = (
             "SELECT MIN(SEQ) AS MIN_SEQ, MAX(SEQ) AS MAX_SEQ FROM MPI_ANON.ANON_WORD"
         )
@@ -90,7 +90,7 @@ class WordRepository:
             or df_range.iloc[0][min_seq_col] is None
             or df_range.iloc[0][max_seq_col] is None
         ):
-            logging.info(
+            logging.debug(
                 f"MIN_SEQ or MAX_SEQ column not found in df_range: {df_range.columns}"
             )
             return "TEST"
@@ -104,8 +104,8 @@ class WordRepository:
             word = df_word.iloc[0][word_col]
         else:
             word = "TEST"
-        logging.info(f"return {word}")
-        logging.info("END: find_random_word")
+        logging.debug(f"return {word}")
+        logging.debug("END: find_random_word")
         return word
 
     def get_random_subject_details(self) -> Dict[str, str]:
@@ -114,7 +114,7 @@ class WordRepository:
         Returns:
             Dict[str, str]: A dictionary containing random subject details.
         """
-        logging.info("START: get_random_subject_details")
+        logging.debug("START: get_random_subject_details")
         details = {}
         # Weighted values
         details["forename"] = self.get_random_words_by_weighting(
@@ -136,5 +136,5 @@ class WordRepository:
         details["town"] = self.get_random_word()
         details["roadPrefix"] = self.get_random_word()
         details["roadSuffix"] = self.get_random_word()
-        logging.info("END: get_random_subject_details")
+        logging.debug("END: get_random_subject_details")
         return details

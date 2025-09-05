@@ -1,5 +1,6 @@
 from typing import Optional
-from classes.organisation import Organisation
+from classes.organisation_complex import Organisation
+import pandas as pd
 
 
 class User:
@@ -129,7 +130,32 @@ class User:
         Returns:
             str: The string representation of the user.
         """
-        org_id = (
-            self.organisation.get_organisation_id() if self.organisation else "None"
-        )
+        org_id = self.organisation.id if self.organisation else "None"
         return f"User [userId={self.user_id}, orgId={org_id}, roleId={self.role_id}]"
+
+    def from_dataframe_row(self, row) -> "User":
+        """
+        Creates a User object from a pandas DataFrame row containing user query results.
+
+        Args:
+            row (pd.Series): A row from a pandas DataFrame with columns:
+                - pio_id
+                - org_id
+                - role_id
+                - org_code
+
+        Returns:
+            User: The constructed User object.
+        """
+        organisation = (
+            Organisation(new_id=row["org_id"], new_code=row["org_code"])
+            if "org_id" in row and "org_code" in row
+            else None
+        )
+
+        return User(
+            user_id=row["pio_id"],
+            role_id=row["role_id"],
+            pio_id=row["pio_id"],
+            organisation=organisation,
+        )

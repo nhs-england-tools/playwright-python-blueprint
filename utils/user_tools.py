@@ -8,6 +8,8 @@ from playwright.sync_api import Page
 from pages.login.cognito_login_page import CognitoLoginPage
 from classes.user import User
 from classes.organisation import Organisation
+from classes.user_role_type import UserRoleType
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 USERS_FILE = Path(os.getcwd()) / "users.json"
@@ -19,13 +21,22 @@ class UserTools:
     """
 
     @staticmethod
-    def user_login(page: Page, username: str) -> None:
+    def user_login(
+        page: Page, username: str, return_role_type: bool = False
+    ) -> Optional[UserRoleType]:
         """
         Logs into the BCSS application as a specified user.
 
         Args:
             page (playwright.sync_api.Page): The Playwright page object to interact with.
             username (str): Enter a username that exists in the users.json file.
+            return_role_type (bool): If True, return a UserRoleType object.
+
+        Returns:
+            Optional[UserRoleType]: The user's UserRoleType if requested, otherwise None.
+
+        Raises:
+            ValueError: If the 'BCSS_PASS' environment variable is not set
         """
         logging.info(f"Logging in as {username}")
         # Go to base url
@@ -37,6 +48,21 @@ class UserTools:
         if password is None:
             raise ValueError("Environment variable 'BCSS_PASS' is not set")
         CognitoLoginPage(page).login_as_user(user_details["username"], password)
+
+        if return_role_type:
+            org_code = user_details.get("org_code")
+            user_code = user_details.get("username")
+            role_id = user_details.get("role_id")
+            if org_code is not None and user_code is not None and role_id is not None:
+                return UserRoleType(
+                    org_code=org_code, user_code=user_code, role_id=role_id
+                )
+            else:
+                logging.warning(
+                    "UserRoleType fields missing in users.json for user: %s", username
+                )
+                return None
+        return None
 
     @staticmethod
     def retrieve_user(user: str) -> dict:

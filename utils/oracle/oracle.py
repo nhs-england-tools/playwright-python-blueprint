@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 import logging
 from typing import Optional
+import pprint
 
 
 class OracleDB:
@@ -23,11 +24,11 @@ class OracleDB:
             conn (oracledb.Connection): The Oracle DB connection object
         """
         try:
-            logging.info("Attempting DB connection...")
+            logging.debug("Attempting DB connection...")
             conn = oracledb.connect(
                 user=self.user, password=self.password, dsn=self.dns
             )
-            logging.info("DB connection successful!")
+            logging.debug("DB connection successful!")
             return conn
         except Exception as queryExecutionError:
             raise RuntimeError(f"Database connection failed: {queryExecutionError}")
@@ -40,7 +41,7 @@ class OracleDB:
             conn (oracledb.Connection): The Oracle DB connection object
         """
         conn.close()
-        logging.info("Connection Closed")
+        logging.debug("Connection Closed")
 
     def exec_bcss_timed_events(
         self, nhs_number_df: pd.DataFrame
@@ -61,18 +62,18 @@ class OracleDB:
                 )
                 try:
                     logging.info(
-                        f"Attempting to execute stored procedure: {f"'bcss_timed_events', [{subject_id},'Y']"}"
+                        f"[ORACLE] Attempting to execute stored procedure: {f"'bcss_timed_events', [{subject_id},'Y']"}"
                     )
                     cursor = conn.cursor()
                     cursor.callproc("bcss_timed_events", [subject_id, "Y"])
                     logging.info("Stored procedure execution successful!")
                 except Exception as spExecutionError:
                     logging.error(
-                        f"Failed to execute stored procedure with execution error: {spExecutionError}"
+                        f"[ORACLE] Failed to execute stored procedure with execution error: {spExecutionError}"
                     )
         except Exception as queryExecutionError:
             logging.error(
-                f"Failed to to extract subject ID with error: {queryExecutionError}"
+                f"[ORACLE] Failed to to extract subject ID with error: {queryExecutionError}"
             )
         finally:
             if conn is not None:
@@ -89,7 +90,9 @@ class OracleDB:
             subject_id (str): The subject id for the provided nhs number
         """
         conn = self.connect_to_db()
-        logging.info(f"Attempting to get subject_id from nhs number: {nhs_number}")
+        logging.info(
+            f"[ORACLE] Attempting to get subject_id from nhs number: {nhs_number}"
+        )
         cursor = conn.cursor()
         cursor.execute(
             f"SELECT SCREENING_SUBJECT_ID FROM SCREENING_SUBJECT_T WHERE SUBJECT_NHS_NUMBER = {int(nhs_number)}"
@@ -110,13 +113,13 @@ class OracleDB:
         """
         conn = self.connect_to_db()
         try:
-            logging.info("Attempting to write to the db...")
+            logging.debug("Attempting to write to the db...")
             cursor = conn.cursor()
             cursor.execute(
                 f"INSERT INTO UI_APPROVED_USERS (OE_USER_CODE) VALUES ('{user}')"
             )
             conn.commit()
-            logging.info("DB write successful!")
+            logging.debug("DB write successful!")
         except Exception as dbWriteError:
             logging.error(f"Failed to write to the DB! with write error {dbWriteError}")
         finally:
@@ -131,13 +134,13 @@ class OracleDB:
         """
         conn = self.connect_to_db()
         try:
-            logging.info("Attempting to delete users from DB table...")
+            logging.debug("Attempting to delete users from DB table...")
             cursor = conn.cursor()
             cursor.execute(
                 "DELETE FROM UI_APPROVED_USERS WHERE OE_USER_CODE is not null"
             )
             conn.commit()
-            logging.info("DB table values successfully deleted!")
+            logging.debug("DB table values successfully deleted!")
         except Exception as dbValuesDeleteError:
             logging.error(
                 f"Failed to delete values from the DB table! with data deletion error {dbValuesDeleteError}"
@@ -163,6 +166,13 @@ class OracleDB:
         df = pd.DataFrame()
 
         try:
+            if parameters:
+                params_str = pprint.pformat(parameters, indent=2)
+                logging.info(
+                    f"[ORACLE] Executing query: {query} with parameters:\n{params_str}"
+                )
+            else:
+                logging.info(f"[ORACLE] Executing query: {query}")
             df = (
                 pd.read_sql(query, engine)
                 if parameters == None
@@ -170,7 +180,7 @@ class OracleDB:
             )
         except Exception as executionError:
             logging.error(
-                f"Failed to execute query with execution error {executionError}"
+                f"[ORACLE] Failed to execute query with execution error {executionError}"
             )
         finally:
             if conn is not None:
@@ -198,17 +208,17 @@ class OracleDB:
         if conn is None:
             conn = self.connect_to_db()
         try:
-            logging.info(f"Executing stored procedure: {procedure}")
+            logging.info(f"[ORACLE] Executing stored procedure: {procedure}")
             cursor = conn.cursor()
             params = self._prepare_params(cursor, in_params, out_params)
             cursor.callproc(procedure, params)
             results = self._collect_outputs(params, out_params, in_params)
             conn.commit()
-            logging.info("stored procedure execution successful!")
+            logging.info("[ORACLE] Stored procedure execution successful")
             return results
         except Exception as executionError:
             raise RuntimeError(
-                f"Failed to execute stored procedure with execution error: {executionError}"
+                f"[ORACLE] Failed to execute stored procedure with execution error: {executionError}"
             )
         finally:
             if conn is not None:
@@ -282,11 +292,14 @@ class OracleDB:
         """
         conn = self.connect_to_db()
         try:
-            logging.info("Attempting to insert/update table")
+            logging.debug("Attempting to insert/update table")
+            logging.info(
+                f"[ORACLE] Executing query: {statement} with parameters:\n{pprint.pformat(params, indent=2)}"
+            )
             cursor = conn.cursor()
             cursor.execute(statement, params)
             conn.commit()
-            logging.info("DB table successfully updated!")
+            logging.debug("DB table successfully updated!")
         except Exception as dbUpdateInsertError:
             logging.error(
                 f"Failed to insert/update values from the DB table! with error {dbUpdateInsertError}"

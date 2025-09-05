@@ -10,6 +10,7 @@ from utils.batch_processing import batch_processing
 from utils.fit_kit import FitKitGeneration
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.user_tools import UserTools
+from utils.fit_kit import FitKitLogged
 
 
 @pytest.mark.vpn_required
@@ -26,26 +27,16 @@ def test_compartment_2(page: Page, smokescreen_properties: dict) -> None:
     """
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
-    BasePage(page).go_to_fit_test_kits_page()
-    FITTestKitsPage(page).go_to_log_devices_page()
-
     tk_type_id = smokescreen_properties["c2_fit_kit_tk_type_id"]
     hub_id = smokescreen_properties["c2_fit_kit_logging_test_org_id"]
     no_of_kits_to_retrieve = smokescreen_properties["c2_total_fit_kits_to_retieve"]
-    subjectdf = FitKitGeneration().create_fit_id_df(tk_type_id, hub_id, no_of_kits_to_retrieve)
+    subjectdf = FitKitGeneration().create_fit_id_df(
+        tk_type_id, hub_id, no_of_kits_to_retrieve
+    )
+    sample_date = datetime.now()
     for subject in range(int(smokescreen_properties["c2_normal_kits_to_log"])):
         fit_device_id = subjectdf["fit_device_id"].iloc[subject]
-        logging.info(f"Logging FIT Device ID: {fit_device_id}")
-        LogDevicesPage(page).fill_fit_device_id_field(fit_device_id)
-        sample_date = datetime.now()
-        logging.info("Setting sample date to today's date")
-        LogDevicesPage(page).fill_sample_date_field(sample_date)
-        LogDevicesPage(page).log_devices_title.get_by_text("Scan Device").wait_for()
-        try:
-            LogDevicesPage(page).verify_successfully_logged_device_text()
-            logging.info(f"{fit_device_id} Successfully logged")
-        except Exception as e:
-            pytest.fail(f"{fit_device_id} unsuccessfully logged: {str(e)}")
+        FitKitLogged().log_fit_kits(page, fit_device_id, sample_date)
 
     nhs_no = subjectdf["subject_nhs_number"].iloc[0]
     verify_subject_event_status_by_nhs_no(

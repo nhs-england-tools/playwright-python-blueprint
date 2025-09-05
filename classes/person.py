@@ -38,7 +38,7 @@ class Person:
         """
         Sets the surname of the person.
         """
-        logging.info("set surname")
+        logging.debug("set surname")
         self.surname = surname
 
     def get_forename(self) -> str:
@@ -51,7 +51,7 @@ class Person:
         """
         Sets the forename of the person.
         """
-        logging.info("set forename")
+        logging.debug("set forename")
         self.forename = forename
 
     def get_title(self) -> str:
@@ -64,7 +64,7 @@ class Person:
         """
         Sets the title of the person.
         """
-        logging.info("set title")
+        logging.debug("set title")
         self.title = title
 
     def get_other_forenames(self) -> str:
@@ -77,7 +77,7 @@ class Person:
         """
         Sets other forenames of the person.
         """
-        logging.info("set other_forenames")
+        logging.debug("set other_forenames")
         self.other_forenames = other_forenames
 
     def get_previous_surname(self) -> str:
@@ -90,7 +90,7 @@ class Person:
         """
         Sets the previous surname of the person.
         """
-        logging.info("set previous_surname")
+        logging.debug("set previous_surname")
         self.previous_surname = previous_surname
 
     def get_gender(self) -> Optional[GenderType]:
@@ -103,5 +103,5 @@ class Person:
         """
         Sets the gender of the person.
         """
-        logging.info("set gender")
+        logging.debug("set gender")
         self.gender = gender

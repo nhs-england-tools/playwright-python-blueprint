@@ -42,7 +42,9 @@ def batch_processing(
         get_subjects_from_pdf (bool): An optional input to change the method of retrieving subjects from the batch from the DB to the PDF file.
         save_csv_as_df (bool): An optional input to save the CSV from batches as a pandas DF
     """
-    logging.info(f"Processing {batch_type} - {batch_description} batch")
+    logging.info(
+        f"[BATCH PROCESSING] Processing {batch_type} - {batch_description} batch"
+    )
     BasePage(page).click_main_menu_link()
     BasePage(page).go_to_communications_production_page()
     CommunicationsProductionPage(page).go_to_active_batch_list_page()
@@ -65,20 +67,26 @@ def batch_processing(
             link = row.locator("a").first
             link_text = link.inner_text()  # Get the batch id dynamically
             logging.info(
-                f"Successfully found open '{batch_type} - {batch_description}' batch"
+                f"[ASSERTIONS COMPLETE] Successfully found an open '{batch_type} - {batch_description}' batch"
             )
             link.click()
             break
         elif (i + 1) == batch_description_cells.count():
-            pytest.fail(f"No open '{batch_type} - {batch_description}' batch found")
+            pytest.fail(
+                f"[ASSERTIONS FAILED] No open '{batch_type} - {batch_description}' batch found"
+            )
 
     if get_subjects_from_pdf:
-        logging.info(f"Getting NHS Numbers for batch {link_text} from the PDF File")
+        logging.info(
+            f"[UI METHOD] Getting NHS Numbers for batch {link_text} from the PDF File"
+        )
         nhs_no_df, csv_df = prepare_and_print_batch(
             page, link_text, get_subjects_from_pdf, save_csv_as_df
         )
     else:
-        logging.info(f"Getting NHS Numbers for batch {link_text} from the DB")
+        logging.info(
+            f"[DB METHOD] Getting NHS Numbers for batch {link_text} from the DB"
+        )
         nhs_no_df, csv_df = prepare_and_print_batch(
             page, link_text, get_subjects_from_pdf, save_csv_as_df
         )
@@ -91,7 +99,6 @@ def batch_processing(
 
     for subject in range(len(nhs_no_df)):
         nhs_no = nhs_no_df["subject_nhs_number"].iloc[subject]
-        logging.info(f"Verifying the event status for subject: {nhs_no}")
         verify_subject_event_status_by_nhs_no(page, nhs_no, latest_event_status)
 
     if run_timed_events:
@@ -134,7 +141,7 @@ def prepare_and_print_batch(
             ManageActiveBatchPage(page).retrieve_button.count()
         ):
             retrieve_button_count += 1
-            logging.info(f"Clicking retrieve button {retrieve_button_count}")
+            logging.debug(f"Clicking retrieve button {retrieve_button_count}")
             # Start waiting for the pdf download
             with page.expect_download() as download_info:
                 # Perform the action that initiates download. The line below is running in a FOR loop to click every retrieve button as in some cases more than 1 is present
@@ -156,7 +163,7 @@ def prepare_and_print_batch(
     # This loops through each Confirm printed button and clicks each one
     try:
         for confirm_printed_button in range(retrieve_button_count):
-            logging.info(
+            logging.debug(
                 f"Clicking confirm printed button {confirm_printed_button + 1}"
             )
             ManageActiveBatchPage(page).safe_accept_dialog(
@@ -168,9 +175,11 @@ def prepare_and_print_batch(
     try:
         ActiveBatchListPage(page).batch_successfully_archived_msg.wait_for()
 
-        logging.info(f"Batch {link_text} successfully archived")
+        logging.info(f"[BATCH PROCESSING] Batch {link_text} successfully archived")
     except Exception as e:
-        pytest.fail(f"Batch successfully archived message is not shown: {str(e)}")
+        pytest.fail(
+            f"[BATCH PROCESSING] Batch successfully archived message is not shown: {str(e)}"
+        )
     return nhs_no_df, csv_df
 
 
@@ -188,6 +197,10 @@ def check_batch_in_archived_batch_list(page: Page, link_text) -> None:
     ArchivedBatchListPage(page).enter_id_filter(link_text)
     try:
         ArchivedBatchListPage(page).verify_table_data(link_text)
-        logging.info(f"Batch {link_text} visible in archived batch list")
+        logging.info(
+            f"[UI ASSERTIONS] Batch {link_text} visible in archived batch list"
+        )
     except Exception as e:
-        logging.error(f"Batch {link_text} not visible in archived batch list: {str(e)}")
+        logging.error(
+            f"[UI ASSERTIONS] Batch {link_text} not visible in archived batch list: {str(e)}"
+        )

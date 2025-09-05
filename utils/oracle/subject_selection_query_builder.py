@@ -130,6 +130,7 @@ class SubjectSelectionQueryBuilder:
         user: "User",
         subject: "Subject",
         subjects_to_retrieve: Optional[int] = None,
+        enable_logging: bool = True,
     ) -> tuple[str, dict]:
         """
         This method builds a SQL query string based on the provided selection criteria.
@@ -167,7 +168,8 @@ class SubjectSelectionQueryBuilder:
                 + self.sql_where
             )
         )
-        logging.info("Final query: %s", query)
+        if enable_logging:
+            logging.info(f"[SUBJECT SELECTION QUERY BUILDER] Final query: {query}")
         return query, self.bind_vars
 
     def _build_select_clause(self) -> None:
@@ -918,7 +920,7 @@ class SubjectSelectionQueryBuilder:
                     self.criteria_key_name, self.criteria_value
                 )
             self._add_join_to_latest_episode()
-            self.sql_where += " AND ep.episode_status_reason_id "
+            self.sql_where.append(" AND ep.episode_status_reason_id ")
             if episode_status_reason == EpisodeStatusReasonType.NULL:
                 self.sql_where.append(self._SQL_IS_NULL)
             else:
@@ -2172,24 +2174,35 @@ class SubjectSelectionQueryBuilder:
         """
         Filters subjects based on the result of their latest episode.
         """
-        try:
-            self._add_join_to_latest_episode()
-            value = EpisodeResultType.from_description(self.criteria_value)
+        self._add_join_to_latest_episode()
 
-            if value == EpisodeResultType.NULL:
-                self.sql_where.append("AND ep.episode_result_id IS NULL")
-            elif value == EpisodeResultType.NOT_NULL:
-                self.sql_where.append("AND ep.episode_result_id IS NOT NULL")
-            elif value == EpisodeResultType.ANY_SURVEILLANCE_NON_PARTICIPATION:
+        self.sql_where.append(" AND ep.episode_result_id ")
+        try:
+            episode_result_type = EpisodeResultType.by_description_case_insensitive(
+                self.criteria_value
+            )
+            if episode_result_type is None:
+                raise SelectionBuilderException(
+                    self.criteria_key_name, self.criteria_value
+                )
+
+            if episode_result_type == EpisodeResultType.NULL:
+                self.sql_where.append(self._SQL_IS_NULL)
+            elif episode_result_type == EpisodeResultType.NOT_NULL:
+                self.sql_where.append(self._SQL_IS_NOT_NULL)
+            elif (
+                episode_result_type
+                == EpisodeResultType.ANY_SURVEILLANCE_NON_PARTICIPATION
+            ):
                 self.sql_where.append(
-                    "AND ep.episode_result_id IN ("
-                    "SELECT snp.valid_value_id FROM valid_values snp "
+                    " IN (SELECT snp.valid_value_id FROM valid_values snp "
                     "WHERE snp.domain = 'OTHER_EPISODE_RESULT' "
-                    "AND LOWER(snp.description) LIKE '%surveillance non-participation')"
+                    "AND LOWER(snp.description) LIKE '%surveillance non-participation') "
                 )
             else:
-                self.sql_where.append(f"AND ep.episode_result_id = {value}")
-
+                self.sql_where.append(
+                    f" {self.criteria_comparator} {episode_result_type.id} "
+                )
         except Exception:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
 
@@ -2738,12 +2751,9 @@ class SubjectSelectionQueryBuilder:
         try:
             hub_enum = SubjectHubCode.by_description(self.criteria_value.lower())
             if hub_enum in [SubjectHubCode.USER_HUB, SubjectHubCode.USER_ORGANISATION]:
-                if (
-                    user.organisation is None
-                    or user.organisation.organisation_id is None
-                ):
+                if user.organisation is None or user.organisation.id is None:
                     raise ValueError("User organisation or organisation_id is None")
-                hub_code = user.organisation.organisation_id
+                hub_code = user.organisation.id
             else:
                 raise SelectionBuilderException(
                     self.criteria_key_name, self.criteria_value
@@ -2752,13 +2762,14 @@ class SubjectSelectionQueryBuilder:
             # If not in the enum it must be an actual hub code
             hub_code = self.criteria_value
 
+        hub_code_str = str(hub_code).upper()
         self.sql_where.append(" AND c.hub_id ")
         self.sql_where.append(self.criteria_comparator)
         self.sql_where.append(" (")
         self.sql_where.append("   SELECT hub.org_id ")
         self.sql_where.append("   FROM org hub ")
         self.sql_where.append("   WHERE hub.org_code = ")
-        self.sql_where.append(self.single_quoted(hub_code.upper()))
+        self.sql_where.append(self.single_quoted(hub_code_str))
         self.sql_where.append(") ")
 
     def _add_criteria_subject_screening_centre_code(self, user: "User"):
@@ -2791,12 +2802,9 @@ class SubjectSelectionQueryBuilder:
                     | SubjectScreeningCentreCode.USER_SC
                     | SubjectScreeningCentreCode.USER_ORGANISATION
                 ):
-                    if (
-                        user.organisation is None
-                        or user.organisation.organisation_id is None
-                    ):
+                    if user.organisation is None or user.organisation.id is None:
                         raise ValueError("User organisation or organisation_id is None")
-                    sc_code = user.organisation.organisation_id
+                    sc_code = user.organisation.id
                 case _:
                     raise SelectionBuilderException(
                         self.criteria_key_name, self.criteria_value
@@ -2808,11 +2816,12 @@ class SubjectSelectionQueryBuilder:
             sc_code = self.criteria_value
 
         if sc_code is not None:
+            sc_code_str = str(sc_code).upper()
             self.sql_where.append(
                 f" AND c.responsible_sc_id {self.criteria_comparator} ("
                 "   SELECT sc.org_id "
                 "   FROM org sc "
-                f"   WHERE sc.org_code = {self.single_quoted(sc_code.upper())}"
+                f"   WHERE sc.org_code = {self.single_quoted(sc_code_str)}"
                 ") "
             )
 

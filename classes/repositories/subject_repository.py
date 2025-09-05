@@ -39,7 +39,7 @@ class SubjectRepository:
         Returns:
             int: The new contact id.
         """
-        logging.info(f"Creating PI subject: {pi_subject}")
+        logging.debug(f"Creating PI subject: {pi_subject}")
         nhs_number = pi_subject.nhs_number
         if nhs_number is None:
             raise ValueError("NHS Number must be specified when creating a new subject")
@@ -68,7 +68,9 @@ class SubjectRepository:
         Raises:
             SubjectRepositoryException: If the stored procedure returns an error.
         """
-        logging.info(f"Processing PI subject: pio_id={pio_id}, pi_subject={pi_subject}")
+        logging.debug(
+            f"Processing PI subject: pio_id={pio_id}, pi_subject={pi_subject}"
+        )
 
         procedure = "PKG_SSPI.p_process_pi_subject"
         conn = self.oracle_db.connect_to_db()
@@ -82,14 +84,17 @@ class SubjectRepository:
         out_params = [int, int, str]  # contact_id, error_id, error_text
 
         result = self.oracle_db.execute_stored_procedure(
-            procedure, in_params=in_params, out_params=out_params, conn=conn
+            procedure,
+            in_params=in_params,
+            out_params=out_params,
+            conn=conn,
         )
 
         new_contact_id = result.get(3)
         error_id = result.get(4)
         error_text = result.get(5)
 
-        logging.info(
+        logging.debug(
             f"Stored procedure outputs: new_contact_id={new_contact_id}, error_id={error_id}, error_text={error_text}"
         )
 
@@ -105,7 +110,7 @@ class SubjectRepository:
         Args:
             pi_subject (PISubject): The subject to update.
         """
-        logging.info(f"Updating PI subject: {pi_subject}")
+        logging.debug(f"Updating PI subject: {pi_subject}")
         nhs_number = pi_subject.nhs_number
         if nhs_number is None:
             raise ValueError("NHS Number must be specified when creating a new subject")

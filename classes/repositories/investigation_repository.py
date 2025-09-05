@@ -34,7 +34,7 @@ class InvitationRepository:
         Returns:
             List[Any]: [error, plans, weeks]
         """
-        logging.info(
+        logging.debug(
             f"start: get_plans(hub_id={hub_id}, screening_centre_id={screening_centre_id}, plan_id={plan_id})"
         )
         procedure = "PKG_FOBT_CALL.p_get_plans"
@@ -48,21 +48,21 @@ class InvitationRepository:
             raise RuntimeError("Stored procedure did not return any results.")
 
         # Map outputs
-        logging.info("map errorCursor")
+        logging.debug("map errorCursor")
         error_cursor = result[4]  # OUT param 4
         error = DatabaseError.from_cursor(error_cursor)
         if error.is_error():
             raise RuntimeError(f"Database error: {error.get_return_message()}")
 
-        logging.info("map plansCursor")
+        logging.debug("map plansCursor")
         plans_cursor = result[5]
         plans = InvitationPlan.from_cursor(plans_cursor)
 
-        logging.info("map weeksCursor")
+        logging.debug("map weeksCursor")
         week_cursor = result[6]
         weeks = InvitationPlanWeek.from_cursor(week_cursor)
 
-        logging.info("exit: get_plans()")
+        logging.debug("exit: get_plans()")
         return [error, plans, weeks]
 
     def get_active_plan(self, hub_id: int, screening_centre_id: int) -> Optional[dict]:
@@ -76,13 +76,13 @@ class InvitationRepository:
         Returns:
             Optional[dict]: The active invitation plan, or None if not found.
         """
-        logging.info(
+        logging.debug(
             f"start: get_active_plan(hub_id={hub_id}, screening_centre_id={screening_centre_id})"
         )
         result_list = self.get_plans(hub_id, screening_centre_id, None)
         all_plans = result_list[1]
         if not all_plans:
-            logging.info("exit: get_active_plan(None)")
+            logging.debug("exit: get_active_plan(None)")
             return None
         else:
             next(
@@ -99,7 +99,7 @@ class InvitationRepository:
         Runs the database procedure to refresh the invitations shortlist.
         Picks up any newly self-referred subjects ready for invite.
         """
-        logging.info("start: InvitationRepository.refresh_invitation_shortlist")
+        logging.debug("start: InvitationRepository.refresh_invitation_shortlist")
         procedure = "PKG_FOBT_CALL.p_find_next_subjects_to_invite"
         number_of_weeks = 4
         max_number_of_subjects = 2500
@@ -107,14 +107,14 @@ class InvitationRepository:
         screening_centre_id = None
         params = [number_of_weeks, max_number_of_subjects, hub_id, screening_centre_id]
         self.oracle_db.execute_stored_procedure(procedure, params)
-        logging.info("exit: InvitationRepository.refresh_invitation_shortlist")
+        logging.debug("exit: InvitationRepository.refresh_invitation_shortlist")
 
     def process_next_invitations(self) -> None:
         """
         Runs the database procedure to process the next invitations run waiting to be processed.
         """
-        logging.info("start: InvitationRepository.process_next_invitations")
+        logging.debug("start: InvitationRepository.process_next_invitations")
         procedure = "PKG_FOBT_CALL.p_generate_invitations_next_sc"
         in_params = [None, None, None]
         self.oracle_db.execute_stored_procedure(procedure, in_params)
-        logging.info("exit: InvitationRepository.process_next_invitations")
+        logging.debug("exit: InvitationRepository.process_next_invitations")

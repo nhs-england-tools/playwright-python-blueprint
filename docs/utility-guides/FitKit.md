@@ -39,7 +39,8 @@ from utils.fit_kit import FitKitGeneration
 
 ### Required Arguments
 
-- `create_fit_id_df`: Requires `tk_type_id` (int), `hub_id` (int), and `no_of_kits_to_retrieve` (int).
+- `create_fit_id_df`: Requires `tk_type_id` (`int`), `hub_id` (`int`), and `no_of_kits_to_retrieve` (`int`).
+- `get_fit_kit_for_subject`: Requireds `nhs_no` (`str`), `logged` (`bool`), `read` (`bool`).
 
 ### Key Methods
 
@@ -52,6 +53,14 @@ from utils.fit_kit import FitKitGeneration
 
 3. **`convert_kit_id_to_fit_device_id(kit_id: str) -> str`**
    - Converts a kit ID into a FIT Device ID by appending an expiry date and a fixed suffix.
+
+4. **`get_fit_kit_for_subject_sql(self, nhs_no: str, logged: bool, read: bool) -> str:`**
+   - Retrieves the FIT kit information for a specific subject based on their NHS number.
+   - **Arguments:**
+     - **nhs_no (`str`):** The subject's NHS number
+     - **logged (`bool`):** Whether to look for logged kits.
+     - **read (`bool`):** Whether to look for read kits.
+   - **Returns:** A string containing the fit device id of the subject matching the provided criteria.
 
 > **Tip:**
 > To obtain a pandas DataFrame containing a list of FIT Kits to use, you only need to call the `create_fit_id_df` method. This method internally calls the other two methods to generate the correct check digits and expiration tags.
@@ -92,6 +101,7 @@ from utils.fit_kit import FitKitLogged
 
 - `process_kit_data`: Requires `smokescreen_properties` (dict)
 - `split_fit_kits`: Requires `kit_id_df` (pd.DataFrame), `smokescreen_properties` (dict)
+- `read_latest_logged_kit`: Requires `user` (UserRoleType), `kit_type` (int), `kit` (str), `kit_result` (str)
 
 ### Key Methods
 
@@ -102,6 +112,9 @@ from utils.fit_kit import FitKitLogged
 2. **`split_fit_kits(kit_id_df: pd.DataFrame, smokescreen_properties: dict) -> tuple[pd.DataFrame, pd.DataFrame]`**
    - Splits the DataFrame into two: one for normal kits and one for abnormal kits, based on the numbers specified in `smokescreen_properties`.
    - **Returns:** A tuple containing two DataFrames: `(normal_fit_kit_df, abnormal_fit_kit_df)`.
+
+3. **`read_latest_logged_kit(user: UserRoleType, kit_type: int, kit: str, kit_result: str) -> None`**
+   - Reads the subject's latest logged FIT kit and updates its status/result.
 
 > **How it works:**
 >

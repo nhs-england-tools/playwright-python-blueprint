@@ -55,7 +55,7 @@ class NHSNumberTools:
         Returns:
             str: The generated NHS number
         """
-        logging.info("generateRandomNHSNumber: start")
+        logging.debug("generateRandomNHSNumber: start")
         nhs_number_base = 900000000
         nhs_number_range = 100000000
         while True:
@@ -65,7 +65,7 @@ class NHSNumberTools:
             if NHSNumberTools.is_valid_nhs_number(nhs_number):
                 break
         nhs_number += str(NHSNumberTools.calculate_nhs_number_checksum(nhs_number))
-        logging.info("generateRandomNHSNumber: end")
+        logging.debug("generateRandomNHSNumber: end")
         return nhs_number
 
     @staticmethod

@@ -107,7 +107,7 @@ class DataCreation:
         Returns:
             PISubject: A randomly generated PI Subject.
         """
-        logging.info(
+        logging.debug(
             f"generateRandomSubject: {random_words_list}, {pi_reference}, {region}"
         )
         pi_subject = PISubject()
@@ -138,7 +138,7 @@ class DataCreation:
         pi_subject.gnc_code = self.generate_random_registration_code()
         gp_surgery = self.generate_random_gp_surgery(region)
         if gp_surgery is not None:
-            pi_subject.gp_practice_code = gp_surgery.get_code()
+            pi_subject.gp_practice_code = gp_surgery.code
         pi_subject.nhais_deduction_reason = None
         pi_subject.nhais_deduction_date = None
         pi_subject.exeter_system = "ATO"
@@ -146,7 +146,7 @@ class DataCreation:
         pi_subject.pi_reference = pi_reference
         pi_subject.superseded_by_nhs_number = None
         pi_subject.replaced_nhs_number = None
-        logging.info("generateRandomSubject: end")
+        logging.debug("generateRandomSubject: end")
         return pi_subject
 
     def generate_random_registration_code(self) -> str:
@@ -155,9 +155,9 @@ class DataCreation:
         Returns:
             str: The generated registration code
         """
-        logging.info("generateRandomRegistrationCode: start")
+        logging.debug("generateRandomRegistrationCode: start")
         code = random.choice(self.registration_code_list)
-        logging.info("generateRandomRegistrationCode: end")
+        logging.debug("generateRandomRegistrationCode: end")
         return code
 
     def generate_random_gp_surgery(self, region: RegionType) -> Organisation | None:
@@ -168,7 +168,7 @@ class DataCreation:
         Returns:
             Organisation: The generated gp surgery or None if the region type cannot be found
         """
-        logging.info(f"generateRandomGPSurgery: {region}")
+        logging.debug(f"generateRandomGPSurgery: {region}")
         if region == RegionType.ENGLAND:
             return random.choice(self.org_list_england)
         elif region == RegionType.ISLE_OF_MAN:
@@ -184,7 +184,7 @@ class DataCreation:
         Returns:
             Address: The generated address
         """
-        logging.info(f"generateRandomAddress: {random_words_list}")
+        logging.debug(f"generateRandomAddress: {random_words_list}")
         address = Address()
         house_number = self.rand.randint(0, 100)
         road_prefix = random_words_list.get("roadPrefix", "")
@@ -204,7 +204,7 @@ class DataCreation:
             address.set_address_line(line_number, random_words_list.get("county", ""))
 
         address.set_post_code(self.generate_random_postcode())
-        logging.info("generateRandomAddress: end")
+        logging.debug("generateRandomAddress: end")
         return address
 
     def generate_random_person(
@@ -218,7 +218,7 @@ class DataCreation:
         Returns:
             Person: The generated person
         """
-        logging.info("generateRandomPerson: start")
+        logging.debug("generateRandomPerson: start")
         if gender not in [GenderType.MALE, GenderType.FEMALE]:
             gender = (
                 GenderType.MALE if self.rand.randint(0, 100) < 50 else GenderType.FEMALE
@@ -235,7 +235,7 @@ class DataCreation:
         if self.rand.randint(0, 100) < 5:
             person.set_previous_surname(random_words_list.get("surname2", ""))
 
-        logging.info("generateRandomPerson: end")
+        logging.debug("generateRandomPerson: end")
         return person
 
     def generate_random_postcode(self) -> str:
@@ -244,7 +244,7 @@ class DataCreation:
         Returns:
             str: The generated postcode
         """
-        logging.info("generateRandomPostcode: start")
+        logging.debug("generateRandomPostcode: start")
         unused_first_characters = ["V", "Q", "X"]
         inward_letters = [
             "A",
@@ -276,7 +276,7 @@ class DataCreation:
         random_inward_letter1 = random.choice(inward_letters)
         random_inward_letter2 = random.choice(inward_letters)
         postcode = f"{random_outward_letters}{random_outward_digits} {random_inward_digit}{random_inward_letter1}{random_inward_letter2}"
-        logging.info("generateRandomPostcode: end")
+        logging.debug("generateRandomPostcode: end")
         return postcode
 
     def generate_random_title(self, gender: GenderType) -> str:
@@ -287,7 +287,7 @@ class DataCreation:
         Returns:
             str: The generated title
         """
-        logging.info("generateRandomTitle: start")
+        logging.debug("generateRandomTitle: start")
         weighting = self.rand.randint(0, 9)
         if gender == GenderType.FEMALE:
             if weighting > 7:
