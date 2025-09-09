@@ -190,9 +190,7 @@ class CreateSubjectSteps:
         else:
             raise ValueError("The incomplete NHS number provided is not 9 digits.")
 
-    def create_custom_subject(
-        self, subject_requirements: dict, user_role: UserRoleType
-    ) -> Optional[str]:
+    def create_custom_subject(self, subject_requirements: dict) -> Optional[str]:
         """
         Creates a custom PI subject based on the provided requirements.
 
@@ -249,9 +247,7 @@ class CreateSubjectSteps:
             else:
                 raise ValueError(f"The criteria provided ({key}) is not valid")
 
-        user_repository = UserRepository()
-        pio_id = user_repository.get_pio_id_for_role(user_role)
-        subject_repo.create_pi_subject(pio_id, subject)
+        subject_repo.create_pi_subject(2, subject)
         logging.debug(f"subject added = {subject.to_string()}")
         return subject.nhs_number
 

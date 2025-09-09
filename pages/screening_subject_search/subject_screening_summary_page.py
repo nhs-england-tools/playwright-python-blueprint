@@ -83,6 +83,9 @@ class SubjectScreeningSummaryPage(BasePage):
         self.latest_event_status_cell = self.page.locator(
             "td.epihdr_label:text('Latest Event Status') + td.epihdr_data"
         )
+        self.reopen_fobt_screening_episode_button = self.page.get_by_role(
+            "button", name="Reopen FOBT Screening Episode"
+        )
 
     def wait_for_page_title(self) -> None:
         """Waits for the page to be the Subject Screening Summary"""
@@ -392,6 +395,10 @@ class SubjectScreeningSummaryPage(BasePage):
         assert (
             actual_status == expected_status
         ), f"[LATEST EVENT STATUS MISMATCH] Expected '{expected_status}', but found '{actual_status}' in UI."
+
+    def click_reopen_fobt_screening_episode_button(self) -> None:
+        """Click on the 'Reopen FOBT Screening Episode' button"""
+        self.click(self.reopen_fobt_screening_episode_button)
 
 
 class ChangeScreeningStatusOptions(Enum):

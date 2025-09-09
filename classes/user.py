@@ -1,6 +1,6 @@
 from typing import Optional
 from classes.organisation_complex import Organisation
-import pandas as pd
+from classes.user_role_type import UserRoleType
 
 
 class User:
@@ -157,5 +157,32 @@ class User:
             user_id=row["pio_id"],
             role_id=row["role_id"],
             pio_id=row["pio_id"],
+            organisation=organisation,
+        )
+
+    @staticmethod
+    def from_user_role_type(user_role_type: "UserRoleType") -> "User":
+        """
+        Creates a User object from a UserRoleType object using UserRepository methods.
+
+        Args:
+            user_role_type (UserRoleType): The UserRoleType object.
+
+        Returns:
+            User: The constructed User object.
+        """
+        from classes.repositories.user_repository import UserRepository
+
+        user_repo = UserRepository()
+        pio_id = user_repo.get_pio_id_for_role(user_role_type)
+        role_id = user_repo.get_role_id_for_role(user_role_type)
+        org_id = user_repo.get_org_id_for_role(user_role_type)
+        org_code = user_repo.get_org_code_for_role(user_role_type)
+
+        organisation = Organisation(new_id=org_id, new_code=str(org_code))
+        return User(
+            user_id=pio_id,
+            role_id=role_id,
+            pio_id=pio_id,
             organisation=organisation,
         )

@@ -103,7 +103,7 @@ class SubjectRepository:
 
         return new_contact_id
 
-    def update_pi_subject(self, pi_subject: PISubject) -> None:
+    def update_pi_subject(self, pio_id: int, pi_subject: PISubject) -> None:
         """
         Updates an existing screening subject.
 
@@ -122,9 +122,7 @@ class SubjectRepository:
             raise ValueError(
                 "A PI Reference must be specified when updating an existing subject, for example 'SELF REFERRAL' or 'AUTOMATED TEST'"
             )
-        procedure = "PKG_SSPI.p_process_pi_subject"
-        params = [pi_subject, None, None, None, None]
-        self.oracle_db.execute_stored_procedure(procedure, params)
+        self.process_pi_subject(pio_id, pi_subject)
 
     def get_active_gp_practice_in_hub_and_sc(
         self, hub_code: str, screening_centre_code: str

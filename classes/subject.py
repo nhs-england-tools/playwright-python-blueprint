@@ -10,8 +10,11 @@ from classes.screening_status_type import ScreeningStatusType
 from classes.sdd_reason_for_change_type import SDDReasonForChangeType
 from classes.ss_reason_for_change_type import SSReasonForChangeType
 from classes.ssdd_reason_for_change_type import SSDDReasonForChangeType
+from classes.user import User
 from utils.date_time_utils import DateTimeUtils
+from utils.oracle.oracle import OracleDB
 import pandas as pd
+import logging
 
 
 @dataclass
@@ -1302,3 +1305,34 @@ class Subject:
         }
 
         return Subject(**field_map)
+
+    def populate_subject_object_from_nhs_no(self, nhs_no: str) -> "Subject":
+        """
+        Populates a Subject object from the NHS number.
+        Args:
+            nhs_no (str): The NHS number to populate the subject from.
+        Returns:
+            Subject: A populated Subject object from the database
+        """
+        from utils.oracle.subject_selection_query_builder import (
+            SubjectSelectionQueryBuilder,
+        )
+
+        nhs_no_criteria = {"nhs number": nhs_no}
+        subject = Subject()
+        user = User()
+        builder = SubjectSelectionQueryBuilder()
+
+        query, bind_vars = builder.build_subject_selection_query(
+            criteria=nhs_no_criteria,
+            user=user,
+            subject=subject,
+            subjects_to_retrieve=1,
+        )
+
+        logging.debug(
+            "[SUBJECT ASSERTIONS] Executing base query to populate subject object"
+        )
+
+        subject_df = OracleDB().execute_query(query, bind_vars)
+        return self.from_dataframe_row(subject_df.iloc[0])

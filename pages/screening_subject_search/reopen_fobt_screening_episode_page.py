@@ -1,0 +1,18 @@
+from playwright.sync_api import Page
+from pages.base_page import BasePage
+
+
+class ReopenFOBTScreeningEpisodePage(BasePage):
+    """Reopen FOBT Screening Episode Page locators, and methods for interacting with the page."""
+
+    def __init__(self, page: Page):
+        super().__init__(page)
+        self.page = page
+
+        self.reopen_to_book_an_assessment_button = self.page.get_by_role(
+            "button", name="Reopen to book an assessment"
+        )
+
+    def click_reopen_to_book_an_assessment_button(self) -> None:
+        """Click the 'Reopen to book an assessment' button."""
+        self.safe_accept_dialog(self.reopen_to_book_an_assessment_button)

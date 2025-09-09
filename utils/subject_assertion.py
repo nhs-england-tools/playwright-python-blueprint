@@ -2,10 +2,14 @@ from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBu
 from utils.oracle.oracle import OracleDB
 from classes.subject import Subject
 from classes.user import User
+from classes.user_role_type import UserRoleType
+from typing import Optional
 import logging
 
 
-def subject_assertion(nhs_number: str, criteria: dict) -> None:
+def subject_assertion(
+    nhs_number: str, criteria: dict, user_role: Optional[UserRoleType] = None
+) -> None:
     """
     Asserts that a subject with the given NHS number exists in the database and matches the provided criteria.
     Args:
@@ -15,24 +19,16 @@ def subject_assertion(nhs_number: str, criteria: dict) -> None:
     logging.info("[DB ASSERTIONS] Starting subject_assertion method")
     nhs_number_string = "nhs number"
     subject_nhs_number_string = "subject_nhs_number"
-    nhs_no_criteria = {nhs_number_string: nhs_number}
-    subject = Subject()
-    user = User()
+    if user_role:
+        user = User.from_user_role_type(user_role)
+    else:
+        user = User()
     builder = SubjectSelectionQueryBuilder()
-
-    query, bind_vars = builder.build_subject_selection_query(
-        criteria=nhs_no_criteria,
-        user=user,
-        subject=subject,
-        subjects_to_retrieve=1,
-    )
 
     logging.debug(
         "[SUBJECT ASSERTIONS] Executing base query to populate subject object"
     )
-
-    subject_df = OracleDB().execute_query(query, bind_vars)
-    subject = Subject.from_dataframe_row(subject_df.iloc[0])
+    subject = Subject().populate_subject_object_from_nhs_no(nhs_number)
 
     criteria[nhs_number_string] = nhs_number
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 from datetime import date
+from classes.subject import Subject
 
 
 @dataclass
@@ -69,3 +70,48 @@ class PISubject:
             f"replaced_by_nhs_number  =    {self.replaced_nhs_number}",
         ]
         return "PISubject:\n" + "\n".join(fields)
+
+    @staticmethod
+    def from_subject(subject: "Subject") -> "PISubject":
+        """
+        Creates a PISubject object from a Subject object.
+
+        Args:
+            subject (Subject): The Subject object to convert.
+
+        Returns:
+            PISubject: The populated PISubject object.
+
+        """
+        gender = subject.get_gender()
+        if gender is not None:
+            gender_code = gender.redefined_value
+        else:
+            gender_code = 0  # If None, set to "Not known gender"
+        return PISubject(
+            screening_subject_id=subject.screening_subject_id,
+            nhs_number=subject.nhs_number,
+            family_name=subject.surname,
+            first_given_names=subject.forename,
+            other_given_names=subject.other_names,
+            previous_family_name=subject.previous_surname,
+            name_prefix=subject.title,
+            birth_date=subject.date_of_birth,
+            death_date=subject.date_of_death,
+            gender_code=gender_code,
+            address_line_1=subject.address_line1,
+            address_line_2=subject.address_line2,
+            address_line_3=subject.address_line3,
+            address_line_4=subject.address_line4,
+            address_line_5=subject.address_line5,
+            postcode=subject.postcode,
+            gnc_code=subject.registration_code,
+            gp_practice_code=subject.gp_practice_code,
+            nhais_deduction_reason=subject.nhais_deduction_reason,
+            nhais_deduction_date=subject.nhais_deduction_date,
+            exeter_system=subject.datasource,
+            removed_to=subject.removed_to_datasource,
+            pi_reference=None,
+            superseded_by_nhs_number=None,
+            replaced_nhs_number=None,
+        )

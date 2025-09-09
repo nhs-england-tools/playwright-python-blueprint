@@ -52,12 +52,12 @@ def test_scenario_1(page: Page) -> None:
         "age (y/d)": "65/25",
         "active gp practice in hub/sc": "BCS01/BCS001",
     }
-    nhs_no = CreateSubjectSteps().create_custom_subject(requirements, user_role)
+    nhs_no = CreateSubjectSteps().create_custom_subject(requirements)
     if nhs_no is None:
         raise ValueError("NHS No is 'None'")
 
     # Then Comment: NHS number
-    logging.info(f"Created subject's NHS number: {nhs_no}")
+    logging.info(f"[SUBJECT CREATION] Created subject's NHS number: {nhs_no}")
 
     # Then my subject has been updated as follows:
     criteria = {
