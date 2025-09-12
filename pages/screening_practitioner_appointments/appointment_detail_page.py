@@ -15,7 +15,7 @@ class AppointmentDetailPage(BasePage):
         self.calendar_button = self.page.get_by_role("button", name="Calendar")
         self.save_button = self.page.get_by_role("button", name="Save")
         self.cancel_radio = self.page.get_by_role("radio", name="Cancel")
-        self.reason_for_cancellation_dropwdown = self.page.get_by_label(
+        self.reason_for_cancellation_dropdown = self.page.get_by_label(
             "Reason for Cancellation"
         )
 
@@ -84,7 +84,7 @@ class AppointmentDetailPage(BasePage):
             option: The reason for cancellation to select.
             The options are in the ReasonForCancellationOptions class
         """
-        self.reason_for_cancellation_dropwdown.select_option(value=option)
+        self.reason_for_cancellation_dropdown.select_option(value=option)
 
 
 class ReasonForCancellationOptions(StrEnum):

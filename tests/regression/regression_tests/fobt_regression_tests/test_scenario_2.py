@@ -2,7 +2,6 @@ import pytest
 import logging
 from datetime import datetime
 from playwright.sync_api import Page
-from pages.communication_production.batch_list_page import ActiveBatchListPage
 from utils.oracle.subject_creation_util import CreateSubjectSteps
 from utils.user_tools import UserTools
 from utils.subject_assertion import subject_assertion
@@ -13,7 +12,6 @@ from utils.fit_kit import FitKitLogged, FitKitGeneration
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.communication_production.batch_list_page import BatchListPage
 from pages.logout.log_out_page import LogoutPage
 
 
@@ -79,7 +77,6 @@ def test_scenario_2(page: Page) -> None:
     # Assert subject details in the UI
     summary_page.assert_subject_age(66)
     summary_page.assert_screening_status("Inactive")
-    logging.info("[UI ASSERTIONS COMPLETE] Updated subject details checked in the UI")
 
     # When I run the FOBT failsafe trawl for my subject
     CallAndRecallUtils().run_failsafe(nhs_no)
@@ -103,7 +100,6 @@ def test_scenario_2(page: Page) -> None:
 
     # Assert subject details in the UI
     summary_page.assert_screening_status("Call")
-    logging.info("[UI ASSERTIONS COMPLETE] Updated subject details checked in the UI")
 
     # When I invite my subject for FOBT screening
     CallAndRecallUtils().invite_subject_for_fobt_screening(nhs_no, user_role)
@@ -170,7 +166,6 @@ def test_scenario_2(page: Page) -> None:
     summary_page.assert_latest_event_status(
         "S43 - Kit Returned and Logged (Initial Test)"
     )
-    logging.info("[UI ASSERTIONS COMPLETE] Updated subject details checked in the UI")
 
     # When I read my subject's latest logged FIT kit as "NORMAL"
     FitKitLogged().read_latest_logged_kit(user_role, 2, fit_kit, "NORMAL")
@@ -188,7 +183,6 @@ def test_scenario_2(page: Page) -> None:
 
     # Assert subject details in the UI
     summary_page.assert_latest_event_status("S2 - Normal")
-    logging.info("[UI ASSERTIONS COMPLETE] Updated subject details checked in the UI")
 
     # And there is a "S2" letter batch for my subject with the exact title "Subject Result (Normal)"
     # When I process the open "S2" letter batch for my subject

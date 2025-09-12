@@ -44,7 +44,7 @@ class SubjectScreeningSummaryPage(BasePage):
         self.update_subject_data = self.page.get_by_role(
             "button", name="Update Subject Data"
         )
-        self.close_fobt_screening_episode = self.page.get_by_role(
+        self.close_fobt_screening_episode_button = self.page.get_by_role(
             "button", name="Close FOBT Screening Episode"
         )
         self.a_page_to_advance_the_episode = self.page.get_by_text(
@@ -85,6 +85,9 @@ class SubjectScreeningSummaryPage(BasePage):
         )
         self.reopen_fobt_screening_episode_button = self.page.get_by_role(
             "button", name="Reopen FOBT Screening Episode"
+        )
+        self.reopen_for_correction_button = self.page.get_by_role(
+            "button", name="Reopen episode for correction"
         )
 
     def wait_for_page_title(self) -> None:
@@ -189,7 +192,7 @@ class SubjectScreeningSummaryPage(BasePage):
 
     def click_close_fobt_screening_episode(self) -> None:
         """Click on the 'Close FOBT Screening Episode' button."""
-        self.click(self.close_fobt_screening_episode)
+        self.click(self.close_fobt_screening_episode_button)
 
     def go_to_a_page_to_advance_the_episode(self) -> None:
         """Click on the link to go to a page to advance the episode."""
@@ -365,6 +368,7 @@ class SubjectScreeningSummaryPage(BasePage):
         assert (
             actual_age == expected_age
         ), f"[AGE MISMATCH] Expected age {expected_age}, but found {actual_age} in UI."
+        logging.info("[UI ASSERTIONS COMPLETE] Subject age checked in the UI")
 
     def assert_screening_status(self, expected_status: str) -> None:
         """
@@ -380,6 +384,9 @@ class SubjectScreeningSummaryPage(BasePage):
         assert (
             actual_status.lower() == expected_status.lower()
         ), f"[SCREENING STATUS MISMATCH] Expected '{expected_status}', but found '{actual_status}' in UI."
+        logging.info(
+            "[UI ASSERTIONS COMPLETE] Subject screening status checked in the UI"
+        )
 
     def assert_latest_event_status(self, expected_status: str) -> None:
         """
@@ -395,10 +402,25 @@ class SubjectScreeningSummaryPage(BasePage):
         assert (
             actual_status == expected_status
         ), f"[LATEST EVENT STATUS MISMATCH] Expected '{expected_status}', but found '{actual_status}' in UI."
+        logging.info(
+            "[UI ASSERTIONS COMPLETE] Subject latest event status checked in the UI"
+        )
 
     def click_reopen_fobt_screening_episode_button(self) -> None:
         """Click on the 'Reopen FOBT Screening Episode' button"""
         self.click(self.reopen_fobt_screening_episode_button)
+
+    def reopen_fobt_screening_episode(self) -> None:
+        """
+        Reopen a previously closed FOBT screening episode, including confirmation modal.
+        - Clicks the 'Reopen FOBT Screening Episode' button
+        - Then safely accepts the dialog triggered by 'Reopen episode for correction'
+        """
+        # Step 1: Click the initial 'Reopen FOBT Screening Episode' button
+        self.click_reopen_fobt_screening_episode_button()
+
+        # Step 2: Safely accept the confirmation dialog triggered by the correction button
+        self.safe_accept_dialog(self.reopen_for_correction_button)
 
 
 class ChangeScreeningStatusOptions(Enum):

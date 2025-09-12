@@ -10,8 +10,10 @@ class RecordDiagnosisDatePage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
+
         # Record Diagnosis Date - page locators
         self.diagnosis_date_field = self.page.locator("#diagnosisDate")
+        self.reason_dropdown = self.page.locator("#reason")
         self.save_button = self.page.get_by_role("button", name="Save")
 
     def enter_date_in_diagnosis_date_field(self, date: datetime) -> None:
@@ -41,3 +43,22 @@ class RecordDiagnosisDatePage(BasePage):
             return self.alert_message.inner_text()
         else:
             return ""
+
+    def record_diagnosis_reason(self, reason_text: str) -> None:
+        """
+        Selects a diagnosis reason from the dropdown and saves the form.
+
+        Args:
+            reason_text (str): The visible text of the reason to select.
+                Valid options include:
+                - "Patient declined all appointments"
+                - "2 DNAs of colonoscopy assessment appt"
+                - "Patient emigrated"
+                - "Patient deceased"
+                - "Patient choice"
+                - "Patient could not be contacted"
+                - "Reopened old episode, date unknown"
+                - "Other"
+        """
+        self.reason_dropdown.select_option(label=reason_text)
+        self.safe_accept_dialog(self.save_button)
