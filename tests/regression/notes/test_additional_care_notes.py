@@ -186,7 +186,6 @@ def test_add_additional_care_note_for_subject_with_existing_note(
         f"Title and note matched the provided values. Title: '{note_title}', Note: '{note_text}'."
     )
 
-
 @pytest.mark.regression
 @pytest.mark.note_tests
 def test_identify_subject_with_additional_care_note(

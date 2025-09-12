@@ -7,7 +7,6 @@ class OrganisationsPage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
-        self.page = page
 
         # Organisations page links
         self.screening_centre_parameters_page = self.page.get_by_role(
@@ -81,7 +80,7 @@ class OrganisationSwitchPage:
         """
         Retrieves the list of available organisation IDs from the radio button on the page.
 
-        Returns:
+        Args:
             List[str]: A list of organisation ID strings.
         """
         org_ids = []
