@@ -13,14 +13,14 @@ The `JiraConfluenceUtil` utility provides methods for interacting with Jira and 
     - [Required Environment Variables](#required-environment-variables)
     - [Initialise the class](#initialise-the-class)
   - [Public Methods](#public-methods)
-    - [get\_issue\_data](#get_issue_data)
-    - [get\_issue\_summary\_in\_issue\_data](#get_issue_summary_in_issue_data)
-    - [check\_attachment\_exists\_in\_issue\_data](#check_attachment_exists_in_issue_data)
-    - [is\_valid\_jira\_reference](#is_valid_jira_reference)
-    - [determine\_jira\_reference\_local](#determine_jira_reference_local)
-    - [get\_environment\_metadata\_if\_available](#get_environment_metadata_if_available)
-    - [is\_file\_is\_less\_than\_jira\_file\_limit](#is_file_is_less_than_jira_file_limit)
-    - [upload\_test\_results\_dir\_to\_jira](#upload_test_results_dir_to_jira)
+    - [`get_issue_data`](#get_issue_data)
+    - [`get_issue_summary_in_issue_data`](#get_issue_summary_in_issue_data)
+    - [`check_attachment_exists_in_issue_data`](#check_attachment_exists_in_issue_data)
+    - [`is_valid_jira_reference`](#is_valid_jira_reference)
+    - [`determine_jira_reference_local`](#determine_jira_reference_local)
+    - [`get_environment_metadata_if_available`](#get_environment_metadata_if_available)
+    - [`is_file_is_less_than_jira_file_limit`](#is_file_is_less_than_jira_file_limit)
+    - [`upload_test_results_dir_to_jira`](#upload_test_results_dir_to_jira)
   - [Example Usage](#example-usage)
 
 ## Using the JiraConfluenceUtil class
@@ -60,7 +60,7 @@ util = JiraConfluenceUtil(results_dir="path/to/results")
 
 ## Public Methods
 
-### get_issue_data
+### `get_issue_data`
 
 ```python
 get_issue_data(ticket_id: str) -> dict | None
@@ -70,7 +70,7 @@ Checks if a Jira issue exists and returns its data as a dictionary, or `None` if
 
 ---
 
-### get_issue_summary_in_issue_data
+### `get_issue_summary_in_issue_data`
 
 ```python
 get_issue_summary_in_issue_data(issue_data: dict) -> str | None
@@ -80,7 +80,7 @@ Returns a summary string for the given Jira issue data in the format "[Ticket]: 
 
 ---
 
-### check_attachment_exists_in_issue_data
+### `check_attachment_exists_in_issue_data`
 
 ```python
 check_attachment_exists_in_issue_data(issue_data: dict, filename: str) -> bool
@@ -90,7 +90,7 @@ Checks if a Jira issue already has an attachment with the specified filename.
 
 ---
 
-### is_valid_jira_reference
+### `is_valid_jira_reference`
 
 ```python
 is_valid_jira_reference(ticket_id: str) -> bool
@@ -100,7 +100,7 @@ Validates that the Jira ticket reference is in the expected format (e.g., `SCM-1
 
 ---
 
-### determine_jira_reference_local
+### `determine_jira_reference_local`
 
 ```python
 determine_jira_reference_local() -> str
@@ -118,7 +118,7 @@ This is currently configured to search for the format `feature/[Jira Reference]`
 
 ---
 
-### get_environment_metadata_if_available
+### `get_environment_metadata_if_available`
 
 ```python
 get_environment_metadata_if_available() -> str
@@ -133,7 +133,7 @@ designed to be overwritten.
 
 ---
 
-### is_file_is_less_than_jira_file_limit
+### `is_file_is_less_than_jira_file_limit`
 
 ```python
 is_file_is_less_than_jira_file_limit(file_path: Path) -> bool
@@ -143,7 +143,7 @@ Checks if the file size is below the Jira upload limit (10MB).
 
 ---
 
-### upload_test_results_dir_to_jira
+### `upload_test_results_dir_to_jira`
 
 ```python
 upload_test_results_dir_to_jira(
