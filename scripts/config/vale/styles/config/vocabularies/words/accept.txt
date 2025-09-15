@@ -6,6 +6,7 @@ Dependabot
 Gitleaks
 Grype
 idempotence
+Jira
 OAuth
 Octokit
 onboarding
@@ -16,3 +17,4 @@ Syft
 Terraform
 toolchain
 Trufflehog
+url

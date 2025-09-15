@@ -6,7 +6,7 @@ import pytest_playwright_axe
 
 
 logger = logging.getLogger(__name__)
-PATH_FOR_REPORT = Path(os.getcwd()) / "axe-reports"
+PATH_FOR_REPORT = str(Path(os.getcwd()) / "axe-reports")
 
 
 class Axe():
