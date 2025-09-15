@@ -167,7 +167,7 @@ set for Jira.
 
 Each of the following arguments relate to the following actions:
 
-- `overwrite_files` = If the file already exists on Jira, it will overwrite the file and use the same name if True. If false, it'll generate a unique filename based on the datetime of the upload.
+- `overwrite_files` = If the file already exists on Jira, it will overwrite the file and use the same name if True. If false, it'll generate a unique filename based on the date/time of the upload.
 - `include_html` = Will check for any `.html` files in the root of the `results_dir` provided and include them if under 10MB if True.
 - `include_trace_files` = Will check for any `.zip` files in subdirectories of the `results_dir` provided and include them if under 10MB if True, renaming the file to include the subdirectory name.
 - `include_screenshots` = Will check for any `.png` files in the rood directory `results_dir` provided and the `screenshot/` subdirectory and include them if under 10MB if True.
