@@ -8,11 +8,26 @@ should be added to the REQUIRED_KEYS list below to automatically populate the lo
 keys required to run this project.
 """
 
-import os
 from pathlib import Path
 
-REQUIRED_KEYS = ["BCSS_PASS", "ORACLE_USERNAME", "ORACLE_DB", "ORACLE_PASS"]
-DEFAULT_LOCAL_ENV_PATH = Path(os.getcwd()) / "local.env"
+REQUIRED_KEYS = [
+    "# Authentication details",
+    "BCSS_PASS",
+    "",
+    "# Database Configuration",
+    "ORACLE_USERNAME",
+    "ORACLE_DB",
+    "ORACLE_PASS",
+    "",
+    "# Jira / Confluence Configuration",
+    "JIRA_URL",
+    "JIRA_PROJECT_KEY",
+    "JIRA_API_KEY",
+    "JIRA_TICKET_REFERENCE",
+    "CONFLUENCE_URL",
+    "CONFLUENCE_API_KEY",
+]
+DEFAULT_LOCAL_ENV_PATH = Path(__file__).resolve().parent / "local.env"
 
 
 def create_env_file():
@@ -30,7 +45,12 @@ def create_env_file():
             "# Note: When running in a pipeline or workflow, you should pass these variables in at runtime.\n\n"
         )
         for key in REQUIRED_KEYS:
-            f.write(f"{key}=\n")
+            if key.startswith("#"):  # This is a comment
+                f.write(f"{key}\n")
+            elif key == "":  # New line only
+                f.write("\n")
+            else:  # Expected key/value pair
+                f.write(f"{key}=\n")
 
 
 if __name__ == "__main__":
