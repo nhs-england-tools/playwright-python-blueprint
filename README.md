@@ -126,10 +126,10 @@ For this to work, you need to set the follow environment variables (which you ca
 
 | Key                   | Required | Description                                                                                            |
 | --------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| JIRA_URL              | Yes      | The Jira instance url to connect to                                                                    |
-| JIRA_PROJECT_KEY      | Yes      | The project key for the Jira project to upload to                                                      |
-| JIRA_API_KEY          | Yes      | The Jira API key for your user, which can be generated in Jira via Profile > Personal Access Tokens    |
-| JIRA_TICKET_REFERENCE | No       | The Jira ticket you want to default to, if required. Can be left blank to use branch-based referencing |
+| `JIRA_URL`              | Yes      | The Jira instance url to connect to                                                                    |
+| `JIRA_PROJECT_KEY`      | Yes      | The project key for the Jira project to upload to                                                      |
+| `JIRA_API_KEY`          | Yes      | The Jira API key for your user, which can be generated in Jira via Profile > Personal Access Tokens    |
+| `JIRA_TICKET_REFERENCE` | No       | The Jira ticket you want to default to, if required. Can be left blank to use branch-based referencing |
 
 This command will do the following actions:
 
