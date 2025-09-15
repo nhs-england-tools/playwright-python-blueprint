@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-import json
 from atlassian import Jira, Confluence
 from pathlib import Path
 from dotenv import load_dotenv
@@ -9,9 +8,9 @@ from git import Repo
 from datetime import datetime
 
 # Paths to file locations in this project
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
-LOCAL_ENV_PATH = Path(__file__).resolve().parent.parent.joinpath("local.env")
-RESULTS_DIR = Path(__file__).resolve().parent.parent.joinpath("test-results")
+ROOT_DIR = Path(__file__).resolve().parent.parent
+LOCAL_ENV_PATH = ROOT_DIR.joinpath("local.env")
+RESULTS_DIR = ROOT_DIR.joinpath("test-results")
 
 
 class JiraConfluenceUtil:
