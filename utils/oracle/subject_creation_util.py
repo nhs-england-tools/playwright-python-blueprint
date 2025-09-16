@@ -2,6 +2,7 @@ import logging
 from datetime import date, timedelta
 from typing import Optional
 import random
+from classes import subject
 from utils.oracle.oracle import OracleDB
 from utils.nhs_number_tools import NHSNumberTools
 from classes.region_type import RegionType
@@ -12,6 +13,7 @@ from classes.pi_subject import PISubject
 from classes.repositories.subject_repository import SubjectRepository
 from classes.repositories.user_repository import UserRepository
 from classes.user_role_type import UserRoleType
+from dateutil.relativedelta import relativedelta
 
 
 class CreateSubjectSteps:
@@ -227,7 +229,7 @@ class CreateSubjectSteps:
                 logging.debug(f"date of birth updated = {subject.birth_date}")
             elif key_lower == "age (y/d)":
                 years, days = map(int, value.split("/"))
-                birth_date = date.today() - timedelta(days=years * 365 + days)
+                birth_date = date.today() - relativedelta(years=years, days=days)
                 subject.birth_date = birth_date
                 logging.debug(f"date of birth updated = {subject.birth_date}")
             elif key_lower == "gp practice":

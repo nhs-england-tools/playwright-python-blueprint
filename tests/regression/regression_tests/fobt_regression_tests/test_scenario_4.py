@@ -332,7 +332,7 @@ def test_scenario_4(page: Page) -> None:
     SubjectScreeningSummaryPage(page).click_first_fobt_episode_link()
 
     # And I view the latest practitioner appointment in the subject's episode
-    EpisodeEventsAndNotesPage(page).click_view_appointment_link()
+    EpisodeEventsAndNotesPage(page).click_most_recent_view_appointment_link()
 
     # And the subject cancels the practitioner appointment with reason "Patient Cancelled to Consider"
     AppointmentDetailPage(page).check_cancel_radio()
@@ -412,7 +412,7 @@ def test_scenario_4(page: Page) -> None:
     SubjectScreeningSummaryPage(page).click_first_fobt_episode_link()
 
     # And I view the latest practitioner appointment in the subject's episode
-    EpisodeEventsAndNotesPage(page).click_view_appointment_link()
+    EpisodeEventsAndNotesPage(page).click_most_recent_view_appointment_link()
 
     # And the subject cancels the practitioner appointment with reason "Patient Unsuitable - Recently Screened"
     AppointmentDetailPage(page).check_cancel_radio()

@@ -14,9 +14,19 @@ from pages.screening_practitioner_appointments.set_availability_page import (
 from pages.screening_practitioner_appointments.book_appointment_page import (
     BookAppointmentPage,
 )
+from pages.screening_subject_search import subject_screening_summary_page
 from utils.calendar_picker import CalendarPicker
 from utils.user_tools import UserTools
 from datetime import datetime
+from pages.screening_practitioner_appointments.appointment_detail_page import (
+    AppointmentDetailPage,
+)
+from pages.screening_subject_search.subject_screening_summary_page import (
+    SubjectScreeningSummaryPage,
+)
+from pages.screening_subject_search.episode_events_and_notes_page import (
+    EpisodeEventsAndNotesPage,
+)
 
 
 def setup_appointments(page: Page, no_of_practitioners: int, max: bool = False) -> None:
@@ -121,3 +131,38 @@ def book_appointments(page: Page, screening_centre: str, site: str) -> None:
         raise RuntimeError(
             f"[BOOK APPOINTMENTS] Appointment not booked successfully: {e}"
         )
+
+
+def mark_appointment_as_dna(page: Page, non_attendance_reason: str) -> None:
+    """
+    Marks an appointment as DNA (Did Not Attend)
+    This process starts from the subject screening summary page.
+
+    This method navigates through the subject's episode and appointment pages,
+    selects the 'Attendance' radio option, and sets the given DNA reason.
+
+    Args:
+        page (Page): Playwright page object.
+        non_attendance_reason (str): Reason for non-attendance. Must match one of the following:
+            - "Patient did not attend"
+            - "Screening Centre did not attend"
+            - "Patient and Screening Centre did not attend"
+
+    Raises:
+        AssertionError: If expected elements are not found or interaction fails.
+    """
+    appointment_detail_page = AppointmentDetailPage(page)
+    subject_screening_summary_page = SubjectScreeningSummaryPage(page)
+    episode_events_and_notes_page = EpisodeEventsAndNotesPage(page)
+
+    logging.info(
+        f"[APPOINTMENT DNA] Starting DNA flow with reason: {non_attendance_reason}"
+    )
+    subject_screening_summary_page.click_list_episodes()
+    subject_screening_summary_page.click_view_events_link()
+    episode_events_and_notes_page.click_most_recent_view_appointment_link()
+    appointment_detail_page.check_attendance_radio()
+    page.locator("#UI_NON_ATTENDANCE_REASON").select_option(label=non_attendance_reason)
+    appointment_detail_page.click_save_button(accept_dialog=True)
+
+    logging.info("[APPOINTMENT DNA] DNA flow completed successfully")

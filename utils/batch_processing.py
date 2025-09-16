@@ -133,7 +133,7 @@ def prepare_and_print_batch(
     page.wait_for_timeout(
         1000
     )  # This one second timeout does not affect the time to execute, as it is just used to ensure the reprepare batch button is clicked and does not instantly advance to the next step
-    ManageActiveBatchPage(page).reprepare_batch_text.wait_for(timeout=60000)
+    ManageActiveBatchPage(page).reprepare_batch_text.wait_for(timeout=300000)
 
     # This loops through each Retrieve button and clicks each one
     retrieve_button_count = 0

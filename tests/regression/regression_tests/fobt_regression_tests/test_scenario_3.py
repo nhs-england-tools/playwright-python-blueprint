@@ -254,7 +254,7 @@ def test_scenario_3(page: Page) -> None:
     SubjectScreeningSummaryPage(page).click_first_fobt_episode_link()
 
     # And I view the latest practitioner appointment in the subject's episode
-    EpisodeEventsAndNotesPage(page).click_view_appointment_link()
+    EpisodeEventsAndNotesPage(page).click_most_recent_view_appointment_link()
 
     # And The Screening Centre cancels the practitioner appointment with reason "Screening Centre Cancelled - Other Reason"
     AppointmentDetailPage(page).check_cancel_radio()
@@ -482,7 +482,7 @@ def cancel_appointment_and_processes_batches(page: Page, nhs_no: str) -> None:
     SubjectScreeningSummaryPage(page).click_first_fobt_episode_link()
 
     # And I view the latest practitioner appointment in the subject's episode
-    EpisodeEventsAndNotesPage(page).click_view_appointment_link()
+    EpisodeEventsAndNotesPage(page).click_most_recent_view_appointment_link()
 
     # And The subject cancels the practitioner appointment with reason "Patient Cancelled to Consider"
     AppointmentDetailPage(page).check_cancel_radio()
