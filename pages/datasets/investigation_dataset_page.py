@@ -2,7 +2,7 @@ import re
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
 from enum import Enum, StrEnum
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.subject_datasets import (
     get_investigation_dataset_polyp_category,
     get_investigation_dataset_polyp_algorithm_size,
 )

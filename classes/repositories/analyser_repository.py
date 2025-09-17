@@ -1,6 +1,6 @@
 from utils.oracle.oracle import OracleDB
-from classes.analyser import Analyser
-from classes.analyser_result_code_type import AnalyserResultCodeType
+from classes.kits.analyser import Analyser
+from classes.kits.analyser_result_code_type import AnalyserResultCodeType
 
 
 class AnalyserRepository:

@@ -1,6 +1,7 @@
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.kit_management import (
     get_kit_id_from_db,
     get_kit_id_logged_from_db,
+    execute_fit_kit_stored_procedures,
 )
 from pages.base_page import BasePage
 from pages.fit_test_kits.log_devices_page import LogDevicesPage
@@ -11,14 +12,13 @@ import pandas as pd
 import pytest
 from utils.oracle.oracle import OracleDB
 from decimal import Decimal
-from classes.user_role_type import UserRoleType
+from classes.user.user_role_type import UserRoleType
 from classes.repositories.analyser_repository import AnalyserRepository
 from classes.repositories.user_repository import UserRepository
 from classes.repositories.kit_service_management_repository import (
     KitServiceManagementRepository,
 )
-from classes.kit_status import KitStatus
-from oracle.oracle_specific_functions import execute_fit_kit_stored_procedures
+from classes.kits.kit_status import KitStatus
 
 
 class FitKitGeneration:

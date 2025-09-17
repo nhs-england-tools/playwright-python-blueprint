@@ -6,9 +6,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from playwright.sync_api import Page
 from pages.login.cognito_login_page import CognitoLoginPage
-from classes.user import User
-from classes.organisation import Organisation
-from classes.user_role_type import UserRoleType
+from classes.user.user import User
+from classes.organisation.organisation import Organisation
+from classes.user.user_role_type import UserRoleType
 from typing import Optional
 
 logger = logging.getLogger(__name__)

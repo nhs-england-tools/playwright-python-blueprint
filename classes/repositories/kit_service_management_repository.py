@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 from utils.oracle.oracle import OracleDB
-from classes.kit_service_management_record import KitServiceManagementRecord
+from classes.kits.kit_service_management_record import KitServiceManagementRecord
 from classes.entities.kit_service_management_entity import KitServiceManagementEntity
 
 

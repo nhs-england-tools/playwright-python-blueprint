@@ -4,7 +4,7 @@ from utils.user_tools import UserTools
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
 from utils.batch_processing import batch_processing
 from pages.logout.log_out_page import LogoutPage
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.subject_datasets import (
     get_subjects_for_investigation_dataset_updates,
 )
 from utils.subject_demographics import SubjectDemographicUtil

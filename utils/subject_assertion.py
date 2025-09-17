@@ -1,8 +1,8 @@
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.oracle.oracle import OracleDB
-from classes.subject import Subject
-from classes.user import User
-from classes.user_role_type import UserRoleType
+from classes.subject.subject import Subject
+from classes.user.user import User
+from classes.user.user_role_type import UserRoleType
 from typing import Optional
 import logging
 

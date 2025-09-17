@@ -15,7 +15,7 @@ from utils.load_properties_file import PropertiesFile
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
 from playwright.sync_api import Page
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.organisation_parameters import (
     set_org_parameter_value,
     check_parameter,
 )

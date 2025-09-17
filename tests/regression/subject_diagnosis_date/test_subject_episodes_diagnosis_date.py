@@ -15,13 +15,14 @@ from utils.user_tools import UserTools
 from utils.screening_subject_page_searcher import search_subject_episode_by_nhs_number
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.oracle.oracle import OracleDB
-from classes.user import User
-from classes.subject import Subject
+from classes.user.user import User
+from classes.subject.subject import Subject
 from pages.base_page import BasePage
 
 logger = logging.getLogger(__name__)
 ADVANCE_FOBT_BUTTON_NAME = "Advance FOBT Screening Episode"
 AMEND_DIAGNOSIS_DATE_BUTTON_NAME = "Amend Diagnosis Date"
+
 
 # Helpers
 def compose_diagnosis_text_with_reason(
@@ -220,9 +221,7 @@ def test_cannot_record_diagnosis_date_without_referral(page: Page) -> None:
     prepare_subject_for_test(page, criteria, role="Screening Centre Manager at BCS001")
 
     # Step 2: Interact with subject page
-    advance_fobt_button_s2 = page.get_by_role(
-        "button", name=ADVANCE_FOBT_BUTTON_NAME
-    )
+    advance_fobt_button_s2 = page.get_by_role("button", name=ADVANCE_FOBT_BUTTON_NAME)
     if advance_fobt_button_s2.is_visible() and advance_fobt_button_s2.is_enabled():
         advance_fobt_button_s2.click()
     else:
@@ -255,9 +254,7 @@ def test_cannot_record_diagnosis_date_with_existing_diagnosis(page: Page) -> Non
     prepare_subject_for_test(page, criteria, role="Screening Centre Manager at BCS001")
 
     # Step 2: Interact with subject page
-    advance_fobt_button_s3 = page.get_by_role(
-        "button", name=ADVANCE_FOBT_BUTTON_NAME
-    )
+    advance_fobt_button_s3 = page.get_by_role("button", name=ADVANCE_FOBT_BUTTON_NAME)
     if advance_fobt_button_s3.is_visible() and advance_fobt_button_s3.is_enabled():
         advance_fobt_button_s3.click()
     else:
@@ -579,6 +576,7 @@ def test_amend_diagnosis_date_remove_date_with_reason(page: Page) -> None:
         remove_reason in event_details["item1"]
     ), f"Expected reason '{remove_reason}' to be part of item, but got: {event_details['item1']}"
 
+
 def get_diagnosis_reason() -> Optional[str]:
     """
     Simulates retrieval of a diagnosis reason.
@@ -622,7 +620,7 @@ def test_amend_diagnosis_date_no_change_alert(page: Page) -> None:
 
 
 # Scenario 12
-#@pytest.mark.regression
+# @pytest.mark.regression
 @pytest.mark.vpn_required
 @pytest.mark.fobt_diagnosis_date_entry_tests
 def test_amend_diagnosis_date_no_change_with_reason_alert(page: Page) -> None:
@@ -668,8 +666,8 @@ def test_amend_diagnosis_date_no_change_with_reason_alert(page: Page) -> None:
     # Step 5: Assert alert message
     alert_message = subject_page_s12.get_alert_message()
     expected = (
-    "An amended date of diagnosis must not be earlier than the recorded diagnosis date and not in the future. "
-    "Please raise a support call to enter an earlier diagnosis date."
+        "An amended date of diagnosis must not be earlier than the recorded diagnosis date and not in the future. "
+        "Please raise a support call to enter an earlier diagnosis date."
     )
     assert alert_message == expected, f"Expected '{expected}' but got '{alert_message}'"
 
@@ -727,7 +725,9 @@ def test_amend_diagnosis_date_no_change_with_reason_only_alert(page: Page) -> No
     # Step 5: Assert alert message
     alert_message = subject_page_s13.get_alert_message()
     expected_message_start = "The date of diagnosis must not be earlier than any previously recorded diagnosis date"
-    assert alert_message.startswith(expected_message_start), f"Unexpected alert message. Got: {alert_message}"
+    assert alert_message.startswith(
+        expected_message_start
+    ), f"Unexpected alert message. Got: {alert_message}"
 
 
 # Scenario 14
@@ -771,9 +771,7 @@ def test_hub_user_cannot_amend_diagnosis_date(page: Page) -> None:
     search_subject_episode_by_nhs_number(page, df.iloc[0]["subject_nhs_number"])
 
     # Step 4: Interact with subject page
-    advance_fobt_button_s14 = page.get_by_role(
-        "button", name=ADVANCE_FOBT_BUTTON_NAME
-    )
+    advance_fobt_button_s14 = page.get_by_role("button", name=ADVANCE_FOBT_BUTTON_NAME)
     if advance_fobt_button_s14.is_visible() and advance_fobt_button_s14.is_enabled():
         advance_fobt_button_s14.click()
     else:
@@ -970,7 +968,7 @@ def test_support_user_can_amend_diagnosis_date_earlier(page: Page) -> None:
 
 
 # Scenario 17
-#@pytest.mark.regression
+# @pytest.mark.regression
 @pytest.mark.vpn_required
 @pytest.mark.fobt_diagnosis_date_entry_tests
 def test_sspi_cease_for_death_closes_episode(page: Page) -> None:

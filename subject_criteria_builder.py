@@ -1,12 +1,14 @@
 import streamlit as st
-from classes.subject_selection_criteria_key import SubjectSelectionCriteriaKey
+from classes.subject_selection_query_builder.subject_selection_criteria_key import (
+    SubjectSelectionCriteriaKey,
+)
 import json
 import os
 from dotenv import load_dotenv
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
-from classes.subject import Subject
-from classes.user import User
-from classes.user_role_type import UserRoleType
+from classes.subject.subject import Subject
+from classes.user.user import User
+from classes.user.user_role_type import UserRoleType
 from utils.user_tools import UserTools
 import sqlparse
 from typing import Optional

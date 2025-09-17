@@ -2,10 +2,10 @@ import logging
 import oracledb
 from utils.oracle.oracle import OracleDB
 from classes.repositories.general_repository import GeneralRepository
-from classes.repositories.database_transition_parameters import (
+from classes.database.database_transition_parameters import (
     DatabaseTransitionParameters,
 )
-from classes.user_role_type import UserRoleType
+from classes.user.user_role_type import UserRoleType
 from classes.repositories.user_repository import UserRepository
 
 
@@ -55,7 +55,9 @@ class CallAndRecallUtils:
         result_cursor.close()
         cur.close()
         conn.close()
-        logging.info(f"[FAILSAFE TRAWL RUN] FOBT failsafe trawl run for subject {nhs_no}")
+        logging.info(
+            f"[FAILSAFE TRAWL RUN] FOBT failsafe trawl run for subject {nhs_no}"
+        )
 
     def invite_subject_for_fobt_screening(
         self, nhs_no: str, user_role: UserRoleType

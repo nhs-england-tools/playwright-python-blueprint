@@ -5,7 +5,7 @@ from pages.logout.log_out_page import LogoutPage
 from utils.batch_processing import batch_processing
 from utils.fit_kit import FitKitLogged
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.kit_management import (
     update_kit_service_management_entity,
     execute_fit_kit_stored_procedures,
 )
@@ -26,10 +26,9 @@ def test_compartment_3(page: Page, smokescreen_properties: dict) -> None:
     """
     UserTools.user_login(page, "Hub Manager State Registered at BCS01")
 
-
     # Find data , separate it into normal and abnormal, Add results to the test records in the KIT_QUEUE table (i.e. mimic receiving results from the middleware)
     # and get device IDs and their flags
-    device_ids =FitKitLogged().process_kit_data(smokescreen_properties)
+    device_ids = FitKitLogged().process_kit_data(smokescreen_properties)
     # Retrieve NHS numbers for each device_id and determine normal/abnormal status
     nhs_numbers = []
     normal_flags = []

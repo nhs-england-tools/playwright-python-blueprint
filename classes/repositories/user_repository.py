@@ -1,6 +1,6 @@
 import logging
 from utils.oracle.oracle import OracleDB
-from classes.user_role_type import UserRoleType
+from classes.user.user_role_type import UserRoleType
 import pandas as pd
 
 

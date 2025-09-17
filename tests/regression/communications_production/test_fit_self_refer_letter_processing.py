@@ -10,7 +10,7 @@ from pages.screening_subject_search.subject_screening_search_page import (
     SubjectScreeningPage,
 )
 from utils.oracle.oracle import OracleDB, OracleSubjectTools
-from classes.subject import Subject
+from classes.subject.subject import Subject
 from utils.oracle.oracle import OracleSubjectTools
 from pages.communication_production.communications_production_page import (
     CommunicationsProductionPage,
@@ -23,7 +23,9 @@ from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
 from utils.table_util import TableUtils
-from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
+from utils.oracle.oracle_specific_functions.subject_batch import (
+    get_nhs_no_from_batch_id,
+)
 from utils import batch_processing
 from utils import screening_subject_page_searcher
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 from decimal import Decimal
 from datetime import datetime
-from classes.kit_service_management_record import KitServiceManagementRecord
+from classes.kits.kit_service_management_record import KitServiceManagementRecord
 
 
 @dataclass

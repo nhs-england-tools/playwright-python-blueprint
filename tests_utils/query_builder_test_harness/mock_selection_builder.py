@@ -4,8 +4,12 @@ import os
 import re
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from classes.selection_builder_exception import SelectionBuilderException
-from classes.subject_selection_criteria_key import SubjectSelectionCriteriaKey
+from classes.subject_selection_query_builder.selection_builder_exception import (
+    SelectionBuilderException,
+)
+from classes.subject_selection_query_builder.subject_selection_criteria_key import (
+    SubjectSelectionCriteriaKey,
+)
 
 # ------------------------------------------------------------------------
 # 🧰 Stubbed Data Classes (for symbolic mapping or subject context)

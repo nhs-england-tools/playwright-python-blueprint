@@ -12,9 +12,11 @@ from pages.contacts_list.resect_and_discard_accreditation_history_page import (
 )
 from pages.logout.log_out_page import LogoutPage
 from utils.user_tools import UserTools
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.organisation_parameters import (
     set_org_parameter_value,
     check_parameter,
+)
+from utils.oracle.oracle_specific_functions.screening_colonoscopist import (
     build_accredited_screening_colonoscopist_query,
     get_accredited_screening_colonoscopist_in_bcs001,
 )

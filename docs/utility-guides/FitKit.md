@@ -145,7 +145,7 @@ This example is showing how we are using this utility in compartment 3.
 
 ```python
 from utils.fit_kit import FitKitLogged
-from utils.oracle.oracle_specific_functions import update_kit_service_management_entity
+from utils.oracle.oracle_specific_functions.kit_management import update_kit_service_management_entity
 
 def test_compartment_3(page: Page, smokescreen_properties: dict):
     device_ids = FitKitLogged().process_kit_data(smokescreen_properties)

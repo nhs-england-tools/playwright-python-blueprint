@@ -1,6 +1,6 @@
 import logging
 from typing import Optional
-from classes.pi_subject import PISubject
+from classes.subject.pi_subject import PISubject
 from utils.oracle.oracle import OracleDB
 
 

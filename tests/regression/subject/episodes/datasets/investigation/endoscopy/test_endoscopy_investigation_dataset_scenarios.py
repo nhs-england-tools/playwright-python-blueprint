@@ -23,8 +23,8 @@ from pages.datasets.investigation_dataset_page import (
     BowelPreparationQualityOptions,
     SedationOptions,
 )
-from classes.user import User
-from classes.subject import Subject
+from classes.user.user import User
+from classes.subject.subject import Subject
 from utils.oracle.oracle import OracleDB
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from pages.datasets.subject_datasets_page import SubjectDatasetsPage
@@ -85,7 +85,7 @@ def test_record_a_dataset_with_100_polyps_or_more(
 
     criteria = {
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "latest event status": "A259",
     }
     user = User()
@@ -3178,13 +3178,13 @@ def get_subject_with_new_colonoscopy_investigation_dataset() -> str:
     """
     Gets a subject with the following criteria:
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
     Returns:
         str: The nhs number of a subject matching the criteria
     """
     criteria = {
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
     }
     user = User()
     subject = Subject()
@@ -3208,14 +3208,14 @@ def get_subject_younger_than_70_with_new_colonsocopy_dataset() -> str:
     """
     Gets a subject with the following criteria:
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "subject age": "< 70"
     Returns:
         str: The nhs number of a subject matching the criteria
     """
     criteria = {
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "subject age": "< 70",
     }
     user = User()
@@ -3240,14 +3240,14 @@ def get_subject_older_than_70_with_new_colonsocopy_dataset() -> str:
     """
     Gets a subject with the following criteria:
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "subject age": ">= 70"
     Returns:
         str: The nhs number of a subject matching the criteria
     """
     criteria = {
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "subject age": ">= 70",
     }
     user = User()

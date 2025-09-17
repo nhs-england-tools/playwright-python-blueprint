@@ -2,14 +2,10 @@ import logging
 from playwright.sync_api import Page
 import pandas as pd
 from typing import Optional
-from pages.base_page import BasePage
-from pages.screening_subject_search.subject_screening_search_page import (
-    SubjectScreeningPage,
-)
 from pages.screening_subject_search.subject_events_notes import (
     SubjectEventsNotes,
 )
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.subject_notes import (
     get_supporting_notes,
 )
 

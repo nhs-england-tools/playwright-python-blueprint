@@ -17,7 +17,7 @@ from pages.organisations.create_site import CreateSite
 from utils.user_tools import UserTools
 from utils.table_util import TableUtils
 from utils.calendar_picker import CalendarPicker
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.organisation import (
     delete_organisations_created_for_test,
     delete_sites_created_for_test,
 )

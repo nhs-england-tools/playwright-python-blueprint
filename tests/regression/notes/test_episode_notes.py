@@ -15,7 +15,9 @@ from pages.screening_subject_search.subject_events_notes import (
     SubjectEventsNotes,
 )
 from utils.table_util import TableUtils
-from utils.oracle.oracle_specific_functions import get_subjects_by_note_count
+from utils.oracle.oracle_specific_functions.subject_notes import (
+    get_subjects_by_note_count,
+)
 from utils.screening_subject_page_searcher import search_subject_episode_by_nhs_number
 from utils.subject_notes import (
     fetch_supporting_notes_from_db,

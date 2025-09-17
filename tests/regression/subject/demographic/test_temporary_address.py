@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
 from utils.user_tools import UserTools
-from classes.user import User
-from classes.subject import Subject
+from classes.user.user import User
+from classes.subject.subject import Subject
 from pages.base_page import BasePage
 from pages.screening_subject_search.subject_demographic_page import (
     SubjectDemographicPage,
@@ -12,7 +12,7 @@ from utils.screening_subject_page_searcher import (
     search_subject_demographics_by_nhs_number,
 )
 from utils.oracle.oracle import OracleDB
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.subject_address import (
     check_if_subject_has_temporary_address,
 )
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
@@ -364,7 +364,7 @@ def obtain_test_data_nhs_no() -> str:
     """
     criteria = {
         "subject age": "<= 80",
-        "subject has temporary address": "no",
+        "subject has temporary address": "No",
     }
     user = User()
     subject = Subject()

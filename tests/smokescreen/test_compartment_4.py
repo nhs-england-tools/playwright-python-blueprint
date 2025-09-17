@@ -27,7 +27,9 @@ from utils.user_tools import UserTools
 from utils.calendar_picker import CalendarPicker
 from utils.batch_processing import batch_processing
 from datetime import datetime
-from utils.oracle.oracle_specific_functions import get_subjects_for_appointments
+from utils.oracle.oracle_specific_functions.subject_appointment import (
+    get_subjects_for_appointments,
+)
 from utils.nhs_number_tools import NHSNumberTools
 import logging
 

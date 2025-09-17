@@ -15,7 +15,7 @@ from pages.screening_subject_search.subject_events_notes import (
     NotesStatusOptions,
     SubjectEventsNotes,
 )
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.subject_notes import (
     get_subjects_by_note_count,
     get_subjects_with_multiple_notes,
 )

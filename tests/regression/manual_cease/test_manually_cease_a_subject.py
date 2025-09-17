@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
-from utils.oracle.oracle_specific_functions import SubjectSelector
+from utils.oracle.subject_selector import SubjectSelector
 from utils.oracle.oracle import OracleDB
 from pages.base_page import BasePage
 from pages.manual_cease.manual_cease_page import ManualCeasePage

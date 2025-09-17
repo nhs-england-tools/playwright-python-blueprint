@@ -1,9 +1,9 @@
 import logging
 from datetime import date
 from typing import Optional
-from classes.subject import Subject
+from classes.subject.subject import Subject
 from classes.repositories.subject_repository import SubjectRepository
-from classes.pi_subject import PISubject
+from classes.subject.pi_subject import PISubject
 from utils.date_time_utils import DateTimeUtils
 
 

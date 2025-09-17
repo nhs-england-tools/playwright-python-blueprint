@@ -57,9 +57,9 @@
     "value_source": "HasGPPractice.by_description",
     "notes": "Specify if the subject has a GP practice.",
     "allowed_values": [
-      "no",
-      "yes - active",
-      "yes - inactive"
+      "No",
+      "Yes - active",
+      "Yes - inactive"
     ]
   },
   {
@@ -956,10 +956,10 @@
     "value_source": "ManualCeaseRequested.by_description_case_insensitive",
     "notes": "Specify if a manual cease has been requested for the subject.",
     "allowed_values": [
-      "no",
-      "yes - disclaimer letter required (c1)",
-      "yes - disclaimer letter sent (c2)",
-      "yes"
+      "No",
+      "Yes - disclaimer letter required (C1)",
+      "Yes - disclaimer letter sent (C2)",
+      "Yes"
     ]
   },
   {
@@ -2008,8 +2008,8 @@
     "value_source": "HasUnprocessedSSPIUpdates.by_description",
     "notes": "Specify if the subject has unprocessed SSPI updates.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -2017,8 +2017,8 @@
     "value_source": "HasUserDobUpdate.by_description",
     "notes": "Specify if the subject has user date of birth updates.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -2026,8 +2026,8 @@
     "value_source": "SubjectHasEpisode.by_description",
     "notes": "Specify if the subject has any episodes.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -2035,8 +2035,8 @@
     "value_source": "SubjectHasEpisode.by_description",
     "notes": "Specify if the subject has an open episode.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -2044,8 +2044,8 @@
     "value_source": "SubjectHasEpisode.by_description",
     "notes": "Specify if the subject has FOBT episodes.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3801,8 +3801,8 @@
       "more than 28 days ago",
       "within the last 28 days",
       "past",
-      "no",
-      "yes"
+      "No",
+      "Yes"
     ]
   },
   {
@@ -3810,9 +3810,9 @@
     "value_source": "",
     "notes": "Specify if the latest episode has a diagnosis date.",
     "allowed_values": [
-      "yes",
-      "no",
-      "yes_date_of_death"
+      "Yes",
+      "No",
+      "Yes - date of death"
     ]
   },
   {
@@ -3820,8 +3820,8 @@
     "value_source": "",
     "notes": "Specify if the subject has diagnostic tests.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3829,8 +3829,8 @@
     "value_source": "",
     "notes": "Specify if the latest episode has a diagnostic test.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3859,8 +3859,8 @@
     "value_source": "",
     "notes": "Specify if the latest episode was completed satisfactorily.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3868,8 +3868,8 @@
     "value_source": "",
     "notes": "Specify if the subject has a diagnostic test containing a polyp.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3878,9 +3878,9 @@
     "notes": "Specify if the subject has unlogged kits. Options:"
     ,
     "allowed_values": [
-      "yes",
-      "no",
-      "yes_latest_episode"
+      "Yes",
+      "No",
+      "Yes - latest episode"
     ]
   },
   {
@@ -3888,8 +3888,8 @@
     "value_source": "",
     "notes": "Specify if the subject has logged FIT kits.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3897,8 +3897,8 @@
     "value_source": "",
     "notes": "Specify if the subject has kit notes.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3906,8 +3906,8 @@
     "value_source": "",
     "notes": "Specify if the subject has a Lynch diagnosis.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3915,13 +3915,13 @@
     "value_source": "",
     "notes": "Specify which test kit to use.",
     "allowed_values": [
-      "any_kit_in_any_episode",
-      "only issued_in_latest_episode",
-      "first issued_in_latest_episode",
-      "latest issued_in_latest_episode",
-      "only logged_in_latest_episode",
-      "first logged_in_latest_episode",
-      "latest logged_in_latest_episode"
+      "any kit in any episode",
+      "only issued in latest episode",
+      "first issued in latest episode",
+      "latest issued in latest episode",
+      "only logged in latest episode",
+      "first logged in latest episode",
+      "latest logged in latest episode"
     ]
   },
   {
@@ -3929,8 +3929,8 @@
     "value_source": "",
     "notes": "Specify if the kit has been read, you must also use 'which test kit'.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3953,8 +3953,8 @@
     "value_source": "",
     "notes": "Specify if the kit has an analyser result code, you must also use 'which test kit'.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -3962,32 +3962,35 @@
     "value_source": "",
     "notes": "Specify which appointment to use.",
     "allowed_values": [
-      "any_appointment_in_latest_episode",
-      "latest_appointment_in_latest_episode",
-      "earlier_appointment_in_latest_episode",
-      "later_appointment_in_latest_episode"
+      "any appointment in latest episode",
+      "latest appointment in latest episode",
+      "earlier appointment in latest_episode",
+      "later appointment in latest episode"
 
     ]
   },
   {
     "key": "APPOINTMENT_TYPE",
-    "value_source": "AppointmentSlotType.get_id",
+    "value_source": "AppointmentSlotType.valid_value_id",
     "notes": "Select the type of appointment, you must also use 'which appointment'.",
     "allowed_values": [
-        "clinic",
-        "phone",
-        "video"
+        "Colonoscopy Assessment",
+        "FS Automatic",
+        "FS Manual",
+        "Positive Assessment",
+        "Post-Investigation",
+        "Surveillance"
     ]
   },
   {
     "key": "APPOINTMENT_STATUS",
-    "value_source": "AppointmentStatusType.get_id",
+    "value_source": "AppointmentStatusType.valid_value_id",
     "notes": "Select the status of the appointment, you must also use 'which appointment'.",
     "allowed_values": [
-      "booked",
-      "attended",
-      "cancelled",
-      "dna"
+      "Booked",
+      "Attended",
+      "Cancelled",
+      "Did Not Attend"
     ]
   },
   {
@@ -4005,38 +4008,52 @@
   },
   {
     "key": "WHICH_DIAGNOSTIC_TEST",
-    "value_source": "WhichDiagnosticTest.from_description",
+    "value_source": "WhichDiagnosticTest.by_description_case_insensitive",
     "notes": "Select which diagnostic test to use.",
     "allowed_values": [
-      "any_test_in_any_episode",
-      "any_test_in_latest_episode",
-      "only_test_in_latest_episode",
-      "only_not_void_test_in_latest_episode",
-      "latest_test_in_latest_episode",
-      "latest_not_void_test_in_latest_episode",
-      "earliest_not_void_test_in_latest_episode",
-      "earlier_test_in_latest_episode",
-      "later_test_in_latest_episode"
+      "any test in any episode",
+      "any test in latest episode",
+      "earlier test in latest episode",
+      "later test in latest episode",
+      "latest episode test 1",
+      "latest episode test 2",
+      "latest episode test 3",
+      "latest episode test 4",
+      "latest episode test 5",
+      "latest episode test 6",
+      "latest episode test 7",
+      "latest episode test 8",
+      "latest episode test 9",
+      "latest episode test 10",
+      "latest not-void test in latest episode",
+      "latest test in latest episode",
+      "earliest not-void test in latest episode",
+      "only not-void test in latest episode",
+      "only test in latest episode"
     ]
   },
   {
     "key": "DIAGNOSTIC_TEST_CONFIRMED_TYPE",
-    "value_source": "DiagnosticTestType.get_valid_value_id",
+    "value_source": "DiagnosticTestType.valid_value_id",
     "notes": "Select the confirmed type of diagnostic test, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "pcr",
-      "antigen",
-      "lateral flow"
+      "CT Colonography",
+      "Colonoscopy",
+      "Flexible Sigmoidoscopy",
+      "Limited Colonoscopy",
+      "NHS bowel scope"
     ]
   },
   {
     "key": "DIAGNOSTIC_TEST_PROPOSED_TYPE",
-    "value_source": "DiagnosticTestType.get_valid_value_id",
+    "value_source": "DiagnosticTestType.valid_value_id",
     "notes": "Select the proposed type of diagnostic test, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "pcr",
-      "antigen",
-      "lateral flow"
+      "CT Colonography",
+      "Colonoscopy",
+      "Flexible Sigmoidoscopy",
+      "Limited Colonoscopy",
+      "NHS bowel scope"
     ]
   },
   {
@@ -4044,26 +4061,49 @@
     "value_source": "DiagnosticTestIsVoid.from_description",
     "notes": "Specify if the diagnostic test is void, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
     "key": "DIAGNOSTIC_TEST_HAS_RESULT",
-    "value_source": "DiagnosticTestHasResult.from_description",
+    "value_source": "DiagnosticTestHasResult.valid_value_id",
     "notes": "Specify if the diagnostic test has a result, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No",
+      "No Result",
+      "Normal (No Abnormalities Found)",
+      "Abnormal",
+      "Low-risk Adenoma",
+      "Intermediate-risk Adenoma",
+      "High-risk Adenoma",
+      "Cancer Detected",
+      "Abnormal, procedure incomplete",
+      "High-risk findings",
+      "LNPCP"
     ]
   },
   {
     "key": "DIAGNOSTIC_TEST_HAS_OUTCOME",
-    "value_source": "DiagnosticTestHasOutcomeOfResult.from_description",
+    "value_source": "DiagnosticTestHasOutcomeOfResult.valid_value_id",
     "notes": "Specify if the diagnostic test has an outcome, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "yes",
-      "no"
+      "No",
+      "Yes",
+      "Investigation Complete",
+      "Consent Refused, Refer Another",
+      "Withdrawn Consent, Refer Another",
+      "Failed Test - Refer Another",
+      "Refer Another Diagnostic Test",
+      "Refer Surveillance (BCSP)",
+      "Refer Symptomatic",
+      "Refer MDT",
+      "Did Not Attend",
+      "Cancelled",
+      "Refer Colonoscopy",
+      "Book another bowel scope",
+      "Return to FOBT Screening"
     ]
   },
   {
@@ -4077,12 +4117,30 @@
   },
   {
     "key": "DIAGNOSTIC_TEST_INTENDED_EXTENT",
-    "value_source": "IntendedExtentType.from_description",
+    "value_source": "IntendedExtentType.valid_value_id",
     "notes": "Select the intended extent of the diagnostic test, you must also use 'which diagnostic test'.",
     "allowed_values": [
-      "full",
-      "partial",
-      "none"
+      "Anastomosis",
+      "Anus",
+      "Appendix",
+      "Ascending Colon",
+      "Caecum",
+      "Descending Colon",
+      "Distal sigmoid",
+      "Entire colon",
+      "Hepatic Flexure",
+      "Ileum",
+      "Left colon",
+      "Mid sigmoid",
+      "Proximal sigmoid",
+      "Recto/Sigmoid",
+      "Rectosigmoid junction",
+      "Rectum",
+      "Sigmoid Colon",
+      "Splenic Flexure",
+      "Transverse Colon",
+      "NULL",
+      "NOT NULL"
     ]
   },
   {
@@ -4090,10 +4148,10 @@
     "value_source": "LatestEpisodeHasDataset.from_description",
     "notes": "Specify if the latest episode has a cancer audit dataset.",
     "allowed_values": [
-      "yes_incomplete",
-      "yes_complete",
-      "no",
-      "past"
+      "Yes - incomplete",
+      "Yes - complete",
+      "No",
+      "Past"
     ]
   },
   {
@@ -4101,10 +4159,10 @@
     "value_source": "LatestEpisodeHasDataset.from_description",
     "notes": "Specify if the latest episode has a colonoscopy assessment dataset.",
     "allowed_values": [
-      "yes_incomplete",
-      "yes_complete",
-      "no",
-      "past"
+      "Yes - incomplete",
+      "Yes - complete",
+      "No",
+      "Past"
     ]
   },
   {
@@ -4112,10 +4170,10 @@
     "value_source": "LatestEpisodeHasDataset.from_description",
     "notes": "Specify if the latest episode has an MDT dataset.",
     "allowed_values": [
-      "yes_incomplete",
-      "yes_complete",
-      "no",
-      "past"
+      "Yes - incomplete",
+      "Yes - complete",
+      "No",
+      "Past"
     ]
   },
   {
@@ -4123,33 +4181,52 @@
     "value_source": "LatestEpisodeLatestInvestigationDataset.from_description",
     "notes": "Specify the latest investigation dataset for the latest episode.",
     "allowed_values": [
-      "none",
-      "colonoscopy_new",
-      "limited_colonoscopy_new",
-      "flexible_sigmoidoscopy_new",
-      "ct_colonography_new",
-      "endoscopy_incomplete",
-      "radiology_incomplete"
+      "None",
+      "Colonoscopy - new",
+      "Limited colonoscopy - new",
+      "Flexible sigmoidoscopy - new",
+      "CT colonography - new",
+      "Endoscopy - incomplete",
+      "Radiology - incomplete"
     ]
   },
   {
     "key": "LATEST_EPISODE_DATASET_INTENDED_EXTENT",
-    "value_source": "IntendedExtentType.get_id",
+    "value_source": "IntendedExtentType.valid_value_id",
     "notes": "Select the intended extent for the latest episode dataset.",
     "allowed_values": [
-      "full",
-      "partial",
-      "none"
+      "Anastomosis",
+      "Anus",
+      "Appendix",
+      "Ascending Colon",
+      "Caecum",
+      "Descending Colon",
+      "Distal sigmoid",
+      "Entire colon",
+      "Hepatic Flexure",
+      "Ileum",
+      "Left colon",
+      "Mid sigmoid",
+      "Proximal sigmoid",
+      "Recto/Sigmoid",
+      "Rectosigmoid junction",
+      "Rectum",
+      "Sigmoid Colon",
+      "Splenic Flexure",
+      "Transverse Colon",
+      "NULL",
+      "NOT NULL"
     ]
   },
   {
     "key": "SURVEILLANCE_REVIEW_CASE_TYPE",
-    "value_source": "SurveillanceReviewCaseType.get_id",
+    "value_source": "SurveillanceReviewCaseType.valid_value_id",
     "notes": "Select the type of surveillance review case.",
     "allowed_values": [
-      "routine",
-      "escalation",
-      "clinical discussion"
+      "Automatically added case",
+      "Initial manual cohort case",
+      "QA user added case",
+      "SC user added case"
     ]
   },
   {
@@ -4169,8 +4246,8 @@
     "value_source": "HasDateOfDeathRemoval.from_description",
     "notes": "Specify if the subject has had a date of death removal.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -4178,8 +4255,8 @@
     "value_source": "InvitedSinceAgeExtension.from_description",
     "notes": "Specify if the subject has been invited since the age extension.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -4189,12 +4266,16 @@
   },
   {
     "key": "SURVEILLANCE_REVIEW_STATUS",
-    "value_source": "SurveillanceReviewStatusType.get_id",
+    "value_source": "SurveillanceReviewStatusType.valid_value_id",
     "notes": "Select the status of the surveillance review.",
     "allowed_values": [
-      "awaiting review",
-      "in progress",
-      "completed"
+      "Auto Closed - Out of Date",
+      "In Review at SC",
+      "Needs Review by QA",
+      "QA Confirm Complete",
+      "QA Refer to SC",
+      "Review Required",
+      "SC Confirm Complete"
     ]
   },
   {
@@ -4202,8 +4283,8 @@
     "value_source": "DoesSubjectHaveSurveillanceReviewCase.from_description",
     "notes": "Specify if the subject has an existing surveillance review case.",
     "allowed_values": [
-      "yes",
-      "no"
+      "Yes",
+      "No"
     ]
   },
   {
@@ -4245,12 +4326,17 @@
   },
   {
     "key": "SYMPTOMATIC_PROCEDURE_RESULT",
-    "value_source": "SymptomaticProcedureResultType.get_id",
+    "value_source": "SymptomaticProcedureResultType.valid_value_id",
     "notes": "Select the result of the symptomatic procedure, you must also use 'which diagnostic test'",
     "allowed_values": [
-      "normal",
-      "inconclusive",
-      "cancer detected"
+      "Cancer",
+      "High risk adenoma",
+      "Intermediate risk adenoma",
+      "LNPCP",
+      "Low risk adenoma",
+      "Non-neoplastic",
+      "Patient is unfit for a symptomatic procedure at this time",
+      "Null"
     ]
   },
   {
@@ -4271,12 +4357,13 @@
   },
   {
     "key": "SCREENING_REFERRAL_TYPE",
-    "value_source": "ScreeningReferralType.get_id",
+    "value_source": "ScreeningReferralType.valid_value_id",
     "notes": "Select the type of screening referral.",
     "allowed_values": [
-      "gp",
-      "self referral",
-      "hospital"
+      "Refer FOBT Screening",
+      "Refer Lynch Surveillance",
+      "Refer Surveillance (BCSP)",
+      "Null"
     ]
   },
   {
@@ -4407,12 +4494,24 @@
   },
   {
     "key": "LYNCH_DUE_DATE_REASON",
-    "value_source": "LynchDueDateReasonType.from_description",
+    "value_source": "LynchSDDReasonForChangeType.valid_value_id",
     "notes": "Select the reason for the Lynch due date.",
     "allowed_values": [
-      "holiday",
-      "clinical request",
-      "external delay"
+      "Ceased",
+      "Date of Birth amendment",
+      "Discharged, Patient Unfit",
+      "Lynch Surveillance",
+      "Self-referral",
+      "Opt-in",
+      "Opt (Back) into Screening Programme",
+      "Opt-in due to Error",
+      "Reopened Episode",
+      "Result referred for Cancer Treatment",
+      "Reversal of Death Notification",
+      "Selected for Lynch Surveillance",
+      "null",
+      "not null",
+      "unchanged"
     ],
     "dependencies": [
       "Subject"
@@ -4432,9 +4531,9 @@
     "notes": "Select the Lynch incident episode type.",
     "allowed_values": [
       "null",
-      "not_null",
-      "latest_episode",
-      "earlier_episode"
+      "not null",
+      "latest episode",
+      "earlier episode"
     ]
   },
   {
@@ -4685,22 +4784,43 @@
   },
   {
     "key": "NOTIFY_QUEUED_MESSAGE_STATUS",
-    "value_source": "NotifyEventStatus.get_id",
+    "value_source": "NotifyMessageType.event_status_id - NotifyMessageStatus.description",
     "notes": "Select the status of the queued Notify message.",
     "allowed_values": [
-      "S1",
-      "S2",
-      "M1"
+      "S1 - none",
+      "S1 - new",
+      "S1 - read",
+      "S1 - not read",
+      "S1 - requested",
+      "S1 - sending",
+      "S1 (S1a) - none",
+      "S1 (S1a) - new",
+      "S1 (S1a) - read",
+      "S1 (S1a) - not read",
+      "S1 (S1a) - requested",
+      "S1 (S1a) - sending",
+      "S1 (S1b) - none",
+      "S1 (S1b) - new",
+      "S1 (S1b) - read",
+      "S1 (S1b) - not read",
+      "S1 (S1b) - requested",
+      "S1 (S1b) - sending"
     ]
   },
   {
     "key": "NOTIFY_ARCHIVED_MESSAGE_STATUS",
-    "value_source": "NotifyEventStatus.get_id",
+    "value_source": "NotifyMessageType.event_status_id - NotifyMessageStatus.description",
     "notes": "Select the status of the archived Notify message.",
     "allowed_values": [
-      "S1",
-      "S2",
-      "M1"
+      "S1 - none",
+      "S1 - read",
+      "S1 - not read",
+      "S1 (S1a) - none",
+      "S1 (S1a) - read",
+      "S1 (S1a) - not read",
+      "S1 (S1b) - none",
+      "S1 (S1b) - read",
+      "S1 (S1b) - not read"
     ]
   },
   {

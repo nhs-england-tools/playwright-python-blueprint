@@ -26,7 +26,9 @@ print("PYTHONPATH set to:", sys.path[0])
 from tests_utils.query_builder_test_harness.mock_selection_builder import (
     MockSelectionBuilder,
 )
-from classes.subject_selection_criteria_key import SubjectSelectionCriteriaKey
+from classes.subject_selection_query_builder.subject_selection_criteria_key import (
+    SubjectSelectionCriteriaKey,
+)
 
 
 # Helper for mock sequencing

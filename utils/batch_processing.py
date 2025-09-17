@@ -10,7 +10,9 @@ from pages.communication_production.batch_list_page import (
     ArchivedBatchListPage,
 )
 from utils.screening_subject_page_searcher import verify_subject_event_status_by_nhs_no
-from utils.oracle.oracle_specific_functions import get_nhs_no_from_batch_id
+from utils.oracle.oracle_specific_functions.subject_batch import (
+    get_nhs_no_from_batch_id,
+)
 from utils.oracle.oracle import OracleDB
 from utils.pdf_reader import extract_nhs_no_from_pdf
 import os

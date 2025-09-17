@@ -3,8 +3,8 @@ import pandas as pd
 import pytest
 import logging
 from playwright.sync_api import Page
-from classes.subject import Subject
-from classes.user import User
+from classes.subject.subject import Subject
+from classes.user.user import User
 from pages.base_page import BasePage
 from pages.datasets.colonoscopy_dataset_page import (
     ColonoscopyDatasetsPage,
@@ -35,7 +35,7 @@ from utils.batch_processing import batch_processing
 from utils.calendar_picker import CalendarPicker
 from utils.fit_kit import FitKitGeneration
 from utils.oracle.oracle import OracleDB
-from utils.oracle.oracle_specific_functions import (
+from utils.oracle.oracle_specific_functions.kit_management import (
     update_kit_service_management_entity,
     execute_fit_kit_stored_procedures,
 )
@@ -59,8 +59,8 @@ def test_setup_subjects_as_a99(page: Page, subjects_to_run_for: int) -> None:
     criteria = {
         "latest event status": "S9",
         "latest episode type": "FOBT",
-        "subject has unprocessed sspi updates": "no",
-        "subject has user dob updates": "no",
+        "subject has unprocessed sspi updates": "No",
+        "subject has user dob updates": "No",
     }
     user = User()
     subject = Subject()
@@ -89,7 +89,7 @@ def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
     page.goto("/")
     criteria = {
         "latest episode status": "open",
-        "latest episode latest investigation dataset": "colonoscopy_new",
+        "latest episode latest investigation dataset": "Colonoscopy - new",
         "latest episode started": "less than 4 years ago",
     }
     user = User()
@@ -112,8 +112,8 @@ def test_setup_subjects_as_a259(page: Page, subjects_to_run_for: int) -> None:
     criteria = {
         "latest event status": "S9",
         "latest episode type": "FOBT",
-        "subject has unprocessed sspi updates": "no",
-        "subject has user dob updates": "no",
+        "subject has unprocessed sspi updates": "No",
+        "subject has user dob updates": "No",
     }
     user = User()
     subject = Subject()

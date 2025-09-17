@@ -3,8 +3,8 @@ from utils.oracle.subject_creation_util import CreateSubjectSteps
 from utils.oracle.subject_selection_query_builder import (
     SubjectSelectionQueryBuilder,
 )
-from classes.subject import Subject
-from classes.user import User
+from classes.subject.subject import Subject
+from classes.user.user import User
 from utils.oracle.oracle import OracleDB
 import pandas as pd
 import logging
@@ -187,7 +187,7 @@ def find_subject(
     if column:
         criteria["add column to select statement"] = column
     if inactive_gp_practice:
-        criteria["has gp practice"] = "yes - inactive"
+        criteria["has gp practice"] = "Yes - inactive"
     subject = Subject()
     user = User()
     builder = SubjectSelectionQueryBuilder()

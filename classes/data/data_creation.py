@@ -2,12 +2,12 @@ import random
 import datetime
 from typing import Dict
 import logging
-from classes.organisation_complex import Organisation
-from classes.gender_type import GenderType
-from classes.address import Address
-from classes.person import Person
-from classes.region_type import RegionType
-from classes.pi_subject import PISubject
+from classes.organisation.organisation_complex import Organisation
+from classes.subject.gender_type import GenderType
+from classes.address.address import Address
+from classes.person.person import Person
+from classes.screening.region_type import RegionType
+from classes.subject.pi_subject import PISubject
 from utils.nhs_number_tools import NHSNumberTools
 
 
@@ -129,12 +129,12 @@ class DataCreation:
         else:
             pi_subject.gender_code = GenderType.NOT_KNOWN.redefined_value
         address = self.generate_random_address(random_words_list)
-        pi_subject.address_line_1 = address.get_address_line1()
-        pi_subject.address_line_2 = address.get_address_line2()
-        pi_subject.address_line_3 = address.get_address_line3()
-        pi_subject.address_line_4 = address.get_address_line4()
-        pi_subject.address_line_5 = address.get_address_line5()
-        pi_subject.postcode = address.get_post_code()
+        pi_subject.address_line_1 = address.address_line1
+        pi_subject.address_line_2 = address.address_line2
+        pi_subject.address_line_3 = address.address_line3
+        pi_subject.address_line_4 = address.address_line4
+        pi_subject.address_line_5 = address.address_line5
+        pi_subject.postcode = address.post_code
         pi_subject.gnc_code = self.generate_random_registration_code()
         gp_surgery = self.generate_random_gp_surgery(region)
         if gp_surgery is not None:
@@ -203,7 +203,7 @@ class DataCreation:
             line_number += 1
             address.set_address_line(line_number, random_words_list.get("county", ""))
 
-        address.set_post_code(self.generate_random_postcode())
+        address.post_code = self.generate_random_postcode()
         logging.debug("generateRandomAddress: end")
         return address
 

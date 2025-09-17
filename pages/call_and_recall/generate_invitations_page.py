@@ -4,8 +4,8 @@ import pytest
 import logging
 from utils.oracle.oracle import OracleDB
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
-from classes.user import User
-from classes.subject import Subject
+from classes.user.user import User
+from classes.subject.subject import Subject
 from utils.table_util import TableUtils
 
 DISPLAY_RS_SELECTOR = "#displayRS"

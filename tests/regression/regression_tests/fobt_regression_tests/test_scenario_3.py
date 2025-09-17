@@ -106,7 +106,7 @@ def test_scenario_3(page: Page) -> None:
     # Then my subject has been updated as follows:
     criteria = {
         "subject age": "67",
-        "subject has episodes": "no",
+        "subject has episodes": "No",
         "screening status": "Inactive",
     }
     subject_assertion(nhs_no, criteria)

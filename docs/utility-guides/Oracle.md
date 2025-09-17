@@ -24,8 +24,8 @@ You might use this utility for:
   - [Oracle Utility Methods](#oracle-utility-methods)
   - [Example usage](#example-usage)
   - [Oracle Specific Functions](#oracle-specific-functions)
-  - [How to Add New Oracle-Specific Functions](#how-to-add-new-oracle-specific-functions)
-  - [Example Usage](#example-usage-1)
+    - [How to Add New Oracle-Specific Functions](#how-to-add-new-oracle-specific-functions)
+    - [Example Usage](#example-usage-1)
 
 ## Using the Oracle Utility
 
@@ -94,23 +94,45 @@ OracleDB().create_subjects_via_sspi(
 
 ## Oracle Specific Functions
 
-This contains SQL queries that can be used to run tests.<br>
-These are all stored in one location to make it easier to edit the query at a later date and to make it accessible to multiple tests.
+Oracle-specific functions are now organized into separate files under `utils/oracle/oracle_specific_functions/` for better maintainability and discoverability.<br>
+Each file groups related functions by their domain or purpose.
 
-Common values are placed in the `SqlQueryValues` class to avoid repeating the same values in the queries.
+Below is a table showing the current structure and which functions are found in each file:
 
-## How to Add New Oracle-Specific Functions
+| File Name                                 | Functions/Classes Included                                                                                   |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| **enums.py**                              | `SqlQueryValues` (common `enum` values for queries)                                                            |
+| **kit_management.py**                      | `get_kit_id_from_db`, `get_kit_id_logged_from_db`, `get_service_management_by_device_id`,<br>`update_kit_service_management_entity`, `execute_fit_kit_stored_procedures` |
+| **organisation_parameters.py**             | `set_org_parameter_value`, `get_org_parameter_value`, `check_parameter`                                      |
+| **screening_colonoscopist.py**             | `build_accredited_screening_colonoscopist_query`, `get_accredited_screening_colonoscopist_in_bcs001`         |
+| **subject_address.py**                     | `check_if_subject_has_temporary_address`                                                                     |
+| **subject_appointment.py**                 | `get_subjects_for_appointments`, `get_subjects_with_booked_appointments`                                     |
+| **subject_batch.py**                       | `get_nhs_no_from_batch_id`                                                                                   |
+| **supporting_notes.py**                    | `get_subjects_by_note_count`, `get_supporting_notes`, `get_subjects_with_multiple_notes`                     |
+| **investigation_dataset.py**               | `get_investigation_dataset_polyp_category`, `get_investigation_dataset_polyp_algorithm_size`,<br>`get_subjects_for_investigation_dataset_updates` |
+| **subject_selector.py**                    | `SubjectSelector` (class for subject selection logic)                                                        |
 
-- Define a new function in `utils/oracle/oracle_specific_functions.py`.
-- Create your SQL query, `parameterizing` as needed.
-- Call the  relevant methods from the oracle `util` based on your needs (e.g., `execute_query`, stored procedure methods, etc.).
-- Return the result in the appropriate format for your function.
-- Document the function with a clear docstring.
+> **Note:**
+> If you are looking for a specific function, check the relevant file in `utils/oracle/oracle_specific_functions/`.
+> Common values used in queries are placed in `enums.py` as the `SqlQueryValues` class.
 
-## Example Usage
+---
+
+### How to Add New Oracle-Specific Functions
+
+- Add your new function to the most appropriate file in `utils/oracle/oracle_specific_functions/`.
+- If your function does not fit an existing category, create a new file with a descriptive name.
+- Document your function with a clear docstring.
+- If your function uses common query values, consider adding them to `enums.py`.
+- Once done add the function to the table above
+
+---
+
+### Example Usage
 
 ```python
 from utils.oracle.oracle import OracleDB
+from utils.oracle.oracle_specific_functions.enums import SqlQueryValues
 
 def example_query() -> pd.DataFrame:
     """

@@ -1,4 +1,4 @@
-from classes.repositories.database_transition_parameters import (
+from classes.database.database_transition_parameters import (
     DatabaseTransitionParameters,
 )
 import logging
