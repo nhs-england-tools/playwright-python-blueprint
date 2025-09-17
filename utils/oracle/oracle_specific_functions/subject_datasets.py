@@ -1,6 +1,6 @@
 from oracle.oracle import OracleDB
 import pandas as pd
-from enums import SqlQueryValues
+from utils.oracle.oracle_specific_functions.enums import SqlQueryValues
 from typing import Optional
 
 

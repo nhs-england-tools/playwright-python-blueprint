@@ -2,7 +2,7 @@ from oracle.oracle import OracleDB
 import logging
 import pandas as pd
 from datetime import datetime
-from enums import SqlQueryValues
+from utils.oracle.oracle_specific_functions.enums import SqlQueryValues
 
 
 def get_kit_id_from_db(
