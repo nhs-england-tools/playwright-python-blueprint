@@ -158,7 +158,7 @@ class JiraConfluenceUtil:
             if branch.startswith("feature/"):
                 match = re.search(r"feature\/([A-Za-z0-9]+-\d+)", branch)
                 if match:
-                    branch = f"{self.jira_project_key}-{match.group(1)}"
+                    branch = f"{match.group(1)}"
 
         if not self.is_valid_jira_reference(branch):
             return ""
