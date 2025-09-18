@@ -8,7 +8,6 @@ import logging
 from utils.batch_processing import batch_processing
 from utils.fit_kit import FitKitGeneration, FitKitLogged
 from utils import screening_subject_page_searcher
-from utils.calendar_picker import CalendarPicker
 from utils.sspi_change_steps import SSPIChangeSteps
 from utils.appointments import book_appointments
 from pages.base_page import BasePage
@@ -21,9 +20,6 @@ from pages.screening_subject_search.reopen_fobt_screening_episode_page import (
 )
 from pages.screening_subject_search.advance_fobt_screening_episode_page import (
     AdvanceFOBTScreeningEpisodePage,
-)
-from pages.screening_practitioner_appointments.book_appointment_page import (
-    BookAppointmentPage,
 )
 from pages.screening_subject_search.record_diagnosis_date_page import (
     RecordDiagnosisDatePage,

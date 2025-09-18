@@ -3,6 +3,12 @@ from pages.base_page import BasePage
 from enum import Enum
 
 
+class FitForColonoscopySspOptions(Enum):
+    YES = "17058"
+    NO = "17059"
+    UNABLE_TO_ASSESS = "17954"
+
+
 class ColonoscopyDatasetsPage(BasePage):
     """Colonoscopy Datasets Page locators, and methods for interacting with the page"""
 
@@ -44,16 +50,19 @@ class ColonoscopyDatasetsPage(BasePage):
         """
         self.select_asa_grade_dropdown.select_option(option)
 
-    def select_fit_for_colonoscopy_option(self, option: str) -> None:
+    def select_fit_for_colonoscopy_option(
+        self, option: FitForColonoscopySspOptions
+    ) -> None:
         """
-        This method is designed to select a specific option from the colonoscopy dataset page, Fit for Colonoscopy (SSP) dropdown menu.
+        Selects a specific option from the 'Fit for Colonoscopy (SSP)' dropdown.
+
         Args:
-            option (str): The option to be selected. This should be a string that matches one of the available options in the dropdown menu.
-                Valid options are: "YES", "NO", or "UNABLE_TO_ASSESS".
+            option (FitForColonoscopySspOptions): Enum member representing the desired option.
+
         Returns:
             None
         """
-        self.select_fit_for_colonoscopy_dropdown.select_option(option)
+        self.select_fit_for_colonoscopy_dropdown.select_option(option.value)
 
     def click_dataset_complete_radio_button_yes(self) -> None:
         """Clicks the 'Yes' radio button for the dataset complete option."""
@@ -72,9 +81,3 @@ class AsaGradeOptions(Enum):
     MORIBUND = "17013"
     NOT_APPLICABLE = "17014"
     NOT_KNOWN = "17015"
-
-
-class FitForColonoscopySspOptions(Enum):
-    YES = "17058"
-    NO = "17059"
-    UNABLE_TO_ASSESS = "17954"

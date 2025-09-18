@@ -21,7 +21,7 @@ from pages.screening_subject_search.advance_fobt_screening_episode_page import (
 from pages.screening_subject_search.record_diagnosis_date_page import (
     RecordDiagnosisDatePage,
 )
-from utils.appointments import mark_appointment_as_dna
+from utils.appointments import AppointmentAttendance
 
 
 @pytest.mark.usefixtures("setup_org_and_appointments")
@@ -61,6 +61,7 @@ def test_scenario_5(page: Page) -> None:
     """
 
     summary_page = SubjectScreeningSummaryPage(page)
+    attendance = AppointmentAttendance(page)
     logging.info(
         "[TEST START] Regression - Scenario: 5: DNA colonoscopy assessment twice"
     )
@@ -227,7 +228,7 @@ def test_scenario_5(page: Page) -> None:
     # And I view the event history for the subject's latest episode
     # And I view the latest practitioner appointment in the subject's episode
     # And The subject DNAs the practitioner appointment
-    mark_appointment_as_dna(page, "Patient did not attend")
+    attendance.mark_as_dna("Patient did not attend")
 
     # And there is a "J11" letter batch for my subject with the exact title "Practitioner Clinic 1st Appointment Non Attendance (Patient)"
     # When I process the open "J11" letter batch for my subject
@@ -278,7 +279,7 @@ def test_scenario_5(page: Page) -> None:
     # And I view the event history for the subject's latest episode
     # And I view the latest practitioner appointment in the subject's episode
     # And The subject DNAs the practitioner appointment
-    mark_appointment_as_dna(page, "Patient did not attend")
+    attendance.mark_as_dna("Patient did not attend")
 
     # Then my subject has been updated as follows:
     subject_assertion(

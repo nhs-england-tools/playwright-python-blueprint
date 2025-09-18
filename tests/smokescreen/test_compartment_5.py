@@ -143,7 +143,7 @@ def test_compartment_5(page: Page, smokescreen_properties: dict) -> None:
 
         ColonoscopyDatasetsPage(page).select_asa_grade_option(AsaGradeOptions.FIT.value)
         ColonoscopyDatasetsPage(page).select_fit_for_colonoscopy_option(
-            FitForColonoscopySspOptions.YES.value
+            FitForColonoscopySspOptions.YES
         )
         ColonoscopyDatasetsPage(page).click_dataset_complete_radio_button_yes()
         ColonoscopyDatasetsPage(page).save_dataset()

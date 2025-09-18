@@ -12,7 +12,14 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
         self.reopen_to_book_an_assessment_button = self.page.get_by_role(
             "button", name="Reopen to book an assessment"
         )
+        self.reopen_following_non_response_button = self.page.get_by_role(
+            "button", name="Reopen following Non-Response"
+        )
 
     def click_reopen_to_book_an_assessment_button(self) -> None:
         """Click the 'Reopen to book an assessment' button."""
         self.safe_accept_dialog(self.reopen_to_book_an_assessment_button)
+
+    def click_reopen_following_non_response_button(self) -> None:
+        """Click the 'Reopen following Non-Response' button."""
+        self.safe_accept_dialog(self.reopen_following_non_response_button)

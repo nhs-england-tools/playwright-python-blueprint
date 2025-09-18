@@ -3588,7 +3588,7 @@ class SubjectSelectionQueryBuilder:
             SelectionBuilderException: If an unexpected error occurs while processing the criteria value.
         """
         try:
-            value = SubjectHasEpisode.by_description(self.criteria_value.lower())
+            value = SubjectHasEpisode.by_description(self.criteria_value)
             if value == SubjectHasEpisode.YES:
                 self.sql_where.append(" AND EXISTS ( SELECT 'ep' ")
             elif value == SubjectHasEpisode.NO:

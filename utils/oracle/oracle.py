@@ -44,25 +44,38 @@ class OracleDB:
         logging.debug("Connection Closed")
 
     def exec_bcss_timed_events(
-        self, nhs_number_df: pd.DataFrame
-    ) -> None:  # Executes bcss_timed_events when given NHS numbers
+        self,
+        nhs_number_df: Optional[pd.DataFrame] = None,
+        nhs_number: Optional[str] = None,
+    ) -> None:
         """
-        This function is used to execute bcss_timed_events against NHS Numbers.
-        It expects the nhs_numbers to be in a dataframe, and runs a for loop to get the subject_screening_id for each nhs number
-        Once a subject_screening_id is retrieved, it will then run the command: exec bcss_timed_events [<subject_id>,'Y']
+        Executes bcss_timed_events for either a DataFrame of NHS numbers or a single NHS number.
 
         Args:
-            nhs_number_df (pd.DataFrame): A dataframe containing all of the NHS numbers as separate rows
+            nhs_number_df (Optional[pd.DataFrame]): DataFrame with NHS numbers under 'subject_nhs_number'.
+            nhs_number (Optional[str]): A single NHS number.
+
+        Raises:
+            ValueError: If neither nhs_number_df nor nhs_number is provided.
         """
         conn = self.connect_to_db()
         try:
-            for index, row in nhs_number_df.iterrows():
-                subject_id = self.get_subject_id_from_nhs_number(
-                    row["subject_nhs_number"]
-                )
+            subject_ids = []
+
+            if nhs_number_df is not None:
+                subject_ids = [
+                    self.get_subject_id_from_nhs_number(row["subject_nhs_number"])
+                    for _, row in nhs_number_df.iterrows()
+                ]
+            elif nhs_number is not None:
+                subject_ids = [self.get_subject_id_from_nhs_number(nhs_number)]
+            else:
+                raise ValueError("Must provide either nhs_number_df or nhs_number")
+
+            for subject_id in subject_ids:
                 try:
                     logging.info(
-                        f"[ORACLE] Attempting to execute stored procedure: {f"'bcss_timed_events', [{subject_id},'Y']"}"
+                        f"[ORACLE] Attempting to execute stored procedure: 'bcss_timed_events', [{subject_id}, 'Y']"
                     )
                     cursor = conn.cursor()
                     cursor.callproc("bcss_timed_events", [subject_id, "Y"])
@@ -71,9 +84,10 @@ class OracleDB:
                     logging.error(
                         f"[ORACLE] Failed to execute stored procedure with execution error: {spExecutionError}"
                     )
+
         except Exception as queryExecutionError:
             logging.error(
-                f"[ORACLE] Failed to to extract subject ID with error: {queryExecutionError}"
+                f"[ORACLE] Failed to extract subject ID with error: {queryExecutionError}"
             )
         finally:
             if conn is not None:
