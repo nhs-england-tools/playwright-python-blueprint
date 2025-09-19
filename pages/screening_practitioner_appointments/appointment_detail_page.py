@@ -1,6 +1,8 @@
 from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 from enum import StrEnum
+from datetime import datetime
+from utils.calendar_picker import CalendarPicker
 
 
 class AppointmentDetailPage(BasePage):
@@ -85,6 +87,23 @@ class AppointmentDetailPage(BasePage):
             The options are in the ReasonForCancellationOptions class
         """
         self.reason_for_cancellation_dropdown.select_option(value=option)
+
+
+    def mark_appointment_as_attended(self, date: datetime) -> None:
+        """
+        Marks an appointment as attended.
+        Args:
+            date (datetime): The date the appointment was attended
+        """
+        self.wait_for_attendance_radio(
+            600000
+        )  # Max of 10 minute wait as appointments need to be set for future times and they are in 10 minute intervals
+        self.check_attendance_radio()
+        self.check_attended_check_box()
+        self.click_calendar_button()
+        CalendarPicker(self.page).v1_calender_picker(date)
+        self.click_save_button()
+        self.verify_text_visible("Record updated")
 
 
 class ReasonForCancellationOptions(StrEnum):

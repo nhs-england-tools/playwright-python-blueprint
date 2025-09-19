@@ -44,6 +44,16 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.record_contact_with_patient_button = self.page.get_by_role(
             "button", name="Record Contact with Patient"
         )
+        self.amend_diagnosis_date_button = self.page.get_by_role(
+            "button", name="Amend Diagnosis Date"
+        )
+        self.advance_checkbox_v2 = self.page.get_by_role("checkbox")
+        self.subsequent_assessment_appointment_required_dropdown = (
+            self.page.get_by_role("combobox")
+        )
+        self.subsequent_assessment_appointment_required_button = self.page.get_by_role(
+            "button", name="Subsequent Assessment Appointment Required"
+        )
         self.suitable_for_radiological_test_button = self.page.get_by_role(
             "button", name="Suitable for Radiological Test"
         )
@@ -56,6 +66,9 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
             self.page.get_by_role(
                 "button", name="Waiting Decision to Proceed with Diagnostic Test"
             )
+        )
+        self.not_suitable_for_diagnostic_tests_button = self.page.get_by_role(
+            "button", name="Not Suitable for Diagnostic Tests"
         )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
@@ -126,6 +139,28 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         """Selects the 'Advance FOBT' checkbox"""
         self.advance_checkbox.check()
 
+    def click_amend_diagnosis_date_button(self) -> None:
+        """Checks the 'Advance FOBT' checkbox and clicks the 'Amend Diagnosis Date' button."""
+        self.advance_checkbox_v2.check()
+        self.click(self.amend_diagnosis_date_button)
+
+    def click_and_select_subsequent_assessment_appointment_required(
+        self, option: str
+    ) -> None:
+        """
+        Click the 'Subsequent Assessment Appointment Required' button and select an option from the dropdown.
+        Args:
+            option (str): The option to select from the dropdown.
+            Must be one of:
+                - 'Previous attendance, further assessment required'
+                - 'Interpreter requirement not identified'
+                - 'SC interpreter DNA'
+        """
+        self.subsequent_assessment_appointment_required_dropdown.select_option(
+            label=option
+        )
+        self.safe_accept_dialog(self.subsequent_assessment_appointment_required_button)
+
     def click_suitable_for_radiological_test_button(self) -> None:
         """Click the 'Suitable for Radiological Test' button."""
         self.safe_accept_dialog(self.suitable_for_radiological_test_button)
@@ -141,3 +176,7 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.safe_accept_dialog(
             self.waiting_decision_to_proceed_with_diagnostic_test_button
         )
+
+    def click_not_suitable_for_diagnostic_tests_button(self) -> None:
+        """Click the 'Not Suitable for Diagnostic Tests' button."""
+        self.safe_accept_dialog(self.not_suitable_for_diagnostic_tests_button)
