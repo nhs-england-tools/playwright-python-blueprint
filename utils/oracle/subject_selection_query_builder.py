@@ -1107,6 +1107,7 @@ class SubjectSelectionQueryBuilder:
         Resolves from symbolic class name (e.g. 'FIT') to test class ID.
         """
         try:
+            self._add_join_to_latest_episode()
             value = self.criteria_value.upper()
             comparator = self.criteria_comparator
 
@@ -1123,11 +1124,11 @@ class SubjectSelectionQueryBuilder:
             kit_class_id = test_kit_class_map[value]
 
             self.sql_where.append(
-                f"""AND ep.tk_type_id IN (
-        SELECT tkt.tk_type_id
-        FROM tk_type_t tkt
-        WHERE tkt.tk_test_class_id {comparator} {kit_class_id}
-    )"""
+                " AND ep.tk_type_id IN ( "
+                " SELECT tkt.tk_type_id"
+                " FROM tk_type_t tkt "
+                f" WHERE tkt.tk_test_class_id {comparator} {kit_class_id} "
+                " ) "
             )
 
         except Exception:

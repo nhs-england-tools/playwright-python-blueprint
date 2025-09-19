@@ -153,7 +153,7 @@ class SubjectRepository:
         )
         if df.empty:
             return None
-        return df.iloc[0]["gp_code"]
+        return df["gp_code"].iloc[0]
 
     def get_inactive_gp_practice(self) -> Optional[str]:
         """
@@ -171,7 +171,7 @@ class SubjectRepository:
         df = self.oracle_db.execute_query(query)
         if df.empty:
             return None
-        return df.iloc[0]["gp_code"]
+        return df["gp_code"].iloc[0]
 
     def get_latest_gp_practice_for_subject(self, nhs_number: str) -> Optional[str]:
         """
@@ -195,7 +195,7 @@ class SubjectRepository:
         df = self.oracle_db.execute_query(query, {"nhs_number": nhs_number})
         if df.empty:
             return None
-        return df.iloc[0]["gp_code"]
+        return df["gp_code"].iloc[0]
 
     def get_matching_subject(
         self, criteria: dict, subject: Subject, user: User

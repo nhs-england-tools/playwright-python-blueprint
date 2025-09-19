@@ -26,3 +26,12 @@ class PatientAdvisedOfDiagnosisPage(BasePage):
         CalendarPicker(self.page).v2_calendar_picker(date)
         self.reason_dropdown.select_option(label=reason)
         self.click(self.save_button)
+
+    def select_diagnosis_reason(self, reason: str) -> None:
+        """
+        Selects the diagnosis reason, then saves the form.
+        Args:
+            reason (str): The reason for the diagnosis.
+        """
+        self.reason_dropdown.select_option(label=reason)
+        self.click(self.save_button)

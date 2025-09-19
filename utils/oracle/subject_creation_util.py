@@ -11,6 +11,8 @@ from classes.repositories.word_repository import WordRepository
 from classes.subject.pi_subject import PISubject
 from classes.repositories.subject_repository import SubjectRepository
 from dateutil.relativedelta import relativedelta
+from classes.user.user_role_type import UserRoleType
+from classes.user.user import User
 
 
 class CreateSubjectSteps:
@@ -195,7 +197,6 @@ class CreateSubjectSteps:
 
         Args:
             subject_requirements (dict): Dictionary of subject criteria.
-            user_role (UserRoleType): UseroleType onject for the user you are logged in as
 
         Returns:
             str: The subject's nhs number.
@@ -245,7 +246,6 @@ class CreateSubjectSteps:
                 logging.debug(f"gp practice set = {subject.gp_practice_code}")
             else:
                 raise ValueError(f"The criteria provided ({key}) is not valid")
-
         subject_repo.create_pi_subject(2, subject)
         logging.debug(f"subject added = {subject.to_string()}")
         return subject.nhs_number

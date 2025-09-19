@@ -3786,7 +3786,11 @@
   {
     "key": "LATEST_EPISODE_KIT_CLASS",
     "value_source": "",
-    "notes": "Specify the kit class for the latest episode (e.g., 'FIT', 'GFOBT')."
+    "notes": "Specify the kit class for the latest episode (e.g., 'FIT', 'GFOBT').",
+    "allowed_values": [
+      "FIT",
+      "GFOBT"
+    ]
   },
   {
     "key": "LATEST_EPISODE_HAS_SIGNIFICANT_KIT_RESULT",

@@ -70,6 +70,9 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.not_suitable_for_diagnostic_tests_button = self.page.get_by_role(
             "button", name="Not Suitable for Diagnostic Tests"
         )
+        self.cancel_diagnostic_test_button = self.page.get_by_role(
+            "button", name="Cancel Diagnostic Test"
+        )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
         """Click the 'Suitable for Endoscopic Test' button."""
@@ -105,15 +108,21 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
 
     def verify_latest_event_status_value(self, latest_event_status: str) -> None:
         """Verify that the latest event status value is visible."""
-        logging.info(f"Verifying subject has the status: {latest_event_status}")
+        logging.info(
+            f"[UI ASSERTION] Verifying subject has the status: {latest_event_status}"
+        )
         latest_event_status_cell = self.get_latest_event_status_cell(
             latest_event_status
         )
         try:
             expect(latest_event_status_cell).to_be_visible()
-            logging.info(f"Subject has the status: {latest_event_status}")
+            logging.info(
+                f"[UI ASSERTION COMPLETE] Subject has the status: {latest_event_status}"
+            )
         except Exception:
-            pytest.fail(f"Subject does not have the status: {latest_event_status}")
+            raise AssertionError(
+                f"[UI ASSERTION FAILED] Subject does not have the status: {latest_event_status}"
+            )
 
     def click_record_other_post_investigation_contact_button(self) -> None:
         """Click the 'Record other post-investigation contact' button."""
@@ -180,3 +189,7 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
     def click_not_suitable_for_diagnostic_tests_button(self) -> None:
         """Click the 'Not Suitable for Diagnostic Tests' button."""
         self.safe_accept_dialog(self.not_suitable_for_diagnostic_tests_button)
+
+    def click_cancel_diagnostic_test_button(self) -> None:
+        """Click the 'Cancel Diagnostic Test' button."""
+        self.safe_accept_dialog(self.cancel_diagnostic_test_button)

@@ -32,7 +32,7 @@ class HasUnprocessedSSPIUpdates(Enum):
             Optional[HasUnprocessedSSPIUpdates]: The matching enum member, or None if not found.
         """
         for item in cls:
-            if item.value == description:
+            if item.value.lower() == description.lower():
                 return item
         return None
 
