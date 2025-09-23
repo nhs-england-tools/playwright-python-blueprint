@@ -15,6 +15,7 @@ class RecordDiagnosisDatePage(BasePage):
         self.diagnosis_date_field = self.page.locator("#diagnosisDate")
         self.reason_dropdown = self.page.locator("#reason")
         self.save_button = self.page.get_by_role("button", name="Save")
+        self.confirm_button = self.page.get_by_role("button", name="Confirm")
 
     def enter_date_in_diagnosis_date_field(self, date: datetime) -> None:
         """
@@ -29,6 +30,8 @@ class RecordDiagnosisDatePage(BasePage):
     def click_save_button(self) -> None:
         """Clicks the save button."""
         self.click(self.save_button)
+        if self.confirm_button.is_visible():
+            self.click(self.confirm_button)
 
     def get_alert_message(self) -> str:
         """

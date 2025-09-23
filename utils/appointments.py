@@ -112,8 +112,8 @@ def book_appointments(page: Page, screening_centre: str, site: str) -> None:
         current_month_displayed,
         book_appointments_page.appointment_cell_locators,
         [
-            book_appointments_page.available_background_colour,
-            book_appointments_page.some_available_background_colour,
+            book_appointments_page.appointment_fully_available_colour,
+            book_appointments_page.appointment_partially_available_colour,
         ],
     )
     page.wait_for_timeout(500)  # Wait for the appointments to load
@@ -130,6 +130,32 @@ def book_appointments(page: Page, screening_centre: str, site: str) -> None:
         raise RuntimeError(
             f"[BOOK APPOINTMENTS] Appointment not booked successfully: {e}"
         )
+
+
+def book_post_investigation_appointment(
+    page: Page, site: str, screening_practitioner_index: int
+) -> None:
+    """
+    Book a post-investigation appointment for a subject.
+    Sets the appointment date to today and the start time to '08:00'.
+    Args:
+        page (Page): The Playwright page object.
+        site (str): The name of the site.
+        screening_practitioner_index (int): The index of the screening practitioner to select.
+    """
+    book_appointments_page = BookAppointmentPage(page)
+    book_appointments_page.select_site_dropdown_option(
+        [
+            f"{site} (? km)",
+            f"{site} (? km) (attended)",
+        ]
+    )
+    book_appointments_page.select_screening_practitioner_dropdown_option(
+        screening_practitioner_index
+    )
+    book_appointments_page.enter_appointment_date(datetime.today())
+    book_appointments_page.enter_appointment_start_time("08:00")
+    book_appointments_page.click_save_button()
 
 
 class AppointmentAttendance:

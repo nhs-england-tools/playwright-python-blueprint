@@ -37,6 +37,8 @@ from pages.datasets.investigation_dataset_page import (
     OutcomeAtTimeOfProcedureOptions,
     LateOutcomeOptions,
     InvestigationDatasetsPage,
+    FailureReasonsOptions,
+    CompletionProofOptions,
 )
 from typing import Optional
 from utils.investigation_dataset import (
@@ -196,7 +198,7 @@ def go_from_investigation_dataset_complete_to_a259_status(page: Page) -> None:
     # Invite for 2nd diagnostic test > A59 - check options
     AdvanceFOBTScreeningEpisodePage(page).click_calendar_button()
     CalendarPicker(page).v1_calender_picker(datetime.today())
-    AdvanceFOBTScreeningEpisodePage(page).select_test_type_dropdown_option_2(
+    AdvanceFOBTScreeningEpisodePage(page).select_test_type_dropdown_option(
         "Colonoscopy"
     )
     AdvanceFOBTScreeningEpisodePage(page).click_invite_for_diagnostic_test_button()
@@ -249,6 +251,48 @@ def get_default_endoscopy_information() -> dict:
         "outcome at time of procedure": OutcomeAtTimeOfProcedureOptions.LEAVE_DEPARTMENT,
         "late outcome": LateOutcomeOptions.NO_COMPLICATIONS,
     }
+
+
+def get_normal_smokescreen_information() -> tuple[dict, dict, dict, dict, dict]:
+    """
+    Returns a tuple containing default information for a normal smokescreen investigation dataset.
+    This includes general information, drug information, endoscopy information,
+    failure information, and completion information.
+    Returns:
+        tuple: A tuple containing five dictionaries:
+            - general_information (dict): Default general information.
+            - drug_information (dict): Default drug information.
+            - endoscopy_information (dict): Default endoscopy information.
+            - failure_information (dict): Default failure information.
+            - completion_information (dict): Default completion information.
+    """
+    general_information = get_default_general_information()
+    drug_information = {
+        "drug_type1": DrugTypeOptions.BISACODYL,
+        "drug_dose1": "10",
+        "drug_type2": DrugTypeOptions.CITRAFLEET,
+        "drug_dose2": "20",
+    }
+    endoscopy_information = get_default_endoscopy_information()
+    endoscopy_information["procedure type"] = "diagnostic"
+    endoscopy_information["endoscopist defined extent"] = EndoscopyLocationOptions.ILEUM
+    endoscopy_information["scope imager used"] = YesNoOptions.NO
+    endoscopy_information["start of extubation time"] = "09:15"
+    endoscopy_information["end time of procedure"] = "09:30"
+    endoscopy_information["scope id"] = "A1"
+    failure_information = {
+        "failure reasons": FailureReasonsOptions.NO_FAILURE_REASONS,
+    }
+    completion_information = {
+        "completion proof": CompletionProofOptions.PHOTO_ILEO,
+    }
+    return (
+        general_information,
+        drug_information,
+        endoscopy_information,
+        failure_information,
+        completion_information,
+    )
 
 
 def complete_and_assert_investigation(

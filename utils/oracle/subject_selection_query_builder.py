@@ -130,6 +130,7 @@ class SubjectSelectionQueryBuilder:
         self.sql_where = []
         self.sql_from_episode = []
         self.sql_from_genetic_condition_diagnosis = []
+        self.sql_from_diagnostic_test = []
         self.sql_from_cancer_audit_datasets = []
         self.sql_from_surveillance_review = []
         self.bind_vars = {}
@@ -161,9 +162,12 @@ class SubjectSelectionQueryBuilder:
         self.sql_where = []
         self.sql_from_episode = []
         self.sql_from_genetic_condition_diagnosis = []
+        self.sql_from_diagnostic_test = []
         self.sql_from_cancer_audit_datasets = []
+        self.sql_from_surveillance_review = []
         self.bind_vars = {}
         self.criteria_value_count = 0
+
         self.xt = "xt"
         self.ap = "ap"
 
@@ -182,6 +186,7 @@ class SubjectSelectionQueryBuilder:
                 self.sql_select
                 + self.sql_from
                 + self.sql_from_episode
+                + self.sql_from_diagnostic_test
                 + self.sql_from_genetic_condition_diagnosis
                 + self.sql_from_cancer_audit_datasets
                 + self.sql_from_surveillance_review
@@ -1316,12 +1321,14 @@ class SubjectSelectionQueryBuilder:
                 no_result_comparator = " != "
                 failure_reasons_comparator = "AND NOT EXISTS"
             self.sql_where.append(
-                f" AND ({self.xt}.result_id {no_result_comparator} 20311 "
+                f" AND ({self.xt}{self.criteria_value_count}.result_id {no_result_comparator} 20311 "
             )
             self.sql_where.append(
                 f"{failure_reasons_comparator} (SELECT 1 FROM ds_failure_reason_t xtfr "
             )
-            self.sql_where.append(f" WHERE xtfr.ext_test_id = {self.xt}.ext_test_id ")
+            self.sql_where.append(
+                f" WHERE xtfr.ext_test_id = {self.xt}{self.criteria_value_count}.ext_test_id "
+            )
             self.sql_where.append(" AND xtfr.deleted_flag = 'N' ")
             self.sql_where.append(" AND xtfr.failure_reason_id != 18500)) ")
         except Exception:
@@ -1714,103 +1721,148 @@ class SubjectSelectionQueryBuilder:
 
     def _add_join_to_diagnostic_tests(self) -> None:
         """
-        Adds joins to external_tests_t based on diagnostic test selection criteria.
+        Adds joins to external_tests_t table for diagnostic test selection criteria.
         Handles various test types and conditions based on the criteria value.
-        Requires prior join to latest episode (ep). Aliases the external tests table as 'xt' and 'xtp' for previous tests.
-        Supports multiple diagnostic test types and conditions.
-        Accepts values like:
-            - "any_test_in_any_episode"
-            - "only_test_in_latest_episode"
-            - "only_not_void_test_in_latest_episode"
-            - "latest_test_in_latest_episode"
-            - "latest_not_void_test_in_latest_episode"
-            - "earliest_not_void_test_in_latest_episode"
-            - "earlier_test_in_latest_episode"
-            - "later_test_in_latest_episode"
         """
         try:
-            which = WhichDiagnosticTest.by_description_case_insensitive(
+            which_test = WhichDiagnosticTest.by_description_case_insensitive(
                 self.criteria_value
             )
-            idx = getattr(self, "criteria_index", 0)
+            if which_test is None:
+                raise SelectionBuilderException(
+                    self.criteria_key_name, self.criteria_value
+                )
+
+            idx = self.criteria_value_count
             xt = f"xt{idx}"
             xtp = f"xt{idx - 1}"
 
-            self.sql_from.append(
+            # Ensure the join is only added once
+            self.sql_from_diagnostic_test.append(
                 f" INNER JOIN external_tests_t {xt} ON {xt}.screening_subject_id = ss.screening_subject_id "
             )
 
-            if which == WhichDiagnosticTest.ANY_TEST_IN_ANY_EPISODE:
-                return
+            match which_test:
+                case WhichDiagnosticTest.ANY_TEST_IN_ANY_EPISODE:
+                    # No further restriction required
+                    return
 
-            self._add_join_to_latest_episode()
+                case WhichDiagnosticTest.ANY_TEST_IN_LATEST_EPISODE:
+                    self._add_join_to_latest_episode()
+                    self.sql_from_diagnostic_test.append(
+                        f" AND /*any*/ {xt}.subject_epis_id = ep.subject_epis_id /*any*/ "
+                    )
+                    return
 
-            handlers = {
-                WhichDiagnosticTest.ANY_TEST_IN_LATEST_EPISODE: self._handle_any_test_in_latest_episode,
-                WhichDiagnosticTest.ONLY_TEST_IN_LATEST_EPISODE: self._handle_only_test_in_latest_episode,
-                WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE: self._handle_only_test_in_latest_episode,
-                WhichDiagnosticTest.LATEST_TEST_IN_LATEST_EPISODE: self._handle_latest_test_in_latest_episode,
-                WhichDiagnosticTest.LATEST_NOT_VOID_TEST_IN_LATEST_EPISODE: self._handle_latest_test_in_latest_episode,
-                WhichDiagnosticTest.EARLIEST_NOT_VOID_TEST_IN_LATEST_EPISODE: self._handle_earliest_test_in_latest_episode,
-                WhichDiagnosticTest.EARLIER_TEST_IN_LATEST_EPISODE: self._handle_earlier_or_later_test,
-                WhichDiagnosticTest.LATER_TEST_IN_LATEST_EPISODE: self._handle_earlier_or_later_test,
-            }
+                case (
+                    WhichDiagnosticTest.ONLY_TEST_IN_LATEST_EPISODE
+                    | WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE
+                ):
+                    self._add_join_to_latest_episode()
+                    self.sql_from_diagnostic_test.append(
+                        f" AND /*only*/ {xt}.subject_epis_id = ep.subject_epis_id "
+                    )
+                    if (
+                        which_test
+                        == WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE
+                    ):
+                        self.sql_from_diagnostic_test.append(
+                            f" AND /*only*/ {xt}.void = 'N' "
+                        )
+                    self.sql_from_diagnostic_test.append(
+                        " AND NOT EXISTS ( SELECT 'xto' "
+                        " FROM external_tests_t xto "
+                        " WHERE xto.screening_subject_id = ss.screening_subject_id "
+                    )
+                    if (
+                        which_test
+                        == WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE
+                    ):
+                        self.sql_from_diagnostic_test.append(" AND xto.void = 'N' ")
+                    self.sql_from_diagnostic_test.append(
+                        f" AND xto.subject_epis_id = ep.subject_epis_id "
+                        f" AND xto.ext_test_id != {xt}.ext_test_id ) "
+                    )
+                    return
 
-            if which in handlers:
-                handlers[which](which, xt, xtp)
-            else:
-                raise ValueError(f"Unsupported diagnostic test type: {which}")
+                case (
+                    WhichDiagnosticTest.LATEST_TEST_IN_LATEST_EPISODE
+                    | WhichDiagnosticTest.LATEST_NOT_VOID_TEST_IN_LATEST_EPISODE
+                ):
+                    self._add_join_to_latest_episode()
+                    self.sql_from_diagnostic_test.append(
+                        f" AND /*xtx*/ {xt}.ext_test_id = ( "
+                        " SELECT MAX(xtx.ext_test_id) "
+                        " FROM external_tests_t xtx "
+                        " WHERE xtx.screening_subject_id = ss.screening_subject_id "
+                    )
+                    if (
+                        which_test
+                        == WhichDiagnosticTest.LATEST_NOT_VOID_TEST_IN_LATEST_EPISODE
+                    ):
+                        self.sql_from_diagnostic_test.append(" AND xtx.void = 'N' ")
+                    self.sql_from_diagnostic_test.append(
+                        " AND xtx.subject_epis_id = ep.subject_epis_id ) "
+                    )
+                    return
+
+                case WhichDiagnosticTest.EARLIEST_NOT_VOID_TEST_IN_LATEST_EPISODE:
+                    self._add_join_to_latest_episode()
+                    self.sql_from_diagnostic_test.append(
+                        f" AND /*xtn*/ {xt}.ext_test_id = ( "
+                        " SELECT MIN(xtn.ext_test_id) "
+                        " FROM external_tests_t xtn "
+                        " WHERE xtn.screening_subject_id = ss.screening_subject_id "
+                        " AND xtn.void = 'N' "
+                        " AND xtn.subject_epis_id = ep.subject_epis_id ) "
+                    )
+                    return
+
+                case (
+                    WhichDiagnosticTest.EARLIER_TEST_IN_LATEST_EPISODE
+                    | WhichDiagnosticTest.LATER_TEST_IN_LATEST_EPISODE
+                ):
+                    comparator = (
+                        "<"
+                        if which_test
+                        == WhichDiagnosticTest.EARLIER_TEST_IN_LATEST_EPISODE
+                        else ">"
+                    )
+                    if idx == 0:
+                        raise SelectionBuilderException(
+                            f"Diagnostic test selection value {self.single_quoted(self.criteria_value)} is not valid in the first line of the table of criteria"
+                        )
+                    else:
+                        self._add_join_to_latest_episode()
+                        self.sql_from_diagnostic_test.append(
+                            f" AND /*xt*/ {xt}.ext_test_id {comparator} {xtp}.ext_test_id "
+                        )
+                    return
+
+                case _ if hasattr(which_test, "get_test_number"):
+                    self._add_join_to_latest_episode()
+                    test_number = which_test.test_number
+                    self.sql_from_diagnostic_test.append(
+                        f" AND {xt}.subject_epis_id = ep.subject_epis_id "
+                        f" AND {xt}.ext_test_id = ( "
+                        "   SELECT xtr.ext_test_id "
+                        "   FROM ("
+                        "     SELECT rnk.ext_test_id, RANK() OVER (ORDER BY rnk.ext_test_id ASC) AS test_number "
+                        "     FROM external_tests_t rnk "
+                        f"     WHERE rnk.subject_epis_id = {xt}.subject_epis_id "
+                        "     ) xtr "
+                        f"   WHERE xtr.test_number = {test_number}"
+                        " )"
+                    )
+                    return
+
+                case _:
+                    raise SelectionBuilderException(
+                        f"Invalid diagnostic test selection value: {self.criteria_value}"
+                    )
 
         except Exception:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
-
-    def _handle_any_test_in_latest_episode(self, which, xt, _):
-        """Helper method for diagnostic test filtering"""
-
-        self.sql_from.append(f"AND {xt}.subject_epis_id = ep.subject_epis_id")
-
-    def _handle_only_test_in_latest_episode(self, which, xt, _):
-        """Helper method for diagnostic test filtering"""
-        self.sql_from.append(f" AND {xt}.subject_epis_id = ep.subject_epis_id ")
-        if which == WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE:
-            self.sql_from.append(f" AND {xt}.void = 'N' ")
-        self.sql_from.append(
-            f""" AND NOT EXISTS (
-        SELECT 'xto' FROM external_tests_t xto
-        WHERE xto.screening_subject_id = ss.screening_subject_id
-        {'AND xto.void = \'N\'' if which == WhichDiagnosticTest.ONLY_NOT_VOID_TEST_IN_LATEST_EPISODE else ''}
-        AND xto.subject_epis_id = ep.subject_epis_id
-        AND xto.ext_test_id != {xt}.ext_test_id ) """
-        )
-
-    def _handle_latest_test_in_latest_episode(self, which, xt, _):
-        """Helper method for diagnostic test filtering"""
-        self.sql_from.append(
-            f""" AND {xt}.ext_test_id = (
-        SELECT MAX(xtx.ext_test_id) FROM external_tests_t xtx
-        WHERE xtx.screening_subject_id = ss.screening_subject_id
-        {'AND xtx.void = \'N\'' if which == WhichDiagnosticTest.LATEST_NOT_VOID_TEST_IN_LATEST_EPISODE else ''}
-        AND xtx.subject_epis_id = ep.subject_epis_id ) """
-        )
-
-    def _handle_earliest_test_in_latest_episode(self, which, xt, _):
-        """Helper method for diagnostic test filtering"""
-        self.sql_from.append(
-            f""" AND {xt}.ext_test_id = (
-        SELECT MIN(xtn.ext_test_id) FROM external_tests_t xtn
-        WHERE xtn.screening_subject_id = ss.screening_subject_id
-        AND xtn.void = 'N'
-        AND xtn.subject_epis_id = ep.subject_epis_id ) """
-        )
-
-    def _handle_earlier_or_later_test(self, which, xt, xtp):
-        """Helper method for diagnostic test filtering"""
-        if getattr(self, "criteria_index", 0) == 0:
-            raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
-        comparator = (
-            "<" if which == WhichDiagnosticTest.EARLIER_TEST_IN_LATEST_EPISODE else ">"
-        )
-        self.sql_from.append(f" AND {xt}.ext_test_id {comparator} {xtp}.ext_test_id ")
 
     def _add_criteria_diagnostic_test_type(self, proposed_or_confirmed: str) -> None:
         """
@@ -2296,7 +2348,7 @@ class SubjectSelectionQueryBuilder:
         Filters based on symptomatic surgery result value or presence.
         """
         try:
-            column = f"{self.xt}.surgery_result_id"
+            column = f"{self.xt}{self.criteria_value_count}.surgery_result_id"
 
             result_type = (
                 SymptomaticProcedureResultType.by_description_case_insensitive(
@@ -2324,7 +2376,7 @@ class SubjectSelectionQueryBuilder:
         Filters based on screening referral type ID or null presence.
         """
         try:
-            column = f"{self.xt}.screening_referral_type_id"
+            column = f"{self.xt}{self.criteria_value_count}.screening_referral_type_id"
             value = self.criteria_value.strip().lower()
 
             if value == "null":
@@ -3630,7 +3682,7 @@ class SubjectSelectionQueryBuilder:
             "ALL_PATHWAYSLATEST_EPISODE_END_DATE": "TRUNC(ep.episode_end_date)",
             "ALL_PATHWAYSCEASED_CONFIRMATION_DATE": "TRUNC(ss.ceased_confirmation_recd_date)",
             "ALL_PATHWAYSDATE_OF_DEATH": "TRUNC(c.date_of_death)",
-            "ALL_PATHWAYSSYMPTOMATIC_PROCEDURE_DATE": f"TRUNC({self.xt}.surgery_date)",
+            "ALL_PATHWAYSSYMPTOMATIC_PROCEDURE_DATE": f"TRUNC({self.xt}{self.criteria_value_count}.surgery_date)",
             "ALL_PATHWAYSAPPOINTMENT_DATE": f"TRUNC({self.ap}.appointment_date)",
             "FOBTDUE_DATE": "TRUNC(ss.screening_due_date)",
             "FOBTCALCULATED_DUE_DATE": "TRUNC(ss.calculated_sdd)",
@@ -3650,7 +3702,7 @@ class SubjectSelectionQueryBuilder:
             "ALL_PATHWAYSSEVENTY_FIFTH_BIRTHDAY": "ADD_MONTHS(TRUNC(c.date_of_birth), 12*75)",
             "ALL_PATHWAYSCADS TUMOUR_DATE_OF_DIAGNOSIS": "TRUNC(dctu.date_of_diagnosis)",
             "ALL_PATHWAYSCADS TREATMENT_START_DATE": "TRUNC(dctr.treatment_start_date)",
-            "ALL_PATHWAYSDIAGNOSTIC_TEST_CONFIRMED_DATE": f"TRUNC({self.xt}.confirmed_date)",
+            "ALL_PATHWAYSDIAGNOSTIC_TEST_CONFIRMED_DATE": f"TRUNC({self.xt}{self.criteria_value_count}.confirmed_date)",
         }
         if concat_key not in mapping:
             raise SelectionBuilderException(self.criteria_key_name, self.criteria_value)
@@ -4121,7 +4173,10 @@ class SubjectSelectionQueryBuilder:
                         date_column_name,
                         " = ",
                         self._add_months_to_oracle_date(
-                            self.xt + ".confirmed_date", number_of_months
+                            self.xt
+                            + str(self.criteria_value_count)
+                            + ".confirmed_date",
+                            number_of_months,
                         ),
                         False,
                     )
@@ -4134,7 +4189,8 @@ class SubjectSelectionQueryBuilder:
                         date_column_name,
                         " = ",
                         self._add_months_to_oracle_date(
-                            self.xt + ".surgery_date", number_of_months
+                            self.xt + str(self.criteria_value_count) + ".surgery_date",
+                            number_of_months,
                         ),
                         False,
                     )
@@ -4231,7 +4287,9 @@ class SubjectSelectionQueryBuilder:
         """
         Adds a SQL WHERE clause for the specified onward referral type field based on the criteria value.
         """
-        self.sql_where.append(f" AND {self.xt}.{onward_referral_type_field_name} ")
+        self.sql_where.append(
+            f" AND {self.xt}{self.criteria_value_count}.{onward_referral_type_field_name} "
+        )
         if self.criteria_value.lower() == "null":
             self.sql_where.append(self._SQL_IS_NULL)
         else:
@@ -4261,7 +4319,9 @@ class SubjectSelectionQueryBuilder:
         Appends the clause to self.sql_where. If the criteria value is 'null', checks for NULL in the field.
         Otherwise, matches the field against the valid value ID for the reason.
         """
-        self.sql_where.append(f" AND {self.xt}.{onward_referral_reason_field_name} ")
+        self.sql_where.append(
+            f" AND {self.xt}{self.criteria_value_count}.{onward_referral_reason_field_name} "
+        )
         if self.criteria_value.lower() == "null":
             self.sql_where.append("IS NULL")
         else:
@@ -4289,7 +4349,9 @@ class SubjectSelectionQueryBuilder:
         Appends the clause to self.sql_where. If the criteria value is 'null', checks for NULL in the field.
         Otherwise, matches the field against the valid value ID for the reason.
         """
-        self.sql_where.append(f" AND {self.xt}.complete_reason_id ")
+        self.sql_where.append(
+            f" AND {self.xt}{self.criteria_value_count}.complete_reason_id "
+        )
         if self.criteria_value.lower() == "null":
             self.sql_where.append("IS NULL")
         else:

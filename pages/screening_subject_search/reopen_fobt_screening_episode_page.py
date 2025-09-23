@@ -21,6 +21,11 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
         self.reopen_following_non_response_button = self.page.get_by_role(
             "button", name="Reopen following Non-Response"
         )
+        self.reopen_to_confirm_diagnostic_test_result_and_outcome_button = (
+            self.page.get_by_role(
+                "button", name="Reopen to Confirm Diagnostic Test Result and Outcome"
+            )
+        )
 
     def click_reopen_to_book_an_assessment_button(self) -> None:
         """Click the 'Reopen to book an assessment' button."""
@@ -37,3 +42,9 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
     def click_reopen_following_non_response_button(self) -> None:
         """Click the 'Reopen following Non-Response' button."""
         self.safe_accept_dialog(self.reopen_following_non_response_button)
+
+    def click_reopen_to_confirm_diagnostic_test_result_and_outcome_button(self) -> None:
+        """Click the 'Reopen to Confirm Diagnostic Test Result and Outcome' button."""
+        self.safe_accept_dialog(
+            self.reopen_to_confirm_diagnostic_test_result_and_outcome_button
+        )

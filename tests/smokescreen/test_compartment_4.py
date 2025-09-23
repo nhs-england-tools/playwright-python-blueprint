@@ -116,8 +116,8 @@ def test_compartment_4(page: Page, smokescreen_properties: dict) -> None:
             current_month_displayed,
             BookAppointmentPage(page).appointment_cell_locators,
             [
-                BookAppointmentPage(page).available_background_colour,
-                BookAppointmentPage(page).some_available_background_colour,
+                BookAppointmentPage(page).appointment_fully_available_colour,
+                BookAppointmentPage(page).appointment_partially_available_colour,
             ],
         )
         BookAppointmentPage(page).appointments_table.click_first_input_in_column(

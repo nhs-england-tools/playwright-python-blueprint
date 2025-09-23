@@ -338,7 +338,7 @@ class InvestigationDatasetsPage(BasePage):
         Args:
             text (str): The text to check for visibility.
         """
-        expect(self.page.get_by_text(text)).to_contain_text(text)
+        expect(self.page.get_by_text(text)).to_contain_text(text, timeout=10000)
 
     def select_polyp1_pathology_provider_option_index(self, option: int) -> None:
         """
