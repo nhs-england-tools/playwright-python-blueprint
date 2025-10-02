@@ -1,0 +1,570 @@
+{
+  "general_information": {
+    "fields": [
+      {
+        "key": "site",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for site lookup dropdown",
+        "optional": false
+      },
+      {
+        "key": "practitioner",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for practitioner dropdown",
+        "optional": false
+      },
+      {
+        "key": "testing clinician",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for testing clinician dropdown",
+        "optional": false
+      },
+      {
+        "key": "reporting radiologist",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for reporting radiologist dropdown",
+        "optional": true
+      },
+      {
+        "key": "fit for subsequent endoscopic referral",
+        "type": "YesNoOptions",
+        "description": "Enum value for referral fitness",
+        "optional": true
+      },
+      {
+        "key": "aspirant endoscopist",
+        "type": "integer_or_none",
+        "range": [-1, 10],
+        "description": "Index for aspirant dropdown, or None to mark absence.",
+        "optional": true
+      }
+    ]
+  },
+
+  "drug_information": {
+    "groups": [
+      {
+        "label": "Bowel Preparation Administered Drugs",
+        "fields": [
+          {
+            "key": "drug_typeX",
+            "type": "DrugTypeOptions",
+            "description": "Bowel Preparation Drug Type",
+            "optional": true,
+            "multiple": true
+          },
+          {
+            "key": "drug_doseX",
+            "type": "string",
+            "description": "Bowel Preparation Drug Dose",
+            "optional": true,
+            "multiple": true
+          }
+        ]
+      },
+      {
+        "label": "Antibiotics Administered Drugs",
+        "fields": [
+          {
+            "key": "antibiotic_drug_typeX",
+            "type": "AntibioticsAdministeredDrugTypeOptions",
+            "description": "Antibiotics Administered Drug Type",
+            "optional": true,
+            "multiple": true
+          },
+          {
+            "key": "antibiotic_drug_doseX",
+            "type": "string",
+            "description": "Antibiotics Administered Drug Dose",
+            "optional": true,
+            "multiple": true
+          }
+        ]
+      },
+      {
+        "label": "Other Drugs Administered Drugs",
+        "fields": [
+          {
+            "key": "other_drug_typeX",
+            "type": "OtherDrugsAdministeredDrugTypeOptions",
+            "description": "Other Drugs Administered Drug Type",
+            "optional": true,
+            "multiple": true
+          },
+          {
+            "key": "other_drug_doseX",
+            "type": "string",
+            "description": "Other Drugs Administered Drug Dose",
+            "optional": true,
+            "multiple": true
+          }
+        ]
+      }
+    ]
+  },
+
+  "endoscopy_information": {
+    "fields": [
+      {
+        "key": "endoscope inserted",
+        "type": "yes_no",
+        "description": "Whether the endoscope was inserted or not",
+        "optional": false
+      },
+      {
+        "key": "procedure type",
+        "type": "therapeutic_diagnostic",
+        "description": "If it was a procedure or diagnostic testing",
+        "optional": false
+      },
+      {
+        "key": "bowel preparation quality",
+        "type": "BowelPreparationQualityOptions",
+        "description": "Bowel preparation quality",
+        "optional": false
+      },
+      {
+        "key": "comfort during examination",
+        "type": "ComfortOptions",
+        "description": "Subject's comfort during examination",
+        "optional": false
+      },
+      {
+        "key": "comfort during recovery",
+        "type": "ComfortOptions",
+        "description": "Subject's comfort during recovery",
+        "optional": false
+      },
+      {
+        "key": "endoscopist defined extent",
+        "type": "EndoscopyLocationOptions",
+        "description": "The extent of the endoscopy",
+        "optional": false
+      },
+      {
+        "key": "scope imager used",
+        "type": "YesNoOptions",
+        "description": "Whether a scope imager was used",
+        "optional": false
+      },
+      {
+        "key": "retroverted view",
+        "type": "YesNoOptions",
+        "description": "Whether the view was retroverted",
+        "optional": false
+      },
+      {
+        "key": "start of intubation time",
+        "type": "time",
+        "description": "The start time of the intubation",
+        "optional": false
+      },
+      {
+        "key": "start of extubation time",
+        "type": "time",
+        "description": "The start time of the extubation",
+        "optional": false
+      },
+      {
+        "key": "end time of procedure",
+        "type": "time",
+        "description": "The end time of the procedure",
+        "optional": false
+      },
+      {
+        "key": "scope id",
+        "type": "string",
+        "description": "The scope ID",
+        "optional": false,
+        "default": "AUTOMATED TEST"
+      },
+      {
+        "key": "insufflation",
+        "type": "InsufflationOptions",
+        "description": "The gas used in insufflation",
+        "optional": false
+      },
+      {
+        "key": "outcome at time of procedure",
+        "type": "OutcomeAtTimeOfProcedureOptions",
+        "description": "The outcome at the time of procedure",
+        "optional": false
+      },
+      {
+        "key": "late outcome",
+        "type": "LateOutcomeOptions",
+        "description": "The late outcome",
+        "optional": false
+      }
+    ]
+  },
+
+  "completion_information": {
+    "fields": [
+      {
+        "key": "completion proof",
+        "type": "CompletionProofOptions",
+        "description": "The proof used for completion",
+        "optional": false
+      }
+    ]
+  },
+
+  "failure_information": {
+    "fields": [
+      {
+        "key": "failure reasons",
+        "type": "FailureReasonsOptions",
+        "description": "The reason for failure",
+        "optional": false
+      }
+    ]
+  },
+
+  "polyp_information": {
+    "fields": [
+      {
+        "key": "location",
+        "type": "EndoscopyLocationOptions",
+        "description": "The location of the polyp",
+        "optional": false
+      },
+      {
+        "key": "classification",
+        "type": "PolypClassificationOptions",
+        "description": "The classification of the polyp",
+        "optional": false
+      },
+      {
+        "key": "estimate of whole polyp size",
+        "type": "string",
+        "description": "Estimate of the polyp size (mm)",
+        "optional": false
+      },
+      {
+        "key": "polyp access",
+        "type": "PolypAccessOptions",
+        "description": "The difficulty of accessing the polyp",
+        "optional": false
+      },
+      {
+        "key": "left in situ",
+        "type": "YesNoOptions",
+        "description": "If the polyp was left in situ",
+        "optional": false
+      },
+      {
+        "key": "secondary piece",
+        "type": "YesNoOptions",
+        "description": "Secondary piece",
+        "optional": true
+      },
+      {
+        "key": "reason left in situ",
+        "type": "PolypReasonLeftInSituOptions",
+        "description": "Reason polyp was left in situ",
+        "optional": true,
+        "conditional_on": {
+          "field": "left in situ",
+          "value": "YesNoOptions.YES"
+        }
+      }
+    ],
+    "list": true
+  },
+
+  "polyp_intervention": {
+    "fields": [
+      {
+        "key": "modality",
+        "type": "PolypInterventionModalityOptions",
+        "description": "Polyp intervention modality",
+        "optional": false
+      },
+      {
+        "key": "device",
+        "type": "PolypInterventionDeviceOptions",
+        "description": "Device used during polyp intervention",
+        "optional": false
+      },
+      {
+        "key": "intervention success",
+        "type": "PolypInterventionSuccessOptions",
+        "description": "Whether the intervention was successful",
+        "optional": true
+      },
+      {
+        "key": "excised",
+        "type": "YesNoOptions",
+        "description": "Whether the polyp was excised",
+        "optional": true
+      },
+      {
+        "key": "retrieved",
+        "type": "YesNoOptions",
+        "description": "Whether the polyp was retrieved",
+        "optional": true
+      },
+      {
+        "key": "excision technique",
+        "type": "PolypInterventionExcisionTechniqueOptions",
+        "description": "Polyp intervention excision technique used",
+        "optional": true
+      },
+      {
+        "key": "polyp appears fully resected endoscopically",
+        "type": "YesNoOptions",
+        "description": "Whether the polyp appears fully resected endoscopically",
+        "optional": true
+      }
+    ],
+    "list": true,
+    "nested_list": true
+  },
+
+  "polyp_histology": {
+    "fields": [
+      {
+        "key": "pathology lost",
+        "type": "YesNoOptions",
+        "description": "Whether the pathology was lost",
+        "optional": true
+      },
+      {
+        "key": "reason pathology lost",
+        "type": "ReasonPathologyLostOptions",
+        "description": "Reason the pathology was lost",
+        "optional": true,
+        "conditional_on": {
+          "field": "pathology lost",
+          "value": "YesNoOptions.YES"
+        }
+      },
+      {
+        "key": "date of receipt",
+        "type": "datetime",
+        "description": "The date of receipt",
+        "optional": true
+      },
+      {
+        "key": "date of reporting",
+        "type": "datetime",
+        "description": "The date of reporting",
+        "optional": true
+      },
+      {
+        "key": "pathology provider",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for the pathology provider dropdown",
+        "optional": true
+      },
+      {
+        "key": "pathologist",
+        "type": "integer",
+        "range": [-1, 10],
+        "description": "Index for the pathologist dropdown",
+        "optional": true
+      },
+      {
+        "key": "polyp type",
+        "type": "PolypTypeOptions",
+        "description": "The type of polyp",
+        "optional": true
+      },
+      {
+        "key": "serrated lesion sub type",
+        "type": "SerratedLesionSubTypeOptions",
+        "description": "Serrated lesion sub type",
+        "optional": true,
+        "conditional_on": {
+          "field": "polyp type",
+          "value": "PolypTypeOptions.SERRATED_LESION"
+        }
+      },
+      {
+        "key": "adenoma sub type",
+        "type": "AdenomaSubTypeOptions",
+        "description": "Adenoma sub type",
+        "optional": true,
+        "conditional_on": {
+          "field": "polyp type",
+          "value": "PolypTypeOptions.ADENOMA"
+        }
+      },
+      {
+        "key": "polyp excision complete",
+        "type": "PolypExcisionCompleteOptions",
+        "description": "Polyp excision completion options",
+        "optional": true
+      },
+      {
+        "key": "polyp size",
+        "type": "string",
+        "description": "The size of the polyp",
+        "optional": true
+      },
+      {
+        "key": "polyp dysplasia",
+        "type": "PolypDysplasiaOptions",
+        "description": "Whether polyp dysplasia is present",
+        "optional": true
+      },
+      {
+        "key": "polyp carcinoma",
+        "type": "YesNoUncertainOptions",
+        "description": "Whether polyp carcinoma is present",
+        "optional": true
+      }
+    ],
+    "list": true
+  },
+
+  "contrast_tagging_and_drug": {
+    "fields": [
+      {
+        "key": "iv buscopan administered",
+        "type": "IVBuscopanAdministeredOptions",
+        "description": "Whether IV Buscopan was administered",
+        "optional": false
+      },
+      {
+        "key": "contraindicated",
+        "type": "YesNoOptions",
+        "description": "Whether administered IV Buscopan was contraindicated",
+        "optional": false
+      },
+      {
+        "key": "iv contrast administered",
+        "type": "IVContrastAdministeredOptions",
+        "description": "Whether IV contrast was administered",
+        "optional": false
+      },
+      {
+        "key": "tagging agent given",
+        "type": "TaggingAgentDrugAdministeredOptions",
+        "description": "Whether a tagging agent was given",
+        "optional": false
+      },
+      {
+        "key": "additional bowel preparation administered",
+        "type": "AdditionalBowelPrepAdministeredOptions",
+        "description": "Whether additional bowel preparation was administered",
+        "optional": false
+      }
+    ],
+    "groups": [
+      {
+        "label": "Additional Bowel Preparation Administered Drugs",
+        "fields": [
+          {
+            "key": "drug_typeX",
+            "type": "DrugTypeOptions",
+            "description": "Additional Bowel Preparation Administered Drug Type",
+            "optional": true,
+            "multiple": true,
+            "conditional_on": {
+              "field": "additional bowel preparation administered",
+              "value": "AdditionalBowelPrepAdministeredOptions.YES"
+            }
+          },
+          {
+            "key": "drug_doseX",
+            "type": "string",
+            "description": "Additional Bowel Preparation Administered Drug Dose",
+            "optional": true,
+            "multiple": true,
+            "conditional_on": {
+              "field": "additional bowel preparation administered",
+              "value": "AdditionalBowelPrepAdministeredOptions.YES"
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+  "tagging_agent_given_drug_information": {
+    "groups": [
+      {
+        "label": "Tagging Agent Drugs",
+        "fields": [
+          {
+            "key": "drug_typeX",
+            "type": "DrugTypeOptions",
+            "description": "Tagging Agent Drug Type",
+            "optional": true,
+            "multiple": true
+          },
+          {
+            "key": "drug_doseX",
+            "type": "string",
+            "description": "Tagging Agent Drug Dose",
+            "optional": true,
+            "multiple": true
+          }
+        ]
+      }
+    ]
+  },
+
+  "radiology_information": {
+    "fields": [
+      {
+        "key": "examination quality",
+        "type": "ExaminationQualityOptions",
+        "description": "The quality of the examination",
+        "optional": false
+      },
+      {
+        "key": "scan position",
+        "type": "ScanPositionOptions",
+        "description": "The number of scan positions",
+        "optional": false
+      },
+      {
+        "key": "procedure outcome",
+        "type": "ProcedureOutcomeOptions",
+        "description": "Outcome at the time of procedure",
+        "optional": false
+      },
+      {
+        "key": "late outcome",
+        "type": "LateOutcomeOptions",
+        "description": "The late outcome",
+        "optional": false
+      },
+      {
+        "key": "segmental inadequacy",
+        "type": "SegmentalInadequacyOptions",
+        "description": "If segmental inadequacy was present",
+        "optional": false
+      },
+      {
+        "key": "intracolonic summary code",
+        "type": "IntracolonicSummaryCodeOptions",
+        "description": "The intracolonic summary code",
+        "optional": true,
+        "conditional_on": {
+          "field": "segmental inadequacy",
+          "value": "SegmentalInadequacyOptions.YES"
+        }
+      }
+    ]
+  },
+
+  "suspected_findings": {
+    "fields": [
+      {
+        "key": "extracolonic summary code",
+        "type": "ExtracolonicSummaryCodeOptions",
+        "description": "The extracolonic summary code",
+        "optional": false
+      }
+    ]
+  }
+}

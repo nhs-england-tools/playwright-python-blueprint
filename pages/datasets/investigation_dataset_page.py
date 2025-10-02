@@ -26,6 +26,13 @@ class InvestigationDatasetsPage(BasePage):
         self.testing_clinician_link = self.page.locator(
             "#UI_CONSULTANT_PIO_SELECT_LINK"
         )
+        self.reporting_radiologist_link = self.page.locator(
+            "#UI_REPORTING_CLINICIAN_PIO_SELECT_LINK"
+        )
+        self.show_contrast_tagging_and_drug_information = self.page.locator(
+            "#anchorContrastTaggingDrug"
+        )
+        self.show_radiology_information = self.page.locator("#anchorRadiology")
         self.aspirant_endoscopist_link = self.page.locator(
             "#UI_ASPIRANT_ENDOSCOPIST_PIO_SELECT_LINK"
         )
@@ -33,6 +40,7 @@ class InvestigationDatasetsPage(BasePage):
             "#UI_ASPIRANT_ENDOSCOPIST_NR"
         )
         self.show_drug_information_detail = self.page.locator("#anchorDrug")
+        self.show_suspected_findings = self.page.locator("#anchorRadiologyFindings")
         self.drug_type_option1 = self.page.locator("#UI_BOWEL_PREP_DRUG1")
         self.drug_type_dose1 = self.page.locator("#UI_BOWEL_PREP_DRUG_DOSE1")
         self.show_endoscopy_information_details = self.page.locator(
@@ -50,6 +58,9 @@ class InvestigationDatasetsPage(BasePage):
             "#anchorCompletionProof"
         )
         self.show_failure_information_details = self.page.locator("#anchorFailure")
+        self.show_radiology_failure_information_details = self.page.locator(
+            "#anchorRadiologyFailure"
+        )
         self.add_polyp_button = self.page.get_by_role("button", name="Add Polyp")
         self.polyp1_add_intervention_button = self.page.get_by_role(
             "link", name=self.add_intervention_string
@@ -173,6 +184,43 @@ class InvestigationDatasetsPage(BasePage):
         option_elements.nth(option).wait_for(state="visible")
         self.click(option_elements.nth(option))
 
+    def select_reporting_radiologist_option_index(self, option: int) -> None:
+        """
+        This method is designed to select a reporting radiologist from the reporting radiologist options.
+        It clicks on the reporting radiologist link and selects the given option by index.
+
+        Args:
+            option (int): The index of the option to select from the reporting radiologist options.
+        """
+        self.click(self.reporting_radiologist_link)
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        select_locator.first.wait_for(state="visible")
+        # Find all option elements inside the select and click the one at the given index
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(option).wait_for(state="visible")
+        self.click(option_elements.nth(option))
+
+    def click_show_contrast_tagging_and_drug_information(self) -> None:
+        """
+        This method is designed to click on the show contrast tagging and drug information link.
+        It clicks on the show contrast tagging and drug information link.
+        """
+        self.click(self.show_contrast_tagging_and_drug_information)
+
+    def click_show_radiology_information(self) -> None:
+        """
+        This method is designed to click on the show radiology information link.
+        It clicks on the show radiology information link.
+        """
+        self.click(self.show_radiology_information)
+
+    def click_show_radiology_failure_information(self) -> None:
+        """
+        This method is designed to click on the show radiology failure information link.
+        It clicks on the show radiology failure information link.
+        """
+        self.click(self.show_radiology_failure_information_details)
+
     def select_aspirant_endoscopist_option(self, option: str) -> None:
         """
         This method is designed to select an aspirant endoscopist from the aspirant endoscopist options.
@@ -215,6 +263,15 @@ class InvestigationDatasetsPage(BasePage):
         It clicks on the show drug information link.
         """
         self.click(self.show_drug_information_detail)
+
+    def click_show_suspected_findings_details(self) -> None:
+        """
+        This method is designed to click on the show suspected findings details link.
+        It clicks on the show suspected findings details link.
+        """
+        logging.info("[DEBUG] Clicking on Show Suspected Findings Details")
+        self.page.wait_for_timeout(1000)
+        self.show_suspected_findings.click()
 
     def select_drug_type_option1(self, option: str) -> None:
         """
@@ -514,7 +571,7 @@ class InvestigationDatasetsPage(BasePage):
         """
         return self.edit_dataset_button.is_visible()
 
-    def is_dataset_section_present(self, dataset_section_name: str) -> bool | None:
+    def is_dataset_section_present(self, dataset_section_name: str) -> Optional[bool]:
         """
         Checks if a section of the investigation dataset is present
         Args:
@@ -543,7 +600,7 @@ class InvestigationDatasetsPage(BasePage):
         logging.info(f"Dataset section '{dataset_section_name}' not found.")
         return False
 
-    def get_dataset_section(self, dataset_section_name: str) -> Locator | None:
+    def get_dataset_section(self, dataset_section_name: str) -> Optional[Locator]:
         """
         Retrieves a dataset section by matching its header text.
         Only returns the locator if the section is visible.
@@ -552,7 +609,7 @@ class InvestigationDatasetsPage(BasePage):
         Args:
             dataset_section_name (str): The name of the dataset section to locate.
         Returns:
-            Locator | None: A Playwright Locator for the matching section if visible, or None if not found or not visible.
+            Optioanl[Locator]: A Playwright Locator for the matching section if visible, or None if not found or not visible.
         """
         logging.info(f"START: Looking for section '{dataset_section_name}'")
 
@@ -621,7 +678,7 @@ class InvestigationDatasetsPage(BasePage):
 
     def get_dataset_subsection(
         self, dataset_section_name: str, dataset_subsection_name: str
-    ) -> Locator | None:
+    ) -> Optional[Locator]:
         """
         Retrieves a specific subsection within a dataset section by matching the subsection's header text.
         The method first searches through elements with the `.DatasetSubSection` class.
@@ -630,7 +687,7 @@ class InvestigationDatasetsPage(BasePage):
             dataset_section_name (str): The name of the dataset section that contains the subsection.
             dataset_subsection_name (str): The name of the subsection to locate.
         Returns:
-            Locator | None: A Playwright Locator for the found subsection, or None if not found.
+            Optional[Locator]: A Playwright Locator for the found subsection, or None if not found.
         Raises:
             ValueError: If the specified dataset section cannot be found.
         """
@@ -678,17 +735,17 @@ class InvestigationDatasetsPage(BasePage):
     def are_fields_on_page(
         self,
         section_name: str,
-        subsection_name: str | None,
+        subsection_name: Optional[str],
         field_names: list[str],
-        visible: bool | None = None,
+        visible: Optional[bool] = None,
     ) -> bool:
         """
         Checks if the given fields are present in a section or subsection, with optional visibility checks.
         Args:
             section_name (str): The name of the dataset section.
-            subsection_name (str | None): The name of the subsection, if any.
+            subsection_name (Optional[str]): The name of the subsection, if any.
             field_names (list[str]): List of field labels to check.
-            visible (bool | None):
+            visible (Optional[bool]):
                 - True → fields must be visible
                 - False → fields must be not visible
                 - None → visibility doesn't matter (just check presence)
@@ -1158,7 +1215,7 @@ class DrugTypeOptions(StrEnum):
     MOVIPREP = "200536~Sachet(s)"
     CITRAMAG = "200538~Sachet(s)"
     MANNITOL = "200539~Litre(s)"
-    GASTROGRAFIN = "200540~Mls Solution"
+    GASTROGRAFIN = "200540~Mls Solution~204334"
     PHOSPHATE_ENEMA = "200528~Sachet(s)"
     MICROLAX_ENEMA = "200529~Sachet(s)"
     OSMOSPREP = "203063~Tablet(s)"
@@ -1487,6 +1544,95 @@ class SedationOptions(StrEnum):
     ASLEEP_BUT_RESPONDING_TO_NAME = "17326"
     ASLEEP_BUT_RESPONDING_TO_TOUCH = "17327"
     ASLEEP_AND_UNRESPONSIVE = "17328"
+
+
+class ExaminationQualityOptions(StrEnum):
+    """Enum for examination quality options"""
+
+    GOOD = "17016"
+    ADEQUATE_FAIR = "17017"
+    POOR = "17995~Enema down scope~204376"
+    NOT_REPORTED = "202140"
+
+
+class ScanPositionOptions(StrEnum):
+    """Enum for number of scan positions"""
+
+    SINGLE = "204373"
+    DUAL = "204374"
+    TRIPLE = "204375"
+    NOT_REPORTED = "202140"
+
+
+class ProcedureOutcomeOptions(StrEnum):
+    """Enum for outcome at time of procedure"""
+
+    LEAVE_DEPARTMENT = "17148~Complications are optional"
+    UNPLANNED_ADMISSION = "17147~Complications are mandatory"
+
+
+class SegmentalInadequacyOptions(StrEnum):
+    """Enum for segmental inadequacy"""
+
+    YES = "17058"
+    NO = "17059~~307113"
+
+
+class IntracolonicSummaryCodeOptions(StrEnum):
+    """Enum for intracolonic summary code"""
+
+    CX_INADEQUATE_STUDY = "203167~~204409,307112"
+    C1_NORMAL_OR_SMALL_POLYPS = "203168"
+    C2_POLYPS_6_9MM = "203169~~203178"
+    C3A_POLYPS_1_9MM = "203170~~203178"
+    C3B_POLYPS_GE_10MM = "203171~~203178"
+    C3C_INDETERMINATE_STRICTURE = "203172"
+    C4A_MANY_SMALL_POLYPS = "203173~~203178"
+    C4B_MANY_POLYPS_GE_10MM = "203174~~203178"
+    C5A_COLON_MASS_MALIGNANT = "203175~~203179"
+    C5B_NO_TUMOUR_ADDITIONAL = "203176~~203179"
+    NOT_REPORTED = "203177"
+
+
+class ExtracolonicSummaryCodeOptions(StrEnum):
+    """Enum for extracolonic summary code options"""
+
+    E1_NORMAL_VARIANT = "204382"
+    E2_INCIDENTAL_KNOWN = "204383"
+    E3_INCOMPLETE_CHARACTERISATION = "204384"
+    E4_IMPORTANT_REQUIRES_ACTION = "204385"
+    E5_SIGNIFICANT_NEW_FINDING = "204386"
+    NOT_REPORTED = "202140"
+
+
+class TaggingAgentDrugAdministeredOptions(StrEnum):
+    """Enum for tagging agent drug administered options"""
+
+    YES = "17058~~204368"
+    NO = "17059"
+    NOT_REPORTED = "202140"
+
+
+class AdditionalBowelPrepAdministeredOptions(str, Enum):
+    YES = "17058~~204414"
+    NO = "17059"
+    NOT_REPORTED = "202140"
+
+
+class IVContrastAdministeredOptions(StrEnum):
+    """Enum for iv contrast administered options"""
+
+    YES = "17058~~204367"
+    NO = "17059~~204334"
+    NOT_REPORTED = "202140"
+
+
+class IVBuscopanAdministeredOptions(StrEnum):
+    """Enum for Yes/No options specific to IV Buscopan Administered fields"""
+
+    YES = "17058~~204365"
+    NO = "17059~~204366"
+    NOT_REPORTED = "202140"
 
 
 # Registry of all known Enums to search when matching string values
