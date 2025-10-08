@@ -52,6 +52,6 @@ class LatestEpisodeLatestInvestigationDataset:
             ValueError: If the description is not recognized.
         """
         key = description.strip().lower()
-        if key not in cls._valid_values:
+        if key not in (value.lower() for value in cls._valid_values):
             raise ValueError(f"Unknown investigation dataset filter: '{description}'")
         return key

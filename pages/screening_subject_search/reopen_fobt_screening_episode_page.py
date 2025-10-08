@@ -26,6 +26,9 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
                 "button", name="Reopen to Confirm Diagnostic Test Result and Outcome"
             )
         )
+        self.reopen_to_reschedule_diagnostic_test_button = self.page.get_by_role(
+            "button", name="Reopen to Reschedule Diagnostic Test"
+        )
 
     def click_reopen_to_book_an_assessment_button(self) -> None:
         """Click the 'Reopen to book an assessment' button."""
@@ -48,3 +51,7 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
         self.safe_accept_dialog(
             self.reopen_to_confirm_diagnostic_test_result_and_outcome_button
         )
+
+    def click_reopen_to_reschedule_diagnostic_test_button(self) -> None:
+        """Click the 'Reopen to Reschedule Diagnostic Test' button."""
+        self.safe_accept_dialog(self.reopen_to_reschedule_diagnostic_test_button)

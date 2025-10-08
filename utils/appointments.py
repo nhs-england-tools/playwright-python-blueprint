@@ -16,7 +16,7 @@ from pages.screening_practitioner_appointments.book_appointment_page import (
 )
 from utils.calendar_picker import CalendarPicker
 from utils.user_tools import UserTools
-from datetime import datetime
+from datetime import datetime, timedelta
 from pages.screening_practitioner_appointments.appointment_detail_page import (
     AppointmentDetailPage,
 )
@@ -133,7 +133,7 @@ def book_appointments(page: Page, screening_centre: str, site: str) -> None:
 
 
 def book_post_investigation_appointment(
-    page: Page, site: str, screening_practitioner_index: int
+    page: Page, site: str, screening_practitioner_index: int, appointment_start_time: str = "08:00"
 ) -> None:
     """
     Book a post-investigation appointment for a subject.
@@ -154,34 +154,39 @@ def book_post_investigation_appointment(
         screening_practitioner_index
     )
     book_appointments_page.enter_appointment_date(datetime.today())
-    book_appointments_page.enter_appointment_start_time("08:00")
+    book_appointments_page.enter_appointment_start_time(appointment_start_time)
     book_appointments_page.click_save_button()
 
 
-class AppointmentAttendance:
+class AppointmentAttendance(BasePage):
     def __init__(self, page: Page):
+        super().__init__(page)
         self.page = page
+
+        # Page object dependencies
         self.appointment_detail_page = AppointmentDetailPage(page)
         self.subject_screening_summary_page = SubjectScreeningSummaryPage(page)
         self.episode_events_and_notes_page = EpisodeEventsAndNotesPage(page)
 
+        # Locators
+        self.attended_checkbox = self.page.locator("#UI_ATTENDED")
+        self.attended_date_field = self.page.locator("#UI_ATTENDED_DATE")
+        self.attended_time_from_field = self.page.locator("#UI_ATTENDED_TIME_FROM")
+        self.attended_time_to_field = self.page.locator("#UI_ATTENDED_TIME_TO")
+        self.meeting_mode_field = self.page.locator("#UI_NEW_MEETING_MODE")
+        self.non_attendance_reason_dropdown = self.page.locator(
+            "#UI_NON_ATTENDANCE_REASON"
+        )
+        self.dna_diagnostic_test_date_field = self.page.locator("#UI_APPT_DATE_1210")
+        self.dna_diagnostic_test_button = self.page.get_by_role(
+            "button", name="DNA Diagnostic Test >>"
+        )
+
     def mark_as_dna(self, non_attendance_reason: str) -> None:
         """
-        Marks an appointment as DNA (Did Not Attend)
-        This process starts from the subject screening summary page.
-
-        This method navigates through the subject's episode and appointment pages,
+        Marks an appointment as DNA (Did Not Attend).
+        Navigates through the subject's episode and appointment pages,
         selects the 'Attendance' radio option, and sets the given DNA reason.
-
-        Args:
-            page (Page): Playwright page object.
-            non_attendance_reason (str): Reason for non-attendance. Must match one of the following:
-                - "Patient did not attend"
-                - "Screening Centre did not attend"
-                - "Patient and Screening Centre did not attend"
-
-        Raises:
-            AssertionError: If expected elements are not found or interaction fails.
         """
         logging.info(
             f"[APPOINTMENT DNA] Starting DNA flow with reason: {non_attendance_reason}"
@@ -190,49 +195,75 @@ class AppointmentAttendance:
         self.subject_screening_summary_page.click_view_events_link()
         self.episode_events_and_notes_page.click_most_recent_view_appointment_link()
         self.appointment_detail_page.check_attendance_radio()
-        self.page.locator("#UI_NON_ATTENDANCE_REASON").select_option(
-            label=non_attendance_reason
-        )
+        self.non_attendance_reason_dropdown.select_option(label=non_attendance_reason)
         self.appointment_detail_page.click_save_button(accept_dialog=True)
-
         logging.info("[APPOINTMENT DNA] DNA flow completed successfully")
 
-    def mark_as_attended(self) -> None:
+    def mark_as_attended_today(self) -> None:
         """
         Marks an appointment as attended and logs the auto-filled attendance details.
-        This process starts from the subject screening summary page.
-
-        This method navigates through the subject's episode and appointment pages,
-        selects the 'Attendance' radio option, checks the 'Attended' checkbox,
-        and logs the resulting date and time values.
-
-        Args:
-            page (Page): Playwright page object.
-
-        Raises:
-            AssertionError: If expected elements are not found or interaction fails.
         """
         logging.info("[APPOINTMENT ATTENDED] Starting attended flow")
-
         self.subject_screening_summary_page.click_list_episodes()
         self.subject_screening_summary_page.click_view_events_link()
         self.episode_events_and_notes_page.click_most_recent_view_appointment_link()
         self.appointment_detail_page.check_attendance_radio()
 
-        # Check the 'Attended' checkbox
-        attended_checkbox = self.page.locator("#UI_ATTENDED")
-        attended_checkbox.check()
+        self.attended_checkbox.check()
 
-        # Log the auto-filled attendance details
-        attended_date = self.page.locator("#UI_ATTENDED_DATE").input_value()
-        time_from = self.page.locator("#UI_ATTENDED_TIME_FROM").input_value()
-        time_to = self.page.locator("#UI_ATTENDED_TIME_TO").input_value()
-        meeting_mode = self.page.locator("#UI_NEW_MEETING_MODE").input_value()
+        attended_date = self.attended_date_field.input_value()
+        time_from = self.attended_time_from_field.input_value()
+        time_to = self.attended_time_to_field.input_value()
+        meeting_mode = self.meeting_mode_field.input_value()
 
         logging.info(
             f"[APPOINTMENT ATTENDED] How Attended: {meeting_mode}, Date: {attended_date}, Time From: {time_from}, Time To: {time_to}"
         )
 
         self.appointment_detail_page.click_save_button(accept_dialog=True)
-
         logging.info("[APPOINTMENT ATTENDED] Attended flow completed successfully")
+
+    def mark_as_attended_yesterday(self) -> None:
+        """
+        Marks an appointment as attended with the attendance date set to yesterday.
+        """
+        logging.info("[APPOINTMENT ATTENDED] Starting attended-yesterday flow")
+        self.subject_screening_summary_page.click_list_episodes()
+        self.subject_screening_summary_page.click_view_events_link()
+        self.episode_events_and_notes_page.click_most_recent_view_appointment_link()
+        self.appointment_detail_page.check_attendance_radio()
+
+        self.attended_checkbox.check()
+
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%d/%m/%Y")
+        self.attended_date_field.fill(yesterday)
+
+        attended_date = self.attended_date_field.input_value()
+        time_from = self.attended_time_from_field.input_value()
+        time_to = self.attended_time_to_field.input_value()
+        meeting_mode = self.meeting_mode_field.input_value()
+
+        logging.info(
+            f"[APPOINTMENT ATTENDED] How Attended: {meeting_mode}, Date: {attended_date}, Time From: {time_from}, Time To: {time_to}"
+        )
+
+        self.appointment_detail_page.click_save_button(accept_dialog=True)
+        logging.info(
+            "[APPOINTMENT ATTENDED] Attended-yesterday flow completed successfully"
+        )
+
+    def mark_diagnostic_test_as_dna(self) -> None:
+        """
+        Marks a subject's diagnostic test appointment as DNA (Did Not Attend).
+        Fills today's date and triggers the DNA Diagnostic Test action.
+        """
+        logging.info(
+            "[APPOINTMENT DNA] Starting DNA flow with reason: Did not attend - Diagnostic Test"
+        )
+        today = datetime.today().strftime("%d/%m/%Y")
+        self.dna_diagnostic_test_date_field.fill(today)
+
+        self.safe_accept_dialog(self.dna_diagnostic_test_button)
+        logging.info(
+            "[APPOINTMENT DNA] DNA diagnostic test flow completed successfully"
+        )

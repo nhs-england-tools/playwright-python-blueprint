@@ -1,7 +1,22 @@
-from playwright.sync_api import Page, expect, Locator
+from datetime import date, datetime
+from playwright.sync_api import Page, expect, Locator, Dialog
 from pages.base_page import BasePage
 import logging
-import pytest
+from typing import List
+from utils.calendar_picker import CalendarPicker
+from enum import Enum
+
+
+class ContactDirection(Enum):
+    TO_PATIENT = "20159"
+    FROM_PATIENT = "20160"
+
+
+class ContactMethod(Enum):
+    IN_PERSON = "16028"
+    TELEPHONE = "16029"
+    VISIT = "16030"
+    LETTER = "20012"
 
 
 class AdvanceFOBTScreeningEpisodePage(BasePage):
@@ -74,6 +89,36 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         )
         self.post_investigation_appointment_required_button = self.page.get_by_role(
             "button", name="Post-investigation Appointment Required"
+        )
+        self.redirect_to_delete_the_latest_diagnostic_test_result_button = (
+            self.page.get_by_role("button", name="Redirect to DELETE the Latest")
+        )
+        self.redirect_to_reestablish_suitability_for_diagnostic_test_repatient_contact = self.page.get_by_role(
+            "button", name="Redirect to re-establish"
+        )
+        # Contact recording locators
+        self.contact_direction_dropdown = self.page.get_by_label("Contact Direction")
+        self.contact_made_between_dropdown = self.page.get_by_label(
+            "Contact made between patient and"
+        )
+        self.contact_method_dropdown = self.page.get_by_label("Contact Method")
+        self.call_date_input = self.page.locator("#UI_CALL_DATE")
+        self.start_time_input = self.page.locator("#UI_START_TIME")
+        self.end_time_input = self.page.locator("#UI_END_TIME")
+        self.duration_input = self.page.locator("#UI_DURATION")
+        self.note_input = self.page.get_by_text("(up to 500 char)")
+        self.patient_contacted_dropdown = self.page.get_by_label("Patient Contacted")
+        self.outcome_dropdown = self.page.get_by_label("Outcome")
+        self.save_button = self.page.locator("input[name='UI_BUTTON_SAVE']")
+        # CT Colonography invitation locators
+        self.ct_colonography_appointment_date_input = self.page.locator(
+            "#UI_APPT_DATE_38"
+        )
+        self.ct_colonography_test_type_dropdown = self.page.locator(
+            "#UI_EXT_TEST_TYPE_38"
+        )
+        self.invite_for_diagnostic_test_button = self.page.get_by_role(
+            "button", name="Invite for Diagnostic Test >>"
         )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
@@ -151,6 +196,10 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.advance_checkbox_label_v2.check()
         self.click(self.amend_diagnosis_date_button)
 
+    def check_exception_circumstances_checkbox(self) -> None:
+        """Checks the 'Exceptional circumstances' checkbox"""
+        self.advance_checkbox_label_v2.check()
+
     def click_and_select_subsequent_assessment_appointment_required(
         self, option: str
     ) -> None:
@@ -184,6 +233,84 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
             self.waiting_decision_to_proceed_with_diagnostic_test_button
         )
 
+    def select_ct_colonography_and_invite(self) -> None:
+        """
+        Enters today's date, selects 'CT Colonography' as the diagnostic test type,
+        and clicks the 'Invite for Diagnostic Test' button.
+        """
+        logging.info(
+            "[ADVANCE EPISODE] Selecting CT Colonography and inviting for diagnostic test"
+        )
+
+        # Step 1: Enter today's date
+        today = date.today().strftime("%d/%m/%Y")
+        self.ct_colonography_appointment_date_input.fill(today)
+        logging.info(f"[ADVANCE EPISODE] Entered appointment date: {today}")
+
+        # Step 2: Select 'CT Colonography' from dropdown
+        self.ct_colonography_test_type_dropdown.select_option(label="CT Colonography")
+        logging.info("[ADVANCE EPISODE] Selected test type: CT Colonography")
+
+        # Step 3: Click 'Invite for Diagnostic Test'
+        self.safe_accept_dialog(self.invite_for_diagnostic_test_button)
+        logging.info("[ADVANCE EPISODE] Invite for diagnostic test completed")
+
+    def record_contact_close_episode_no_contact(self) -> None:
+        """
+        Records contact with the subject and sets the outcome to 'Close Episode - No Contact'.
+
+        Steps:
+            - Clicks the 'Record Contact with Patient' button
+            - Selects direction and contact type
+            - Picks a calendar date
+            - Fills start time, end time, and duration
+            - Enters a note
+            - Selects 'Patient Contacted' as 'No'
+            - Selects the outcome 'Close Episode - No Contact'
+            - Clicks the save button
+        """
+        logging.info(
+            "[CONTACT RECORD] Starting contact recording flow with outcome: Close Episode - No Contact"
+        )
+
+        # Step 1: Select direction and contact method and practitioner
+        self.contact_direction_dropdown.select_option(ContactDirection.TO_PATIENT.value)
+        self.contact_method_dropdown.select_option(ContactMethod.TELEPHONE.value)
+        self.select_any_practitioner()
+        logging.info(
+            "[CONTACT RECORD] Selected direction, contact method, and practitioner"
+        )
+
+        # Step 2: Pick calendar date using V1 calendar picker
+        calendar_picker = CalendarPicker(self.page)
+        today = datetime.today()
+        calendar_picker.calendar_picker_ddmmyyyy(today, self.call_date_input)
+        logging.info(
+            f"[CONTACT RECORD] Selected calendar date: {today.strftime('%d/%m/%Y')}"
+        )
+
+        # Step 3: Enter time details
+        self.start_time_input.fill("08:00")
+        self.end_time_input.fill("08:10")
+        self.duration_input.fill("10")
+        logging.info("[CONTACT RECORD] Entered time details: 08:00–08:10")
+
+        # Step 4: Enter note
+        self.note_input.fill("Automation test record")
+        logging.info("[CONTACT RECORD] Entered note: Automation test record")
+
+        # Step 5: Select 'Patient Contacted' as 'No'
+        self.patient_contacted_dropdown.select_option("N")
+        logging.info("[CONTACT RECORD] Selected 'Patient Contacted': No")
+
+        # Step 6: Select outcome
+        self.outcome_dropdown.select_option("20202")
+        logging.info("[CONTACT RECORD] Selected outcome: Close Episode - No Contact")
+
+        # Step 7: Click save
+        self.click(self.save_button)
+        logging.info("[CONTACT RECORD] Contact recording flow completed successfully")
+
     def click_not_suitable_for_diagnostic_tests_button(self) -> None:
         """Click the 'Not Suitable for Diagnostic Tests' button."""
         self.safe_accept_dialog(self.not_suitable_for_diagnostic_tests_button)
@@ -195,3 +322,77 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
     def click_post_investigation_appointment_required_button(self) -> None:
         """Click the 'Post-investigation Appointment Required' button."""
         self.safe_accept_dialog(self.post_investigation_appointment_required_button)
+
+    def click_redirect_to_delete_the_latest_diagnostic_test_result_button(
+        self, messages_to_assert: List[str]
+    ) -> None:
+        """
+        Click the 'Redirect to DELETE the Latest Diagnostic Test Result' button, handle both dialogs.
+        Args:
+            messages_to_assert (List[str]): List of messages to assert in the second dialog.
+        """
+
+        # Handler for the first dialog: accept it
+        def handle_first_dialog(dialog: Dialog) -> None:
+            """Handle the first dialog by accepting it."""
+            logging.info(f"[DIALOG 1] Message: {dialog.message}")
+            dialog.accept()
+            logging.info("[DIALOG 1] First dialog accepted.")
+
+            # Handler for the second dialog: assert text and accept/dismiss as needed
+            def handle_second_dialog(dialog: Dialog) -> None:
+                """
+                Handle the second dialog by asserting its text and accepting it.
+                Checks for specific warning messages passed in through messages_to_assert.
+                Raises:
+                    AssertionError: If the dialog text does not contain expected messages.
+                """
+                logging.info(f"[DIALOG 2] Message: {dialog.message}")
+                actual_text = dialog.message
+                for message in messages_to_assert:
+                    logging.info(
+                        f"[UI ASSERTION] Verifying dialog contains: '{message}'"
+                    )
+                    assert (
+                        message in actual_text
+                    ), f"Expected dialog to contain '{message}', but got '{actual_text}'"
+                    logging.info(
+                        f"[UI ASSERTIONS COMPLETE]: '{message}' found in dialog text."
+                    )
+                dialog.accept()
+                logging.info("[DIALOG 2] Second dialog asserted and accepted.")
+
+            self.page.once("dialog", handle_second_dialog)
+
+        self.page.once("dialog", handle_first_dialog)
+
+        # Click the button to trigger dialogs
+        self.click(self.redirect_to_delete_the_latest_diagnostic_test_result_button)
+
+    def click_redirect_to_reestablish_suitability_for_diagnostic_test_repatient_contact(
+        self,
+    ) -> None:
+        """Click the 'Redirect to re-establish suitability for diagnostic test - repatient contact' button."""
+        self.safe_accept_dialog(
+            self.redirect_to_reestablish_suitability_for_diagnostic_test_repatient_contact
+        )
+
+    def select_any_practitioner(self) -> None:
+        """
+        Selects any practitioner from the 'Contact made between patient and' dropdown.
+        Skips the empty default option and selects the first available practitioner.
+        """
+        logging.info("[CONTACT RECORD] Selecting any practitioner from dropdown")
+
+        # Get all available options
+        options = self.contact_made_between_dropdown.locator("option").all()
+        for option in options:
+            value = option.get_attribute("value")
+            if value and value.strip():
+                self.contact_made_between_dropdown.select_option(value)
+                logging.info(
+                    f"[CONTACT RECORD] Selected practitioner with value: {value}"
+                )
+                return
+
+        logging.warning("[CONTACT RECORD] No valid practitioner found to select")

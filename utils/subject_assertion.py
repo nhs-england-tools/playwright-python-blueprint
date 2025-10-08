@@ -64,7 +64,13 @@ def subject_assertion(
             subject_nhs_number_string not in df.columns
             or nhs_number not in df[subject_nhs_number_string].values
         ):
-            failed_criteria.append((key, criteria[key]))
+            actual_value = (
+                df[key].iloc[0] if key in df.columns and not df.empty else "<missing>"
+            )
+            logging.warning(
+                f"[ASSERTION MISMATCH] Key: '{key}' | Expected: '{criteria[key]}' | Actual: '{actual_value}'"
+            )
+            failed_criteria.append((key, criteria[key], actual_value))
 
     if failed_criteria:
         log_message = (

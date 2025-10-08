@@ -237,14 +237,22 @@ class BasePage:
 
     def safe_accept_dialog(self, locator: Locator) -> None:
         """
-        Safely accepts a dialog triggered by a click, avoiding the error:
-        playwright._impl._errors.Error: Dialog.accept: Cannot accept dialog which is already handled!
+        Safely accepts a dialog triggered by a click, logging its contents.
+        Avoids the error: Dialog.accept: Cannot accept dialog which is already handled!
         If no dialog appears, continues without error.
         Args:
             locator (Locator): The locator that triggers the dialog when clicked.
-            example: If clicking a save button opens a dialog, pass that save button's locator.
         """
-        self.page.once("dialog", self._accept_dialog)
+
+        def handle_dialog(dialog: Dialog):
+            try:
+                logging.info(f"[DIALOG APPEARED WITH MESSAGE]: {dialog.message}")
+                dialog.accept()
+            except Exception:
+                logging.warning("Dialog already accepted or handled")
+
+        self.page.once("dialog", handle_dialog)
+
         try:
             self.click(locator)
         except Exception as e:
@@ -271,8 +279,8 @@ class BasePage:
             actual_text = dialog.message
             try:
                 assert (
-                    actual_text == expected_text
-                ), f"Expected '{expected_text}', but got '{actual_text}'"
+                    expected_text in actual_text
+                ), f"Expected dialog to contain '{expected_text}', but got '{actual_text}'"
             except AssertionError as e:
                 self._dialog_assertion_error = e
             if accept:

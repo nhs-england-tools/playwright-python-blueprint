@@ -5,11 +5,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from playwright.sync_api import Page
+from pages.base_page import BasePage
 from pages.login.cognito_login_page import CognitoLoginPage
 from classes.user.user import User
 from classes.organisation.organisation import Organisation
 from classes.user.user_role_type import UserRoleType
 from typing import Optional
+
+from pages.logout.log_out_page import LogoutPage
 
 logger = logging.getLogger(__name__)
 USERS_FILE = Path(os.getcwd()) / "users.json"
@@ -104,6 +107,23 @@ class UserTools:
         user = User(user_id=user_id, organisation=organisation)
 
         return user
+
+    @staticmethod
+    def switch_user(
+        page, role: str, bcss_code: str = "BCS001", remember_user: bool = False
+    ):
+        """
+        Logs out the current user, navigates to the login page, and logs in as the specified role.
+
+        Args:
+            page: Playwright page object.
+            role (str): The user role to log in as (e.g., "Screening Centre Manager").
+            bcss_code (str): The BCSS code to use in the login string (default is "BCS001").
+            remember_user (bool): Whether to remember the user session (default is False).
+        """
+        LogoutPage(page).log_out(close_page=False)
+        BasePage(page).go_to_log_in_page()
+        return UserTools.user_login(page, f"{role} at {bcss_code}", remember_user)
 
 
 class UserToolsException(Exception):

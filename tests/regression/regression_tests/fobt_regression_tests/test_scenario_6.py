@@ -317,7 +317,7 @@ def test_scenario_6(page: Page) -> None:
     # And I view the event history for the subject's latest episode
     # And I view the latest practitioner appointment in the subject's episode
     # And I attend the subject's practitioner appointment "today"
-    attendance.mark_as_attended()
+    attendance.mark_as_attended_today()
 
     # Then my subject has been updated as follows:
     criteria = {

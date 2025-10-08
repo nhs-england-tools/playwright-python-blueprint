@@ -175,7 +175,7 @@ class CancerAuditDatasetsPage(BasePage):
 NOT_REPORTED_CODE = "202140~~202188"
 
 
-class ASAGradeOptions(StrEnum):
+class CancerASAGradeOptions(StrEnum):
     """Enum for ASA Grade options."""
 
     FIT = "17009"
@@ -186,14 +186,30 @@ class ASAGradeOptions(StrEnum):
     NOT_KNOWN = "17015"
 
 
-class YesNoOptions(StrEnum):
+class CancerYesNoOptions(StrEnum):
     """Enum for YesNo options."""
 
     YES = "17058"
     NO = "17059"
 
 
-class MetastasesPresentOptions(StrEnum):
+class CancerRadiologyYesNoOptions(StrEnum):
+    """Enum for Yes/No options specific to Radiology fields"""
+
+    YES = "17058~~204365"
+    NO = "17059~~204366"
+    NOT_REPORTED = "202140"
+
+
+class CancerTaggingAgentDrugAdministeredOptions(StrEnum):
+    """Enum for Tagging Agent Given Drugs Administered"""
+
+    YES = "17058~~204368"
+    NO = "17059"
+    NOT_REPORTED = "202140"
+
+
+class CancerMetastasesPresentOptions(StrEnum):
     """Enum for Metastases Present options."""
 
     CERTAIN = "17131~~202199"
@@ -201,7 +217,7 @@ class MetastasesPresentOptions(StrEnum):
     NOT_REPORTED = NOT_REPORTED_CODE
 
 
-class FinalPreTreatmentTCategoryOptions(StrEnum):
+class CancerFinalPreTreatmentTCategoryOptions(StrEnum):
     """Enum for Final Pre-Treatment T Category options."""
 
     CTX = "17356"
@@ -213,7 +229,7 @@ class FinalPreTreatmentTCategoryOptions(StrEnum):
     NOT_REPORTED = NOT_REPORTED_CODE
 
 
-class FinalPreTreatmentNCategoryOptions(StrEnum):
+class CancerFinalPreTreatmentNCategoryOptions(StrEnum):
     """Enum for Final Pre-Treatment N Category options."""
 
     CNX = "202201"
@@ -223,7 +239,7 @@ class FinalPreTreatmentNCategoryOptions(StrEnum):
     NOT_REPORTED = NOT_REPORTED_CODE
 
 
-class ReasonNoTreatmentRecievedOptions(StrEnum):
+class CancerReasonNoTreatmentReceivedOptions(StrEnum):
     """Enum for Reason No Treatment Received options."""
 
     ADVANCED_DISEASE = "99016"
@@ -234,7 +250,7 @@ class ReasonNoTreatmentRecievedOptions(StrEnum):
     UNKNOWN = "99018"
 
 
-class PreviouslyExcisedTumorOptions(StrEnum):
+class CancerPreviouslyExcisedTumorOptions(StrEnum):
     """Enum for Previously Excised Tumor options."""
 
     YES = "17058~~305403"
@@ -243,14 +259,14 @@ class PreviouslyExcisedTumorOptions(StrEnum):
     NOT_REPORTED = "202140"
 
 
-class TreatmentTypeOptions(StrEnum):
+class CancerTreatmentTypeOptions(StrEnum):
     """Enum for Treatment Type options."""
 
     SURGICAL = "202143"
     NON_SURGICAL = "202144"
 
 
-class TreatmentGivenOptions(StrEnum):
+class CancerTreatmentGivenOptions(StrEnum):
     """Enum for Treatment Given options."""
 
     CHEMOTHERAPY = "202160~~202184,202217,202218,202219,202220,202221,202222,202223,202224,202225,202226,202227,202228,202287,305395,305397"
@@ -269,14 +285,14 @@ class CancerTreatmentIntentOptions(StrEnum):
     NOT_KNOWN = "17373"
 
 
-class NHSOrPrivateOptions(StrEnum):
+class CancerNHSOrPrivateOptions(StrEnum):
     """Enum for NHS or Private options."""
 
     NHS = "202153~~202177,202178"
     PRIVATE = "202154~~202179"
 
 
-class TreatmentProviderLookupOptions(StrEnum):
+class CancerTreatmentProviderLookupOptions(StrEnum):
     """Enum for Treatment Provider lookup options."""
 
     ADVANCE_NURSE_PRACTITIONER_1 = "51905"
@@ -305,7 +321,7 @@ class TreatmentProviderLookupOptions(StrEnum):
     BUSHBURY_HEALTH_CENTRE = "51801"
 
 
-class ConsultantLookupOptions(StrEnum):
+class CancerConsultantLookupOptions(StrEnum):
     """Enum for Consultant lookup options."""
 
     B_FRAME = "201"
