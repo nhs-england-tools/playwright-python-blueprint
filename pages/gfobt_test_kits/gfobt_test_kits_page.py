@@ -8,7 +8,7 @@ class GFOBTTestKitsPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.page = page
-
+        self.test_kits_header = self.page.get_by_text("gFOBT Test Kits")
         self.test_kit_logging_page = self.page.get_by_role(
             "link", name="Test Kit Logging"
         )
@@ -35,3 +35,9 @@ class GFOBTTestKitsPage(BasePage):
     def go_to_create_qc_kit_page(self) -> None:
         """Navigate to the Create QC Kit page."""
         self.click(self.create_qc_kit_page)
+
+    def open_test_kits_report(self) -> None:
+        """Clicks the 'Test Kits' header to open the corresponding report section."""
+        self.click(self.test_kits_header)
+
+
