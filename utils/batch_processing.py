@@ -27,7 +27,7 @@ def batch_processing(
     page: Page,
     batch_type: str,
     batch_description: str,
-    latest_event_status: str | list,
+    latest_event_status: Optional[str | list] = None,
     run_timed_events: bool = False,
     get_subjects_from_pdf: bool = False,
     save_csv_as_df: bool = False,
@@ -100,9 +100,10 @@ def batch_processing(
     if nhs_no_df is None:
         raise ValueError("No NHS numbers were retrieved for the batch")
 
-    for subject in range(len(nhs_no_df)):
-        nhs_no = nhs_no_df["subject_nhs_number"].iloc[subject]
-        verify_subject_event_status_by_nhs_no(page, nhs_no, latest_event_status)
+    if latest_event_status:
+        for subject in range(len(nhs_no_df)):
+            nhs_no = nhs_no_df["subject_nhs_number"].iloc[subject]
+            verify_subject_event_status_by_nhs_no(page, nhs_no, latest_event_status)
 
     if run_timed_events:
         OracleDB().exec_bcss_timed_events(nhs_no_df)

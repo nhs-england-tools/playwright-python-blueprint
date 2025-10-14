@@ -39,6 +39,9 @@ from pages.datasets.investigation_dataset_page import (
     SegmentalInadequacyOptions,
     IntracolonicSummaryCodeOptions,
     ExtracolonicSummaryCodeOptions,
+    PolypInterventionRetrievedOptions,
+    OpticalDiagnosisOptions,
+    OpticalDiagnosisConfidenceOptions,
 )
 
 
@@ -85,6 +88,9 @@ ENUM_MAP = {
     "SegmentalInadequacyOptions": SegmentalInadequacyOptions,
     "IntracolonicSummaryCodeOptions": IntracolonicSummaryCodeOptions,
     "ExtracolonicSummaryCodeOptions": ExtracolonicSummaryCodeOptions,
+    "OpticalDiagnosisOptions": OpticalDiagnosisOptions,
+    "OpticalDiagnosisConfidenceOptions": OpticalDiagnosisConfidenceOptions,
+    "PolypInterventionRetrievedOptions": PolypInterventionRetrievedOptions,
 }
 
 
@@ -529,7 +535,7 @@ def show_section_with_imports(section_name: str) -> None:
     result = {}
     for field in section["fields"]:
         val = render_field(field)
-        if val is not None:
+        if val is not None or (field["type"] == "integer_or_none" and val is None):
             result[field["key"]] = val
     enums = get_enums_used(section["fields"])
     if enums:

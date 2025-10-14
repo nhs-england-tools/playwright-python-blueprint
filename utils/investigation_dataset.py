@@ -465,9 +465,15 @@ class InvestigationDatasetCompletion:
         self.investigation_datasets_pom.select_practitioner_option_index(
             general_information["practitioner"]
         )
-        self.investigation_datasets_pom.select_testing_clinician_option_index(
-            general_information["testing clinician"]
-        )
+        testing_clinician = general_information["testing clinician"]
+        if isinstance(testing_clinician, int):
+            self.investigation_datasets_pom.select_testing_clinician_option_index(
+                testing_clinician
+            )
+        elif isinstance(testing_clinician, str):
+            self.investigation_datasets_pom.select_testing_clinician_from_name(
+                testing_clinician
+            )
 
         if general_information.get("reporting radiologist") is not None:
             InvestigationDatasetsPage(
@@ -781,6 +787,10 @@ class InvestigationDatasetCompletion:
                     DatasetFieldUtil(self.page).populate_input_locator_for_field(
                         "Scope ID", value
                     )
+                case "detection assistant used":
+                    DatasetFieldUtil(self.page).populate_select_locator_for_field(
+                        "Detection Assistant (AI) used?", value
+                    )
                 case "insufflation":
                     DatasetFieldUtil(self.page).populate_select_locator_for_field(
                         "Insufflation", value
@@ -818,12 +828,28 @@ class InvestigationDatasetCompletion:
                     ).populate_select_locator_for_field_inside_div(
                         "Classification", f"divPolypNumber{polyp_number}Section", value
                     )
+                case "optical diagnosis":
+                    DatasetFieldUtil(
+                        self.page
+                    ).populate_select_locator_for_field_inside_div(
+                        "Optical Diagnosis",
+                        f"divPolypOpticalDiagnosis{polyp_number}",
+                        value,
+                    )
                 case "estimate of whole polyp size":
                     DatasetFieldUtil(
                         self.page
                     ).populate_input_locator_for_field_inside_div(
                         self.estimate_whole_polyp_size_string,
                         f"divPolypNumber{polyp_number}Section",
+                        value,
+                    )
+                case "optical diagnosis confidence":
+                    DatasetFieldUtil(
+                        self.page
+                    ).populate_select_locator_for_field_inside_div(
+                        "Optical Diagnosis Confidence",
+                        f"divPolypOpticalDiagnosisConfidence{polyp_number}",
                         value,
                     )
                 case "polyp access":
@@ -903,6 +929,12 @@ class InvestigationDatasetCompletion:
                         f"divPolypTherapy{polyp_number}_1Section",
                         value,
                     )
+                case "image id":
+                    DatasetFieldUtil(
+                        self.page
+                    ).populate_input_locator_for_field_inside_div(
+                        "Image ID", f"divPolypImageId{polyp_number}_1", value
+                    )
                 case "excision technique":
                     DatasetFieldUtil(
                         self.page
@@ -970,6 +1002,12 @@ class InvestigationDatasetCompletion:
                             "Retrieved",
                             f"divPolypTherapy{polyp_number}_{i}Section",
                             value,
+                        )
+                    case "image id":
+                        DatasetFieldUtil(
+                            self.page
+                        ).populate_input_locator_for_field_inside_div(
+                            "Image ID", f"divPolypImageId{polyp_number}_{i}", value
                         )
                     case "excision technique":
                         DatasetFieldUtil(

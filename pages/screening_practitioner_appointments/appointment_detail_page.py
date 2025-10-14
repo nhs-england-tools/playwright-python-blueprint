@@ -88,7 +88,6 @@ class AppointmentDetailPage(BasePage):
         """
         self.reason_for_cancellation_dropdown.select_option(value=option)
 
-
     def mark_appointment_as_attended(self, date: datetime) -> None:
         """
         Marks an appointment as attended.
@@ -118,3 +117,5 @@ class ReasonForCancellationOptions(StrEnum):
     CLINIC_UNAVAILABLE = "6001"
     PRACTITIONER_UNAVAILABLE = "6000"
     PATIENT_CANCELLED_OTHER_REASON = "6004"
+    PATIENT_CANCELLED = "6020"
+    SCREENING_CENTRE_CANCELLED = "6019"

@@ -183,6 +183,12 @@
         "default": "AUTOMATED TEST"
       },
       {
+        "key": "detection assistant used",
+        "type": "YesNoOptions",
+        "description": "Whether a detection assistant (AI) was used",
+        "optional": true
+      },
+      {
         "key": "insufflation",
         "type": "InsufflationOptions",
         "description": "The gas used in insufflation",
@@ -240,10 +246,22 @@
         "optional": false
       },
       {
+        "key": "optical diagnosis",
+        "type": "OpticalDiagnosisOptions",
+        "description": "The optical diagnosis performed",
+        "optional": true
+      },
+      {
         "key": "estimate of whole polyp size",
         "type": "string",
         "description": "Estimate of the polyp size (mm)",
         "optional": false
+      },
+      {
+        "key": "optical diagnosis confidence",
+        "type": "OpticalDiagnosisConfidenceOptions",
+        "description": "The level of confidence for the optical diagnosis",
+        "optional": true
       },
       {
         "key": "polyp access",
@@ -305,9 +323,16 @@
       },
       {
         "key": "retrieved",
-        "type": "YesNoOptions",
+        "type": "PolypInterventionRetrievedOptions",
         "description": "Whether the polyp was retrieved",
         "optional": true
+      },
+      {
+        "key": "image id",
+        "type": "string",
+        "description": "The Image ID",
+        "optional": true,
+        "default": "AUTO TEST POLYP"
       },
       {
         "key": "excision technique",

@@ -8,7 +8,6 @@ from utils.oracle.oracle_specific_functions.subject_datasets import (
 )
 from typing import Optional, Any, Union, List
 import logging
-import sys
 
 
 class InvestigationDatasetsPage(BasePage):
@@ -91,6 +90,9 @@ class InvestigationDatasetsPage(BasePage):
         ).get_by_role("button", name="Edit Dataset")
         self.visible_ui_results_string = 'select[id^="UI_RESULTS_"]:visible'
         self.sections = self.page.locator(".DatasetSection")
+        self.visible_search_text_input = self.page.locator(
+            'input[id^="UI_SEARCH_"]:visible'
+        )
 
         # Repeat strings:
         self.bowel_preparation_administered_string = "Bowel Preparation Administered"
@@ -167,6 +169,23 @@ class InvestigationDatasetsPage(BasePage):
         option_locator = self.page.locator(f'[value="{option}"]:visible')
         option_locator.wait_for(state="visible")
         self.click(option_locator)
+
+    def select_testing_clinician_from_name(self, name: str) -> None:
+        """
+        This method is designed to select a testing clinician from the testing clinician options.
+        It clicks on the testing clinician link then searches for the provided clinician.
+        Then it selects this clinician from the options
+
+        Args:
+            name (str): The name of the testing clinician to select.
+        """
+        self.click(self.testing_clinician_link)
+        self.visible_search_text_input.fill(name)
+        self.visible_search_text_input.press("Enter")
+        select_locator = self.page.locator(self.visible_ui_results_string)
+        option_elements = select_locator.first.locator("option")
+        option_elements.nth(-1).wait_for(state="visible")
+        self.click(option_elements.nth(-1))
 
     def select_testing_clinician_option_index(self, option: int) -> None:
         """
@@ -1633,6 +1652,30 @@ class IVBuscopanAdministeredOptions(StrEnum):
     YES = "17058~~204365"
     NO = "17059~~204366"
     NOT_REPORTED = "202140"
+
+
+class OpticalDiagnosisOptions(StrEnum):
+    """Enum for Optical Diagnosis options"""
+
+    ADEMONA = "17299~Sub Type Applicable"
+    SERRATED_HYPERPLASTIC_SSL = "305742"
+    OTHER_POLYP_NON_NEOPLASTIC = "305743"
+    OTHER_POLYP_NEOPLASTIC = "305744"
+
+
+class PolypInterventionRetrievedOptions(StrEnum):
+    """Enum for Polyp Intervention Retrieved options"""
+
+    YES = "17058"
+    NO = "17059"
+    NO_RESECT_AND_DISCARD = "305738"
+
+
+class OpticalDiagnosisConfidenceOptions(StrEnum):
+    """Enum for Optical Diagnosis Condifence options"""
+
+    HIGH = "17752"
+    LOW = "305746"
 
 
 # Registry of all known Enums to search when matching string values

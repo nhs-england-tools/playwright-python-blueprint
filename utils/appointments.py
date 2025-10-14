@@ -133,15 +133,21 @@ def book_appointments(page: Page, screening_centre: str, site: str) -> None:
 
 
 def book_post_investigation_appointment(
-    page: Page, site: str, screening_practitioner_index: int, appointment_start_time: str = "08:00"
+    page: Page,
+    site: str,
+    screening_practitioner_index: int,
+    appointment_start_time: str = "08:00",
 ) -> None:
     """
     Book a post-investigation appointment for a subject.
     Sets the appointment date to today and the start time to '08:00'.
+    If a dialog about overlapping appointments is triggered, increases the start time by 15 minutes and retries.
+    Loops until a successful booking or until 17:00.
     Args:
         page (Page): The Playwright page object.
         site (str): The name of the site.
         screening_practitioner_index (int): The index of the screening practitioner to select.
+        appointment_start_time (str): The start time for the appointment.
     """
     book_appointments_page = BookAppointmentPage(page)
     book_appointments_page.select_site_dropdown_option(
@@ -154,8 +160,24 @@ def book_post_investigation_appointment(
         screening_practitioner_index
     )
     book_appointments_page.enter_appointment_date(datetime.today())
-    book_appointments_page.enter_appointment_start_time(appointment_start_time)
-    book_appointments_page.click_save_button()
+
+    overlap_message = "Overlaps a Post Investigation, Surveillance appointment or Colonoscopy Assessment appointment"
+    hour, minute = map(int, appointment_start_time.split(":"))
+
+    while True:
+        current_time = f"{hour:02d}:{minute:02d}"
+        book_appointments_page.enter_appointment_start_time(current_time)
+        dialog_message = book_appointments_page.click_save_button_and_return_message()
+        if dialog_message is None or overlap_message not in dialog_message:
+            # Success or no overlap dialog
+            break
+        # Increase time by 15 minutes
+        minute += 15
+        if minute >= 60:
+            hour += 1
+            minute -= 60
+        if hour >= 17:
+            raise ValueError("Could not book appointment before 17:00 due to overlaps.")
 
 
 class AppointmentAttendance(BasePage):
