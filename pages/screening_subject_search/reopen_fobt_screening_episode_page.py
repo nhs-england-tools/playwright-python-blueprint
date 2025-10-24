@@ -29,6 +29,11 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
         self.reopen_to_reschedule_diagnostic_test_button = self.page.get_by_role(
             "button", name="Reopen to Reschedule Diagnostic Test"
         )
+        self.reopen_to_rerecord_outcome_from_symptomatic_referral_button = (
+            self.page.get_by_role(
+                "button", name="Reopen to Re-record Outcome from Symptomatic Referral"
+            )
+        )
 
     def click_reopen_to_book_an_assessment_button(self) -> None:
         """Click the 'Reopen to book an assessment' button."""
@@ -55,3 +60,9 @@ class ReopenFOBTScreeningEpisodePage(BasePage):
     def click_reopen_to_reschedule_diagnostic_test_button(self) -> None:
         """Click the 'Reopen to Reschedule Diagnostic Test' button."""
         self.safe_accept_dialog(self.reopen_to_reschedule_diagnostic_test_button)
+
+    def click_reopen_to_rerecord_outcome_from_symptomatic_referral_button(self) -> None:
+        """Click the 'Reopen to Re-record Outcome from Symptomatic Referral' button."""
+        self.safe_accept_dialog(
+            self.reopen_to_rerecord_outcome_from_symptomatic_referral_button
+        )

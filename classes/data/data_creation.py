@@ -5,7 +5,7 @@ import logging
 from classes.organisation.organisation_complex import Organisation
 from classes.subject.gender_type import GenderType
 from classes.address.address import Address
-from classes.person.person import Person
+from classes.person.person_data import Person
 from classes.screening.region_type import RegionType
 from classes.subject.pi_subject import PISubject
 from utils.nhs_number_tools import NHSNumberTools
@@ -113,17 +113,17 @@ class DataCreation:
         pi_subject = PISubject()
         pi_subject.nhs_number = NHSNumberTools.generate_random_nhs_number()
         person = self.generate_random_person(random_words_list, GenderType.NOT_KNOWN)
-        pi_subject.family_name = person.get_surname()
-        pi_subject.first_given_names = person.get_forename()
-        pi_subject.other_given_names = person.get_other_forenames()
-        pi_subject.previous_family_name = person.get_previous_surname()
-        pi_subject.name_prefix = person.get_title()
+        pi_subject.family_name = person.surname
+        pi_subject.first_given_names = person.forename
+        pi_subject.other_given_names = person.other_forenames
+        pi_subject.previous_family_name = person.previous_surname
+        pi_subject.name_prefix = person.title
         pi_subject.birth_date = datetime.date.today() - datetime.timedelta(
             days=60 * 365
         )
 
         pi_subject.death_date = None
-        gender = person.get_gender()
+        gender = person.gender
         if gender is not None:
             pi_subject.gender_code = gender.redefined_value
         else:
@@ -225,15 +225,15 @@ class DataCreation:
             )
 
         person = Person()
-        person.set_title(self.generate_random_title(gender))
-        person.set_forename(random_words_list.get("forename", ""))
-        person.set_surname(random_words_list.get("surname", ""))
-        person.set_gender(gender)
+        person.title = self.generate_random_title(gender)
+        person.forename = random_words_list.get("forename", "")
+        person.surname = random_words_list.get("surname", "")
+        person.gender = gender
 
         if self.rand.randint(0, 100) < 5:
-            person.set_other_forenames(random_words_list.get("forename2", ""))
+            person.other_forenames = random_words_list.get("forename2", "")
         if self.rand.randint(0, 100) < 5:
-            person.set_previous_surname(random_words_list.get("surname2", ""))
+            person.previous_surname = random_words_list.get("surname2", "")
 
         logging.debug("generateRandomPerson: end")
         return person

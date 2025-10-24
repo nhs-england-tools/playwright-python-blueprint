@@ -86,6 +86,11 @@ class EventStatusType(Enum):
         "A318",
         "Post-investigation Appointment NOT Required - Result Letter Created",
     )
+    A319 = (
+        305787,
+        "A319",
+        "Refer follow-up test after return from symptomatic referral letter (Patient & GP)",
+    )
     A320 = (160160, "A320", "Refer Another Test")
     A321 = (203141, "A321", "Manual Patient Result Letter Created")
     A322 = (203142, "A322", "GP Copy of Manual Patient Result Letter on Queue")
@@ -174,6 +179,7 @@ class EventStatusType(Enum):
     A370 = (160161, "A370", "Diagnostic Test Result Letter sent to GP")
     A371 = (20080, "A371", "Surgery Patient Result letter Printed")
     A372 = (20081, "A372", "Refer Symptomatic, GP Letter Printed")
+    A373 = (305780, "A373", "Symptomatic result recorded")
     A374 = (20082, "A374", "Return to Surveillance After Symptomatic Referral")
     A375 = (
         160176,
@@ -188,6 +194,11 @@ class EventStatusType(Enum):
     A383 = (20421, "A383", "Handover into Symptomatic Care - Patient Letter Printed")
     A384 = (20420, "A384", "Discharged from Screening - GP letter not required")
     A385 = (20419, "A385", "Handover into Symptomatic Care")
+    A389 = (
+        305783,
+        "A389",
+        "Refer Another Diagnostic Test after return from Symptomatic Referral",
+    )
     A391 = (20083, "A391", "Patient Discharge Letter Printed - No Patient Contact")
     A392 = (20084, "A392", "Patient Discharge Letter Printed - Patient Choice")
     A394 = (

@@ -1,7 +1,8 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page, Dialog
 from pages.base_page import BasePage
 from datetime import datetime
 from utils.calendar_picker import CalendarPicker
+import logging
 
 
 class SubjectDemographicPage(BasePage):
@@ -13,11 +14,9 @@ class SubjectDemographicPage(BasePage):
         # Subject Demographic - page filters
         self.forename_field = self.page.get_by_role("textbox", name="Forename")
         self.surname_field = self.page.get_by_role("textbox", name="Surname")
-        self.postcode_field = self.page.get_by_role("textbox", name="Postcode")
+        self.postcode_field = self.page.locator("#UI_SUBJECT_POSTCODE")
         self.dob_field = self.page.get_by_role("textbox", name="Date of Birth")
-        self.update_subject_data_button = self.page.get_by_role(
-            "button", name="Update Subject Data"
-        )
+        self.update_subject_data_button = self.page.locator("#BTN_DEMOG_UPDATE_SUBJECT")
         self.temporary_address_show_link = (
             self.page.locator("font")
             .filter(has_text="Temporary Address show")
@@ -125,6 +124,39 @@ class SubjectDemographicPage(BasePage):
     def click_update_subject_data_button(self) -> None:
         """Clicks on the 'Update Subject Data' button"""
         self.click(self.update_subject_data_button)
+
+    def click_update_subject_data_button_and_assert_dialog(
+        self, expected_text: str
+    ) -> None:
+        """
+        Clicks on the 'Update Subject Data' button and asserts that a dialog appears with the expected text.
+        Args:
+            expected_text (str): The text expected to be found in the dialog.
+        """
+        self._dialog_assertion_error = None
+
+        def handle_dialog(dialog: Dialog):
+            """
+            Handles the dialog and asserts that the dialog contains the expected text.
+            Args:
+                dialog (Dialog): the playwright dialog object
+            """
+            logging.info(f"Dialog appeared with message: {dialog.message}")
+            actual_text = dialog.message
+            try:
+                assert (
+                    expected_text in actual_text
+                ), f"Expected dialog to contain '{expected_text}', but got '{actual_text}'"
+            except AssertionError as e:
+                self._dialog_assertion_error = e
+            try:
+                dialog.accept()
+            except Exception:
+                logging.warning("Dialog already accepted or handled")
+
+        self.page.once("dialog", lambda dialog: handle_dialog(dialog))
+        self.click(self.update_subject_data_button)
+        self.page.wait_for_timeout(2000)
 
     def get_dob_field_value(self) -> str:
         """

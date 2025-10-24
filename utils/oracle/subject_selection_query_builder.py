@@ -3272,9 +3272,11 @@ class SubjectSelectionQueryBuilder:
 
             match screening_due_date_change_reason_type:
                 case SDDReasonForChangeType.NULL:
-                    self.sql_where.append(f"{due_date_reason}_SQL_IS_NULL")
+                    self.sql_where.append(f" {due_date_reason} {self._SQL_IS_NULL} ")
                 case SDDReasonForChangeType.NOT_NULL:
-                    self.sql_where.append(f"{due_date_reason}_SQL_IS_NOT_NULL")
+                    self.sql_where.append(
+                        f" {due_date_reason} {self._SQL_IS_NOT_NULL} "
+                    )
                 case SDDReasonForChangeType.UNCHANGED:
                     self._force_not_modifier_is_invalid_for_criteria_value()
                     if subject is None:
@@ -3282,7 +3284,9 @@ class SubjectSelectionQueryBuilder:
                             self.criteria_key_name, self._REASON_NO_EXISTING_SUBJECT
                         )
                     elif subject.get_screening_due_date_change_reason_id() is None:
-                        self.sql_where.append(f"{due_date_reason}_SQL_IS_NULL")
+                        self.sql_where.append(
+                            f" {due_date_reason} {self._SQL_IS_NULL} "
+                        )
                     else:
                         self.sql_where.append(
                             f"{due_date_reason}{" = "}{subject.get_screening_due_date_change_reason_id()}"

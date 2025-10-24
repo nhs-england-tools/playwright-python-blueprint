@@ -96,6 +96,24 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.redirect_to_reestablish_suitability_for_diagnostic_test_repatient_contact = self.page.get_by_role(
             "button", name="Redirect to re-establish"
         )
+        self.mdt_referral_required_button = self.page.get_by_role(
+            "button", name="MDT Referral Required"
+        )
+        self.mdt_referral_not_required_button = self.page.get_by_role(
+            "button", name="MDT Referral Not Required"
+        )
+        self.non_neoplastic_and_other_non_bowel_cancer_result_button = (
+            self.page.get_by_role(
+                "button", name="Non-neoplastic and Other Non-bowel Cancer Result"
+            )
+        )
+        self.return_to_fobt_after_symptomatic_referral_button = self.page.get_by_role(
+            "button", name="Return to FOBT after Symptomatic Referral"
+        )
+        self.refer_another_diagnostic_test_after_return_from_symptomatic_referral_button = self.page.get_by_role(
+            "button",
+            name="Refer Another Diagnostic Test after return from Symptomatic Referral",
+        )
         # Contact recording locators
         self.contact_direction_dropdown = self.page.get_by_label("Contact Direction")
         self.contact_made_between_dropdown = self.page.get_by_label(
@@ -116,9 +134,6 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         )
         self.ct_colonography_test_type_dropdown = self.page.locator(
             "#UI_EXT_TEST_TYPE_38"
-        )
-        self.invite_for_diagnostic_test_button = self.page.get_by_role(
-            "button", name="Invite for Diagnostic Test >>"
         )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
@@ -396,3 +411,29 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
                 return
 
         logging.warning("[CONTACT RECORD] No valid practitioner found to select")
+
+    def click_mdt_referral_required_button(self) -> None:
+        """Click the 'MDT Referral Required' button."""
+        self.safe_accept_dialog(self.mdt_referral_required_button)
+
+    def click_mdt_referral_not_required_button(self) -> None:
+        """Click the 'MDT Referral Not Required' button."""
+        self.safe_accept_dialog(self.mdt_referral_not_required_button)
+
+    def click_non_neoplastic_and_other_non_bowel_cancer_result_button(self) -> None:
+        """Click the 'Non-neoplastic and Other Non-bowel Cancer Result' button."""
+        self.safe_accept_dialog(
+            self.non_neoplastic_and_other_non_bowel_cancer_result_button
+        )
+
+    def click_return_to_fobt_after_symptomatic_referral_button(self) -> None:
+        """Click the 'Return to FOBT after Symptomatic Referral' button."""
+        self.safe_accept_dialog(self.return_to_fobt_after_symptomatic_referral_button)
+
+    def click_refer_another_diagnostic_test_after_return_from_symptomatic_referral_button(
+        self,
+    ) -> None:
+        """Click the 'Refer Another Diagnostic Test after return from Symptomatic Referral' button."""
+        self.click(
+            self.refer_another_diagnostic_test_after_return_from_symptomatic_referral_button
+        )
