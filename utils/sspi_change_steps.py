@@ -80,7 +80,7 @@ class SSPIChangeSteps:
                 logging.debug(f"Superseding with NHS number: {nhs_number}")
                 pi_subject.superseded_by_nhs_number = nhs_number
             else:
-                raise ValueError(
+                logging.warning(
                     f"Unprocessed Deduction Code in switch statement: {deduction_code}"
                 )
 
@@ -142,3 +142,26 @@ class SSPIChangeSteps:
         self.subject_repo.update_pi_subject(2, pi_subject)
 
         logging.debug("exit: handle_update()")
+
+    def process_sspi_deduction_by_description(
+        self, nhs_no: str, deduction_reason_description: str
+    ) -> None:
+        """
+        Process an SSPI deduction based on the deduction reason description.
+        Args:
+            nhs_no (str): The subject's NHS Number.
+            deduction_reason_description (str): The deduction reason description (case-insensitive).
+        """
+        logging.debug(
+            f"start: process_sspi_deduction_by_description(deduction_reason_description={deduction_reason_description})"
+        )
+        deduction_type = DeductionReasonType.by_description_case_insensitive(
+            deduction_reason_description
+        )
+        if deduction_type is None:
+            raise ValueError(
+                f"Unknown Deduction Reason Description: {deduction_reason_description}"
+            )
+        deduction_code = deduction_type.allowed_value
+        self.process_sspi_deduction_by_code(nhs_no, deduction_code)
+        logging.debug("exit: process_sspi_deduction_by_description()")
