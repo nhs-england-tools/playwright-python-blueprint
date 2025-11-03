@@ -92,15 +92,15 @@ from pages.organisations.organisations_page import OrganisationSwitchPage
 
 def test_scenario_13(page: Page) -> None:
     """
-     Scenario: 13: LNPCP result from symptomatic procedure
+        Scenario: 13: LNPCP result from symptomatic procedure
 
-     S9-S10-S43-A8-A183-(A50)-A25-J10-A99-A59-A259-A315-A360-A410-A415-A416-A316-A348-(A167)-A372-A373-A374-A157-A394-A385-A382-A383-C203 [SSCL25d] A372-A373-A374-A372-A373-A374-A157-C203 [SSCL52a]
+        S9-S10-S43-A8-A183-(A50)-A25-J10-A99-A59-A259-A315-A360-A410-A415-A416-A316-A348-(A167)-A372-A373-A374-A157-A394-A385-A382-A383-C203 [SSCL25d] A372-A373-A374-A372-A373-A374-A157-C203 [SSCL52a]
 
-     This scenario tests progression of an FOBT episode to closure with an episode result of LNPCP, having a diagnostic test result of High-risk findings, and a symptomatic procedure result of LNPCP.  It checks that the reopen to re-record the symptomatic result downgrades the episode result to High-risk findings.  This scenario also tests that closure on LNPCP for an in-age subject refers them to Surveillance, while an over-age subject is discharged, even if (because FOBT recall is 2 years and Surveillance recall is 3 years) they would be in-age for FOBT screening.  When the subject's age is changed to 72 by the SSPI update, this makes today their 72nd birthday.  Because recall is based on the date of their symptomatic procedure (yesterday), this calculates their surveillance due date as the day before their 75th birthday, when they are still in the age range.  The first closure uses the diagnostic test date as the basis for recall, while the second closure uses the symptomatic procedure date.
+        This scenario tests progression of an FOBT episode to closure with an episode result of LNPCP, having a diagnostic test result of High-risk findings, and a symptomatic procedure result of LNPCP.  It checks that the reopen to re-record the symptomatic result downgrades the episode result to High-risk findings.  This scenario also tests that closure on LNPCP for an in-age subject refers them to Surveillance, while an over-age subject is discharged, even if (because FOBT recall is 2 years and Surveillance recall is 3 years) they would be in-age for FOBT screening.  When the subject's age is changed to 72 by the SSPI update, this makes today their 72nd birthday.  Because recall is based on the date of their symptomatic procedure (yesterday), this calculates their surveillance due date as the day before their 75th birthday, when they are still in the age range.  The first closure uses the diagnostic test date as the basis for recall, while the second closure uses the symptomatic procedure date.
 
-     Note that ceased confirmation details come from the Handover into Symptomatic Care form.
+        Note that ceased confirmation details come from the Handover into Symptomatic Care form.
 
-     Scenario summary:
+        Scenario summary:
 
     > Find an in-age subject at S9 whose episode started recently before today (1.1)
     > SSPI update changes subject to over-age

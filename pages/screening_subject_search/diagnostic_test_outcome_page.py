@@ -64,7 +64,7 @@ class DiagnosticTestOutcomePage(BasePage):
         Verify reason for symptomatic referral is visible.
 
         Args:
-             symptomatic_reason(str): The accessible name or visible text of the symptomatic reason cell to verify.
+            symptomatic_reason(str): The accessible name or visible text of the symptomatic reason cell to verify.
         """
         expect(
             self.page.get_by_role("cell", name=symptomatic_reason).nth(1)
