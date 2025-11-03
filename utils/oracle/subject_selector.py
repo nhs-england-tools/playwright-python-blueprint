@@ -1,8 +1,12 @@
+import pandas as pd
 from oracle.oracle import OracleDB
 import logging
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.user_tools import UserTools
 from classes.subject.subject import Subject
+
+SUBJECT_HUB_CODE_KEY = "subject hub code"
+DEFAULT_HUB_CODE = "BCS02"
 
 
 class SubjectSelector:
@@ -19,6 +23,12 @@ class SubjectSelector:
 
         Args:
             criteria (dict): Dictionary of filtering conditions to select a subject.
+                Example criteria:
+                    {
+                        "subject age": "75",
+                        "screening status": "Inactive",
+                        "subject hub code": "BCS02",
+                    }
 
         Returns:
             str: The NHS number of the selected subject.
@@ -30,7 +40,7 @@ class SubjectSelector:
             f"[SUBJECT SELECTOR] Searching for subject using criteria: {criteria}"
         )
 
-        hub_code = criteria.get("subject hub code", "BCS02")
+        hub_code = criteria.get(SUBJECT_HUB_CODE_KEY, DEFAULT_HUB_CODE)
         user_details = UserTools.retrieve_user(f"Hub Manager at {hub_code}")
         user = UserTools.get_user_object(user_details)
         subject = Subject()
@@ -62,6 +72,12 @@ class SubjectSelector:
 
         Args:
             criteria (dict): Dictionary of filtering conditions to select a subject.
+                Example criteria:
+                    {
+                        "subject age": "75",
+                        "screening status": "Pre-invitation",
+                        "subject hub code": "BCS02",
+                    }
 
         Returns:
             str: The NHS number of the selected subject.
@@ -73,7 +89,7 @@ class SubjectSelector:
             f"[SUBJECT SELECTOR] Searching for pre-invitation subject using criteria: {criteria}"
         )
 
-        hub_code = criteria.get("subject hub code", "BCS02")
+        hub_code = criteria.get(SUBJECT_HUB_CODE_KEY, DEFAULT_HUB_CODE)
         user_details = UserTools.retrieve_user(f"Hub Manager at {hub_code}")
         user = UserTools.get_user_object(user_details)
         subject = Subject()

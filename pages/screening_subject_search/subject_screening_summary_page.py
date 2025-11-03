@@ -1,7 +1,7 @@
 import re
 from playwright.sync_api import Page, expect, Locator
 from pages.base_page import BasePage
-from enum import Enum
+from enum import StrEnum
 import logging
 import pytest
 from typing import List
@@ -39,8 +39,10 @@ class SubjectScreeningSummaryPage(BasePage):
         )
         self.patient_contacts = self.page.get_by_role("link", name="Patient Contacts")
         self.more = self.page.get_by_role("link", name="more")
-        self.change_screening_status = self.page.get_by_label("Change Screening Status")
-        self.reason = self.page.get_by_label("Reason", exact=True)
+        self.change_screening_status_dropdown = self.page.get_by_label(
+            "Change Screening Status"
+        )
+        self.reason_dropdown = self.page.get_by_label("Reason", exact=True)
         self.update_subject_data = self.page.get_by_role(
             "button", name="Update Subject Data"
         )
@@ -88,6 +90,9 @@ class SubjectScreeningSummaryPage(BasePage):
         )
         self.reopen_for_correction_button = self.page.get_by_role(
             "button", name="Reopen episode for correction"
+        )
+        self.self_refer_lynch_surveillance_button = self.page.get_by_role(
+            "button", name="Self-refer Lynch Surveillance"
         )
 
     def wait_for_page_title(self) -> None:
@@ -188,7 +193,7 @@ class SubjectScreeningSummaryPage(BasePage):
 
     def click_update_subject_data(self) -> None:
         """Click on the 'Update Subject Data' button."""
-        self.click(self.update_subject_data)
+        self.safe_accept_dialog(self.update_subject_data)
 
     def click_close_fobt_screening_episode(self) -> None:
         """Click on the 'Close FOBT Screening Episode' button."""
@@ -204,11 +209,11 @@ class SubjectScreeningSummaryPage(BasePage):
 
     def select_change_screening_status(self, option: str) -> None:
         """Select the given 'change screening status' option."""
-        self.change_screening_status.select_option(option)
+        self.change_screening_status_dropdown.select_option(option)
 
     def select_reason(self, option: str) -> None:
         """Select the given 'reason' option."""
-        self.reason.select_option(option)
+        self.reason_dropdown.select_option(option)
 
     def expand_episodes_list(self) -> None:
         """Click on the episodes list expander icon."""
@@ -422,14 +427,35 @@ class SubjectScreeningSummaryPage(BasePage):
         # Step 2: Safely accept the confirmation dialog triggered by the correction button
         self.safe_accept_dialog(self.reopen_for_correction_button)
 
+    def click_self_refer_lynch_surveillance_button(self) -> None:
+        """Click on the 'Self-refer Lynch Surveillance' button"""
+        self.safe_accept_dialog(self.self_refer_lynch_surveillance_button)
+        self.page.wait_for_timeout(1000)
 
-class ChangeScreeningStatusOptions(Enum):
+    def change_screening_status(self, status_option: str, reason_option: str) -> None:
+        """
+        Change the screening status of the subject by selecting the given status and reason options,
+        then clicking the 'Update Subject Data' button.
+
+        Args:
+            status_option (str): The option value to select for the screening status.
+            reason_option (str): The option value to select for the reason.
+        """
+        self.select_change_screening_status(status_option)
+        self.select_reason(reason_option)
+        self.click_update_subject_data()
+        self.page.wait_for_timeout(1000)
+
+
+class ChangeScreeningStatusOptions(StrEnum):
     """Enum for Change Screening Status options."""
 
     SEEKING_FURTHER_DATA = "4007"
+    LYNCH_SELF_REFERRAL = "307129"
 
 
-class ReasonOptions(Enum):
+class ReasonOptions(StrEnum):
     """Enum for Reason options."""
 
     UNCERTIFIED_DEATH = "11314"
+    RESET_SEEKING_FURTHER_DATA_TO_LYNCH_SELF_REFERRAL = "307135"

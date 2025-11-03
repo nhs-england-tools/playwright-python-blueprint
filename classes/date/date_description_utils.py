@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
 from typing import Optional
 import logging
 from classes.date.date_description import DateDescription
@@ -235,12 +236,129 @@ class DateDescriptionUtils:
     @staticmethod
     def oracle_to_date_function(date_str: str, oracle_format: str) -> str:
         """
-        Constructs an Oracle TO_DATE function to convert a string to a date.
-        This method formats the date string according to the specified format.
+        Constructs a safe Oracle TO_DATE() expression from a Python date string.
         Args:
-            date_str (str): The date string to be converted.
-            oracle_format (str): The format in which the date string is provided.
+            date_str (str): The date string to be converted (e.g., '06/10/1950').
+            oracle_format (str): The Oracle format mask (e.g., 'dd/mm/yyyy').
         Returns:
-            str: The SQL expression for the Oracle TO_DATE function.
+            str: The SQL-safe TO_DATE(...) expression, or 'NULL' if date_str is None/empty.
         """
-        return f" TO_DATE( '{date_str}', '{oracle_format}') "
+        if not date_str or str(date_str).strip().lower() == "none":
+            return "NULL"
+
+        clean = str(date_str).strip().replace("\u00a0", "")
+        py_fmt = (
+            oracle_format.lower()
+            .replace("dd", "%d")
+            .replace("mm", "%m")
+            .replace("yyyy", "%Y")
+        )
+
+        # Validate in Python before sending to Oracle
+        datetime.strptime(clean, py_fmt)
+
+        return f"TO_DATE('{clean}', '{oracle_format}')"
+
+    @staticmethod
+    def convert_description_to_python_date(
+        which_date: str, date_description: str
+    ) -> Optional[date]:
+        """
+        Converts a date description (e.g. '2 years ago', '15/08/2020', 'NULL')
+        into a Python datetime.date object or None.
+        Args:
+            which_date (str): Label for logging.
+            date_description (str): Human-readable or exact date description.
+        Returns:
+            Optional[date]: The corresponding date object, or None if not applicable.
+        """
+        logging.debug(
+            f"convert_description_to_python_date: {which_date}, {date_description}"
+        )
+
+        if not date_description or date_description.strip().upper() in (
+            DateDescriptionUtils.NULL_STRING,
+            "NONE",
+        ):
+            return None
+
+        date_description = date_description.strip()
+        today = datetime.today().date()
+
+        # Try direct date formats
+        abs_date = _parse_absolute_date(date_description)
+        if abs_date:
+            return abs_date
+
+        # Try relative phrases like "3 years ago"
+        rel_date = _parse_relative_date(date_description, today)
+        if rel_date:
+            return rel_date
+
+        # Try enum-based descriptions
+        enum_date = _parse_enum_date(date_description, today)
+        if enum_date is not None:
+            return enum_date
+
+        return None
+
+
+def _parse_absolute_date(date_description: str) -> Optional[date]:
+    """
+    Tries to parse an absolute date from the description.
+    Args:
+        date_description (str): The date description to parse.
+    Returns:
+        Optional[date]: The parsed absolute date or None if parsing failed.
+    """
+    for fmt in (
+        DateDescriptionUtils.DATE_FORMAT_DD_MM_YYYY,
+        DateDescriptionUtils.DATE_FORMAT_YYYY_MM_DD,
+    ):
+        if DateDescriptionUtils.is_valid_date(date_description, fmt):
+            return datetime.strptime(date_description, fmt).date()
+    return None
+
+
+def _parse_relative_date(date_description: str, today: date) -> Optional[date]:
+    """
+    Tries to parse a relative date from the description (e.g., "3 years ago").
+    Args:
+        date_description (str): The date description to parse.
+        today (date): The reference date for relative calculations.
+    Returns:
+        Optional[date]: The parsed relative date or None if parsing failed.
+    """
+    words = date_description.split(" ")
+    if date_description.endswith(" ago") and len(words) == 3:
+        try:
+            number = int(words[0])
+            unit = words[1]
+            if "year" in unit:
+                return today - relativedelta(years=number)
+            if "month" in unit:
+                return today - relativedelta(months=number)
+            if "day" in unit:
+                return today - timedelta(days=number)
+        except Exception as e:
+            logging.warning(f"Could not parse relative date '{date_description}': {e}")
+    return None
+
+
+def _parse_enum_date(date_description: str, today: date) -> Optional[date]:
+    """
+    Tries to parse a date from the DateDescription enum.
+    Args:
+        date_description (str): The date description to parse.
+        today (date): The reference date for special cases.
+    Returns:
+        Optional[date]: The parsed enum date or None if parsing failed.
+    """
+    enum_val = DateDescription.by_description_case_insensitive(date_description)
+    if enum_val is not None:
+        if enum_val.name == DateDescriptionUtils.NULL_STRING:
+            return None
+        if enum_val.name == DateDescriptionUtils.NOT_NULL_STRING_UNDERSCORE:
+            return today
+        return enum_val.suitable_date
+    return None

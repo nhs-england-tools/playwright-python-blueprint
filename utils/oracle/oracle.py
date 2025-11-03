@@ -294,7 +294,7 @@ class OracleDB:
         return results
 
     def update_or_insert_data_to_table(
-        self, statement: str, params: dict
+        self, statement: str, params: Optional[dict] = None
     ) -> None:  # To update or insert data into a table
         """
         This is used to update or insert data into a table.
@@ -311,7 +311,10 @@ class OracleDB:
                 f"[ORACLE] Executing query: {statement} with parameters:\n{pprint.pformat(params, indent=2)}"
             )
             cursor = conn.cursor()
-            cursor.execute(statement, params)
+            if params is None:
+                cursor.execute(statement)
+            else:
+                cursor.execute(statement, params)
             conn.commit()
             logging.debug("DB table successfully updated!")
         except Exception as dbUpdateInsertError:

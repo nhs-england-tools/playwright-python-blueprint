@@ -55,3 +55,15 @@ class GeneralRepository:
             raise oracledb.DatabaseError(f"Error executing database transition: {e}")
         finally:
             self.oracle_db.disconnect_from_db(conn)
+
+    def process_new_lynch_patients(self):
+        logging.debug("[START] process_new_lynch_patients")
+        try:
+            self.oracle_db.execute_stored_procedure("pkg_lynch.p_process_patients")
+        except Exception as e:
+            logging.error("Error executing pkg_lynch.p_process_patients", exc_info=True)
+            raise oracledb.DatabaseError(
+                f"Error executing pkg_lynch.p_process_patients: {e}"
+            )
+
+        logging.debug("[END] process_new_lynch_patients")
