@@ -180,6 +180,28 @@ def book_post_investigation_appointment(
             raise ValueError("Could not book appointment before 17:00 due to overlaps.")
 
 
+def book_practitioner_appointment(
+    page: Page,
+    site: str,
+    screening_practitioner_index: int,
+    appointment_start_time: str = "08:00",
+) -> None:
+    """
+    Book a practitioner appointment for a subject.
+    Sets the appointment date to today and the start time to '08:00'.
+    If a dialog about overlapping appointments is triggered, increases the start time by 15 minutes and retries.
+    Loops until a successful booking or until 17:00.
+    Args:
+        page (Page): The Playwright page object.
+        site (str): The name of the site.
+        screening_practitioner_index (int): The index of the screening practitioner to select.
+        appointment_start_time (str): The start time for the appointment.
+    """
+    book_post_investigation_appointment(
+        page, site, screening_practitioner_index, appointment_start_time
+    )
+
+
 class AppointmentAttendance(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)

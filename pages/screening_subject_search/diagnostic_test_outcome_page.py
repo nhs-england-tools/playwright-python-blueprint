@@ -29,6 +29,9 @@ class DiagnosticTestOutcomePage(BasePage):
         self.test_outcome_dropdown = self.page.get_by_label(
             "Outcome of Diagnostic Test"
         )
+        self.reason_for_sympptomatic_referral_dropdown = self.page.get_by_label(
+            "Reason for Symptomatic Referral"
+        )
         self.save_button = self.page.get_by_role("button", name="Save")
         self.referral_procedure_dropdown = self.page.locator(
             "#UI_REFERRAL_PROCEDURE_TYPE"
@@ -55,6 +58,25 @@ class DiagnosticTestOutcomePage(BasePage):
             option (str): option (str): The option to select from the Outcome Of Diagnostic Test options.
         """
         self.test_outcome_dropdown.select_option(option)
+
+    def verify_reason_for_symptomatic_referral(self, symptomatic_reason: str) -> None:
+        """
+        Verify reason for symptomatic referral is visible.
+
+        Args:
+             symptomatic_reason(str): The accessible name or visible text of the symptomatic reason cell to verify.
+        """
+        expect(
+            self.page.get_by_role("cell", name=symptomatic_reason).nth(1)
+        ).to_be_visible()
+
+    def select_reason_for_symptomatic_referral_option(self, option: str) -> None:
+        """Select an option from the reason for symptomatic referral dropdown.
+
+        Args:
+            option (str): option (str): The option to select from the Reason For Symptomatic Referral options.
+        """
+        self.reason_for_sympptomatic_referral_dropdown.select_option(option)
 
     def click_save_button(self) -> None:
         """Click the 'Save' button."""
@@ -89,3 +111,11 @@ class OutcomeOfDiagnosticTest(StrEnum):
     REFER_SURVEILLANCE = "20365"
     INVESTIGATION_COMPLETE = "20360"
     REFER_ANOTHER_DIAGNOSTIC_TEST = "20364"
+
+
+class ReasonForSymptomaticReferral(StrEnum):
+    """Enum for Symptomatic Referral reason options."""
+
+    POLYP_EXCISION = "203011"
+    CORRECTIVE_SURGERY = "203012"
+    SUSPECTED_CANCER_SURGERY = "203013"
