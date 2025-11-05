@@ -10,10 +10,10 @@ from utils.screening_subject_page_searcher import search_subject_episode_by_nhs_
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.screening_subject_search.subject_events_notes import (
+from pages.screening_subject_search.subject_events_notes_page import (
     NotesOptions,
     NotesStatusOptions,
-    SubjectEventsNotes,
+    SubjectEventsNotesPage,
 )
 from utils.oracle.oracle_specific_functions.subject_notes import (
     get_subjects_by_note_count,
@@ -96,18 +96,18 @@ def test_add_a_kit_note_for_a_subject_without_a_note(
     logging.info(
         f"Selecting note type based on value: '{general_properties["kit_note_type_value"]}'."
     )
-    SubjectEventsNotes(page).select_kit_note()
+    SubjectEventsNotesPage(page).select_kit_note()
     # Set the note status
     note_title = "kit Note - General observation title"
     logging.info(f"Filling in notes: '{note_title}'.")
-    SubjectEventsNotes(page).fill_note_title(note_title)
+    SubjectEventsNotesPage(page).fill_note_title(note_title)
     # Set the note type for verification
     note_text = "kit Note - General observation"
     logging.info(f"Filling in notes: '{note_text}'.")
-    SubjectEventsNotes(page).fill_notes(note_text)
+    SubjectEventsNotesPage(page).fill_notes(note_text)
     # Accept dialog and update notes
     logging.info("Accepting dialog and clicking 'Update Notes'.")
-    SubjectEventsNotes(page).accept_dialog_and_update_notes()
+    SubjectEventsNotesPage(page).accept_dialog_and_update_notes()
 
     # Get supporting notes for the subject from DB
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -175,7 +175,7 @@ def test_view_active_kit_note(page: Page, general_properties: dict) -> None:
     )
 
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.KIT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.KIT_NOTE)
 
     # Get supporting notes for the subject
     _, _, notes_df = fetch_supporting_notes_from_db(
@@ -211,13 +211,13 @@ def test_update_existing_kit_note(page: Page, general_properties: dict) -> None:
         general_properties["kit_note_name"]
     )
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.KIT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.KIT_NOTE)
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.INVALID
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.INVALID
     )
-    SubjectEventsNotes(page).fill_note_title("updated kit title")
-    SubjectEventsNotes(page).fill_notes("updated kit note")
-    SubjectEventsNotes(page).accept_dialog_and_add_replacement_note()
+    SubjectEventsNotesPage(page).fill_note_title("updated kit title")
+    SubjectEventsNotesPage(page).fill_notes("updated kit note")
+    SubjectEventsNotesPage(page).accept_dialog_and_add_replacement_note()
 
     # Get updated supporting notes for the subject
     _, type_id, notes_df = fetch_supporting_notes_from_db(

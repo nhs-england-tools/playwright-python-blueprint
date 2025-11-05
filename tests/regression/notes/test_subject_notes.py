@@ -10,10 +10,10 @@ from utils.screening_subject_page_searcher import search_subject_episode_by_nhs_
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.screening_subject_search.subject_events_notes import (
+from pages.screening_subject_search.subject_events_notes_page import (
     NotesOptions,
     NotesStatusOptions,
-    SubjectEventsNotes,
+    SubjectEventsNotesPage,
 )
 from utils.oracle.oracle_specific_functions.subject_notes import (
     get_subjects_by_note_count,
@@ -101,18 +101,18 @@ def test_add_a_subject_note_for_a_subject_without_a_note(
     logging.info(
         f"Selecting note type based on value: '{general_properties["subject_note_type_value"]}'."
     )
-    SubjectEventsNotes(page).select_subject_note()
+    SubjectEventsNotesPage(page).select_subject_note()
     # Set the note status
     note_title = "Subject Note - General observation title"
     logging.info(f"Filling in notes: '{note_title}'.")
-    SubjectEventsNotes(page).fill_note_title(note_title)
+    SubjectEventsNotesPage(page).fill_note_title(note_title)
     # Set the note type for verification
     note_text = "Subject Note - General observation"
     logging.info(f"Filling in notes: '{note_text}'.")
-    SubjectEventsNotes(page).fill_notes(note_text)
+    SubjectEventsNotesPage(page).fill_notes(note_text)
     # Dismiss dialog and update notes
     logging.info("Dismissing dialog and clicking 'Update Notes'.")
-    SubjectEventsNotes(page).accept_dialog_and_update_notes()
+    SubjectEventsNotesPage(page).accept_dialog_and_update_notes()
 
     # Get supporting notes for the subject from DB
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -181,7 +181,7 @@ def test_view_active_subject_note(page: Page, general_properties: dict) -> None:
     )
 
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.SUBJECT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.SUBJECT_NOTE)
 
     # Get supporting notes for the subject
     _, _, notes_df = fetch_supporting_notes_from_db(
@@ -215,13 +215,13 @@ def test_update_existing_subject_note(page: Page, general_properties: dict) -> N
         general_properties["subject_note_name"]
     )
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.SUBJECT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.SUBJECT_NOTE)
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.INVALID
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.INVALID
     )
-    SubjectEventsNotes(page).fill_note_title("updated subject title")
-    SubjectEventsNotes(page).fill_notes("updated subject note")
-    SubjectEventsNotes(page).accept_dialog_and_add_replacement_note()
+    SubjectEventsNotesPage(page).fill_note_title("updated subject title")
+    SubjectEventsNotesPage(page).fill_notes("updated subject note")
+    SubjectEventsNotesPage(page).accept_dialog_and_add_replacement_note()
 
     # Get updated supporting notes for the subject
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -280,10 +280,10 @@ def test_remove_existing_subject_note(page: Page, general_properties: dict) -> N
         general_properties["subject_note_name"]
     )
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.SUBJECT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.SUBJECT_NOTE)
     logging.info("Selecting the 'Obsolete' option for the existing Subject Note.")
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.OBSOLETE
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.OBSOLETE
     )
     logging.info("Verifying that the subject does not have any Subject Notes.")
 
@@ -328,15 +328,15 @@ def test_remove_existing_subject_note_for_subject_with_multiple_notes(
     logging.info("Navigating to 'Subject Events & Notes' for the selected subject.")
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
 
-    SubjectEventsNotes(page).select_note_type(NotesOptions.SUBJECT_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.SUBJECT_NOTE)
     # Select the first Subject Note from the table for removal
     logging.info("Selecting the first Subject Note from the table for removal.")
-    ui_data = SubjectEventsNotes(page).get_title_and_note_from_row(2)
+    ui_data = SubjectEventsNotesPage(page).get_title_and_note_from_row(2)
     logging.info(
         "Removing one of the existing Subject Note by selecting 'Obsolete' option "
     )
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.OBSOLETE
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.OBSOLETE
     )
     logging.info(
         "Verifying that the subject's removed subject note is removed from DB as well "

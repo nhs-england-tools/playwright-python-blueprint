@@ -9,10 +9,10 @@ from pages.screening_subject_search.subject_screening_search_page import (
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.screening_subject_search.subject_events_notes import (
+from pages.screening_subject_search.subject_events_notes_page import (
     NotesOptions,
     NotesStatusOptions,
-    SubjectEventsNotes,
+    SubjectEventsNotesPage,
 )
 from utils.table_util import TableUtils
 from utils.oracle.oracle_specific_functions.subject_notes import (
@@ -101,13 +101,13 @@ def test_add_a_episode_note_for_a_subject_without_a_note(
     note_title = "Episode Note - Follow-up required title"
     # Set the note type for verification
     note_text = "Episode Note - Follow-up required"
-    SubjectEventsNotes(page).fill_note_title(note_title)
+    SubjectEventsNotesPage(page).fill_note_title(note_title)
     # Set the note type for verification
     logging.info(f"Filling in notes: '{note_text}'.")
-    SubjectEventsNotes(page).fill_notes(note_text)
+    SubjectEventsNotesPage(page).fill_notes(note_text)
     # Dismiss dialog and update notes
     logging.info("Accepting dialog and clicking 'Update Notes'.")
-    SubjectEventsNotes(page).accept_dialog_and_update_notes()
+    SubjectEventsNotesPage(page).accept_dialog_and_update_notes()
 
     # Get supporting notes for the subject from DB
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -181,7 +181,7 @@ def test_view_active_episode_note(page: Page, general_properties: dict) -> None:
     # Select the first link from the table
     TableUtils(page, "#displayRS").click_first_link_in_column("View Events")
     logging.info("Selected the first events link from the table.")
-    SubjectEventsNotes(page).select_note_type(NotesOptions.EPISODE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.EPISODE_NOTE)
 
     # Get supporting notes for the subject
     _, _, notes_df = fetch_supporting_notes_from_db(
@@ -219,13 +219,13 @@ def test_update_existing_episode_note(page: Page, general_properties: dict) -> N
     # Select the first link from the table
     TableUtils(page, "#displayRS").click_first_link_in_column("View Events")
     logging.info("Selected the first events link from the table.")
-    SubjectEventsNotes(page).select_note_type(NotesOptions.EPISODE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.EPISODE_NOTE)
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).episode_note_status, NotesStatusOptions.INVALID
+        SubjectEventsNotesPage(page).episode_note_status, NotesStatusOptions.INVALID
     )
-    SubjectEventsNotes(page).fill_note_title("updated episode title")
-    SubjectEventsNotes(page).fill_notes("updated episode note")
-    SubjectEventsNotes(page).accept_dialog_and_add_replacement_note()
+    SubjectEventsNotesPage(page).fill_note_title("updated episode title")
+    SubjectEventsNotesPage(page).fill_notes("updated episode note")
+    SubjectEventsNotesPage(page).accept_dialog_and_add_replacement_note()
 
     # Get updated supporting notes for the subject
     _, type_id, notes_df = fetch_supporting_notes_from_db(

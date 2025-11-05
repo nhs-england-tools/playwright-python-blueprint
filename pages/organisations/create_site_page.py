@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 
 
-class CreateSite(BasePage):
+class CreateSitePage(BasePage):
     """Create Site Page locators, and methods for interacting with the page."""
 
     def __init__(self, page: Page):

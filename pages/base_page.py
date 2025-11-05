@@ -45,6 +45,7 @@ class BasePage:
         self.screening_subject_search_page = self.page.get_by_role(
             "link", name="Screening Subject Search"
         )
+        self.log_in_page = self.page.get_by_role("button", name="Log in")
         # Bowel Cancer Screening System header
         self.bowel_cancer_screening_system_header = self.page.locator("#ntshAppTitle")
         # Bowel Cancer Screening Page header
@@ -52,8 +53,7 @@ class BasePage:
         self.bowel_cancer_screening_ntsh_page_title = self.page.locator(
             "#ntshPageTitle"
         )
-        self.main_menu__header = self.page.locator("#ntshPageTitle")
-        self.log_in_page = self.page.get_by_role("button", name="Log in")
+        self.main_menu_header = self.page.locator("#ntshPageTitle")
 
     def click_main_menu_link(self) -> None:
         """Click the Base Page 'Main Menu' link if it is visible."""
@@ -64,8 +64,8 @@ class BasePage:
             if self.main_menu_link.is_visible():
                 self.click(self.main_menu_link)
             try:
-                if self.main_menu__header.is_visible():
-                    text = self.main_menu__header.text_content()
+                if self.main_menu_header.is_visible():
+                    text = self.main_menu_header.text_content()
                 else:
                     text = None
             except Exception as e:
@@ -132,7 +132,7 @@ class BasePage:
         Asserts that the Main Menu header is displayed.
         self.main_menu_string contains the string 'Main Menu'
         """
-        expect(self.main_menu__header).to_contain_text(self.main_menu_string)
+        expect(self.main_menu_header).to_contain_text(self.main_menu_string)
 
     def bowel_cancer_screening_page_title_contains_text(self, text: str) -> None:
         """Asserts that the page title contains the specified text.

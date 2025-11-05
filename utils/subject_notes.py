@@ -2,8 +2,8 @@ import logging
 from playwright.sync_api import Page
 import pandas as pd
 from typing import Optional
-from pages.screening_subject_search.subject_events_notes import (
-    SubjectEventsNotes,
+from pages.screening_subject_search.subject_events_notes_page import (
+    SubjectEventsNotesPage,
 )
 from utils.oracle.oracle_specific_functions.subject_notes import (
     get_supporting_notes,
@@ -94,7 +94,7 @@ def verify_note_content_ui_vs_db(
     Returns:
         None
     """
-    ui_data = SubjectEventsNotes(page).get_title_and_note_from_row(row_index)
+    ui_data = SubjectEventsNotesPage(page).get_title_and_note_from_row(row_index)
     logging.info(f"Data from UI: {ui_data}")
 
     if title_prefix_to_strip:

@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 from pages.base_page import BasePage
 
 
-class OrganisationsAndSiteDetails(BasePage):
+class OrganisationsAndSiteDetailsPage(BasePage):
     """Organisations And Site Details Page locators, and methods for interacting with the page."""
 
     def __init__(self, page: Page):
