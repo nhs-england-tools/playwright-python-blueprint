@@ -718,4 +718,54 @@ def test_scenario_13(page: Page) -> None:
     AdvanceFOBTScreeningEpisodePage(page).click_mdt_referral_required_button()
     # # And I enter simple MDT information
     # MdtReferralPage(page).enter_simple_mdt_information()
-    # # Then my subject has been updated as follows:
+    #  Then my subject has been updated as follows:
+    subject_assertion(
+        nhs_no,
+        {
+            "latest event status": "A348 MDT Referral Required",
+        },
+    )
+    # And there is a "A348" letter batch for my subject with the exact title "GP Letter Indicating Referral to MDT"
+    batch_processing(
+        page,
+        "A348",
+        "GP Letter Indicating Referral to MDT",
+    )
+    # When I switch users to BCSS "England" as user role "Senior Screening Assistant"
+    user_role = UserTools.user_login(page, "Senior Screening Assistant at BCS001", True)
+    # And I process the open "A183 - GP Result (Abnormal)" letter batch for my subject
+    batch_processing(
+        page,
+        "A183",
+        "GP Result (Abnormal)",
+    )
+    # Then my subject has been updated as follows:
+    subject_assertion(
+        nhs_no,
+        {
+            "latest event status": "A348 MDT Referral Required ",
+            "latest episode includes event status": "A167 GP Abnormal FOBT Result Sent",
+        },
+    )
+    # When I switch users to BCSS "England" as user role "Specialist Screening Practitioner"
+    user_role = UserTools.user_login(
+        page, "Specialist Screening Practitioner at BCS009 & BCS001", True
+    )
+    # And I process the open "A348" letter batch for my subject
+    batch_processing(
+        page,
+        "A348",
+        "GP Letter Indicating Referral to MDT",
+    )
+    # Then my subject has been updated as follows:
+    subject_assertion(
+        nhs_no,
+        {
+            "latest event status": "A372 Refer Symptomatic, GP Letter Printed",
+        },
+    )
+    # When I view the advance episode options
+    screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # And I select the advance episode option for "LNPCP Result from Symptomatic Procedure"
+    # AdvanceFOBTScreeningEpisodePage(page).click_lnpcp_result_from_symptomatic_procedure_button()
