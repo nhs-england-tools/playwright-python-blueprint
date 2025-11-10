@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from pages.base_page import BasePage
 
 
-class ViewOrganisation(BasePage):
+class ViewOrganisationPage(BasePage):
     """View Organisation Page locators, and methods for interacting with the page."""
 
     def __init__(self, page: Page):
@@ -16,12 +16,12 @@ class ViewOrganisation(BasePage):
         logging.info("Verifying page title for View Organisation")
         expect(self.page.locator("#ntshPageTitle")).to_contain_text("View Organisation")
 
-    def verify_organisation_code_details(self,text:str) -> None:
+    def verify_organisation_code_details(self, text: str) -> None:
         """Verifies that the organisation code details are displayed correctly."""
         logging.info("Verifying organisation code details on View Organisation page")
         expect(self.page.locator('form[name="frm"]')).to_contain_text(text)
 
-    def verify_organisation_type_details(self,text:str) -> None:
+    def verify_organisation_type_details(self, text: str) -> None:
         """Verifies that the organisation type details are displayed correctly."""
         logging.info("Verifying organisation type details on View Organisation page")
         expect(self.page.locator('form[name="frm"]')).to_contain_text(text)

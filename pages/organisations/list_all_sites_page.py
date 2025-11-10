@@ -5,7 +5,7 @@ from enum import StrEnum
 from utils.table_util import TableUtils
 
 
-class ListAllSites(BasePage):
+class ListAllSitesPage(BasePage):
     """List All Sites Page locators, and methods for interacting with the page."""
 
     def __init__(self, page: Page):

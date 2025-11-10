@@ -1,12 +1,11 @@
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page
 from pages.base_page import BasePage
 from enum import StrEnum
 import logging
-import pytest
 from utils.table_util import TableUtils
 
 
-class SubjectEventsNotes(BasePage):
+class SubjectEventsNotesPage(BasePage):
     """Subject Events Notes Page locators, and methods for interacting with the page."""
 
     def __init__(self, page: Page):

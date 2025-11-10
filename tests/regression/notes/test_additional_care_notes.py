@@ -9,10 +9,10 @@ from pages.screening_subject_search.subject_screening_search_page import (
 from pages.screening_subject_search.subject_screening_summary_page import (
     SubjectScreeningSummaryPage,
 )
-from pages.screening_subject_search.subject_events_notes import (
+from pages.screening_subject_search.subject_events_notes_page import (
     NotesOptions,
     NotesStatusOptions,
-    SubjectEventsNotes,
+    SubjectEventsNotesPage,
     AdditionalCareNoteTypeOptions,
 )
 from utils.oracle.oracle_specific_functions.subject_notes import (
@@ -101,19 +101,19 @@ def test_add_an_additional_care_note_for_a_subject_without_a_note(
     logging.info(
         f"Selecting note type based on value: '{general_properties["additional_care_note_type_value"]}'."
     )
-    SubjectEventsNotes(page).select_additional_care_note()
+    SubjectEventsNotesPage(page).select_additional_care_note()
     logging.info("Selecting Additional Care Note Type")
     note_title = "Additional Care Need - Learning disability"
-    SubjectEventsNotes(page).select_additional_care_note_type(
+    SubjectEventsNotesPage(page).select_additional_care_note_type(
         AdditionalCareNoteTypeOptions.LEARNING_DISABILITY
     )
     # Fill Notes
     note_text = "adding additional care need notes"
     logging.info(f"Filling in notes: '{note_text}'.")
-    SubjectEventsNotes(page).fill_notes(note_text)
+    SubjectEventsNotesPage(page).fill_notes(note_text)
     # Dismiss dialog and update notes
     logging.info("Dismissing dialog and clicking 'Update Notes'.")
-    SubjectEventsNotes(page).accept_dialog_and_update_notes()
+    SubjectEventsNotesPage(page).accept_dialog_and_update_notes()
 
     # Get supporting notes for the subject from DB
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -157,23 +157,23 @@ def test_add_additional_care_note_for_subject_with_existing_note(
 
     # add an Additional Care Note if the subject already has one
     logging.info("Selecting 'Additional Care Needs Note'.")
-    SubjectEventsNotes(page).select_additional_care_note()
+    SubjectEventsNotesPage(page).select_additional_care_note()
 
     # Select Additional Care Note Type
     note_title = "Additional Care Need - Learning disability"
     logging.info(f"Selecting Additional Care Note Type: '{note_title}'.")
-    SubjectEventsNotes(page).select_additional_care_note_type(
+    SubjectEventsNotesPage(page).select_additional_care_note_type(
         AdditionalCareNoteTypeOptions.LEARNING_DISABILITY
     )
 
     # Fill Notes
     note_text = "adding additional care need notes2"
     logging.info(f"Filling in notes: '{note_text}'.")
-    SubjectEventsNotes(page).fill_notes(note_text)
+    SubjectEventsNotesPage(page).fill_notes(note_text)
 
     # Accept dialog and update notes
     logging.info("Accept dialog and clicking 'Update Notes'.")
-    SubjectEventsNotes(page).accept_dialog_and_update_notes()
+    SubjectEventsNotesPage(page).accept_dialog_and_update_notes()
     # Get supporting notes for the subject
     _, type_id, notes_df = fetch_supporting_notes_from_db(
         subjects_df, nhs_no, general_properties["note_status_active"]
@@ -185,6 +185,7 @@ def test_add_additional_care_note_for_subject_with_existing_note(
         f"Verification successful: Additional care note added for the subject with NHS Number: {nhs_no}. "
         f"Title and note matched the provided values. Title: '{note_title}', Note: '{note_text}'."
     )
+
 
 @pytest.mark.regression
 @pytest.mark.note_tests
@@ -244,7 +245,7 @@ def test_view_active_additional_care_note(page: Page, general_properties: dict) 
     )
 
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
 
     # Get supporting notes for the subject
     _, _, notes_df = fetch_supporting_notes_from_db(
@@ -281,16 +282,16 @@ def test_update_existing_additional_care_note(
         general_properties["additional_care_note_name"]
     )
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.INVALID
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.INVALID
     )
-    SubjectEventsNotes(page).select_additional_care_note()
-    SubjectEventsNotes(page).select_additional_care_note_type(
+    SubjectEventsNotesPage(page).select_additional_care_note()
+    SubjectEventsNotesPage(page).select_additional_care_note_type(
         AdditionalCareNoteTypeOptions.HEARING_DISABILITY
     )
-    SubjectEventsNotes(page).fill_notes("updated additional care note")
-    SubjectEventsNotes(page).accept_dialog_and_add_replacement_note()
+    SubjectEventsNotesPage(page).fill_notes("updated additional care note")
+    SubjectEventsNotesPage(page).accept_dialog_and_add_replacement_note()
 
     # Get updated supporting notes for the subject
     _, type_id, notes_df = fetch_supporting_notes_from_db(
@@ -352,12 +353,12 @@ def test_remove_existing_additional_care_note(
     )
 
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
-    SubjectEventsNotes(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
     logging.info(
         "Selecting the 'Obsolete' option for the existing Additional Care Note."
     )
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.OBSOLETE
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.OBSOLETE
     )
     logging.info("Verifying that the subject does not have any Additional Care Notes.")
 
@@ -404,15 +405,15 @@ def test_remove_existing_additional_care_note_for_subject_with_multiple_notes(
     logging.info("Navigating to 'Subject Events & Notes' for the selected subject.")
     SubjectScreeningSummaryPage(page).click_subjects_events_notes()
 
-    SubjectEventsNotes(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
+    SubjectEventsNotesPage(page).select_note_type(NotesOptions.ADDITIONAL_CARE_NOTE)
     # Select the first Additional Care Note from the table for removal
     logging.info("Selecting the first Additional Care Note from the table for removal.")
-    ui_data = SubjectEventsNotes(page).get_title_and_note_from_row(2)
+    ui_data = SubjectEventsNotesPage(page).get_title_and_note_from_row(2)
     logging.info(
         "Removing one of the existing Additional Care Note by selecting 'Obsolete' option "
     )
     BasePage(page).safe_accept_dialog_select_option(
-        SubjectEventsNotes(page).note_status, NotesStatusOptions.OBSOLETE
+        SubjectEventsNotesPage(page).note_status, NotesStatusOptions.OBSOLETE
     )
     logging.info(
         "Verifying that the subject's removed additional care note is removed from DB as well "
