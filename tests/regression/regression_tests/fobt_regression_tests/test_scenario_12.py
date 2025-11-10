@@ -57,9 +57,7 @@ from pages.datasets.investigation_dataset_page import (
     YesNoOptions,
     EndoscopyLocationOptions,
 )
-from pages.screening_subject_search.non_neoplastic_result_from_symptomatic_procedure_page import (
-    NonNeoplasticResultFromSymptomaticProcedurePage,
-)
+from pages.screening_subject_search.non_neoplastic_result_from_symptomatic_procedure_page import (NonNeoplasticResultFromSymptomaticProcedurePage)
 from utils.subject_demographics import SubjectDemographicUtil
 from pages.screening_subject_search.reopen_fobt_screening_episode_page import (
     ReopenFOBTScreeningEpisodePage,

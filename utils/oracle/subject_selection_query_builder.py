@@ -2922,7 +2922,7 @@ class SubjectSelectionQueryBuilder:
             if hub_enum in [SubjectHubCode.USER_HUB, SubjectHubCode.USER_ORGANISATION]:
                 if user.organisation is None or user.organisation.id is None:
                     raise ValueError("User organisation or organisation_id is None")
-                hub_code = user.organisation.id
+                hub_code = user.organisation.code
             else:
                 raise SelectionBuilderException(
                     self.criteria_key_name, self.criteria_value

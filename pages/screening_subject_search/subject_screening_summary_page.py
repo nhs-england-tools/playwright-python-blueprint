@@ -446,6 +446,10 @@ class SubjectScreeningSummaryPage(BasePage):
         self.click_update_subject_data()
         self.page.wait_for_timeout(1000)
 
+    def assert_reopen_episode_button_not_visible(self) -> None:
+        """Assert that the 'Reopen FOBT Screening Episode' button is not visible"""
+        expect(self.reopen_fobt_screening_episode_button).not_to_be_visible()
+
 
 class ChangeScreeningStatusOptions(StrEnum):
     """Enum for Change Screening Status options."""

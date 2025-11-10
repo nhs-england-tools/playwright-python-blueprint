@@ -1,14 +1,19 @@
+from socket import TCP_NODELAY
+from pypdf import PageRange
 import pytest
 import logging
 from datetime import datetime, timedelta
 from playwright.sync_api import Page
+from classes.subject import subject
 from classes.subject.subject import Subject
 from classes.user.user import User
+from pages.screening_subject_search import refer_to_mdt_page
+from pages.screening_subject_search.non_neoplastic_result_from_symptomatic_procedure_page import NonNeoplasticResultFromSymptomaticProcedurePage
 from utils.calendar_picker import CalendarPicker
 from utils.user_tools import UserTools
 from utils.subject_assertion import subject_assertion
 from utils import screening_subject_page_searcher
-from utils.batch_processing import batch_processing
+from utils.batch_processing import batch_processing,assert_batch_present_in_active_list,assert_batch_not_present_in_active_list
 from utils.fit_kit import FitKitLogged, FitKitGeneration
 from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
 from utils.appointments import book_appointments, book_post_investigation_appointment
@@ -77,10 +82,15 @@ from pages.screening_subject_search.reopen_fobt_screening_episode_page import (
 from pages.screening_subject_search.contact_with_patient_page import (
     ContactWithPatientPage,
 )
+from pages.screening_subject_search.refer_to_mdt_page import(ReferToMdtPage)
+from pages.screening_subject_search.lnpcp_result_from_symptomatic_procedure_page import (LnpcpResultFromSymptomaticProcedure)
+from pages.screening_subject_search.handover_into_symptomatic_care_page import (HandoverIntoSymptomaticCarePage)
 from classes.repositories.person_repository import PersonRepository
 from classes.repositories.episode_repository import EpisodeRepository
 from utils.sspi_change_steps import SSPIChangeSteps
 from pages.organisations.organisations_page import OrganisationSwitchPage
+from utils.call_and_recall_utils import CallAndRecallUtils
+from utils.oracle.subject_creation_util import CreateSubjectSteps
 
 
 @pytest.mark.wip
@@ -90,9 +100,9 @@ from pages.organisations.organisations_page import OrganisationSwitchPage
 # @pytest.mark.fobt_regression_tests
 
 
-def test_scenario_13(page: Page) -> None:
+def test_scenario_14(page: Page) -> None:
     """
-        Scenario: 13: LNPCP result from symptomatic procedure
+        Scenario: 14: LNPCP result from symptomatic procedure
 
         S9-S10-S43-A8-A183-(A50)-A25-J10-A99-A59-A259-A315-A360-A410-A415-A416-A316-A348-(A167)-A372-A373-A374-A157-A394-A385-A382-A383-C203 [SSCL25d] A372-A373-A374-A372-A373-A374-A157-C203 [SSCL52a]
 
@@ -143,7 +153,7 @@ def test_scenario_13(page: Page) -> None:
     """
     # # Given I log in to BCSS "England" as user role "Hub Manager"
     # user_role = UserTools.user_login(
-    #     page, "Hub Manager State Registered at BCS01", return_role_type=True
+    #     page, "Hub Manager at BCS01", return_role_type=True
     # )
     # if user_role is None:
     #     raise ValueError("This user cannot be assigned to a UserRoleType")
@@ -157,11 +167,14 @@ def test_scenario_13(page: Page) -> None:
     #     "subject age": "Between 60 and 72",
     #     "subject has unprocessed sspi updates": "No",
     #     "subject has user dob updates": "No",
+    #     "subject hub code": "User's hub",
     # }
+
+    # user = User().from_user_role_type(user_role)
 
     # query, bind_vars = SubjectSelectionQueryBuilder().build_subject_selection_query(
     #     criteria=criteria,
-    #     user=User(),
+    #     user=user,
     #     subject=Subject(),
     #     subjects_to_retrieve=1,
     # )
@@ -172,8 +185,13 @@ def test_scenario_13(page: Page) -> None:
     # # Then Comment: NHS number
     # logging.info(f"[SUBJECT RETRIEVAL] Retrieved subject's NHS number: {nhs_no}")
 
-    # # When I receive an SSPI update to change their date of birth to "77" years old
-    # SSPIChangeSteps().sspi_update_to_change_dob_received(nhs_no, 77)
+    user_role = UserTools.user_login(
+        page, "Hub Manager at BCS01", return_role_type=True
+    )
+    nhs_no = "9832913438"
+
+    # When I receive an SSPI update to change their date of birth to "77" years old
+    SSPIChangeSteps().sspi_update_to_change_dob_received(nhs_no, 77)
 
     # # Then my subject has been updated as follows:
     # criteria = {"subject age": "77"}
@@ -235,16 +253,17 @@ def test_scenario_13(page: Page) -> None:
     # )
 
     # # And there is a "A183" letter batch for my subject with the exact title "Practitioner Clinic 1st Appointment"
-    # # When I process the open "A183 - Practitioner Clinic 1st Appointment" letter batch for my subject
-    # # Then my subject has been updated as follows:
-    # batch_processing(
+    # assert_batch_present_in_active_list(
     #     page,
-    #     "A183",
-    #     "Practitioner Clinic 1st Appointment",
-    #     "A25 - 1st Colonoscopy Assessment Appointment Booked, letter sent",
+    #     batch_type="A183",
+    #     batch_description="Practitioner Clinic 1st Appointment",
     # )
-
-    # batch_processing(page, "A183", "GP Result (Abnormal)")
+    # # And there is a "A183" letter batch for my subject with the exact title "GP Result (Abnormal)"
+    # assert_batch_present_in_active_list(
+    #     page,
+    #     batch_type="A183",
+    #     batch_description="GP Result (Abnormal)",
+    # )
     # # And I view the subject
     # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
     # # And I view the advance episode options
@@ -271,7 +290,7 @@ def test_scenario_13(page: Page) -> None:
     #     "A25 - 1st Colonoscopy Assessment Appointment Booked, letter sent",
     # )
 
-    # When I switch users to BCSS "England" as user role "Screening Centre Manager"
+    # # When I switch users to BCSS "England" as user role "Screening Centre Manager"
     # LogoutPage(page).log_out(close_page=False)
     # BasePage(page).go_to_log_in_page()
     # user_role = UserTools.user_login(page, "Screening Centre Manager at BCS001", True)
@@ -603,10 +622,10 @@ def test_scenario_13(page: Page) -> None:
     # InvestigationDatasetsPage(page).assert_polyp_algorithm_size(3, "9")
 
     # # And I confirm the Polyp Algorithm Size for Polyp 4 is 8
-    # InvestigationDatasetsPage(page).assert_polyp_algorithm_size(3, "8")
+    # InvestigationDatasetsPage(page).assert_polyp_algorithm_size(4, "8")
 
     # # And I confirm the Polyp Algorithm Size for Polyp 5 is 7
-    # InvestigationDatasetsPage(page).assert_polyp_algorithm_size(3, "7")
+    # InvestigationDatasetsPage(page).assert_polyp_algorithm_size(5, "7")
 
     # # And I confirm the Polyp Category for Polyp 1 is "Premalignant polyp"
     # InvestigationDatasetsPage(page).assert_polyp_category(1, "Premalignant polyp")
@@ -657,7 +676,7 @@ def test_scenario_13(page: Page) -> None:
     #         "latest event status": "A360 Post-investigation Appointment Required",
     #     },
     # )
-    # When I view the subject
+    # # When I view the subject
     # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
     # # And I choose to book a practitioner clinic for my subject
     # SubjectScreeningSummaryPage(page).click_book_practitioner_clinic_button()
@@ -688,7 +707,7 @@ def test_scenario_13(page: Page) -> None:
     #     },
     # )
 
-    #  When I view the subject
+    # #  When I view the subject
     # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
     # # And I view the event history for the subject's latest episode
     # SubjectScreeningSummaryPage(page).expand_episodes_list()
@@ -705,67 +724,502 @@ def test_scenario_13(page: Page) -> None:
     #         "latest event status": "A316 Post-investigation Appointment Attended ",
     #     },
     # )
+
+    # #  When I view the subject
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # # When I select the advance episode option for "MDT Referral Required"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # AdvanceFOBTScreeningEpisodePage(page).click_mdt_referral_required_button()
+    # # # And I enter simple MDT information
+    # ReferToMdtPage(page).enter_date_in_Mdt_discussion_date_field(datetime.today())
+    # ReferToMdtPage(page).select_mdt_location_lookup(1)
+    # ReferToMdtPage(page).click_record_MDT_appointment_button()
+    # #  Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A348 MDT Referral Required",
+    #     },
+    # )
+    # # And there is a "A348" letter batch for my subject with the exact title "GP Letter Indicating Referral to MDT"
+    # assert_batch_present_in_active_list(
+    #     page=page,
+    #     batch_type="A348",
+    #     batch_description="GP Letter Indicating Referral to MDT",
+    # )
+
+    # # When I switch users to BCSS "England" as user role "Senior Screening Assistant"
+    # LogoutPage(page).log_out(close_page=False)
+    # BasePage(page).go_to_log_in_page()
+    # user_role = UserTools.user_login(page, "Senior Screening Assistant at BCS01", True)
+
+    # # And I process the open "A183 - GP Result (Abnormal)" letter batch for my subject
+    # batch_processing(
+    #     page,
+    #     "A183",
+    #     "GP Result (Abnormal)",
+    # )
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A348 MDT Referral Required",
+    #         "latest episode includes event status": "A167 GP Abnormal FOBT Result Sent"
+    #     }
+    # )
+
+    # # When I switch users to BCSS "England" as user role "Specialist Screening Practitioner"
+    # LogoutPage(page).log_out(close_page=False)
+    # BasePage(page).go_to_log_in_page()
+    # user_role = UserTools.user_login(
+    #     page, "Specialist Screening Practitioner at BCS009 & BCS001", True
+    # )
+    # OrganisationSwitchPage(page).select_organisation_by_id("BCS001")
+    # OrganisationSwitchPage(page).click_continue()
+
+    # # And I process the open "A348" letter batch for my subject
+    # batch_processing(
+    #     page,
+    #     "A348",
+    #     "GP Letter Indicating Referral to MDT",
+    # )
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A372 Refer Symptomatic, GP Letter Printed",
+    #     },
+    # )
+
+    # # When I view the advance episode options
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # # And I select the advance episode option for "LNPCP Result from Symptomatic Procedure"
+    # AdvanceFOBTScreeningEpisodePage(page).click_lnpcp_result_from_symptomatic_procedure_button()
+    # # And I set  the Date of Symptomatic Procedure to "yesterday"
+    # LnpcpResultFromSymptomaticProcedure(page).enter_date_of_symptomatic_procedure(datetime.today() - timedelta(days=1))
+
+    # # And the Screening Interval is 36 months
+    # LnpcpResultFromSymptomaticProcedure(page).assert_text_in_alert_textbox(
+    #     "recall interval of 36 months"
+    # )
+    # # And I select test number 1
+    # LnpcpResultFromSymptomaticProcedure(page).select_test_number(1)
+    # # And I save the Result from Symptomatic Procedure
+    # LnpcpResultFromSymptomaticProcedure(page).click_save_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "Which diagnostic test": "Latest not-void test in latest episode",
+    #         "Latest episode accumulated result": "LNPCP",
+    #         "latest event status": "A373 Symptomatic result recorded",
+    #         "Symptomatic procedure date": "Yesterday",
+    #         "Symptomatic procedure result":"LNPCP",
+    #     },
+    # )
+
+    # # When I advance the subject's episode for "Refer to Surveillance after Symptomatic Referral"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+
+    # AdvanceFOBTScreeningEpisodePage(
+    #     page
+    # ).click_refer_to_survelliance_after_symptomatic_referral_button()
+
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A374 Refer to Surveillance after Symptomatic Referral",
+    #     },
+    # )
+
+    # # And there is a "A374" letter batch for my subject with the exact title "Return Surveillance Letter after Referral to Symptomatic"
+    # assert_batch_present_in_active_list(
+    #         page=page,
+    #         batch_type="A374",
+    #         batch_description="Return Surveillance Letter after Referral to Symptomatic",
+    #     )
+    # # When I process the open "A374" letter batch for my subject
+    # batch_processing(
+    #         page,
+    #         "A374",
+    #         "Return Surveillance Letter after Referral to Symptomatic",
+    #     )
+    # subject_assertion(
+    #         nhs_no,
+    #         {
+    #             "Latest episode includes event status": "A157 LNPCP  ",
+    #             "latest event status": "A394 Handover into Symptomatic Care for Surveillance - Patient Age ",
+    #         },
+    #     )
+
+    # # When I view the Subject
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # # And I select the advance episode option for "Handover into Symptomatic Care"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # AdvanceFOBTScreeningEpisodePage(page).click_handover_into_symptomatic_care_button()
+
+    # # And I fill in Handover into Symptomatic Care form with Referral to Patient's GP Practice
+    # HandoverIntoSymptomaticCarePage(page).select_referral_dropdown_option(
+    #     "Referral to Patient's GP Practice"
+    # )
+    # # HandoverIntoSymptomaticCarePage(page).click_calendar_button()
+    # # CalendarPicker(page).v1_calender_picker(datetime.today())
+    # # HandoverIntoSymptomaticCarePage(page).select_consultant("201")
+    # HandoverIntoSymptomaticCarePage(page).fill_notes("Handover notes - refer to GP practice")
+    # HandoverIntoSymptomaticCarePage(page).click_save_button()
+
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A385 Handover into Symptomatic Care",
+    #     },
+    # )
+
+    # # And there is a "A385" letter batch for my subject with the exact title "Handover into Symptomatic Care Adenoma Surveillance, Age - GP Letter"
+    # assert_batch_present_in_active_list(
+    #     page=page,
+    #     batch_type="A385",
+    #     batch_description="Handover into Symptomatic Care Adenoma Surveillance, Age - GP Letter",
+    # )
+    # # When I process the open "A385" letter batch for my subject
+    # batch_processing(
+    #     page,
+    #     "A385",
+    #     "Handover into Symptomatic Care Adenoma Surveillance, Age - GP Letter",
+    # )
+
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A382 Handover into Symptomatic Care - GP Letter Printed ",
+    #     },
+    # )
+    # # And there is a "A382" letter batch for my subject with the exact title "Handover into Symptomatic Care Adenoma Surveillance - Patient Letter"
+    # # When I process the open "A382" letter batch for my subject
+    # batch_processing(
+    #     page,
+    #     "A382",
+    #     "Handover into Symptomatic Care Adenoma Surveillance - Patient Letter",
+    # )
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "calculated fobt due date": "2 years from diagnostic test",
+    #         "calculated lynch due date": "Null",
+    #         "calculated surveillance due date": "Unchanged",
+    #         "ceased confirmation date": "Today",
+    #         "ceased confirmation details": "Handover notes - refer to GP practice",
+    #         "ceased confirmation user id": "User's ID",
+    #         "clinical reason for cease": "Null",
+    #         "latest episode recall calculation method": "Diagnostic test date",
+    #         "latest episode recall episode type": "Surveillance - LNPCP",
+    #         "latest episode recall surveillance type": "Null",
+    #         "latest episode status": "Closed",
+    #         "latest episode status reason": "Discharged from Screening into Symptomatic care",
+    #         "latest event status": "A383 Handover into Symptomatic Care - Patient Letter Printed",
+    #         "lynch due date": "Null",
+    #         "lynch due date date of change": "Unchanged",
+    #         "lynch due date reason": "Unchanged",
+    #         "screening due date": "Null",
+    #         "screening due date date of change": "Today",
+    #         "screening due date reason": "Discharge from Screening - Age",
+    #         "screening status": "Ceased",
+    #         "screening status date of change": "Today",
+    #         "screening status reason": "Outside Screening Population",
+    #         "surveillance due date": "Null",
+    #         "surveillance due date date of change": "Unchanged",
+    #         "surveillance due date reason": "Unchanged",
+    #         "symptomatic procedure date": "Yesterday",
+    #         "symptomatic procedure result": "LNPCP",
+    #         "screening referral type": "Null",
+    #     },
+    #     user_role
+    # )
+
+    # When I view the subject
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # # Then I "cannot" reopen the subject's episode
+    # SubjectScreeningSummaryPage(page).assert_reopen_episode_button_not_visible()
+    # # When I switch users to BCSS "England" as user role "Screening Centre Manager"
+    # user_role = UserTools.user_login(page, "Screening Centre Manager at BCS001", True)
+    # # And I view the subject
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # # And I reopen the subject's episode for "Reopen to Re-record Outcome from Symptomatic Referral"
+    # SubjectScreeningSummaryPage(page).click_reopen_fobt_screening_episode_button()
+    # ReopenFOBTScreeningEpisodePage(page).click_reopen_to_rerecord_outcome_from_symptomatic_referral_button()
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "calculated fobt due date": "As at episode start",
+    #         "calculated lynch due date": "Null",
+    #         "calculated surveillance due date": "Unchanged",
+    #         "ceased confirmation date": "Null",
+    #         "ceased confirmation details": "Null",
+    #         "ceased confirmation user id": "Null",
+    #         "clinical reason for cease": "Null",
+    #         "latest episode accumulated result": "High-risk findings",
+    #         "latest episode includes event code": "E372 Reopen to Re-record Outcome from Symptomatic Referral",
+    #         "latest episode recall calculation method": "Diagnostic test date",
+    #         "latest episode recall episode type": "Null",
+    #         "latest episode recall surveillance type": "Null",
+    #         "latest episode status": "Open",
+    #         "latest episode status reason": "Null",
+    #         "latest event status": "A372 Refer Symptomatic, GP Letter Printed",
+    #         "screening due date": "Calculated FOBT due date",
+    #         "screening due date date of change": "Today",
+    #         "screening due date reason": "Reopened episode",
+    #         "screening status": "NOT: Ceased",
+    #         "screening status date of change": "Today",
+    #         "screening status reason": "Reopened episode",
+    #         "surveillance due date": "Null",
+    #         "surveillance due date reason": "Unchanged",
+    #         "surveillance due date date of change": "Unchanged",
+    #         "symptomatic procedure date": "Null",
+    #         "symptomatic procedure result": "Null",
+    #         "screening referral type": "Null",
+    #     },
+    # )
+
+    # # When I receive an SSPI update to change their date of birth to "72" years old
+    # SSPIChangeSteps().sspi_update_to_change_dob_received(nhs_no, 72)
+    # # Then my subject has been updated as follows:
+    # subject_assertion(nhs_no, {"subject age": "72"})
+    # # When I view the advance episode options
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # # And I select the advance episode option for "Non-neoplastic and Other Non-bowel Cancer Result"
+    # AdvanceFOBTScreeningEpisodePage(page).click_non_neoplastic_and_other_non_bowel_cancer_result_button()
+    # # And I set the Date of Symptomatic Procedure to "today"
+    # NonNeoplasticResultFromSymptomaticProcedurePage(page).enter_date_of_symptomatic_procedure(datetime.today())
+    # # And the Screening Interval is 36 months
+    # NonNeoplasticResultFromSymptomaticProcedurePage(page).assert_text_in_alert_textbox(
+    #     "recall interval of 36 months"
+    # )
+    # # And I select test number 1
+    # NonNeoplasticResultFromSymptomaticProcedurePage(page).select_test_number(1)
+    # # And I save the Result from Symptomatic Procedure
+    # NonNeoplasticResultFromSymptomaticProcedurePage(page).click_save_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "latest episode accumulated result": "High-risk findings",
+    #         "latest event status": "A373 Symptomatic result recorded",
+    #         "symptomatic procedure date": "Today",
+    #         "symptomatic procedure result": "Non-neoplastic",
+    #     },
+    # )
+
+    # # When I advance the subject's episode for "Refer to Surveillance after Symptomatic Referral"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # AdvanceFOBTScreeningEpisodePage(
+    #     page
+    # ).click_refer_to_survelliance_after_symptomatic_referral_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A374 Refer to Surveillance after Symptomatic Referral",
+    #     },
+    # )
+    # # And there is a "A374" letter batch for my subject with the exact title "Return Surveillance Letter after Referral to Symptomatic"
+    # assert_batch_present_in_active_list(
+    #     page=page,
+    #     batch_type="A374",
+    #     batch_description="Return Surveillance Letter after Referral to Symptomatic",
+    # )
+    # # When I view the advance episode options
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # # And I interrupt the subject's episode for "Redirect to Re-record the Outcome of Symptomatic Referral"
+    # AdvanceFOBTScreeningEpisodePage(page).check_exception_circumstances_checkbox()
+    # AdvanceFOBTScreeningEpisodePage(
+    #     page).click_redirect_to_rerecord_the_outcome_of_symptomatic_referral_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "calculated fobt due date": "As at episode start",
+    #         "calculated lynch due date": "Null",
+    #         "calculated surveillance due date": "Unchanged",
+    #         "ceased confirmation date": "Null",
+    #         "ceased confirmation details": "Null",
+    #         "ceased confirmation user id": "Null",
+    #         "clinical reason for cease": "Null",
+    #         "latest episode accumulated result": "High-risk findings",
+    #         "latest episode includes event code": "E372 Reopen to Re-record Outcome from Symptomatic Referral",
+    #         "latest episode recall calculation method": "Diagnostic test date",
+    #         "latest episode recall episode type": "Null",
+    #         "latest episode recall surveillance type": "Null",
+    #         "latest episode status": "Open",
+    #         "latest episode status reason": "Null",
+    #         "latest event status": "A375 Redirect to Re-record the Outcome of Symptomatic Referral",
+    #         "screening due date": "Calculated FOBT due date",
+    #         "screening due date date of change": "Today",
+    #         "screening due date reason": "Reopened episode",
+    #         "screening status": "NOT: Ceased",
+    #         "screening status date of change": "Today",
+    #         "screening status reason": "Reopened episode",
+    #         "surveillance due date": "Null",
+    #         "surveillance due date reason": "Unchanged",
+    #         "surveillance due date date of change": "Unchanged",
+    #         "symptomatic procedure date": "Null",
+    #         "symptomatic procedure result": "Null",
+    #         "screening referral type": "Null",
+    #     },
+    # )
+    # # And there is no "A374" letter batch for my subject with the exact title "Return Surveillance Letter after Referral to Symptomatic"
+    # assert_batch_not_present_in_active_list(
+    #     page=page,
+    #     batch_type="A374",
+    #     batch_description="Return Surveillance Letter after Referral to Symptomatic",
+    # )
+    # # When I view the advance episode options
+    # screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
+    # # And I select the advance episode option for "LNPCP Result from Symptomatic Procedure"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # AdvanceFOBTScreeningEpisodePage(page).click_lnpcp_result_from_symptomatic_procedure_button()
+    # # And I set the Date of Symptomatic Procedure to "yesterday"
+    # LnpcpResultFromSymptomaticProcedure(page).enter_date_of_symptomatic_procedure(datetime.today() - timedelta(days=1))
+    # # And the Screening Interval is 36 months
+    # LnpcpResultFromSymptomaticProcedure(page).assert_text_in_alert_textbox(
+    #     "recall interval of 36 months"
+    # )
+    # # And I select test number 2
+    # LnpcpResultFromSymptomaticProcedure(page).select_test_number(2)
+    # # And I save the Result from Symptomatic Procedure
+    # LnpcpResultFromSymptomaticProcedure(page).click_save_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "latest episode accumulated result": "LNPCP",
+    #         "latest event status": "A373 Symptomatic result recorded",
+    #         "symptomatic procedure date": "Yesterday",
+    #         "symptomatic procedure result": "LNPCP",
+    #     },
+    # )
+    # # When I advance the subject's episode for "Refer to Surveillance after Symptomatic Referral"
+    # SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
+    # AdvanceFOBTScreeningEpisodePage(
+    #     page
+    # ).click_refer_to_survelliance_after_symptomatic_referral_button()
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "latest event status": "A374 Refer to Surveillance after Symptomatic Referral",
+    #     },
+    # )
+    # # And there is a "A374" letter batch for my subject with the exact title "Return Surveillance Letter after Referral to Symptomatic"
+    # assert_batch_present_in_active_list(
+    #     page=page,
+    #     batch_type="A374",
+    #     batch_description="Return Surveillance Letter after Referral to Symptomatic",
+    # )
+    # # When I process the open "A374" letter batch for my subject
+    # batch_processing(
+    #     page,
+    #     "A374",
+    #     "Return Surveillance Letter after Referral to Symptomatic",
+    # )
+    # # Then my subject has been updated as follows:
+    # subject_assertion(
+    #     nhs_no,
+    #     {
+    #         "which diagnostic test": "Latest not-void test in latest episode",
+    #         "calculated fobt due date": "Unchanged",
+    #         "calculated lynch due date": "Null",
+    #         "calculated surveillance due date": "3 years from symptomatic procedure",
+    #         "ceased confirmation date": "Null",
+    #         "ceased confirmation details": "Null",
+    #         "ceased confirmation user id": "Null",
+    #         "clinical reason for cease": "Null",
+    #         "latest episode accumulated result": "LNPCP",
+    #         "latest episode recall calculation method": "Symptomatic Procedure date",
+    #         "latest episode recall episode type": "Surveillance - LNPCP",
+    #         "latest episode recall surveillance type": "LNPCP",
+    #         "latest episode status": "Closed",
+    #         "latest episode status reason": "Episode Complete",
+    #         "latest event status": "A157 LNPCP",
+    #         "lynch due date": "Null",
+    #         "lynch due date date of change": "Unchanged",
+    #         "lynch due date reason": "Unchanged",
+    #         "screening due date": "Null",
+    #         "screening due date date of change": "Today",
+    #         "screening due date reason": "Result referred to Surveillance",
+    #         "screening status": "Surveillance",
+    #         "screening status date of change": "Today",
+    #         "screening status reason": "Result Referred to Surveillance",
+    #         "surveillance due date": "Calculated Surveillance Due Date",
+    #         "surveillance due date date of change": "Today",
+    #         "surveillance due date reason": "Result - LNPCP",
+    #         "symptomatic procedure date": "Yesterday",
+    #         "symptomatic procedure result": "LNPCP",
+    #         "screening referral type": "Null",
+    #     },
+    # )
+
+@pytest.mark.wip2
+
+def test_create_subjects_for_scneario_13(page: Page) -> None:
+    """ """
     user_role = UserTools.user_login(
-        page, "Screening Centre Manager at BCS001", return_role_type=True
+        page, "Hub Manager State Registered at BCS01", True
+    )
+    if user_role is None:
+        raise ValueError("User Role is None")
+    requirements = {
+        "age (y/d)": "65/25",
+        "active gp practice in hub/sc": "BCS01/BCS001",
+    }
+    nhs_no = CreateSubjectSteps().create_custom_subject(requirements)
+    if nhs_no is None:
+        raise ValueError("NHS No is 'None'")
+    CallAndRecallUtils().run_failsafe(nhs_no)
+    CallAndRecallUtils().invite_subject_for_fobt_screening(nhs_no, user_role)
+    batch_processing(
+        page,
+        "S1",
+        "Pre-invitation (FIT)",
+    )
+    logging.info(f"Subject NHS Number: {nhs_no}")
+
+@pytest.mark.wip3
+def test_test(page: Page) -> None:
+    user_role = UserTools.user_login(
+        page, "Hub Manager at BCS01", return_role_type=True
     )
     if user_role is None:
         raise ValueError("This user cannot be assigned to a UserRoleType")
-    nhs_no = "9115664643"
-    #  When I view the subject
-    screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
-    # When I select the advance episode option for "MDT Referral Required"
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-    AdvanceFOBTScreeningEpisodePage(page).click_mdt_referral_required_button()
-    # # And I enter simple MDT information
-    # MdtReferralPage(page).enter_simple_mdt_information()
-    #  Then my subject has been updated as follows:
-    subject_assertion(
-        nhs_no,
-        {
-            "latest event status": "A348 MDT Referral Required",
-        },
+    criteria = {
+        "latest event status": "S9 Pre-Invitation Sent",
+        "latest episode kit class": "FIT",
+        "latest episode started": "Within the last 6 months",
+        "latest episode type": "FOBT",
+        "subject age": "Between 60 and 72",
+        "subject has unprocessed sspi updates": "No",
+        "subject has user dob updates": "No",
+        "subject hub code": "User's hub",
+    }
+ 
+    user = User().from_user_role_type(user_role)
+ 
+    query, bind_vars = SubjectSelectionQueryBuilder().build_subject_selection_query(
+        criteria=criteria,
+        user=user,
+        subject=Subject(),
+        subjects_to_retrieve=1,
     )
-    # And there is a "A348" letter batch for my subject with the exact title "GP Letter Indicating Referral to MDT"
-    batch_processing(
-        page,
-        "A348",
-        "GP Letter Indicating Referral to MDT",
-    )
-    # When I switch users to BCSS "England" as user role "Senior Screening Assistant"
-    user_role = UserTools.user_login(page, "Senior Screening Assistant at BCS001", True)
-    # And I process the open "A183 - GP Result (Abnormal)" letter batch for my subject
-    batch_processing(
-        page,
-        "A183",
-        "GP Result (Abnormal)",
-    )
-    # Then my subject has been updated as follows:
-    subject_assertion(
-        nhs_no,
-        {
-            "latest event status": "A348 MDT Referral Required ",
-            "latest episode includes event status": "A167 GP Abnormal FOBT Result Sent",
-        },
-    )
-    # When I switch users to BCSS "England" as user role "Specialist Screening Practitioner"
-    user_role = UserTools.user_login(
-        page, "Specialist Screening Practitioner at BCS009 & BCS001", True
-    )
-    # And I process the open "A348" letter batch for my subject
-    batch_processing(
-        page,
-        "A348",
-        "GP Letter Indicating Referral to MDT",
-    )
-    # Then my subject has been updated as follows:
-    subject_assertion(
-        nhs_no,
-        {
-            "latest event status": "A372 Refer Symptomatic, GP Letter Printed",
-        },
-    )
-    # When I view the advance episode options
-    screening_subject_page_searcher.navigate_to_subject_summary_page(page, nhs_no)
-    SubjectScreeningSummaryPage(page).click_advance_fobt_screening_episode_button()
-    # And I select the advance episode option for "LNPCP Result from Symptomatic Procedure"
-    # AdvanceFOBTScreeningEpisodePage(page).click_lnpcp_result_from_symptomatic_procedure_button()
+
+    nhs_no_df = OracleDB().execute_query(query=query, parameters=bind_vars)
+    nhs_no = nhs_no_df["subject_nhs_number"].iloc[0]
+
+    logging.info(f"[SUBJECT RETRIEVAL] Retrieved subject's NHS number: {nhs_no}")

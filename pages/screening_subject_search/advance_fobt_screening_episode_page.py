@@ -114,6 +114,17 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
             "button",
             name="Refer Another Diagnostic Test after return from Symptomatic Referral",
         )
+        self.refer_to_survelliance_after_symptomatic_referral_button = (
+            self.page.get_by_role(
+                "button", name="Refer to Surveillance after Symptomatic Referral"
+            )
+        )
+        self.redirect_to_rerecord_the_outcome_of_symptomatic_referral_button = (
+            self.page.get_by_role(
+                "button",
+                name="Redirect to Re-record the Outcome of Symptomatic Referral",
+            )
+        )
         # Contact recording locators
         self.contact_direction_dropdown = self.page.get_by_label("Contact Direction")
         self.contact_made_between_dropdown = self.page.get_by_label(
@@ -134,6 +145,9 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         )
         self.ct_colonography_test_type_dropdown = self.page.locator(
             "#UI_EXT_TEST_TYPE_38"
+        )
+        self.lnpcp_result_from_symptomatic_procedure_button = self.page.get_by_role(
+            "button", name="LNPCP Result from Symptomatic Procedure"
         )
 
     def click_suitable_for_endoscopic_test_button(self) -> None:
@@ -437,3 +451,19 @@ class AdvanceFOBTScreeningEpisodePage(BasePage):
         self.click(
             self.refer_another_diagnostic_test_after_return_from_symptomatic_referral_button
         )
+
+    def click_lnpcp_result_from_symptomatic_procedure_button(self) -> None:
+        """Click the 'LNPCP Result from Symptomatic Procedure' button."""
+        self.safe_accept_dialog(self.lnpcp_result_from_symptomatic_procedure_button)
+
+    def click_refer_to_survelliance_after_symptomatic_referral_button(
+        self,
+    ) -> None:
+        """Click the 'Refer to Surveillance after Symptomatic Referral' button."""
+        self.safe_accept_dialog(
+            self.refer_to_survelliance_after_symptomatic_referral_button
+        )
+
+    def click_redirect_to_rerecord_the_outcome_of_symptomatic_referral_button(self) -> None:
+        """Click the 'Redirect to Re-record the Outcome of Symptomatic Referral' button."""
+        self.safe_accept_dialog(self.redirect_to_rerecord_the_outcome_of_symptomatic_referral_button)
