@@ -88,3 +88,18 @@ class GenderType(Enum):
         return next(
             (item for item in cls if item.redefined_value == redefined_value), None
         )
+
+    @classmethod
+    def by_allowed_value(cls, allowed_value: str) -> Optional["GenderType"]:
+        """
+        Returns the GenderType enum member matching the given allowed value.
+
+        Args:
+            allowed_value (str): The allowed value to search for.
+
+        Returns:
+            Optional[GenderType]: The matching enum member, or None if not found.
+        """
+        return next(
+            (item for item in cls if item.allowed_value == allowed_value), None
+        )

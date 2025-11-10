@@ -538,3 +538,43 @@ def test_scenario_6(page: Page) -> None:
 
     logging.info("[TEST COMPLETE] Scenario 6 passed all assertions")
     LogoutPage(page).log_out()
+
+
+
+from classes.user.user import User
+from classes.subject.subject import Subject
+from utils.oracle.subject_selection_query_builder import SubjectSelectionQueryBuilder
+@pytest.mark.wip
+def test_test(page: Page) -> None:
+    # Given I log in to BCSS "England" as user role "Hub Manager"
+    user_role = UserTools.user_login(
+        page, "Hub Manager State Registered at BCS01", return_role_type=True
+    )
+    if user_role is None:
+        raise ValueError("This user cannot be assigned to a UserRoleType")
+
+    # And there is a subject who meets the following criteria:
+    criteria = {
+        "latest event status": "S9 Pre-Invitation Sent",
+        "latest episode kit class": "FIT",
+        "latest episode started": "Within the last 6 months",
+        "latest episode type": "FOBT",
+        "subject age": "Between 60 and 72",
+        "subject has unprocessed sspi updates": "No",
+        "subject has user dob updates": "No",
+    }
+
+    query, bind_vars = SubjectSelectionQueryBuilder().build_subject_selection_query(
+        criteria=criteria,
+        user=User(),
+        subject=Subject(),
+        subjects_to_retrieve=1,
+    )
+
+    nhs_no_df = OracleDB().execute_query(query=query, parameters=bind_vars)
+    nhs_no = nhs_no_df["subject_nhs_number"].iloc[0]
+
+    # Then Comment: NHS number
+    logging.info(f"[SUBJECT RETRIEVAL] Retrieved subject's NHS number: {nhs_no}")
+
+    SSPIChangeSteps().sspi_update_to_change_dob_received(nhs_no, 75)
