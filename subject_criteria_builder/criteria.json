@@ -4891,5 +4891,10 @@
     "key": "ADD_COLUMN_TO_SELECT_STATEMENT",
     "value_source": "",
     "notes": "Enter the name of the column to add to the select statement, also specify the prefix. E.g. ss.screening_subject_id."
+  },
+  {
+    "key": "ADD_JOIN_TO_FROM_STATEMENT",
+    "value_source": "",
+    "notes": "Enter the join you wish to add to the query. E.g. 'INNER JOIN sd_address_t adds ON adds.contact_id = c.contact_id'"
   }
 ]

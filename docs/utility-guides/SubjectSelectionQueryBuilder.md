@@ -64,8 +64,8 @@ This approach ensures injection-safe execution (defending against SQL injection 
 
 ```python
 criteria = {
-    "nhs_number": "1234567890",
-    "screening_status": "invited"
+    "nhs number": "1234567890",
+    "screening status": "invited"
 }
 
 user = User(user_id=42, organisation=None)     # Optional; used for 'unchanged' logic
@@ -122,9 +122,9 @@ Example:
 
 ```python
 {
-  "subject_has_event_status": "ES01",
-  "subject_age": "> 60",
-  "date_of_death": "null"
+  "subject has event status": "ES01",
+  "subject age": "> 60",
+  "date of death": "null"
 }
 ```
 
@@ -134,12 +134,12 @@ Each of those triggers a different clause in the generated SQL.
 
 This gives the builder context about who’s requesting the query, including their organisation and permissions.
 
-Some criteria (like "USER_HUB" or "USER_ORGANISATION") don’t refer to a fixed hub code, but instead dynamically map to the hub or screening centre of the user running the search. That’s where this comes into play.
+Some criteria (like "USER HUB" or "USER ORGANISATION") don’t refer to a fixed hub code, but instead dynamically map to the hub or screening centre of the user running the search. That’s where this comes into play.
 
 Example:
 
 ```python
-"SUBJECT_HUB_CODE": "USER_HUB"
+"SUBJECT HUB CODE": "USER HUB"
 ```
 
 This means “filter by the hub assigned to this user’s organisation,” not a fixed hub like ABC.
