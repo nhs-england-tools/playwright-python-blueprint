@@ -225,3 +225,58 @@ class SubjectRepository:
         except Exception:
             raise ValueError("No subject found matching the given criteria")
         return subject
+
+    def there_is_letter_batch_for_subject(
+        self,
+        nhs_no: str,
+        letter_batch_code: str,
+        letter_batch_title: str,
+        assertion: bool = True,
+    ) -> None:
+        """
+        Checks if the subject under test has a specific letter batch assosiated with them.
+        Args:
+            nhs_no (str): The subject's NHS number.
+            letter_batch_code (str): The letter batch code.
+            letter_batch_title (str): The letter batch title.
+            assertion (bool): If the subject should have this batch (True), or should not have this batch (False).
+        """
+        sql_query = """ SELECT lb.batch_id
+        FROM lett_batch_records lbr
+        INNER JOIN lett_batch lb
+          ON lb.batch_id = lbr.batch_id
+        INNER JOIN valid_values ld
+          ON ld.valid_value_id = lb.description_id
+        INNER JOIN valid_values lbs
+          ON lbs.valid_value_id = lb.status_id
+        WHERE lb.batch_state_id = 12018
+        AND lbr.screening_subject_id = :subject_id
+        AND lbs.allowed_value = :batch_code
+        AND LOWER(ld.description) = LOWER(:batch_title)
+        AND lbr.non_inclusion_id IS NULL
+        AND lbr.key_id != 11539
+        """
+
+        subject_id = self.oracle_db.get_subject_id_from_nhs_number(nhs_no)
+
+        params = {
+            "subject_id": subject_id,
+            "batch_code": letter_batch_code,
+            "batch_title": letter_batch_title,
+        }
+
+        batch_df = self.oracle_db.execute_query(sql_query, params)
+        if assertion:
+            assert (
+                not batch_df.empty
+            ), f"[DB ASSERTION FAILED] Subject {nhs_no} does not have a {letter_batch_code} - {letter_batch_title} batch when they are expected to"
+            logging.info(
+                f"[DB ASSERTION Passed] Subject {nhs_no} has a {letter_batch_code} - {letter_batch_title} batch"
+            )
+        else:
+            assert (
+                batch_df.empty
+            ), f"[DB ASSERTION FAILED] Subject {nhs_no} has a {letter_batch_code} - {letter_batch_title} batch when they are expected not to"
+            logging.info(
+                f"[DB ASSERTION Passed] Subject {nhs_no} does not have a {letter_batch_code} - {letter_batch_title} batch"
+            )

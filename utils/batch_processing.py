@@ -252,7 +252,8 @@ def assert_batch_present_in_active_list(
         )
         logging.error(error_msg)
         raise AssertionError(error_msg) from e
-    
+
+
 def assert_batch_not_present_in_active_list(
     page: Page, batch_type: str, batch_description: str
 ) -> None:

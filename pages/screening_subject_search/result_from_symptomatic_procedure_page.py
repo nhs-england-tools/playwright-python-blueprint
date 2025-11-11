@@ -15,7 +15,9 @@ class ResultFromSymptomaticProcedurePage(BasePage):
             "#UI_SURGERY_DATE__LinkOrButton"
         )
         self.alert_textbox = self.page.locator("#UI_SPAN_RECALL_TEXT")
-        self.all_tests = self.page.locator("#UI_ID_RECALL_ANCHOR_DATE_EXT_TEST_ID")
+        self.all_tests = self.page.locator(
+            "[id^='UI_ID_RECALL_ANCHOR_DATE_EXT_TEST_ID']"
+        )
         self.save_button = self.page.get_by_role("button", name="Save")
 
     def click_date_of_symptomatic_procedure_calendar_button(self) -> None:
