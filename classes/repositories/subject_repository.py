@@ -244,11 +244,11 @@ class SubjectRepository:
         sql_query = """ SELECT lb.batch_id
         FROM lett_batch_records lbr
         INNER JOIN lett_batch lb
-          ON lb.batch_id = lbr.batch_id
+        ON lb.batch_id = lbr.batch_id
         INNER JOIN valid_values ld
-          ON ld.valid_value_id = lb.description_id
+        ON ld.valid_value_id = lb.description_id
         INNER JOIN valid_values lbs
-          ON lbs.valid_value_id = lb.status_id
+        ON lbs.valid_value_id = lb.status_id
         WHERE lb.batch_state_id = 12018
         AND lbr.screening_subject_id = :subject_id
         AND lbs.allowed_value = :batch_code
