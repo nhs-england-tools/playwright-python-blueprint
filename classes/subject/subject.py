@@ -1302,6 +1302,16 @@ class Subject:
             ),
             "date_of_birth": DateTimeUtils.parse_date(row.get("date_of_birth")),
             "date_of_death": DateTimeUtils.parse_date(row.get("date_of_death")),
+            "title": row.get("person_title"),
+            "other_names": row.get("person_other_given_names"),
+            "address_line1": row.get("address_line_1"),
+            "address_line2": row.get("address_line_2"),
+            "address_line3": row.get("address_line_3"),
+            "address_line4": row.get("address_line_4"),
+            "address_line5": row.get("address_line_5"),
+            "postcode": row.get("postcode"),
+            "gp_practice_code": row.get("gp_practice_code"),
+            "gender": GenderType.by_allowed_value(str(row.get("person_gender"))),
         }
 
         return Subject(**field_map)
@@ -1318,13 +1328,17 @@ class Subject:
             SubjectSelectionQueryBuilder,
         )
 
-        nhs_no_criteria = {"nhs number": nhs_no}
+        criteria = {
+            "nhs number": nhs_no,
+            "add column to select statement": " c.person_title, c.person_other_given_names, CASE c.person_gender WHEN 130 THEN 'M' WHEN 131 THEN 'F' WHEN 132 THEN 'I' WHEN 160 THEN 'U' END, adds.address_line_1, adds.address_line_2, adds.address_line_3, adds.address_line_4, adds.address_line_5, adds.postcode, (SELECT hub.org_code FROM org hub WHERE org_id = c.gp_practice_id) AS gp_practice_code ",
+            "add join to from statement": " INNER JOIN sd_address_t adds ON adds.contact_id = c.contact_id ",
+        }
         subject = Subject()
         user = User()
         builder = SubjectSelectionQueryBuilder()
 
         query, bind_vars = builder.build_subject_selection_query(
-            criteria=nhs_no_criteria,
+            criteria=criteria,
             user=user,
             subject=subject,
             subjects_to_retrieve=1,

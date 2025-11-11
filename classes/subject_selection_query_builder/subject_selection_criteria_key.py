@@ -24,6 +24,7 @@ class SubjectSelectionCriteriaKey(Enum):
     """
 
     ADD_COLUMN_TO_SELECT_STATEMENT = ("add column to select statement", False, False)
+    ADD_JOIN_TO_FROM_STATEMENT = ("add join to from statement", False, False)
     APPOINTMENT_DATE = ("appointment date", False, True)
     APPOINTMENT_STATUS = ("appointment status", True, True)
     APPOINTMENT_TYPE = ("appointment type", False, True)
