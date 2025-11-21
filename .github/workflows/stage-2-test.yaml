@@ -35,6 +35,6 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Run Playwright Tests"
         uses: ./.github/actions/run-playwright-tests
