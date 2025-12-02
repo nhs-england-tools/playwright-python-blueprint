@@ -2,7 +2,7 @@
 # for use in a CI/CD-style environment such as GitHub Actions or Jenkins.
 # Further reading on this: https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/
 
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Create non-root OS user/group and configure environment
 RUN addgroup --system nonroot \
