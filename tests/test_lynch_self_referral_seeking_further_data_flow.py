@@ -41,7 +41,7 @@ def test_lynch_self_referral_seeking_further_data_flow(page: Page) -> None:
 
     # When I receive Lynch diagnosis "EPCAM" for a new subject in my hub aged "75" with diagnosis date "3 years ago" and last colonoscopy date "2 years ago"
     # Get or create a subject suitable for Lynch self-referral
-    nhs_no = LynchUtils.insert_validated_lynch_patient_from_new_subject_with_age(
+    nhs_no = LynchUtils(page).insert_validated_lynch_patient_from_new_subject_with_age(
         "75", "EPCAM", "3 years ago", "2 years ago", user_role
     )
 
