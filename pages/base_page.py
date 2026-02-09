@@ -1,5 +1,6 @@
 from playwright.sync_api import Page, expect, Locator, Dialog
 import logging
+import pytest
 
 
 class BasePage:
@@ -271,7 +272,7 @@ class BasePage:
         try:
             self.click(locator)
         except Exception as e:
-            logging.error(f"Click failed: {e}")
+            pytest.fail(f"Click failed: {e}")
 
     def assert_dialog_text(self, expected_text: str, accept: bool = False) -> None:
         """
@@ -342,3 +343,16 @@ class BasePage:
             expect(locator).to_be_visible()
         else:
             expect(locator).not_to_be_visible()
+
+    def button_with_value_present(self, button_value: str, is_present: bool) -> None:
+        """
+        Asserts whether a button is visble
+        Args:
+            button_value (str): The string value of the button
+            is_present: True if it should be present, False if otherwise
+        """
+        button_locator = self.page.get_by_role("button", name=button_value)
+        if is_present:
+            assert button_locator.is_visible()
+        else:
+            assert not button_locator.is_visible()

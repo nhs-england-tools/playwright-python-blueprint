@@ -127,6 +127,7 @@ class SubjectScreeningSummaryPage(BasePage):
         self.self_refer_lynch_surveillance_button = self.page.get_by_role(
             "button", name="Self-refer Lynch Surveillance"
         )
+        self.self_refer_button = self.page.locator("#self_ref_button")
 
     def wait_for_page_title(self) -> None:
         """Waits for the page to be the Subject Screening Summary"""
@@ -487,6 +488,11 @@ class SubjectScreeningSummaryPage(BasePage):
     def click_self_refer_lynch_surveillance_button(self) -> None:
         """Click on the 'Self-refer Lynch Surveillance' button"""
         self.safe_accept_dialog(self.self_refer_lynch_surveillance_button)
+        self.page.wait_for_timeout(1000)
+
+    def click_self_refer_button(self) -> None:
+        """Click on the 'Self-refer' button"""
+        self.safe_accept_dialog(self.self_refer_button)
         self.page.wait_for_timeout(1000)
 
     def change_screening_status(self, status_option: str, reason_option: str) -> None:

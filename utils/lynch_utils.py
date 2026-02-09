@@ -1,5 +1,4 @@
 import logging
-import random
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from typing import Optional
@@ -241,8 +240,7 @@ class LynchUtils:
 
         db_query = OracleDB()
         logging.info(f"Executing query with parameters: {params}")
-        rows_affected = db_query.update_or_insert_data_to_table(sql_query, params)
-        logging.info(f"Rows affected = {rows_affected}")
+        db_query.update_or_insert_data_to_table(sql_query, params)
 
         LynchUtils.process_new_lynch_patients()
 
