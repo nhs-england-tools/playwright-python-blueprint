@@ -30,7 +30,6 @@ class BasePage:
         self.communications_production_page = self.page.get_by_role(
             "link", name="Communications Production"
         )
-        self.download_page = self.page.get_by_role("link", name="Download")
         self.fit_test_kits_page = self.page.get_by_role("link", name="FIT Test Kits")
         self.gfobt_test_kits_page = self.page.get_by_role(
             "link", name="gFOBT Test Kits"
@@ -169,10 +168,6 @@ class BasePage:
     def go_to_communications_production_page(self) -> None:
         """Click the Base Page 'Communications Production' link."""
         self.click(self.communications_production_page)
-
-    def go_to_download_page(self) -> None:
-        """Click the Base Page 'Download' link."""
-        self.click(self.download_page)
 
     def go_to_fit_test_kits_page(self) -> None:
         """Click the Base Page 'FIT Test Kits' link."""
