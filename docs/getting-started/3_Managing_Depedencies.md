@@ -21,7 +21,7 @@ the versions of these using the commit SHA (hash) value rather than version numb
 primarily due to a number of recent security incidents relating to GitHub Actions being compromised and
 maliciously updated, so by locking dependencies to very specific code that we know is safe, we can
 incrementally update code and mitigate the risk of a GitHub Action or Python project with malicious
-code being executed on our devices or Github Action runners.
+code being executed on our devices or GitHub Action runners.
 
 Working in this way also provides the following benefits:
 
