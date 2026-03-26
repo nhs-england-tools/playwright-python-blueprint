@@ -4,8 +4,6 @@
 
 This project is designed to provide a blueprint to allow for development teams to start quickly developing UI tests using [Playwright Python](https://playwright.dev/python/), providing the base framework and utilities to allow for initial focus on writing tests, rather than configuration of the framework itself. Playwright is the current mainstream UI testing tool for NHS England, as outlined on the [NHS England Tech Radar](https://radar.engineering.england.nhs.uk/).
 
-> NOTE: This project is currently under initial development so isn't finalised, but should work if you want to experiment with Playwright Python.
-
 ## Table of Contents
 
 - [Playwright Python Blueprint](#playwright-python-blueprint)
@@ -43,12 +41,14 @@ the configuration.  If you are using an IDE such as Visual Studio Code or PyChar
 To get started using Playwright and with the examples provided, use the following commands:
 
 ```shell
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 playwright install --with-deps
 ```
 
-This will install all the necessary packages for executing Playwright tests, and install Playwright ready for use by the framework.  You can test the configuration
-has worked by running our example tests, which can be done using the following command (this will run all tests with tracing reports turned on, and in headed mode
+This will install all the necessary packages for executing Playwright tests, managing the project
+going forward and install Playwright ready for use by the framework.  You can test the configuration
+has worked by running our example tests, which can be done using the following command
+(this will run all tests with tracing reports turned on, and in headed mode
 so you can see the browser execution):
 
 ```shell
@@ -60,12 +60,11 @@ Alternatively if you are using Visual Studio Code as your IDE, we have pre-confi
 
 ## Getting Started
 
-> NOTE: This section is currently under development and requires further work, so links to pages within this repository may not be very useful at this stage.
-
-Once you've confirmed your installation is working, please take a look at the following guides on getting started with Playwright Python.
+Once you've confirmed your installation is working, please take a look at the following guides on getting started with Playwright Python and managing dependencies going forward.
 
 1. [Understanding Playwright Python](./docs/getting-started/1_Understanding_Playwright_Python.md)
 2. [Blueprint File Breakdown](./docs/getting-started/2_Blueprint_File_Breakdown.md)
+3. [Managing Dependencies](./docs/getting-started/3_Managing_Depedencies.md)
 
 We've also created a [Quick Reference Guide](./docs/getting-started/Quick_Reference_Guide.md) for common commands and actions you may regularly perform using this blueprint.
 
@@ -124,8 +123,8 @@ python jira_upload.py
 
 For this to work, you need to set the follow environment variables (which you can do via local.env):
 
-| Key                   | Required | Description                                                                                            |
-| --------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| Key                     | Required | Description                                                                                            |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
 | `JIRA_URL`              | Yes      | The Jira instance url to connect to                                                                    |
 | `JIRA_PROJECT_KEY`      | Yes      | The project key for the Jira project to upload to                                                      |
 | `JIRA_API_KEY`          | Yes      | The Jira API key for your user, which can be generated in Jira via Profile > Personal Access Tokens    |

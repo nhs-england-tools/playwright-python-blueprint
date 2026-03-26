@@ -1,25 +1,24 @@
 name: "Run Util & Example Tests"
-runs-on: ubuntu-latest
-timeout-minutes: 3
+description: "Runs utility and example Playwright tests"
 runs:
   using: "composite"
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: '3.13'
     - name: Install dependencies
       shell: bash
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --require-hashes -r requirements-lock.txt
     - name: Ensure browsers are installed
       shell: bash
       run: python -m playwright install --with-deps
     - name: Run util tests
       shell: bash
       run: pytest -m "utils" --ignore=tests/
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       if: ${{ !cancelled() }}
       with:
         name: result-output-utils
@@ -28,7 +27,7 @@ runs:
     - name: Run example tests
       shell: bash
       run: pytest --ignore=tests_utils/
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       if: ${{ !cancelled() }}
       with:
         name: result-output-example

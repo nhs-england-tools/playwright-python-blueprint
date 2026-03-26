@@ -1,6 +1,10 @@
 # If using SBOM input, automatically generate CPEs when packages have none
 add-cpes-if-none: true
 
+db:
+  cache-dir: "/.cache/grype"
+  max-allowed-built-age: "720h"
+
 # ignore:
 #   # This is the full set of supported rule fields:
 #   - vulnerability: CVE-2008-4318
