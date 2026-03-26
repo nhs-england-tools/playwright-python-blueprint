@@ -53,6 +53,7 @@ runs:
       shell: bash
       run: |
         export BUILD_DATETIME=${{ inputs.build_datetime }}
+        export FORCE_USE_DOCKER=true
         ./scripts/reports/scan-vulnerabilities.sh
     - name: "Compress vulnerabilities report"
       shell: bash
