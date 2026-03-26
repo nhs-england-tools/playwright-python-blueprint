@@ -37,18 +37,13 @@ runs:
         name: sbom-repository-report.json.zip
         path: ./sbom-repository-report.json.zip
         retention-days: 21
-    - name: "Clear stale Grype DB"
-      shell: bash
-      run: rm -rf /tmp/grype/db ~/.cache/grype/db
     - name: "Get date for Grype DB cache key"
       shell: bash
       id: grype-date
       run: echo "date=$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-    - name: "Cache Grype vulnerability database"
-      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-      with:
-        path: /tmp/grype/db
-        key: grype-db-${{ steps.grype-date.outputs.date }}
+    - name: "Update Grype vulnerability database"
+      shell: bash
+      run: grype db update
     - name: "Scan vulnerabilities"
       shell: bash
       run: |
