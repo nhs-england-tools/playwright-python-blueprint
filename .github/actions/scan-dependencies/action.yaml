@@ -39,7 +39,7 @@ runs:
         retention-days: 21
     - name: "Clear stale Grype DB"
       shell: bash
-      run: rm -rf /tmp/grype/db
+      run: rm -rf /tmp/grype/db ~/.cache/grype/db
     - name: "Get date for Grype DB cache key"
       shell: bash
       id: grype-date
@@ -53,7 +53,6 @@ runs:
       shell: bash
       run: |
         export BUILD_DATETIME=${{ inputs.build_datetime }}
-        export FORCE_USE_DOCKER=true
         ./scripts/reports/scan-vulnerabilities.sh
     - name: "Compress vulnerabilities report"
       shell: bash
