@@ -97,8 +97,10 @@ class Axe():
         Args:
             page (playwright.sync_api.Page): The page object to execute
                 axe-core against.
-            page_list (list[str, dict]): A list of URLs to
-                execute against.
+            page_list (list[str | dict]): A list of page entries to
+                execute against. Each entry may be either a URL/path string
+                or a dictionary page descriptor using the shape expected by
+                pytest_playwright_axe.Axe.run_list.
             use_list_for_filename (bool): If true, based filenames off the
                 list provided. If false, use the full URL under test for the
                 filename.

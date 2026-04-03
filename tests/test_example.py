@@ -1,7 +1,7 @@
 """
 This file provides a very basic test to confirm how to get started with test
 execution, and also a way to prove that the blueprint has been copied and built
-correctly for teams getting stated.
+correctly for teams getting started.
 
 You can invoke this test once the blueprint has been installed by using the
 following command to see the test executing and producing a trace report:
@@ -67,7 +67,7 @@ def test_textbox_example(page: Page) -> None:
     This test demonstrates another example of quickly getting started using
     Playwright Python.
 
-    This is specifically designed to outline some of the principals that
+    This is specifically designed to outline some of the principles that
     Playwright uses, for example when looking for a specific textbox to
     enter information into, rather than using a direct HTML or CSS reference,
     you can use attributes of the field (in this case the placeholder text)
