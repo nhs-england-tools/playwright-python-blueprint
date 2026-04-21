@@ -9,6 +9,8 @@ This guide outlines the breakdown of this blueprint, and specifically the files 
   - [Directories \& Files Directly Impacting Tests](#directories--files-directly-impacting-tests)
     - [`requirements.txt`](#requirementstxt)
     - [`pytest.ini`](#pytestini)
+    - [`setup_env_file.py` / `local.env`](#setup_env_filepy--localenv)
+    - [`conftest.py`](#conftestpy)
     - [`users.json`](#usersjson)
     - [`tests/`](#tests)
     - [`pages/`](#pages)
@@ -39,6 +41,23 @@ This file outlines the configuration of pytest, and ultimately how Playwright al
 - The `markers` section is for organizing any marks (or tags) you want to apply to your tests, for example by a business area or a testing type. If you don't include your marks in this list, pytest will give you a warning until they have either been added here or programmatically within the code.
 
 Any configuration you want to apply to all of your test executions should be placed in this file where possible, to ensure easy maintenance.
+
+### `setup_env_file.py` / `local.env`
+
+This script is directly referenced on the `README` for this project which explains how to use it, however the
+`setup_env_file.py` script is designed to create a `local.env` file at the root of the project which can be used
+to store sensitive values locally without committing them to your repository. This includes values such as passwords
+and API keys, or other values that may be deemed sensitive.
+
+### `conftest.py`
+
+This file is a configuration file for
+[pytest](https://docs.pytest.org/en/stable/reference/fixtures.html#conftest-py-sharing-fixtures-across-multiple-files),
+specifically designed for housing fixtures that are applicable across the entire test framework. For this blueprint,
+that includes the code required to generate the HTML report with the test docstring included, along with the code
+required to load the environment variables from `local.env` so they are available during testing.
+
+You can use this file for other global fixtures that are appropriate for your specific testing circumstances as needed.
 
 ### `users.json`
 
