@@ -21,7 +21,9 @@ The files in this section cover the files that impact your ability to execute te
 
 ### `requirements.txt`
 
-This file outlines the packages required from the Python Package Index (PyPI) to execute this project. This should be regularly maintained to ensure that we have the most up-to-date versions of any packages we intend to use.
+This file outlines the packages required from the Python Package Index (PyPI) to execute this project. This should be regularly maintained to ensure that we have the most up-to-date versions of any packages we intend to use. This file is also used to generate a `requirements-lock.txt` file, which is explained
+in more detail (along with `requirements-dev.txt`) in the
+[Managing Dependencies](./3_Managing_Depedencies.md) getting started guide.
 
 ### `pytest.ini`
 
