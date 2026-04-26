@@ -4,4 +4,4 @@ pytest-json-report==1.5.0
 pytest-playwright-axe==4.11.2
 python-dotenv==1.2.2
 atlassian-python-api==4.0.7
-GitPython==3.1.46
+GitPython==3.1.47
