@@ -1,7 +1,7 @@
 pytest-playwright==0.7.2
 pytest-html==4.2.0
 pytest-json-report==1.5.0
-pytest-playwright-axe==4.11.2
+pytest-playwright-axe==4.11.3
 python-dotenv==1.2.2
 atlassian-python-api==4.0.7
 GitPython==3.1.47
