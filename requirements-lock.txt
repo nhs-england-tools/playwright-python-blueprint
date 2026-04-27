@@ -390,9 +390,9 @@ pytest-playwright==0.7.2 \
     # via
     #   -r requirements.txt
     #   pytest-playwright-axe
-pytest-playwright-axe==4.11.2 \
-    --hash=sha256:5c992d817515a289c687e05f479de38560b32ad5c56793486e15aa8c141b243d \
-    --hash=sha256:dfcd42f47957cbd55f6f543cb58885c4b23eebf84eb116e46b9c7059d67c6a11
+pytest-playwright-axe==4.11.3 \
+    --hash=sha256:3a8c1ac6f71db9fbd615753aae859caa4b2a9411519fedffa77beed3802c6597 \
+    --hash=sha256:541f6c943e6c4f16411a11b38b48d15e1030af58b917abfadda1655573c09946
     # via -r requirements.txt
 python-dotenv==1.2.2 \
     --hash=sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a \
