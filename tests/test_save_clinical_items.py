@@ -28,17 +28,18 @@ from pages.misc.symptom_discriminator.search_symptom_discriminators_page import 
 )
 
 VERSION_NUMBER = "42.2.0"
+AUTHOR_NOTE = "Regression testing"
 
 
 @pytest.fixture(autouse=True)
 def login(page: Page) -> None:
-    page.goto("https://pat-qa.pathways.nhs.uk/Account/Login?")
+    page.goto("/")
     page.get_by_role("button", name="Allow all cookies").click()
     page.get_by_placeholder("Email address").fill(
         "nhspathways.test+pwteammember@nhs.net"
     )
     page.get_by_placeholder("Password").fill(os.getenv("USER_PASS"))
-    page.get_by_role("button", name="Sign in").click()
+    page.get_by_role("button", name="Sign in", exact=True).click()
 
 
 def test_save_question(page: Page) -> None:
@@ -47,12 +48,13 @@ def test_save_question(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_questions()
     SearchQuestionsPage(page).search_by_question_id("Tx226532")
-    EditQuestionPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000) #wait for now but needs logic to wait for the page to load fully
+    EditQuestionPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE, "questions")
     EditQuestionPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-        # f"Target {VERSION_NUMBER}(0)"
-    )
+
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
+
 
 
 def test_save_care_advice(page: Page) -> None:
@@ -61,12 +63,13 @@ def test_save_care_advice(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_care_advice()
     SearchCareAdvicePage(page).search_by_care_advice_id("Cx221784")
-    EditCareAdvicePage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditCareAdvicePage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditCareAdvicePage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-        # f"Target {VERSION_NUMBER}(0)"
-    )
+
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
+
 
 
 def test_save_disposition(page: Page) -> None:
@@ -75,12 +78,13 @@ def test_save_disposition(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_dispositions()
     SearchDispositionsPage(page).search_by_disposition_id("Dx220235")
-    EditDispositionPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditDispositionPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditDispositionPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-        # f"Target {VERSION_NUMBER}(0)"
-    )
+    
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
+
 
 
 def test_save_pathway(page: Page) -> None:
@@ -89,11 +93,12 @@ def test_save_pathway(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_pathways()
     SearchPathwaysPage(page).search_by_pathway_id("PW1899")
-    EditPathwayPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditPathwayPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditPathwayPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-    )
+
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
 
 
 def test_save_template(page: Page) -> None:
@@ -102,11 +107,12 @@ def test_save_template(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_templates()
     SearchTemplatesPage(page).search_by_template_id("Cs000138")
-    EditTemplatePage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditTemplatePage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditTemplatePage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-    )
+
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
 
 
 def test_save_condition(page: Page) -> None:
@@ -115,11 +121,13 @@ def test_save_condition(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_conditions()
     SearchConditionsPage(page).search_by_condition_id("Cn010727")
-    EditConditionPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditConditionPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE, "conditions")
     EditConditionPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-    )
+
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
+    expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
+
 
 
 def test_save_symptom_group(page: Page) -> None:
@@ -128,11 +136,13 @@ def test_save_symptom_group(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_symptom_groups()
     SearchSymptomGroupsPage(page).search_by_symptom_group_id("SG1272")
-    EditSymptomGroupPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditSymptomGroupPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditSymptomGroupPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-    )
+
+    expect(page.locator("#tableExpandCollapse")).to_contain_text(AUTHOR_NOTE)
+    expect(page.locator("#tableExpandCollapse")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
+
 
 
 def test_save_symptom_discriminator(page: Page) -> None:
@@ -141,8 +151,9 @@ def test_save_symptom_discriminator(page: Page) -> None:
     """
     HomePage(page).navigate_to_search_symptom_discriminators()
     SearchSymptomDiscriminatorsPage(page).search_by_symptom_discriminator_id("SD4785")
-    EditSymptomDiscriminatorPage(page).save_clinical_content(VERSION_NUMBER)
+    page.wait_for_timeout(2000)
+    EditSymptomDiscriminatorPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditSymptomDiscriminatorPage(page).click_change_history_log()
-    expect(page.locator("#tableExpandCollapse")).to_contain_text(
-        "Target 61.0.0_Chai(0)"
-    )
+
+    expect(page.locator("#tableExpandCollapse")).to_contain_text(AUTHOR_NOTE)
+    expect(page.locator("#tableExpandCollapse")).to_contain_text(f"Target {VERSION_NUMBER}(0)")

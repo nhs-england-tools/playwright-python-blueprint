@@ -16,7 +16,8 @@ def initial_navigation(page: Page) -> None:
     """
 
     # Navigate to page
-    page.goto("https://pat-qa.pathways.nhs.uk")
+    page.goto("/")
+    page.get_by_role("button", name="Allow all cookies").click()
 
 
 def test_invalid_email(page: Page) -> None:
@@ -25,7 +26,7 @@ def test_invalid_email(page: Page) -> None:
     """
     page.get_by_role("textbox", name="Email").fill("nhspathways.test")
     page.get_by_role("textbox", name="Password").fill("Test")
-    page.get_by_role("button", name="Sign in").click()
+    page.get_by_role("button", name="Sign in", exact=True).click()
     expect(
         page.get_by_text("The Email field is not a valid e-mail address.")
     ).to_be_visible()
@@ -35,10 +36,10 @@ def test_incorrect_password(page: Page) -> None:
     """
     Test attempts to log in with a valid email but incorrect password, then asserts the expected message is returned
     """
-    page.get_by_role("textbox", name="Email").fill("nhspathways.test+admin@nhs.net")
+    page.get_by_role("textbox", name="Email").fill("nhspathways.test+pwteammember@nhs.net")
     page.get_by_role("textbox", name="Password").fill("Test")
-    page.get_by_role("button", name="Sign in").click()
-    expect(page.get_by_text("Invalid login attempt.")).to_be_visible()
+    page.get_by_role("button", name="Sign in", exact=True).click()
+    expect(page.get_by_text("Invalid login attempt - either your credentials are incorrect or you need to Sign in with Care Identity")).to_be_visible()
 
 
 def test_empty_email(page: Page) -> None:
@@ -47,8 +48,8 @@ def test_empty_email(page: Page) -> None:
     """
     page.get_by_role("textbox", name="Email").fill("")
     page.get_by_role("textbox", name="Password").fill("Test")
-    page.get_by_role("button", name="Sign in").click()
-    expect(page.get_by_role("button", name="Sign in")).to_be_visible()
+    page.get_by_role("button", name="Sign in", exact=True).click()
+    expect(page.get_by_role("button", name="Sign in", exact=True)).to_be_visible()
     # expect(page.get_by_text("Please fill in this field.")).to_be_visible()
 
 
@@ -56,8 +57,8 @@ def test_empty_password(page: Page) -> None:
     """
     Test attempts to log in without entering a password, then asserts that Im not logged in
     """
-    page.get_by_role("textbox", name="Email").fill("nhspathways.test+admin@nhs.net")
-    page.get_by_role("textbox", name="Password").fill("Test")
-    page.get_by_role("button", name="Sign in").click()
-    expect(page.get_by_role("button", name="Sign in")).to_be_visible()
+    page.get_by_role("textbox", name="Email").fill("nhspathways.test+pwteammember@nhs.net")
+    page.get_by_role("textbox", name="Password").fill("")
+    page.get_by_role("button", name="Sign in", exact=True).click()
+    expect(page.get_by_role("button", name="Sign in", exact=True)).to_be_visible()
     # expect(page.get_by_text("Please fill in this field.")).to_be_visible()

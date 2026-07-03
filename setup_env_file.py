@@ -11,7 +11,7 @@ keys required to run this project.
 import os
 from pathlib import Path
 
-REQUIRED_KEYS = ["USER_PASS"]
+REQUIRED_KEYS = ["USER_PASS", "CHANGE_PASS"]
 DEFAULT_LOCAL_ENV_PATH = Path(os.getcwd()) / 'local.env'
 
 def create_env_file():

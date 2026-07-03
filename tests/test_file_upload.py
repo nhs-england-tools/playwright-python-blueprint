@@ -1,21 +1,22 @@
 """
-This file contains ....
+This file contains tests for uploading files to PAT enquiries. It tests that different file types can be uploaded and deleted successfully.
 """
 
 import pytest
 import os
 from playwright.sync_api import Page, expect
+from pytest_playwright.pytest_playwright import page
 
 
 @pytest.mark.parametrize(
     "file_to_test", ["regression_test_document.docx", "regression_test_document.pdf"]
 )
 def test_file_type_upload_to_enquiry(page: Page, file_to_test: str) -> None:
-    f"""
+    """
     This test confirms different file types can be uploaded to an enquiry.
     File used for this test: {file_to_test}
     """
-    page.goto("https://pat-qa.pathways.nhs.uk/Account/Login?ReturnUrl=%2F")
+    page.goto("/")
     page.get_by_role("button", name="Allow all cookies").click()
     page.get_by_placeholder("Email address").fill(
         "nhspathways.test+pwteammember@nhs.net"
@@ -34,8 +35,9 @@ def test_file_type_upload_to_enquiry(page: Page, file_to_test: str) -> None:
         file_chooser.set_files(f"{os.getcwd()}/tests/resources/{file_to_test}")
     page.get_by_role("button", name="Upload").click()
     expect(page.get_by_role("cell", name=f"{file_to_test}")).to_be_visible()
+
+    page.wait_for_load_state("networkidle")  # ensures JS is fully initialised
     page.once("dialog", lambda dialog: dialog.accept())
-    page.get_by_title("Delete attachment").click()
-    expect(page.locator("#remove-attachment-feedback")).to_contain_text(
-        "Attachment successfully deleted"
-    )
+    page.get_by_title("Delete attachment", exact=True).click()
+
+    expect(page.locator("#remove-attachment-feedback")).to_contain_text("xAttachment successfully deleted")
