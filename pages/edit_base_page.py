@@ -10,7 +10,7 @@ class EditBasePage(BasePage):
         self, target_release: str, author_note: str, release_box_type: str = ""
     ) -> None:
         """
-        This method clicks Save on a question item, populates data on the Change History Modal then saves the changes.
+        This method clicks Save on a clinical item, populates data on the Change History Modal then saves the changes.
         """
         self.page.get_by_role("button", name="Save").click()
         match release_box_type:
@@ -21,7 +21,6 @@ class EditBasePage(BasePage):
             case _:
                 self.page.get_by_label("Target Release *").select_option(target_release)
 
-            
         self.page.get_by_role("textbox", name="Author note", exact=True).fill(author_note)
         self.page.get_by_role("button", name="Save Changes", exact=True).click()
 

@@ -81,7 +81,7 @@ def test_save_disposition(page: Page) -> None:
     page.wait_for_timeout(2000)
     EditDispositionPage(page).save_clinical_content(VERSION_NUMBER, AUTHOR_NOTE)
     EditDispositionPage(page).click_change_history_log()
-    
+
     expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(AUTHOR_NOTE)
     expect(page.get_by_label("History/Notes").locator("tbody")).to_contain_text(f"Target {VERSION_NUMBER}(0)")
 
