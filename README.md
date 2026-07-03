@@ -1,10 +1,8 @@
 # Playwright Python Blueprint
 
-[![CI/CD Pull Request](https://github.com/nhs-england-tools/repository-template/actions/workflows/cicd-1-pull-request.yaml/badge.svg)](https://github.com/nhs-england-tools/playwright-python-blueprint/actions/workflows/cicd-1-pull-request.yaml)
+[![CI/CD Pull Request](https://github.com/nhs-england-tools/playwright-python-blueprint/actions/workflows/cicd-1-pull-request.yaml/badge.svg)](https://github.com/nhs-england-tools/playwright-python-blueprint/actions/workflows/cicd-1-pull-request.yaml)
 
 This project is designed to provide a blueprint to allow for development teams to start quickly developing UI tests using [Playwright Python](https://playwright.dev/python/), providing the base framework and utilities to allow for initial focus on writing tests, rather than configuration of the framework itself. Playwright is the current mainstream UI testing tool for NHS England, as outlined on the [NHS England Tech Radar](https://radar.engineering.england.nhs.uk/).
-
-> NOTE: This project is currently under initial development so isn't finalised, but should work if you want to experiment with Playwright Python.
 
 ## Table of Contents
 
@@ -16,6 +14,7 @@ This project is designed to provide a blueprint to allow for development teams t
   - [Getting Started](#getting-started)
   - [Utilities](#utilities)
   - [Using Environment Variables For Secrets](#using-environment-variables-for-secrets)
+  - [Using the Jira Upload Script](#using-the-jira-upload-script)
   - [Contributing](#contributing)
   - [Contacts](#contacts)
   - [Licence](#licence)
@@ -42,12 +41,14 @@ the configuration.  If you are using an IDE such as Visual Studio Code or PyChar
 To get started using Playwright and with the examples provided, use the following commands:
 
 ```shell
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 playwright install --with-deps
 ```
 
-This will install all the necessary packages for executing Playwright tests, and install Playwright ready for use by the framework.  You can test the configuration
-has worked by running our example tests, which can be done using the following command (this will run all tests with tracing reports turned on, and in headed mode
+This will install all the necessary packages for executing Playwright tests, managing the project
+going forward and install Playwright ready for use by the framework.  You can test the configuration
+has worked by running our example tests, which can be done using the following command
+(this will run all tests with tracing reports turned on, and in headed mode
 so you can see the browser execution):
 
 ```shell
@@ -59,12 +60,11 @@ Alternatively if you are using Visual Studio Code as your IDE, we have pre-confi
 
 ## Getting Started
 
-> NOTE: This section is currently under development and requires further work, so links to pages within this repository may not be very useful at this stage.
-
-Once you've confirmed your installation is working, please take a look at the following guides on getting started with Playwright Python.
+Once you've confirmed your installation is working, please take a look at the following guides on getting started with Playwright Python and managing dependencies going forward.
 
 1. [Understanding Playwright Python](./docs/getting-started/1_Understanding_Playwright_Python.md)
 2. [Blueprint File Breakdown](./docs/getting-started/2_Blueprint_File_Breakdown.md)
+3. [Managing Dependencies](./docs/getting-started/3_Managing_Depedencies.md)
 
 We've also created a [Quick Reference Guide](./docs/getting-started/Quick_Reference_Guide.md) for common commands and actions you may regularly perform using this blueprint.
 
@@ -110,6 +110,56 @@ os.getenv('<key_from_local.env>')
 The local.env file is set in the [.gitignore file](./.gitignore), so by default it will not commit if amended.
 
  > NOTE: You should never commit this file or any secrets in the codebase directly.
+
+## Using the Jira Upload Script
+
+Included with this code is a Jira Upload utility that will allow for the uploading of artifacts from test runs to
+a Jira ticket directly. The script itself ([`jira_upload.py`](jira_upload.py)) can be invoked using the following
+command:
+
+```shell
+python jira_upload.py
+```
+
+For this to work, you need to set the follow environment variables (which you can do via local.env):
+
+| Key                     | Required | Description                                                                                            |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `JIRA_URL`              | Yes      | The Jira instance url to connect to                                                                    |
+| `JIRA_PROJECT_KEY`      | Yes      | The project key for the Jira project to upload to                                                      |
+| `JIRA_API_KEY`          | Yes      | The Jira API key for your user, which can be generated in Jira via Profile > Personal Access Tokens    |
+| `JIRA_TICKET_REFERENCE` | No       | The Jira ticket you want to default to, if required. Can be left blank to use branch-based referencing |
+
+This command will do the following actions:
+
+1. Work out the Jira ticket to upload to and confirm it is a valid reference, by using the following logic:
+   1. If a `--jira-ref` value has been provided, use that value.
+   2. If a `JIRA_TICKET_REFERENCE` environment variable exists, use that value.
+   3. If none of the above, check if you are in a feature branch and if so, compiles the Jira ticket reference by combining the project key and the end of the feature branch (when in the format `feature/<shortcode>-<jira_ticket_number>`).
+2. Check the `test-results/` directory (or custom directory if specified) for appropriate files under 10MB (Jira's file limit), specifically:
+   1. HTML files (e.g. `report.html` generated by `pytest`).
+   2. Trace Files (e.g. `test_name/trace.zip` generated by Playwright).
+   3. Screenshots (e.g. `test_screenshot.png` generated by Playwright).
+   4. CSV Files (e.g. `results.csv` generated during test execution from the UI).
+3. Prompt the user to confirm that they are updating the correct ticket and the correct files are being uploaded. If files already exist on the ticket with a matching name, a unique name will be provided unless `--overwrite-files` is provided.
+4. If `y` is selected, upload the files and add a comment (unless `--no-comment` is provided) to Jira outlining the files uploaded and if possible, the environment information from the test run (unless `--no-env-data` is provided).
+
+You can also pass in the following arguments which will have the noted effects:
+
+| Argument                      | Description                                                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `--jira-ref <Jira Reference>` | The Jira ticket to upload to. Will take precedence over auto-deriving from branch name and the set environment variable.      |
+| `--results-dir <Directory>`   | The directory to point to. If not set, points to `test-results/` (the default directory for test results in this repository). |
+| `--no-html`                   | Don't include HTML files in the upload.                                                                                       |
+| `--no-trace`                  | Don't include Trace files (.zip) in the upload.                                                                               |
+| `--no-csv`                    | Don't include CSV files in the upload.                                                                                        |
+| `--no-screenshots`            | Don't include screenshots (.png) in the upload.                                                                               |
+| `--no-comment`                | Don't add a Jira comment highlighting the results.                                                                            |
+| `--no-env-data`               | Don't include environment data in the Jira comment (if getting environment data has been configured).                         |
+| `--overwrite-files`           | If a filename exists on the ticket that matches those in the results directory, overwrite them.                               |
+| `--auto-confirm`              | Will not ask if you want to proceed if provided, and will assume that yes has been pressed.                                   |
+
+Further information on the available actions for this logic can be found in the [Jira Confluence Utility utility guide](./docs/utility-guides/JiraConfluenceUtil.md).
 
 ## Contributing
 

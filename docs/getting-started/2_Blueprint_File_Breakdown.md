@@ -9,6 +9,8 @@ This guide outlines the breakdown of this blueprint, and specifically the files 
   - [Directories \& Files Directly Impacting Tests](#directories--files-directly-impacting-tests)
     - [`requirements.txt`](#requirementstxt)
     - [`pytest.ini`](#pytestini)
+    - [`setup_env_file.py` / `local.env`](#setup_env_filepy--localenv)
+    - [`conftest.py`](#conftestpy)
     - [`users.json`](#usersjson)
     - [`tests/`](#tests)
     - [`pages/`](#pages)
@@ -21,7 +23,9 @@ The files in this section cover the files that impact your ability to execute te
 
 ### `requirements.txt`
 
-This file outlines the packages required from the Python Package Index (PyPI) to execute this project. This should be regularly maintained to ensure that we have the most up-to-date versions of any packages we intend to use.
+This file outlines the packages required from the Python Package Index (PyPI) to execute this project. This should be regularly maintained to ensure that we have the most up-to-date versions of any packages we intend to use. This file is also used to generate a `requirements-lock.txt` file, which is explained
+in more detail (along with `requirements-dev.txt`) in the
+[Managing Dependencies](./3_Managing_Depedencies.md) getting started guide.
 
 ### `pytest.ini`
 
@@ -37,6 +41,23 @@ This file outlines the configuration of pytest, and ultimately how Playwright al
 - The `markers` section is for organizing any marks (or tags) you want to apply to your tests, for example by a business area or a testing type. If you don't include your marks in this list, pytest will give you a warning until they have either been added here or programmatically within the code.
 
 Any configuration you want to apply to all of your test executions should be placed in this file where possible, to ensure easy maintenance.
+
+### `setup_env_file.py` / `local.env`
+
+This script is directly referenced on the `README` for this project which explains how to use it, however the
+`setup_env_file.py` script is designed to create a `local.env` file at the root of the project which can be used
+to store sensitive values locally without committing them to your repository. This includes values such as passwords
+and API keys, or other values that may be deemed sensitive.
+
+### `conftest.py`
+
+This file is a configuration file for
+[pytest](https://docs.pytest.org/en/stable/reference/fixtures.html#conftest-py-sharing-fixtures-across-multiple-files),
+specifically designed for housing fixtures that are applicable across the entire test framework. For this blueprint,
+that includes the code required to generate the HTML report with the test docstring included, along with the code
+required to load the environment variables from `local.env` so they are available during testing.
+
+You can use this file for other global fixtures that are appropriate for your specific testing circumstances as needed.
 
 ### `users.json`
 
@@ -73,4 +94,4 @@ The following directories and files are specific for this repository, and may re
 - `scripts/`: This directory houses the scripts used by this repository, primarily as part of the CI/CD checks.
 - `tests_utils/`: This directory houses the unit tests for the utilities provided by this repository. You may want to copy these over if you want to ensure utilities are behaving as expected.
 - `.editorconfig`, `.gitattributes`, `.gitignore`, `.gitleaks.toml`, `.gitleaksignore`: These files are configuration for git, and quality and security checks provided via the CI/CD checks.
-- `Makefile`: This file is used to import some of the scripts for CI/CD checks, but can be customised per project if needed. The template this project is based from provides a more comprehensive example [here](https://github.com/nhs-england-tools/repository-template/blob/main/Makefile).
+- `Makefile`: This file is used to import some of the scripts for CI/CD checks, but can be customised per project if needed. The template this project is based from provides a more comprehensive example [in the NHS England Tools repository](https://github.com/nhs-england-tools/repository-template/blob/main/Makefile).
