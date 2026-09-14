@@ -4,9 +4,9 @@
 #
 #    pip-compile --generate-hashes --output-file=requirements-lock.txt requirements.txt
 #
-atlassian-python-api==4.0.7 \
-    --hash=sha256:46a70cb29eaab87c0a1697fccd3e25df1aa477e6aa4fb9ba936a9d46b425933c \
-    --hash=sha256:8d9cc6068b1d2a48eb434e22e57f6bbd918a47fac9e46b95b7a3cefb00fceacb
+atlassian-python-api==5.0.4 \
+    --hash=sha256:b1f58d68d3a3bd9b7b8bd5a2c1ed006113bc5c4bd90c75350f66428685fb613c \
+    --hash=sha256:c11cf53283c795d84ddfb593f3c7503f3b0b3c20191fc3061781b2665c10f6b3
     # via -r requirements.txt
 beautifulsoup4==4.15.0 \
     --hash=sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7 \
