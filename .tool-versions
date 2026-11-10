@@ -13,4 +13,4 @@ vale 3.26.0
 # docker/ghcr.io/igorshubovych/markdownlint-cli v0.50.0@sha256:db7dcb73cd3163cc45854b60fc21eefe1ebe7fa52aad758706010b64a4778900 # SEE: https://github.com/igorshubovych/markdownlint-cli/pkgs/container/markdownlint-cli
 # docker/ghcr.io/make-ops-tools/gocloc latest@sha256:6888e62e9ae693c4ebcfed9f1d86c70fd083868acb8815fe44b561b9a73b5032 # SEE: https://github.com/make-ops-tools/gocloc/pkgs/container/gocloc
 # docker/jdkato/vale v3.26.0@sha256:d4ebc402b255dacc759c468ed8c91bd5be82918bbb59583558539f3be80f1f01 # SEE: https://hub.docker.com/r/jdkato/vale/tags
-# docker/mstruebing/editorconfig-checker 4.0.2@sha256:2ba6232bfa0058f72f5f7d7816711590aa764afab1542af30b3ecb4553587918 # SEE: https://hub.docker.com/r/mstruebing/editorconfig-checker/tags
+# docker/mstruebing/editorconfig-checker v3.11.3@sha256:b3128d82e0518b81df28d245200d86de4bf361f065668be1d1626aacd47b785e # SEE: https://hub.docker.com/r/mstruebing/editorconfig-checker/tags
