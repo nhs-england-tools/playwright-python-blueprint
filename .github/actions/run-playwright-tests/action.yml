@@ -14,7 +14,7 @@ runs:
         pip install --require-hashes -r requirements-lock.txt
     - name: Ensure browsers are installed
       shell: bash
-      run: python -m playwright install --with-deps
+      run: python -m playwright install
     - name: Run util tests
       shell: bash
       run: pytest tests_utils/
