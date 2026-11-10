@@ -19,7 +19,7 @@ setup-playwright: # Install Playwright and associated packages, and create local
 	$(MAKE) check-venv || (echo "ERROR: Not in a virtual environment, please create before running this command!"; exit 1)
 
 	@echo "Install Playwright"
-	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 	playwright install
 
 	@echo "Setup local.env file"

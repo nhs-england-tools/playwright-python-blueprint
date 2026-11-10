@@ -1,20 +1,16 @@
 # This file is for you! Please, updated to the versions agreed by your team.
 
 pre-commit 3.6.0
-vale 3.6.0
+vale 3.26.0
 
 # ==============================================================================
 # The section below is reserved for Docker image versions.
 
 # TODO: Move this section - consider using a different file for the repository template dependencies.
-# docker/ghcr.io/anchore/grype v0.111.0@sha256:af9f30d1de4ecfbbcd2b674371e8df787879e16832af8ab81551b0bf1ec0ad5b # SEE: https://github.com/anchore/grype/pkgs/container/grype
-# docker/ghcr.io/anchore/syft v1.42.4@sha256:e9f29bec38cc856bfd3a7966d2f99711b5b244a531bf121da9de3b47789eecfa # SEE: https://github.com/anchore/syft/pkgs/container/syft
+# docker/ghcr.io/anchore/grype v0.121.3@sha256:13113eeceab017260370cf540e1d25442c59665fd07d1b09b66d63bb0c282887 # SEE: https://github.com/anchore/grype/pkgs/container/grype
+# docker/ghcr.io/anchore/syft v1.57.1@sha256:03215d0e98b661d0ecbc8575dbc14d65be1743b5de5df6410aecb7e80f95b060 # SEE: https://github.com/anchore/syft/pkgs/container/syft
 # docker/ghcr.io/gitleaks/gitleaks v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f # SEE: https://github.com/gitleaks/gitleaks/pkgs/container/gitleaks
-# docker/ghcr.io/igorshubovych/markdownlint-cli v0.48.0@sha256:c97f19b52cf7371ff767c080e3e15c15f1cbd3336fc41aeca7a93bb2cdb9843c # SEE: https://github.com/igorshubovych/markdownlint-cli/pkgs/container/markdownlint-cli
+# docker/ghcr.io/igorshubovych/markdownlint-cli v0.50.0@sha256:db7dcb73cd3163cc45854b60fc21eefe1ebe7fa52aad758706010b64a4778900 # SEE: https://github.com/igorshubovych/markdownlint-cli/pkgs/container/markdownlint-cli
 # docker/ghcr.io/make-ops-tools/gocloc latest@sha256:6888e62e9ae693c4ebcfed9f1d86c70fd083868acb8815fe44b561b9a73b5032 # SEE: https://github.com/make-ops-tools/gocloc/pkgs/container/gocloc
-# docker/ghcr.io/nhs-england-tools/github-runner-image 20230909-321fd1e-rt@sha256:ce4fd6035dc450a50d3cbafb4986d60e77cb49a71ab60a053bb1b9518139a646 # SEE: https://github.com/nhs-england-tools/github-runner-image/pkgs/container/github-runner-image
-# docker/hadolint/hadolint 2.12.0-alpine@sha256:7dba9a9f1a0350f6d021fb2f6f88900998a4fb0aaf8e4330aa8c38544f04db42 # SEE: https://hub.docker.com/r/hadolint/hadolint/tags
-# docker/jdkato/vale v3.6.0@sha256:0ef22c8d537f079633cfff69fc46f69a2196072f69cab1ab232e8a79a388e425 # SEE: https://hub.docker.com/r/jdkato/vale/tags
-# docker/koalaman/shellcheck latest@sha256:e40388688bae0fcffdddb7e4dea49b900c18933b452add0930654b2dea3e7d5c # SEE: https://hub.docker.com/r/koalaman/shellcheck/tags
-# docker/mstruebing/editorconfig-checker 2.7.1@sha256:dd3ca9ea50ef4518efe9be018d669ef9cf937f6bb5cfe2ef84ff2a620b5ddc24 # SEE: https://hub.docker.com/r/mstruebing/editorconfig-checker/tags
-# docker/sonarsource/sonar-scanner-cli 5.0.1@sha256:494ecc3b5b1ee1625bd377b3905c4284e4f0cc155cff397805a244dee1c7d575 # SEE: https://hub.docker.com/r/sonarsource/sonar-scanner-cli/tags
+# docker/jdkato/vale v3.26.0@sha256:d4ebc402b255dacc759c468ed8c91bd5be82918bbb59583558539f3be80f1f01 # SEE: https://hub.docker.com/r/jdkato/vale/tags
+# docker/mstruebing/editorconfig-checker v3.11.3@sha256:b3128d82e0518b81df28d245200d86de4bf361f065668be1d1626aacd47b785e # SEE: https://hub.docker.com/r/mstruebing/editorconfig-checker/tags
