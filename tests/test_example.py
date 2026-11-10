@@ -20,13 +20,16 @@ def initial_navigation(page: Page) -> None:
     within the tests directly.
 
     This specific fixture has been designated to run for every test by setting
-    autouse=True.
+    autouse=True, and works by managing the initial navigation for each test automatically.
     '''
 
     # Navigate to page
     page.goto(
         "https://github.com/nhs-england-tools/playwright-python-blueprint"
         )
+
+    # Wait for GitHub's rendering to complete before proceeding
+    page.wait_for_load_state("networkidle")
 
 
 @pytest.mark.example
