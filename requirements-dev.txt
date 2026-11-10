@@ -1,2 +1,2 @@
-pip-tools==7.5.3
+pip-tools==7.6.2
 -r requirements.txt
