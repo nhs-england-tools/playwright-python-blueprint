@@ -14,8 +14,8 @@ ENV HOME=/home/nonroot
 ENV PATH="$HOME/.local/bin:$PATH"
 
 # Install dependencies
-COPY ./requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt && \
+COPY ./requirements-lock.txt ./requirements-lock.txt
+RUN pip install --no-cache-dir --require-hashes -r requirements-lock.txt && \
   playwright install --with-deps && \
   mkdir -p /tests/ && \
   mkdir -p /utils/ && \
